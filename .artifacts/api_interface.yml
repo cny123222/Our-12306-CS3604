@@ -1,0 +1,165 @@
+# 后端API接口定义
+# 基于登录页需求文档生成
+
+- type: Backend
+  id: API-POST-Login
+  route: POST /api/auth/login
+  description: 处理用户登录请求，支持用户名/邮箱/手机号登录
+  input:
+    type: JSON
+    body:
+      identifier: string  # 用户名/邮箱/手机号
+      password: string
+  output:
+    success:
+      statusCode: 200
+      body: 
+        message: "登录验证通过，需要短信验证"
+        requireSmsVerification: true
+        sessionId: "uuid"
+    error:
+      - statusCode: 400
+        body: { error: "请输入用户名！" }
+      - statusCode: 400
+        body: { error: "请输入密码！" }
+      - statusCode: 400
+        body: { error: "密码长度不能少于6位！" }
+      - statusCode: 401
+        body: { error: "用户名或密码错误！" }
+  dependencies:
+    - DB-FindUserByUsername
+    - DB-FindUserByEmail
+    - DB-FindUserByPhone
+    - DB-VerifyPassword
+  acceptanceCriteria:
+    - 验证输入字段的完整性和格式
+    - 支持用户名、邮箱、手机号三种登录方式
+    - 密码验证失败时清空密码字段（前端处理）
+    - 验证成功后返回会话ID，准备进入短信验证流程
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，支持多种方式登录验证。"
+
+- type: Backend
+  id: API-POST-SendVerificationCode
+  route: POST /api/auth/send-verification-code
+  description: 发送短信验证码
+  input:
+    type: JSON
+    body:
+      sessionId: string
+      idCardLast4Digits: string  # 证件号后4位
+  output:
+    success:
+      statusCode: 200
+      body: { message: "获取短信验证码成功！" }
+    error:
+      - statusCode: 400
+        body: { error: "请输入正确的用户信息！" }
+      - statusCode: 429
+        body: { error: "请求验证码过于频繁，请稍后再试！" }
+      - statusCode: 401
+        body: { error: "会话无效或已过期" }
+  dependencies:
+    - DB-FindUserByUsername
+    - DB-FindUserByEmail
+    - DB-FindUserByPhone
+    - DB-CreateVerificationCode
+    - DB-CheckVerificationCodeFrequency
+  acceptanceCriteria:
+    - 验证会话ID的有效性
+    - 验证证件号后4位是否与用户信息匹配
+    - 检查发送频率限制（1分钟内只能发送一次）
+    - 成功发送后启动60秒倒计时
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，支持短信验证码发送功能。"
+
+- type: Backend
+  id: API-POST-VerifyLogin
+  route: POST /api/auth/verify-login
+  description: 验证短信验证码并完成登录
+  input:
+    type: JSON
+    body:
+      sessionId: string
+      idCardLast4Digits: string
+      verificationCode: string
+  output:
+    success:
+      statusCode: 200
+      body: 
+        message: "登录成功"
+        token: "jwt_token"
+        userId: "uuid"
+        redirectUrl: "/personal-center"
+    error:
+      - statusCode: 400
+        body: { error: "请输入登录账号绑定的证件号后4位" }
+      - statusCode: 400
+        body: { error: "请输入验证码" }
+      - statusCode: 400
+        body: { error: "请输入正确的验证码" }
+      - statusCode: 400
+        body: { error: "验证码校验失败！" }
+      - statusCode: 400
+        body: { error: "很抱歉，您输入的短信验证码有误。" }
+      - statusCode: 401
+        body: { error: "会话无效或已过期" }
+  dependencies:
+    - DB-VerifyCode
+    - DB-UpdateUserLoginStatus
+  acceptanceCriteria:
+    - 验证会话ID的有效性
+    - 验证证件号后4位不能为空
+    - 验证码必须为6位数字
+    - 验证码必须正确且未过期
+    - 验证成功后生成JWT token并更新用户登录状态
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，支持短信验证码验证和登录完成。"
+
+- type: Backend
+  id: API-GET-HomePage
+  route: GET /api/home
+  description: 获取12306首页内容
+  input:
+    type: Query
+    params: {}
+  output:
+    success:
+      statusCode: 200
+      body: 
+        pageContent: "object"
+        banners: "array"
+        announcements: "array"
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 返回首页所需的基本内容
+    - 支持Logo点击跳转功能
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，支持Logo跳转到首页功能。"
+
+- type: Backend
+  id: API-GET-ForgotPassword
+  route: GET /api/auth/forgot-password
+  description: 获取忘记密码页面
+  input:
+    type: Query
+    params: {}
+  output:
+    success:
+      statusCode: 200
+      body: 
+        pageContent: "object"
+        resetOptions: "array"
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 返回忘记密码页面内容
+    - 提供密码重置选项
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，支持忘记密码页面跳转。"
