@@ -1,0 +1,103 @@
+- type: Database
+  id: DB-FindUserByUsername
+  description: 根据用户名查询用户信息，支持用户名、邮箱、手机号三种方式查询。
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 成功查询到用户时，返回完整的用户信息记录。
+    - 用户不存在时，返回空结果。
+    - 支持用户名、邮箱格式、手机号格式的输入识别。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Database
+  id: DB-VerifyUserPassword
+  description: 验证用户密码是否正确。
+  dependencies:
+    - DB-FindUserByUsername
+  acceptanceCriteria:
+    - 密码匹配时返回验证成功。
+    - 密码不匹配时返回验证失败。
+    - 支持加密密码的比对验证。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Database
+  id: DB-VerifyUserIdCard
+  description: 验证用户证件号后4位是否正确。
+  dependencies:
+    - DB-FindUserByUsername
+  acceptanceCriteria:
+    - 证件号后4位匹配时返回验证成功。
+    - 证件号后4位不匹配时返回验证失败。
+    - 输入必须为4位数字。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Database
+  id: DB-CreateVerificationCode
+  description: 创建并存储短信验证码记录。
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 成功创建验证码记录，包含用户ID、验证码、创建时间、过期时间。
+    - 验证码为6位随机数字。
+    - 设置验证码有效期为5分钟。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Database
+  id: DB-CheckVerificationCodeLimit
+  description: 检查用户1分钟内是否已发送过验证码。
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 1分钟内已发送过验证码时返回限制状态。
+    - 1分钟内未发送过验证码时返回允许状态。
+    - 基于用户ID和时间戳进行判断。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Database
+  id: DB-VerifyVerificationCode
+  description: 验证用户输入的短信验证码是否正确。
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 验证码正确且未过期时返回验证成功。
+    - 验证码错误或已过期时返回验证失败。
+    - 验证成功后将验证码标记为已使用。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Database
+  id: DB-GetUserPhoneNumber
+  description: 获取用户绑定的手机号码。
+  dependencies:
+    - DB-FindUserByUsername
+  acceptanceCriteria:
+    - 成功返回用户绑定的手机号码。
+    - 用户不存在时返回空结果。
+    - 手机号码格式为11位数字。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Database
+  id: DB-UpdateUserLoginTime
+  description: 更新用户最后登录时间。
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 成功更新用户的最后登录时间为当前时间。
+    - 记录登录IP地址和设备信息。
+    - 更新操作必须原子性执行。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
