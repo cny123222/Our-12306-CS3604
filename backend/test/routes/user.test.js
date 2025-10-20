@@ -58,7 +58,12 @@ describe('User Routes', () => {
 
     it('should fail to get user profile with expired token', async () => {
       // 验收标准：使用过期token时获取用户信息失败
-      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.invalid';
+      const jwt = require('jsonwebtoken');
+      const expiredToken = jwt.sign(
+        { userId: 'test-user-id' },
+        process.env.JWT_SECRET || 'test-secret',
+        { expiresIn: '-1h' }  // 过期1小时前
+      );
       
       const response = await request(app)
         .get('/api/user/profile')

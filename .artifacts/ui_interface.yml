@@ -1,0 +1,180 @@
+- type: Frontend
+  id: UI-LoginPage
+  description: 12306登录主页面，包含完整的页面布局和登录表单区域。
+  properties:
+    - name: onLoginSuccess
+      type: function
+      description: "登录成功后的回调函数，接收用户信息和访问令牌。"
+    - name: onNavigateToRegister
+      type: function
+      description: "跳转到注册页面的回调函数。"
+    - name: onNavigateToForgotPassword
+      type: function
+      description: "跳转到忘记密码页面的回调函数。"
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到12306首页的回调函数。"
+  state:
+    - showSmsModal
+    - sessionToken
+    - errorMessage
+    - isLoading
+  dependencies:
+    - UI-LoginForm
+    - UI-SmsVerificationModal
+    - API-POST-Login
+  acceptanceCriteria:
+    - 页面应包含顶部导航区域，显示12306 Logo和欢迎信息。
+    - 中间区域应包含推广背景和登录表单。
+    - 底部区域应包含友情链接和官方平台二维码。
+    - 登录成功后应显示短信验证弹窗。
+    - 页面布局应符合12306官方设计风格。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-LoginForm
+  description: 登录表单组件，处理用户登录信息输入和验证。
+  properties:
+    - name: onSubmit
+      type: function
+      description: "表单提交回调函数，接收登录信息。"
+    - name: onNavigateToRegister
+      type: function
+      description: "跳转到注册页面的回调函数。"
+    - name: onNavigateToForgotPassword
+      type: function
+      description: "跳转到忘记密码页面的回调函数。"
+    - name: isLoading
+      type: boolean
+      description: "是否正在加载状态。"
+    - name: errorMessage
+      type: string
+      description: "错误信息显示。"
+  state:
+    - loginId
+    - password
+    - validationErrors
+  dependencies:
+    - API-POST-Login
+  acceptanceCriteria:
+    - 组件应包含"账号登录"标题，选中时为蓝色。
+    - 应包含"用户名/邮箱/手机号"输入框，边框为灰色。
+    - 应包含"密码"输入框，输入内容显示为黑色圆点。
+    - 应包含橙色"立即登录"按钮，文字为白色。
+    - 应包含"注册12306账户"和"忘记密码？"链接。
+    - 应进行客户端表单验证。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-SmsVerificationModal
+  description: 短信验证弹窗组件，处理二次验证流程。
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗是否可见。"
+    - name: sessionToken
+      type: string
+      description: "登录会话令牌。"
+    - name: onClose
+      type: function
+      description: "关闭弹窗的回调函数。"
+    - name: onVerificationSuccess
+      type: function
+      description: "验证成功的回调函数。"
+  state:
+    - idCardLast4
+    - verificationCode
+    - isCodeSent
+    - countdown
+    - errorMessage
+    - isLoading
+  dependencies:
+    - UI-VerificationCodeInput
+    - API-POST-SendSmsCode
+    - API-POST-VerifySmsCode
+  acceptanceCriteria:
+    - 弹窗应出现在页面正中央，大小为登录页面的30%。
+    - 应包含浅灰色顶部导航栏，显示"选择验证方式"和关闭按钮。
+    - 应包含蓝色"短信验证"标题，居中显示。
+    - 应包含证件号后4位输入框，限制4位数字输入。
+    - 应包含验证码输入框和获取验证码按钮。
+    - 应包含橙色"确定"按钮。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-VerificationCodeInput
+  description: 验证码输入组件，处理验证码输入和获取。
+  properties:
+    - name: value
+      type: string
+      description: "验证码值。"
+    - name: onChange
+      type: function
+      description: "值变化回调函数。"
+    - name: onGetCode
+      type: function
+      description: "获取验证码回调函数。"
+    - name: canGetCode
+      type: boolean
+      description: "是否可以获取验证码。"
+    - name: countdown
+      type: number
+      description: "倒计时秒数。"
+  state:
+    - inputValue
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 输入框应限制6位数字输入。
+    - 获取验证码按钮应有三种状态：禁用、可用、倒计时。
+    - 倒计时状态应显示剩余秒数，从60秒开始。
+    - 按钮状态应根据证件号输入情况自动切换。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-TopNavigation
+  description: 顶部导航组件，包含Logo和欢迎信息。
+  properties:
+    - name: onLogoClick
+      type: function
+      description: "Logo点击回调函数，跳转到12306首页。"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 左侧应显示中国铁路12306官方Logo。
+    - Logo右侧应显示黑色"中国铁路12306"和灰色"12306 CHINA RAILWAY"。
+    - Logo区域右侧应显示黑色"欢迎登录12306"。
+    - Logo区域应可点击跳转到12306首页。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-BottomNavigation
+  description: 底部导航组件，包含友情链接和官方平台二维码。
+  properties:
+    - name: onLinkClick
+      type: function
+      description: "友情链接点击回调函数。"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 左侧应显示友情链接列表。
+    - 右侧应显示四个官方平台二维码。
+    - 二维码应包含"中国铁路官方微信"、"中国铁路官方微博"、"12306 公众号"、"铁路 12306"。
+    - 所有链接应可点击跳转到对应页面。
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建。"

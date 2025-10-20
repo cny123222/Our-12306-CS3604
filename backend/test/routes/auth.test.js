@@ -1,7 +1,18 @@
 const request = require('supertest');
 const app = require('../../src/app');
+const VerificationRepository = require('../../src/database/verificationRepository');
 
 describe('Authentication Routes', () => {
+  const verificationRepo = new VerificationRepository();
+
+  beforeEach(async () => {
+    // 清理验证码数据，确保每个测试都有干净的状态
+    try {
+      await verificationRepo.clearAllVerificationCodes();
+    } catch (error) {
+      console.log('Warning: Could not clear verification codes:', error.message);
+    }
+  });
   describe('POST /api/auth/login', () => {
     it('should successfully login with valid username and password', async () => {
       // 验收标准：用户名密码登录成功
