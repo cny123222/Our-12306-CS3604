@@ -37,6 +37,12 @@ const LoginPage: React.FC = () => {
     setShowSmsModal(false)
   }
 
+  const handleSmsVerificationSubmit = (data: { idCardLast4: string; code: string }) => {
+    console.log('SMS verification:', data)
+    setShowSmsModal(false)
+    // 实现短信验证登录逻辑
+  }
+
   return (
     <div className="login-page">
       <TopNavigation onLogoClick={() => console.log('Logo clicked')} />
@@ -85,10 +91,7 @@ const LoginPage: React.FC = () => {
       {showSmsModal && (
         <SmsVerificationModal
           onClose={handleCloseSmsModal}
-          onSubmit={(data) => {
-            console.log('SMS verification data:', data)
-            handleSmsVerificationSuccess()
-          }}
+          onSubmit={handleSmsVerificationSubmit}
         />
       )}
     </div>
