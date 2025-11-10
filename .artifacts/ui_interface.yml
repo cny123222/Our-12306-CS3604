@@ -1,6 +1,6 @@
 
 # 前端UI接口定义
-# 基于登录页需求文档生成
+# 基于登录页和注册页需求文档生成
 
 - type: Frontend
   id: UI-LoginPage
@@ -214,3 +214,286 @@
   changeLog:
     - date: "2025-01-25"
       description: "初始创建，加载状态指示器组件。"
+
+- type: Frontend
+  id: UI-RegisterPage
+  description: 注册主页面组件，包含完整的用户注册界面
+  properties:
+    - name: onRegistrationSuccess
+      type: function
+      description: "注册成功后的回调函数"
+    - name: onNavigateToLogin
+      type: function
+      description: "跳转到登录页面的回调函数"
+  state:
+    - currentStep  # 当前步骤：1-填写信息，2-验证
+    - registrationData
+    - error
+    - isLoading
+    - sessionId
+  dependencies:
+    - API-POST-Register
+    - UI-TopNavigation
+    - UI-RegisterForm
+    - UI-RegistrationVerification
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 整体页面背景为白色，分为上中下三部分布局
+    - 支持两步注册流程：信息填写和验证
+    - 集成顶部导航、注册表单和底部导航组件
+    - 处理注册状态管理和步骤切换
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，注册页面主容器组件。"
+
+- type: Frontend
+  id: UI-RegisterForm
+  description: 用户注册表单组件
+  properties:
+    - name: onSubmit
+      type: function
+      description: "表单提交处理函数"
+    - name: onNavigateToLogin
+      type: function
+      description: "跳转到登录页面的回调函数"
+  state:
+    - username
+    - usernameValidation  # { isValid, message, showCheckmark }
+    - password
+    - passwordValidation
+    - confirmPassword
+    - confirmPasswordValidation
+    - idCardType
+    - name
+    - nameValidation
+    - idCardNumber
+    - idCardNumberValidation
+    - discountType
+    - email
+    - emailValidation
+    - phone
+    - phoneValidation
+    - agreedToTerms
+    - errors
+    - isLoading
+  dependencies:
+    - API-POST-ValidateUsername
+    - API-POST-ValidatePassword
+    - API-POST-ValidateName
+    - API-POST-ValidateIdCard
+    - API-POST-ValidateEmail
+    - API-POST-ValidatePhone
+    - API-POST-Register
+    - API-GET-ServiceTerms
+    - API-GET-PrivacyPolicy
+  acceptanceCriteria:
+    - 显示所有必填字段，带"*"号标识
+    - 用户名输入框支持实时验证，显示绿色勾勾表示合法
+    - 密码输入框支持实时验证和格式检查
+    - 确认密码输入框验证与密码一致性
+    - 证件类型下拉选择框，支持8种证件类型
+    - 姓名输入框支持中英文及特殊字符验证
+    - 证件号码输入框支持18位验证
+    - 优惠类型下拉选择框，支持4种优惠类型
+    - 邮箱输入框为可选字段，支持格式验证
+    - 手机号码输入框限制11位，只允许数字
+    - 用户协议勾选框，支持超链接跳转
+    - "下一步"按钮，点击后进行完整性验证
+    - 实时显示各种验证错误信息
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，用户注册表单组件。"
+
+- type: Frontend
+  id: UI-SelectDropdown
+  description: 下拉选择框组件（用于证件类型和优惠类型选择）
+  properties:
+    - name: options
+      type: array
+      description: "选项列表"
+    - name: value
+      type: string
+      description: "当前选中的值"
+    - name: placeholder
+      type: string
+      description: "占位符文本"
+    - name: onChange
+      type: function
+      description: "值变化时的回调函数"
+    - name: disabled
+      type: boolean
+      description: "是否禁用"
+  state:
+    - isExpanded  # 是否展开选项
+    - selectedValue
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示当前选中的值或占位符
+    - 右侧显示向下箭头图标
+    - 点击箭头或选择框展开/收起选项列表
+    - 选择某个选项后自动收起并更新显示值
+    - 支持键盘导航（可选功能）
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，下拉选择框组件。"
+
+- type: Frontend
+  id: UI-ValidationInput
+  description: 带验证功能的输入框组件
+  properties:
+    - name: value
+      type: string
+      description: "输入值"
+    - name: onChange
+      type: function
+      description: "值变化时的回调函数"
+    - name: onValidate
+      type: function
+      description: "验证函数"
+    - name: placeholder
+      type: string
+      description: "占位符文本"
+    - name: type
+      type: string
+      description: "输入类型（text, password, email等）"
+    - name: maxLength
+      type: number
+      description: "最大长度限制"
+    - name: required
+      type: boolean
+      description: "是否必填"
+    - name: showCheckmark
+      type: boolean
+      description: "是否显示绿色勾勾"
+    - name: errorMessage
+      type: string
+      description: "错误信息"
+  state:
+    - localValue
+    - isValidating
+    - validationResult
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 支持实时输入和验证
+    - 必填字段左侧显示"*"号
+    - 验证通过时右侧显示绿色勾勾
+    - 验证失败时显示错误信息
+    - 支持不同类型的输入（文本、密码、邮箱等）
+    - 支持最大长度限制
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，带验证功能的输入框组件。"
+
+- type: Frontend
+  id: UI-RegistrationVerification
+  description: 注册验证界面组件
+  properties:
+    - name: sessionId
+      type: string
+      description: "注册会话ID"
+    - name: phone
+      type: string
+      description: "手机号码"
+    - name: email
+      type: string
+      description: "邮箱地址（可选）"
+    - name: onVerificationSuccess
+      type: function
+      description: "验证成功回调函数"
+  state:
+    - smsCode
+    - emailCode
+    - error
+    - isLoading
+    - showSuccessModal
+  dependencies:
+    - API-POST-SendRegistrationVerificationCode
+    - API-POST-CompleteRegistration
+    - UI-SuccessModal
+  acceptanceCriteria:
+    - 显示"验证"标题
+    - 包含短信验证码输入框（6位数字）
+    - 如果提供了邮箱，显示邮箱验证码输入框
+    - "立即注册"按钮（橙色背景，白色文字）
+    - 自动发送验证码到手机和邮箱
+    - 点击"立即注册"按钮后验证验证码
+    - 验证成功后显示成功弹窗
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，注册验证界面组件。"
+
+- type: Frontend
+  id: UI-SuccessModal
+  description: 注册成功弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: message
+      type: string
+      description: "成功消息内容"
+    - name: onConfirm
+      type: function
+      description: "确认按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 弹窗占据页面30%
+    - 居中显示
+    - 显示成功消息："恭喜您注册成功，请到登录页面进行登录！"
+    - 包含"确认"按钮
+    - 点击"确认"按钮关闭弹窗并跳转到登录页面
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，注册成功弹窗组件。"
+
+- type: Frontend
+  id: UI-ServiceTermsPage
+  description: 服务条款页面组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+  state:
+    - termsContent
+    - isLoading
+  dependencies:
+    - API-GET-ServiceTerms
+    - UI-TopNavigation
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 页面标题为"服务条款"
+    - 服务条款内容以文本形式展示
+    - 页面顶部导航栏与快捷页面入口均与首页一致
+    - 页面风格与首页一致
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，服务条款页面组件。"
+
+- type: Frontend
+  id: UI-PrivacyPolicyPage
+  description: 隐私权政策页面组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+  state:
+    - policyContent
+    - isLoading
+  dependencies:
+    - API-GET-PrivacyPolicy
+    - UI-TopNavigation
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 中文标题"隐私权政策"居中显示
+    - 英文标题"NOTICE"居中显示
+    - 隐私权政策内容以文本形式展示
+    - 页面顶部导航栏与快捷页面入口均与首页一致
+    - 页面风格与首页一致
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，隐私权政策页面组件。"

@@ -1,5 +1,5 @@
 # 后端API接口定义
-# 基于登录页需求文档生成
+# 基于登录页和注册页需求文档生成
 
 - type: Backend
   id: API-POST-Login
@@ -163,3 +163,332 @@
   changeLog:
     - date: "2025-01-25"
       description: "初始创建，支持忘记密码页面跳转。"
+
+- type: Backend
+  id: API-POST-ValidateUsername
+  route: POST /api/auth/validate-username
+  description: 验证用户名的合法性和可用性
+  input:
+    type: JSON
+    body:
+      username: string
+  output:
+    success:
+      statusCode: 200
+      body: { valid: true, message: "用户名可用" }
+    error:
+      - statusCode: 400
+        body: { valid: false, error: "用户名长度不能少于6个字符！" }
+      - statusCode: 400
+        body: { valid: false, error: "用户名长度不能超过30个字符！" }
+      - statusCode: 400
+        body: { valid: false, error: "用户名只能由字母、数字和_组成，须以字母开头！" }
+      - statusCode: 409
+        body: { valid: false, error: "该用户名已经被占用，请重新选择用户名！" }
+  dependencies:
+    - DB-FindUserByUsername
+  acceptanceCriteria:
+    - 验证用户名长度在6-30个字符之间
+    - 验证用户名以字母开头
+    - 验证用户名只包含字母、数字和下划线
+    - 验证用户名在数据库中的唯一性
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册页用户名实时验证。"
+
+- type: Backend
+  id: API-POST-ValidatePassword
+  route: POST /api/auth/validate-password
+  description: 验证密码的合法性
+  input:
+    type: JSON
+    body:
+      password: string
+  output:
+    success:
+      statusCode: 200
+      body: { valid: true, message: "密码格式正确" }
+    error:
+      - statusCode: 400
+        body: { valid: false, error: "密码长度不能少于6个字符！" }
+      - statusCode: 400
+        body: { valid: false, error: "格式错误，必须且只能包含字母、数字和下划线中的两种或两种以上！" }
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 验证密码长度大于等于6位
+    - 验证密码只包含字母、数字和下划线
+    - 验证密码必须包含字母、数字、下划线中的至少两种
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册页密码格式验证。"
+
+- type: Backend
+  id: API-POST-ValidateName
+  route: POST /api/auth/validate-name
+  description: 验证姓名的合法性
+  input:
+    type: JSON
+    body:
+      name: string
+  output:
+    success:
+      statusCode: 200
+      body: { valid: true, message: "姓名格式正确" }
+    error:
+      - statusCode: 400
+        body: { valid: false, error: "允许输入的字符串在3-30个字符之间！" }
+      - statusCode: 400
+        body: { valid: false, error: "请输入姓名！" }
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 验证姓名长度在3-30个字符之间（1个汉字算2个字符）
+    - 验证姓名只包含中英文字符、"."和单空格
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册页姓名格式验证。"
+
+- type: Backend
+  id: API-POST-ValidateIdCard
+  route: POST /api/auth/validate-idcard
+  description: 验证证件号码的合法性和可用性
+  input:
+    type: JSON
+    body:
+      idCardType: string
+      idCardNumber: string
+  output:
+    success:
+      statusCode: 200
+      body: { valid: true, message: "证件号码格式正确且可用" }
+    error:
+      - statusCode: 400
+        body: { valid: false, error: "请正确输入18位证件号码！" }
+      - statusCode: 400
+        body: { valid: false, error: "输入的证件编号中包含中文信息或特殊字符！" }
+      - statusCode: 409
+        body: { valid: false, error: "该证件号码已经被注册过，请确认是否您本人注册，"是"请使用原账号登录，"不是"请通过铁路12306App办理抢注或持该证件到就近的办理客运业务的铁路车站办理被抢注处理，完成后即可继续注册，或致电12306客服咨询。" }
+  dependencies:
+    - DB-FindUserByIdCardNumber
+  acceptanceCriteria:
+    - 验证证件号码长度为18个字符
+    - 验证证件号码只包含数字和字母
+    - 验证证件号码在数据库中的唯一性
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册页证件号码验证。"
+
+- type: Backend
+  id: API-POST-ValidateEmail
+  route: POST /api/auth/validate-email
+  description: 验证邮箱格式的合法性
+  input:
+    type: JSON
+    body:
+      email: string
+  output:
+    success:
+      statusCode: 200
+      body: { valid: true, message: "邮箱格式正确" }
+    error:
+      - statusCode: 400
+        body: { valid: false, error: "请输入有效的电子邮件地址！" }
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 验证邮箱包含"@"符号
+    - 验证邮箱包含有效域名
+    - 使用标准邮箱格式验证规则
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册页邮箱格式验证。"
+
+- type: Backend
+  id: API-POST-ValidatePhone
+  route: POST /api/auth/validate-phone
+  description: 验证手机号码的合法性
+  input:
+    type: JSON
+    body:
+      phone: string
+  output:
+    success:
+      statusCode: 200
+      body: { valid: true, message: "手机号码格式正确" }
+    error:
+      - statusCode: 400
+        body: { valid: false, error: "您输入的手机号不是有效格式！" }
+      - statusCode: 400
+        body: { valid: false, error: "请输入正确的手机号码！" }
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 验证手机号码长度为11位
+    - 验证手机号码只包含数字
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册页手机号码格式验证。"
+
+- type: Backend
+  id: API-POST-Register
+  route: POST /api/auth/register
+  description: 处理用户注册请求，创建新用户账户
+  input:
+    type: JSON
+    body:
+      username: string
+      password: string
+      confirmPassword: string
+      idCardType: string
+      name: string
+      idCardNumber: string
+      discountType: string
+      email: string  # 可选
+      phone: string
+      agreedToTerms: boolean
+  output:
+    success:
+      statusCode: 201
+      body: { message: "注册信息已提交，请进行验证", sessionId: "uuid" }
+    error:
+      - statusCode: 400
+        body: { error: "请填写完整信息！" }
+      - statusCode: 400
+        body: { error: "确认密码与密码不一致！" }
+      - statusCode: 400
+        body: { error: "请确认服务条款！" }
+      - statusCode: 400
+        body: { error: "请修正填写的信息！" }
+      - statusCode: 409
+        body: { error: "该用户名已经被占用，请重新选择用户名！" }
+      - statusCode: 409
+        body: { error: "该证件号码已经被注册过" }
+  dependencies:
+    - DB-FindUserByUsername
+    - DB-FindUserByIdCardNumber
+    - DB-FindUserByPhone
+    - DB-CreateVerificationCode
+    - DB-CreateEmailVerificationCode
+  acceptanceCriteria:
+    - 验证所有必填字段完整性
+    - 验证密码和确认密码一致性
+    - 验证用户协议已勾选
+    - 验证用户名、证件号码、手机号的唯一性
+    - 创建用户会话并返回sessionId用于后续验证
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持用户注册功能。"
+
+- type: Backend
+  id: API-POST-SendRegistrationVerificationCode
+  route: POST /api/auth/send-registration-verification-code
+  description: 发送注册验证码（短信和邮箱）
+  input:
+    type: JSON
+    body:
+      sessionId: string
+      phone: string
+      email: string  # 可选
+  output:
+    success:
+      statusCode: 200
+      body: { message: "验证码发送成功" }
+    error:
+      - statusCode: 400
+        body: { error: "会话无效或已过期" }
+      - statusCode: 429
+        body: { error: "请求验证码过于频繁，请稍后再试！" }
+  dependencies:
+    - DB-CreateVerificationCode
+    - DB-CreateEmailVerificationCode
+    - DB-CheckVerificationCodeFrequency
+  acceptanceCriteria:
+    - 验证会话ID的有效性
+    - 发送短信验证码到用户手机
+    - 如果提供了邮箱，同时发送邮箱验证码
+    - 检查发送频率限制
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册验证码发送功能。"
+
+- type: Backend
+  id: API-POST-CompleteRegistration
+  route: POST /api/auth/complete-registration
+  description: 验证验证码并完成用户注册
+  input:
+    type: JSON
+    body:
+      sessionId: string
+      smsCode: string
+      emailCode: string  # 可选
+  output:
+    success:
+      statusCode: 201
+      body: { message: "恭喜您注册成功，请到登录页面进行登录！" }
+    error:
+      - statusCode: 400
+        body: { error: "验证码错误或已过期" }
+      - statusCode: 400
+        body: { error: "会话无效或已过期" }
+      - statusCode: 500
+        body: { error: "注册失败，请稍后重试" }
+  dependencies:
+    - DB-VerifyCode
+    - DB-VerifyEmailCode
+    - DB-CreateUser
+  acceptanceCriteria:
+    - 验证会话ID的有效性
+    - 验证短信验证码
+    - 如果提供了邮箱验证码，同时验证邮箱验证码
+    - 验证通过后创建用户记录
+    - 清理临时会话数据
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册验证和用户创建功能。"
+
+- type: Backend
+  id: API-GET-ServiceTerms
+  route: GET /api/terms/service-terms
+  description: 获取《中国铁路客户服务中心网站服务条款》内容
+  input:
+    type: Query
+    params: {}
+  output:
+    success:
+      statusCode: 200
+      body: 
+        title: "服务条款"
+        content: "string"
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 返回服务条款的完整内容
+    - 支持页面跳转和文本显示
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持服务条款页面访问。"
+
+- type: Backend
+  id: API-GET-PrivacyPolicy
+  route: GET /api/terms/privacy-policy
+  description: 获取《隐私权政策》内容
+  input:
+    type: Query
+    params: {}
+  output:
+    success:
+      statusCode: 200
+      body: 
+        title: "隐私权政策"
+        englishTitle: "NOTICE"
+        content: "string"
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 返回隐私权政策的完整内容
+    - 支持中英文标题显示
+    - 支持页面跳转和文本显示
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持隐私权政策页面访问。"

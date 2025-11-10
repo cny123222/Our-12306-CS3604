@@ -1,5 +1,5 @@
 # 数据库操作接口定义
-# 基于登录页需求文档生成
+# 基于登录页和注册页需求文档生成
 
 - type: Database
   id: DB-FindUserByUsername
@@ -110,3 +110,59 @@
   changeLog:
     - date: "2025-01-25"
       description: "初始创建，支持用户登录状态管理。"
+
+- type: Database
+  id: DB-FindUserByIdCardNumber
+  description: 根据证件类型和证件号码查找用户信息
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 能够根据证件类型和证件号码精确匹配查找用户记录
+    - 返回用户的完整信息
+    - 如果用户不存在，返回空结果
+    - 用于检测证件号码是否已被注册
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持注册页证件号码唯一性验证。"
+
+- type: Database
+  id: DB-CreateUser
+  description: 在数据库中创建新用户记录
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 成功执行后，users表中会增加一条新记录
+    - 如果用户名、手机号或证件号已存在，操作应失败并抛出唯一性约束错误
+    - 密码应以加密形式存储（如使用bcrypt）
+    - 记录创建时间和初始状态
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持用户注册功能。"
+
+- type: Database
+  id: DB-CreateEmailVerificationCode
+  description: 创建并存储邮箱验证码记录
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 生成6位数字验证码
+    - 存储验证码、邮箱地址、创建时间、过期时间
+    - 设置验证码有效期（通常5-10分钟）
+    - 记录发送状态和发送时间
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持邮箱验证码生成和存储。"
+
+- type: Database
+  id: DB-VerifyEmailCode
+  description: 验证邮箱验证码是否正确且未过期
+  dependencies:
+    - DB-CreateEmailVerificationCode
+  acceptanceCriteria:
+    - 根据邮箱地址和验证码查找记录
+    - 检查验证码是否匹配
+    - 检查验证码是否在有效期内
+    - 验证成功后标记验证码为已使用
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，支持邮箱验证码验证功能。"
