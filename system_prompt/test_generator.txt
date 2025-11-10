@@ -69,6 +69,23 @@
 
 #### 5.1 UI元素逐一检查测试生成
 **必须为每个界面生成完整的UI元素检查测试：**
+**生成规则如下：**
+* **遍历全部界面定义**：为每个界面或组件都必须生成一份测试文件。  
+   - 文件命名规范：  
+     - 若界面名为 `LoginPage` → 生成 `frontend/test/pages/LoginPage_uiTest.js`  
+     - 若组件名为 `TicketQueryForm` → 生成 `frontend/test/components/TicketQueryForm_uiTest.js`  
+     - 若无明确类型，可生成在 `frontend/test/ui/<InterfaceName>.uiTest.js` 中  
+   - 请根据界面/组件类型自动判断文件路径，**不要固定写死文件名**。
+* **每个文件都要包含：**
+   - `describe('<界面名> UI元素检查', () => { ... })`  
+   - 每个元素至少包含一个测试 (`test(...)`) 检查：
+     - 元素是否渲染：`expect(element).toBeInTheDocument()`
+     - 若有 label/placeholder：检查文本一致性  
+     - 若可交互（input/button）：检查可点击/可输入性
+* **状态检查**：
+   - 如果元素定义中含有 `states`（如 disabled, loading, error），请严格按照5.2状态生成模板生成额外的状态测试；
+   - 否则仍要输出一个 `TODO` 占位测试。
+* **示例输出格式（模型应仿照生成）**：
 
 ```javascript
 // ui-element-tests.js - 自动生成UI元素检查测试
@@ -146,9 +163,19 @@ export const generateUIStateTests = (interfaceName, elements) => {
 ```
 
 ### 6. 生成需求逐条验证测试
+这一阶段的目标是：**让需求文档中出现的每一条业务需求（REQ-xxx）都有一条可以“从用户视角走完一遍”的测试场景**，用来验证该需求是否真正被实现。
 
-#### 6.1 需求映射测试生成
-**为需求文档中的每个需求生成对应的验证测试：**
+#### 6.1 需求提取
+- 从 `requirement.md` 或 `requirement_new.md` 中解析所有需求编号（如 `REQ-001`、`REQ-002` …）及其文本描述。
+- 每个需求都必须生成至少一个测试场景，不能跳过。
+- 若需求中包含多个子行为（例如“获取验证码”+“倒计时”+“登录成功”），应拆成多个测试，但仍然归在该需求下。
+
+#### 6.2 用户场景化测试生成
+- 测试必须以“用户操作顺序”为主线，不能直接调用内部函数或直接 mock 成功。
+- 场景结构固定为 5 段：**前置 (Given) → 操作 (When) → 期望 (Then) → 异常/边界 → 备注**
+- 从需求文本中推导页面路径、要操作的元素、要输入的业务数据、预期的业务结果。
+
+示例模板（模型生成时应按此结构展开）：
 
 ```javascript
 // requirement-validation-tests.js
@@ -189,8 +216,11 @@ describe('需求文档逐条验证', () => {
 });
 ```
 
-#### 6.2 需求覆盖率检查
+#### 6.3 需求覆盖率检查
 **生成需求覆盖率检查脚本：**
+**要求：**
+* 如果有未覆盖的 REQ，必须在本次输出中显式打印出它们的 ID 和描述，不能静默忽略。
+* 覆盖率低于 100% 时，后续 Agent（integration tester）可以基于该报告补充更高层的端到端测试。
 
 ```javascript
 // requirement-coverage-checker.js
