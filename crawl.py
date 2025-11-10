@@ -89,7 +89,7 @@ def save_crawl_response(resp, out_dir="browsertool/evidence/12306_crawl"):
 
 
 if __name__ == "__main__":
-    api_key = os.getenv("FIRECRAWL_API_KEY", "fc-d391212e98864253816f4b5677755622")
+    api_key = os.getenv("FIRECRAWL_API_KEY", "fc-xxxxxxxx")
     firecrawl = Firecrawl(api_key=api_key)
 
     start_url = "https://www.12306.cn/index/"
