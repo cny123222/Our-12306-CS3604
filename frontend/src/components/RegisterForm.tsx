@@ -3,18 +3,27 @@
  * 源文件：frontend/src/components/RegisterForm.tsx
  * 测试文件：frontend/test/components/RegisterForm.test.tsx
  * 
- * 说明：这是代码骨架，仅用于让测试可执行且失败
+ * 说明：用户注册表单组件
  */
 
 import React, { useState } from 'react';
+import axios from 'axios';
+import SelectDropdown from './SelectDropdown';
+import './RegisterForm.css';
 
 interface RegisterFormProps {
   onSubmit: (data: any) => void;
   onNavigateToLogin: () => void;
 }
 
+interface FieldValidation {
+  isValid: boolean;
+  errorMessage: string;
+  showCheckmark: boolean;
+}
+
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onNavigateToLogin }) => {
-  // TODO: 实现所有状态管理
+  // 表单数据状态
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,135 +35,455 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onNavigateToLogin
   const [phone, setPhone] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // TODO: 实现所有验证逻辑
-  const handleUsernameValidation = async () => {
-    // 验证用户名
+  // 验证状态
+  const [usernameValidation, setUsernameValidation] = useState<FieldValidation>({ isValid: false, errorMessage: '', showCheckmark: false });
+  const [passwordValidation, setPasswordValidation] = useState<FieldValidation>({ isValid: false, errorMessage: '', showCheckmark: false });
+  const [confirmPasswordValidation, setConfirmPasswordValidation] = useState<FieldValidation>({ isValid: false, errorMessage: '', showCheckmark: false });
+  const [nameValidation, setNameValidation] = useState<FieldValidation>({ isValid: false, errorMessage: '', showCheckmark: false });
+  const [idCardValidation, setIdCardValidation] = useState<FieldValidation>({ isValid: false, errorMessage: '', showCheckmark: false });
+  const [emailValidation, setEmailValidation] = useState<FieldValidation>({ isValid: false, errorMessage: '', showCheckmark: false });
+  const [phoneValidation, setPhoneValidation] = useState<FieldValidation>({ isValid: false, errorMessage: '', showCheckmark: false });
+  const [generalError, setGeneralError] = useState('');
+
+  // 证件类型选项
+  const idCardTypes = [
+    '居民身份证',
+    '港澳居民居住证',
+    '台湾居民居住证',
+    '外国人永久居留身份证',
+    '外国护照',
+    '中国护照',
+    '港澳居民来往内地通行证',
+    '台湾居民来往大陆通行证'
+  ];
+
+  // 优惠类型选项
+  const discountTypes = ['成人', '儿童', '学生', '残疾军人'];
+
+  // 用户名验证
+  const validateUsername = async (value: string) => {
+    if (!value) {
+      setUsernameValidation({ isValid: false, errorMessage: '', showCheckmark: false });
+      return;
+    }
+
+    if (value.length < 6) {
+      setUsernameValidation({ isValid: false, errorMessage: '用户名长度不能少于6个字符！', showCheckmark: false });
+      return;
+    }
+
+    if (value.length > 30) {
+      setUsernameValidation({ isValid: false, errorMessage: '用户名长度不能超过30个字符！', showCheckmark: false });
+      return;
+    }
+
+    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+    if (!usernameRegex.test(value)) {
+      setUsernameValidation({ isValid: false, errorMessage: '用户名只能由字母、数字和_组成，须以字母开头！', showCheckmark: false });
+      return;
+    }
+
+    // 调用API检查用户名是否已存在
+    try {
+      const response = await axios.post('/api/auth/validate-username', { username: value });
+      if (response.data.valid) {
+        setUsernameValidation({ isValid: true, errorMessage: '', showCheckmark: true });
+      } else {
+        setUsernameValidation({ isValid: false, errorMessage: response.data.error, showCheckmark: false });
+      }
+    } catch (error) {
+      setUsernameValidation({ isValid: false, errorMessage: '验证失败，请稍后重试', showCheckmark: false });
+    }
   };
 
-  const handlePasswordValidation = async () => {
-    // 验证密码
+  // 密码验证
+  const validatePassword = async (value: string) => {
+    if (!value) {
+      setPasswordValidation({ isValid: false, errorMessage: '', showCheckmark: false });
+      return;
+    }
+
+    if (value.length < 6) {
+      setPasswordValidation({ isValid: false, errorMessage: '密码长度不能少于6个字符！', showCheckmark: false });
+      return;
+    }
+
+    const passwordRegex = /^[a-zA-Z0-9_]+$/;
+    if (!passwordRegex.test(value)) {
+      setPasswordValidation({ isValid: false, errorMessage: '格式错误，必须且只能包含字母、数字和下划线中的两种或两种以上！', showCheckmark: false });
+      return;
+    }
+
+    const hasLetter = /[a-zA-Z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasUnderscore = /_/.test(value);
+    const typeCount = (hasLetter ? 1 : 0) + (hasNumber ? 1 : 0) + (hasUnderscore ? 1 : 0);
+
+    if (typeCount < 2) {
+      setPasswordValidation({ isValid: false, errorMessage: '格式错误，必须且只能包含字母、数字和下划线中的两种或两种以上！', showCheckmark: false });
+      return;
+    }
+
+    setPasswordValidation({ isValid: true, errorMessage: '', showCheckmark: true });
   };
 
+  // 确认密码验证
+  const validateConfirmPassword = (value: string) => {
+    if (!value) {
+      setConfirmPasswordValidation({ isValid: false, errorMessage: '', showCheckmark: false });
+      return;
+    }
+
+    if (value !== password) {
+      setConfirmPasswordValidation({ isValid: false, errorMessage: '确认密码与密码不一致！', showCheckmark: false });
+      return;
+    }
+
+    setConfirmPasswordValidation({ isValid: true, errorMessage: '', showCheckmark: true });
+  };
+
+  // 姓名验证
+  const validateName = (value: string) => {
+    if (!value) {
+      setNameValidation({ isValid: false, errorMessage: '', showCheckmark: false });
+      return;
+    }
+
+    // 计算字符长度（1个汉字算2个字符）
+    const charLength = value.split('').reduce((len, char) => {
+      return len + (/[\u4e00-\u9fa5]/.test(char) ? 2 : 1);
+    }, 0);
+
+    if (charLength < 3 || charLength > 30) {
+      setNameValidation({ isValid: false, errorMessage: '允许输入的字符串在3-30个字符之间！', showCheckmark: false });
+      return;
+    }
+
+    // 验证只包含中英文字符、点和单空格
+    const nameRegex = /^[\u4e00-\u9fa5a-zA-Z.\s]+$/;
+    if (!nameRegex.test(value)) {
+      setNameValidation({ isValid: false, errorMessage: '请输入姓名！', showCheckmark: false });
+      return;
+    }
+
+    setNameValidation({ isValid: true, errorMessage: '', showCheckmark: true });
+  };
+
+  // 证件号码验证
+  const validateIdCard = async (value: string) => {
+    if (!value) {
+      setIdCardValidation({ isValid: false, errorMessage: '', showCheckmark: false });
+      return;
+    }
+
+    // 先验证格式，后验证长度
+    const idCardRegex = /^[a-zA-Z0-9]+$/;
+    if (!idCardRegex.test(value)) {
+      setIdCardValidation({ isValid: false, errorMessage: '输入的证件编号中包含中文信息或特殊字符！', showCheckmark: false });
+      return;
+    }
+
+    if (value.length !== 18) {
+      setIdCardValidation({ isValid: false, errorMessage: '请正确输入18位证件号码！', showCheckmark: false });
+      return;
+    }
+
+    // 调用API检查证件号是否已注册
+    try {
+      const response = await axios.post('/api/auth/validate-idcard', { 
+        idCardType: idCardType,
+        idCardNumber: value 
+      });
+      if (response.data.valid) {
+        setIdCardValidation({ isValid: true, errorMessage: '', showCheckmark: true });
+      } else {
+        setIdCardValidation({ isValid: false, errorMessage: response.data.error, showCheckmark: false });
+      }
+    } catch (error) {
+      setIdCardValidation({ isValid: false, errorMessage: '验证失败，请稍后重试', showCheckmark: false });
+    }
+  };
+
+  // 邮箱验证
+  const validateEmail = (value: string) => {
+    if (!value) {
+      setEmailValidation({ isValid: false, errorMessage: '', showCheckmark: false });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      setEmailValidation({ isValid: false, errorMessage: '请输入有效的电子邮件地址！', showCheckmark: false });
+      return;
+    }
+
+    setEmailValidation({ isValid: true, errorMessage: '', showCheckmark: false });
+  };
+
+  // 手机号验证
+  const validatePhone = (value: string) => {
+    if (!value) {
+      setPhoneValidation({ isValid: false, errorMessage: '', showCheckmark: false });
+      return;
+    }
+
+    // 先检查是否包含非数字字符
+    const phoneRegex = /^[0-9]+$/;
+    if (!phoneRegex.test(value)) {
+      setPhoneValidation({ isValid: false, errorMessage: '请输入正确的手机号码！', showCheckmark: false });
+      return;
+    }
+
+    if (value.length !== 11) {
+      setPhoneValidation({ isValid: false, errorMessage: '您输入的手机号不是有效格式！', showCheckmark: false });
+      return;
+    }
+
+    setPhoneValidation({ isValid: true, errorMessage: '', showCheckmark: false });
+  };
+
+  // 手机号输入处理（限制11位）
+  const handlePhoneChange = (value: string) => {
+    // 限制长度为11位，保留所有字符（包括非数字）以便验证能检测错误
+    setPhone(value.slice(0, 11));
+  };
+
+  // 表单提交
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 实现提交逻辑
+    setGeneralError('');
+
+    // 检查用户协议
+    if (!agreedToTerms) {
+      setGeneralError('请确认服务条款！');
+      return;
+    }
+
+    // 检查必填字段
+    if (!username || !password || !confirmPassword || !idCardType || !name || !idCardNumber || !discountType || !phone) {
+      setGeneralError('请填写完整信息！');
+      return;
+    }
+
+    // 提交数据
+    const formData = {
+      username,
+      password,
+      confirmPassword,
+      idCardType,
+      name,
+      idCardNumber,
+      discountType,
+      email,
+      phone,
+      agreedToTerms
+    };
+
+    onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {/* TODO: 实现完整的表单UI */}
-      <div>
-        <label>*用户名</label>
-        <input 
-          type="text" 
-          placeholder="请输入用户名"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
+    <div className="register-form-container">
+      <form className="register-form" onSubmit={handleSubmit}>
+        {generalError && (
+          <div className="general-error-message">{generalError}</div>
+        )}
 
-      <div>
-        <label>*登录密码</label>
-        <input 
-          type="password" 
-          placeholder="请输入登录密码"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
+        {/* 用户名 */}
+        <div className="form-row">
+          <label className="form-label">
+            *用户名
+          </label>
+          <div className="form-input-wrapper">
+            <input
+              className={`form-input ${usernameValidation.errorMessage ? 'error' : ''}`}
+              type="text"
+              placeholder="请输入用户名"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              onBlur={() => validateUsername(username)}
+            />
+            {usernameValidation.showCheckmark && (
+              <span className="input-checkmark valid" data-testid="username-checkmark">✓</span>
+            )}
+          </div>
+          <div className="form-error-message">{usernameValidation.errorMessage}</div>
+        </div>
 
-      <div>
-        <label>*确认密码</label>
-        <input 
-          type="password" 
-          placeholder="请确认登录密码"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-      </div>
+        {/* 登录密码 */}
+        <div className="form-row">
+          <label className="form-label">
+            *登录密码
+          </label>
+          <div className="form-input-wrapper">
+            <input
+              className={`form-input ${passwordValidation.errorMessage ? 'error' : ''}`}
+              type="password"
+              placeholder="请输入登录密码"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onBlur={() => validatePassword(password)}
+            />
+            {passwordValidation.showCheckmark && (
+              <span className="input-checkmark valid" data-testid="password-checkmark">✓</span>
+            )}
+          </div>
+          <div className="form-error-message">{passwordValidation.errorMessage}</div>
+        </div>
 
-      <div>
-        <label>*证件类型</label>
-        <select data-testid="id-card-type-dropdown">
-          <option>请选择证件类型</option>
-          <option>居民身份证</option>
-          <option>港澳居民居住证</option>
-          <option>台湾居民居住证</option>
-          <option>外国人永久居留身份证</option>
-          <option>外国护照</option>
-          <option>中国护照</option>
-          <option>港澳居民来往内地通行证</option>
-          <option>台湾居民来往大陆通行证</option>
-        </select>
-      </div>
+        {/* 确认密码 */}
+        <div className="form-row">
+          <label className="form-label">
+            *确认密码
+          </label>
+          <div className="form-input-wrapper">
+            <input
+              className={`form-input ${confirmPasswordValidation.errorMessage ? 'error' : ''}`}
+              type="password"
+              placeholder="请确认登录密码"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onBlur={() => validateConfirmPassword(confirmPassword)}
+            />
+            {confirmPasswordValidation.showCheckmark && (
+              <span className="input-checkmark valid" data-testid="confirm-password-checkmark">✓</span>
+            )}
+          </div>
+          <div className="form-error-message">{confirmPasswordValidation.errorMessage}</div>
+        </div>
 
-      <div>
-        <label>*姓名</label>
-        <input 
-          type="text" 
-          placeholder="请输入姓名"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+        {/* 证件类型 */}
+        <div className="form-row">
+          <label className="form-label">
+            *证件类型
+          </label>
+          <SelectDropdown
+            options={idCardTypes}
+            value={idCardType}
+            placeholder="请选择证件类型"
+            onChange={setIdCardType}
+            testId="id-card-type-dropdown"
+          />
+        </div>
 
-      <div>
-        <label>*证件号码</label>
-        <input 
-          type="text" 
-          placeholder="请输入证件号码"
-          value={idCardNumber}
-          onChange={(e) => setIdCardNumber(e.target.value)}
-        />
-      </div>
+        {/* 姓名 */}
+        <div className="form-row">
+          <label className="form-label">
+            *姓名
+          </label>
+          <div className="form-input-wrapper">
+            <input
+              className={`form-input ${nameValidation.errorMessage ? 'error' : ''}`}
+              type="text"
+              placeholder="请输入姓名"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => validateName(name)}
+            />
+            {nameValidation.showCheckmark && (
+              <span className="input-checkmark valid" data-testid="name-checkmark">✓</span>
+            )}
+          </div>
+          <div className="form-error-message">{nameValidation.errorMessage}</div>
+        </div>
 
-      <div>
-        <label>*优惠类型</label>
-        <select data-testid="discount-type-dropdown">
-          <option>请选择优惠等级</option>
-          <option>成人</option>
-          <option>儿童</option>
-          <option>学生</option>
-          <option>残疾军人</option>
-        </select>
-      </div>
+        {/* 证件号码 */}
+        <div className="form-row">
+          <label className="form-label">
+            *证件号码
+          </label>
+          <div className="form-input-wrapper">
+            <input
+              className={`form-input ${idCardValidation.errorMessage ? 'error' : ''}`}
+              type="text"
+              placeholder="请输入证件号码"
+              value={idCardNumber}
+              onChange={(e) => setIdCardNumber(e.target.value)}
+              onBlur={() => validateIdCard(idCardNumber)}
+            />
+            {idCardValidation.showCheckmark && (
+              <span className="input-checkmark valid" data-testid="id-card-checkmark">✓</span>
+            )}
+          </div>
+          <div className="form-error-message">{idCardValidation.errorMessage}</div>
+        </div>
 
-      <div>
-        <label>邮箱</label>
-        <input 
-          type="email" 
-          placeholder="请输入邮箱"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
+        {/* 优惠类型 */}
+        <div className="form-row">
+          <label className="form-label">
+            *优惠类型
+          </label>
+          <SelectDropdown
+            options={discountTypes}
+            value={discountType}
+            placeholder="请选择优惠等级"
+            onChange={setDiscountType}
+            testId="discount-type-dropdown"
+          />
+        </div>
 
-      <div>
-        <label>*手机号码</label>
-        <input 
-          type="tel" 
-          placeholder="请输入手机号"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          maxLength={11}
-        />
-      </div>
+        {/* 邮箱 */}
+        <div className="form-row">
+          <label className="form-label">邮箱</label>
+          <div className="form-input-wrapper">
+            <input
+              className={`form-input ${emailValidation.errorMessage ? 'error' : ''}`}
+              type="email"
+              placeholder="请输入邮箱"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => validateEmail(email)}
+            />
+          </div>
+          <div className="form-error-message">{emailValidation.errorMessage}</div>
+        </div>
 
-      <div>
-        <input 
-          type="checkbox"
-          checked={agreedToTerms}
-          onChange={(e) => setAgreedToTerms(e.target.checked)}
-        />
-        <span>我已阅读并同意遵守 </span>
-        <a href="/service-terms">《中国铁路客户服务中心网站服务条款》</a>
-        <a href="/privacy-policy">《隐私权政策》</a>
-      </div>
+        {/* 手机号码 */}
+        <div className="form-row">
+          <label className="form-label">
+            *手机号码
+          </label>
+          <div className="form-input-wrapper">
+            <input
+              className={`form-input ${phoneValidation.errorMessage ? 'error' : ''}`}
+              type="tel"
+              placeholder="请输入手机号"
+              value={phone}
+              onChange={(e) => handlePhoneChange(e.target.value)}
+              onBlur={() => validatePhone(phone)}
+              maxLength={11}
+            />
+          </div>
+          <div className="form-error-message">{phoneValidation.errorMessage}</div>
+        </div>
 
-      <button type="submit">下一步</button>
-    </form>
+        {/* 用户协议 */}
+        <div className="agreement-section">
+          <input
+            type="checkbox"
+            className="agreement-checkbox"
+            checked={agreedToTerms}
+            onChange={(e) => setAgreedToTerms(e.target.checked)}
+          />
+          <span className="agreement-text">
+            我已阅读并同意遵守{' '}
+            <a href="/service-terms" className="agreement-link" onClick={(e) => e.preventDefault()}>
+              《中国铁路客户服务中心网站服务条款》
+            </a>
+            {' '}
+            <a href="/privacy-policy" className="agreement-link" onClick={(e) => e.preventDefault()}>
+              《隐私权政策》
+            </a>
+          </span>
+        </div>
+
+        {/* 提交按钮 */}
+        <button type="submit" className="submit-button">
+          下一步
+        </button>
+      </form>
+    </div>
   );
 };
 
 export default RegisterForm;
-

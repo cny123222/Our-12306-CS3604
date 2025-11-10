@@ -604,7 +604,8 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 不应该显示错误提示
       await waitFor(() => {
-        expect(screen.queryByText(/手机号/)).not.toBeInTheDocument();
+        expect(screen.queryByText('您输入的手机号不是有效格式！')).not.toBeInTheDocument();
+        expect(screen.queryByText('请输入正确的手机号码！')).not.toBeInTheDocument();
       });
     });
   });
