@@ -1,0 +1,216 @@
+
+# 前端UI接口定义
+# 基于登录页需求文档生成
+
+- type: Frontend
+  id: UI-LoginPage
+  description: 登录主页面组件，包含完整的登录界面布局
+  properties:
+    - name: onLoginSuccess
+      type: function
+      description: "登录成功后的回调函数"
+    - name: onNavigateToRegister
+      type: function
+      description: "跳转到注册页面的回调函数"
+    - name: onNavigateToForgotPassword
+      type: function
+      description: "跳转到忘记密码页面的回调函数"
+  state:
+    - identifier  # 用户名/邮箱/手机号
+    - password
+    - error
+    - isLoading
+    - showSmsModal
+  dependencies:
+    - API-POST-Login
+    - UI-TopNavigation
+    - UI-LoginForm
+    - UI-BottomNavigation
+    - UI-SmsVerificationModal
+  acceptanceCriteria:
+    - 整体页面背景为白色，分为上中下三部分布局
+    - 集成顶部导航、登录表单和底部导航组件
+    - 处理登录状态管理和错误显示
+    - 支持短信验证弹窗的显示和隐藏
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，登录页面主容器组件。"
+
+- type: Frontend
+  id: UI-TopNavigation
+  description: 顶部导航区域组件
+  properties:
+    - name: onLogoClick
+      type: function
+      description: "Logo点击事件处理函数"
+  state:
+    - none
+  dependencies:
+    - API-GET-HomePage
+  acceptanceCriteria:
+    - 左侧显示Logo区域，使用图片"登录页-顶部导航区域-Logo区域.png"
+    - Logo包含中国铁路12306官方标识和文字
+    - Logo右侧显示"欢迎登录12306"文字（黑色）
+    - Logo点击可跳转到12306首页
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，顶部导航组件。"
+
+- type: Frontend
+  id: UI-LoginForm
+  description: 登录表单组件
+  properties:
+    - name: onSubmit
+      type: function
+      description: "表单提交处理函数"
+    - name: onRegisterClick
+      type: function
+      description: "注册链接点击处理函数"
+    - name: onForgotPasswordClick
+      type: function
+      description: "忘记密码链接点击处理函数"
+    - name: identifier
+      type: string
+      description: "用户名/邮箱/手机号输入值"
+    - name: password
+      type: string
+      description: "密码输入值"
+    - name: error
+      type: string
+      description: "错误信息"
+    - name: isLoading
+      type: boolean
+      description: "加载状态"
+  state:
+    - localIdentifier
+    - localPassword
+    - validationErrors
+  dependencies:
+    - API-POST-Login
+  acceptanceCriteria:
+    - 背景使用推广图片"登录页-登录表单区域-推广背景.png"
+    - 表单位于页面中间偏右位置
+    - 包含"账号登录"标题（蓝色）
+    - "用户名/邮箱/手机号"输入框（灰色边框，黑色文字）
+    - "密码"输入框（灰色边框，密码显示为黑色圆点）
+    - "立即登录"按钮（橙色背景，白色文字）
+    - "注册12306账户"链接（蓝色文字）
+    - "忘记密码？"链接（灰色文字）
+    - 支持各种输入验证和错误提示
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，登录表单组件。"
+
+- type: Frontend
+  id: UI-BottomNavigation
+  description: 底部导航区域组件
+  properties:
+    - name: onFriendLinkClick
+      type: function
+      description: "友情链接点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 左侧显示友情链接区域
+    - 右侧显示四个官方平台二维码
+    - 使用指定的二维码图片：
+      - "中国铁路官方微信二维码.png"
+      - "中国铁路官方微博二维码.png"
+      - "12306公众号二维码.png"
+      - "铁路12306二维码.png"
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，底部导航组件。"
+
+- type: Frontend
+  id: UI-SmsVerificationModal
+  description: 短信验证弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: onClose
+      type: function
+      description: "关闭弹窗处理函数"
+    - name: onVerificationSuccess
+      type: function
+      description: "验证成功回调函数"
+    - name: sessionId
+      type: string
+      description: "登录会话ID"
+  state:
+    - idCardLast4Digits
+    - verificationCode
+    - error
+    - isLoading
+    - buttonState  # 获取验证码按钮状态：1-禁用，2-可点击，3-倒计时
+    - countdown
+  dependencies:
+    - API-POST-SendVerificationCode
+    - API-POST-VerifyLogin
+  acceptanceCriteria:
+    - 弹窗位于页面正中央，大小为登录页面的30%
+    - 顶部导航栏为浅灰色，包含"选择验证方式"文字和"x"关闭按钮
+    - 内容区包含：
+      - "短信验证"标题（蓝色，居中）
+      - "请输入登录绑定的证件号后4位"输入框（最多4位）
+      - "输入验证码"输入框（最多6位）和"获取验证码"按钮
+      - "确定"按钮（橙色背景，白色文字）
+    - "获取验证码"按钮三种状态切换
+    - 60秒倒计时功能
+    - 完整的输入验证和错误提示
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，短信验证弹窗组件。"
+
+- type: Frontend
+  id: UI-ErrorMessage
+  description: 错误信息显示组件
+  properties:
+    - name: message
+      type: string
+      description: "错误信息内容"
+    - name: type
+      type: string
+      description: "错误类型（error, warning, info）"
+    - name: onDismiss
+      type: function
+      description: "关闭错误信息处理函数"
+  state:
+    - isVisible
+    - autoHideTimer
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 在相应位置显示错误信息
+    - 支持不同类型的消息样式
+    - 支持自动隐藏和手动关闭
+    - 在登录表单中显示在"立即登录"按钮上方
+    - 在短信验证弹窗中显示在"确定"按钮上方
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，错误信息显示组件。"
+
+- type: Frontend
+  id: UI-LoadingSpinner
+  description: 加载状态指示器组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "是否显示加载状态"
+    - name: size
+      type: string
+      description: "加载器大小（small, medium, large）"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 在API请求期间显示加载状态
+    - 支持不同大小的加载器
+    - 在加载期间禁用相关按钮和输入框
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，加载状态指示器组件。"
