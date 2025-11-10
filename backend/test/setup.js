@@ -1,86 +1,45 @@
 const path = require('path')
 const fs = require('fs')
-const databaseConfig = require('../src/config/database')
 
 // 设置测试环境变量
 process.env.NODE_ENV = 'test'
 process.env.TEST_DB_PATH = path.join(__dirname, 'test.db')
+process.env.DB_PATH = path.join(__dirname, 'test.db')
 process.env.JWT_SECRET = 'test-jwt-secret-key'
 process.env.JWT_EXPIRES_IN = '1h'
 
-// 全局测试设置
+// 清理旧的测试数据库
+const testDbPath = process.env.TEST_DB_PATH
+if (fs.existsSync(testDbPath)) {
+  fs.unlinkSync(testDbPath)
+}
+
+// 导入dbService以初始化数据库
+const dbService = require('../src/services/dbService')
+
+// 给数据库一点时间来初始化
 beforeAll(async () => {
-  // 初始化测试数据库
-  await databaseConfig.initDatabase(true)
+  // 等待数据库初始化完成
+  await new Promise(resolve => setTimeout(resolve, 100))
 })
 
+// 全局测试设置
 afterAll(async () => {
-  // 清理测试数据库
-  await databaseConfig.closeDatabase(true)
+  // 关闭数据库连接
+  dbService.close()
+  
+  // 给数据库一点时间来关闭
+  await new Promise(resolve => setTimeout(resolve, 100))
   
   // 删除测试数据库文件
-  const testDbPath = process.env.TEST_DB_PATH
   if (fs.existsSync(testDbPath)) {
-    fs.unlinkSync(testDbPath)
-  }
-})
-
-beforeEach(async () => {
-  // 每个测试前清理数据
-  const db = databaseConfig.getDatabase(true)
-  if (db) {
-    await db.run('DELETE FROM sessions')
-    await db.run('DELETE FROM sms_codes')
-    
-    // 重新插入基础测试数据
-    await databaseConfig.insertTestData(db)
-  }
-})
-
-// 全局测试工具函数
-global.testUtils = {
-  createTestUser: async (userData = {}) => {
-    const db = databaseConfig.getDatabase(true)
-    const defaultUser = {
-      username: 'testuser' + Date.now(),
-      email: `test${Date.now()}@example.com`,
-      phone: `138${Date.now().toString().slice(-8)}`,
-      password_hash: 'hashedpassword',
-      real_name: '测试用户',
-      id_card: '110101199001011234'
-    }
-    
-    const user = { ...defaultUser, ...userData }
-    
-    const result = await db.run(`
-      INSERT INTO users (username, email, phone, password_hash, real_name, id_card)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `, [user.username, user.email, user.phone, user.password_hash, user.real_name, user.id_card])
-    
-    return { ...user, id: result.lastID }
-  },
-  
-  createTestSmsCode: async (phoneNumber, code = '123456') => {
-    const db = databaseConfig.getDatabase(true)
-    const now = Date.now()
-    
-    await db.run(`
-      INSERT INTO sms_codes (phone_number, code, created_at, expires_at)
-      VALUES (?, ?, ?, ?)
-    `, [phoneNumber, code, now, now + 300000])
-    
-    return { phoneNumber, code, createdAt: now, expiresAt: now + 300000 }
-  },
-  
-  cleanupTestData: async () => {
-    const db = databaseConfig.getDatabase(true)
-    if (db) {
-      await db.run('DELETE FROM sessions')
-      await db.run('DELETE FROM sms_codes')
-      await db.run('DELETE FROM users WHERE username LIKE "testuser%"')
+    try {
+      fs.unlinkSync(testDbPath)
+    } catch (err) {
+      // 忽略删除错误
     }
   }
-}
+})
 
 module.exports = {
   testEnvironment: 'node',

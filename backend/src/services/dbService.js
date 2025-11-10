@@ -25,82 +25,106 @@ class DatabaseService {
 
   // 创建数据表
   createTables() {
-    // TODO: 创建用户表、验证码表等
+    // 创建用户表
     const createUsersTable = `
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE,
-        email TEXT UNIQUE,
-        phone TEXT UNIQUE,
-        password_hash TEXT NOT NULL,
-        id_card TEXT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        name TEXT,
+        email TEXT,
+        phone TEXT UNIQUE NOT NULL,
+        id_card_type TEXT,
+        id_card_number TEXT,
+        discount_type TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_login DATETIME,
+        UNIQUE(id_card_type, id_card_number)
       )
     `;
 
-    const createSmsCodesTable = `
-      CREATE TABLE IF NOT EXISTS sms_codes (
+    // 创建短信验证码表
+    const createVerificationCodesTable = `
+      CREATE TABLE IF NOT EXISTS verification_codes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        code TEXT NOT NULL,
         phone TEXT NOT NULL,
+        code TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         expires_at DATETIME NOT NULL,
-        used BOOLEAN DEFAULT FALSE,
-        FOREIGN KEY (user_id) REFERENCES users (id)
+        used BOOLEAN DEFAULT 0,
+        sent_status TEXT DEFAULT 'sent',
+        sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
+    // 创建邮箱验证码表
+    const createEmailVerificationCodesTable = `
+      CREATE TABLE IF NOT EXISTS email_verification_codes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        code TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        expires_at DATETIME NOT NULL,
+        used BOOLEAN DEFAULT 0,
+        sent_status TEXT DEFAULT 'sent',
+        sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
+    // 创建会话表
+    const createSessionsTable = `
+      CREATE TABLE IF NOT EXISTS sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT UNIQUE NOT NULL,
+        user_data TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        expires_at DATETIME NOT NULL
       )
     `;
 
     this.db.run(createUsersTable);
-    this.db.run(createSmsCodesTable);
+    this.db.run(createVerificationCodesTable);
+    this.db.run(createEmailVerificationCodesTable);
+    this.db.run(createSessionsTable);
   }
 
-  // DB-FindUserByIdentifier: 根据用户名/邮箱/手机号查找用户
-  async findUserByIdentifier(identifier, type) {
+  // 通用查询方法 - 返回单行
+  async get(sql, params = []) {
     return new Promise((resolve, reject) => {
-      // TODO: 实现根据标识符查找用户的逻辑
-      reject(new Error('功能尚未实现'));
+      this.db.get(sql, params, (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row);
+        }
+      });
     });
   }
 
-  // DB-VerifyPassword: 验证用户密码
-  async verifyPassword(userId, password) {
+  // 通用查询方法 - 返回所有行
+  async all(sql, params = []) {
     return new Promise((resolve, reject) => {
-      // TODO: 实现密码验证逻辑
-      reject(new Error('功能尚未实现'));
+      this.db.all(sql, params, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
     });
   }
 
-  // DB-CreateSmsCode: 创建短信验证码
-  async createSmsCode(userId, phone, code) {
+  // 通用执行方法 - INSERT, UPDATE, DELETE
+  async run(sql, params = []) {
     return new Promise((resolve, reject) => {
-      // TODO: 实现创建短信验证码逻辑
-      reject(new Error('功能尚未实现'));
-    });
-  }
-
-  // DB-VerifySmsCode: 验证短信验证码
-  async verifySmsCode(userId, code) {
-    return new Promise((resolve, reject) => {
-      // TODO: 实现验证短信验证码逻辑
-      reject(new Error('功能尚未实现'));
-    });
-  }
-
-  // DB-CheckSmsFrequency: 检查短信发送频率限制
-  async checkSmsFrequency(userId) {
-    return new Promise((resolve, reject) => {
-      // TODO: 实现检查短信发送频率逻辑
-      reject(new Error('功能尚未实现'));
-    });
-  }
-
-  // DB-UpdateLoginStatus: 更新用户登录状态
-  async updateLoginStatus(userId, status) {
-    return new Promise((resolve, reject) => {
-      // TODO: 实现更新登录状态逻辑
-      reject(new Error('功能尚未实现'));
+      this.db.run(sql, params, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({ lastID: this.lastID, changes: this.changes });
+        }
+      });
     });
   }
 
