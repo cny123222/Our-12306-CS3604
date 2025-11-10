@@ -1,0 +1,203 @@
+{
+  "topNavItems": [
+    {
+      "text": "无障碍",
+      "href": "javascript:;",
+      "target": null,
+      "role": "menuitem",
+      "id": "toolbarSwitch",
+      "class": ""
+    },
+    {
+      "text": "敬老版",
+      "href": "javascript:;",
+      "target": null,
+      "role": "menuitem",
+      "id": "caringEdition",
+      "class": ""
+    },
+    {
+      "text": "我的12306",
+      "href": "https://kyfw.12306.cn/otn/resources/login.html",
+      "target": "_blank",
+      "role": "menuitem",
+      "id": "my12306",
+      "class": ""
+    },
+    {
+      "text": "登录注册",
+      "href": "https://kyfw.12306.cn/otn/resources/login.html",
+      "target": "_blank",
+      "role": "menuitem",
+      "id": "loginRegister",
+      "class": ""
+    },
+    {
+      "text": "English",
+      "href": "https://www.12306.cn/en/index.html",
+      "target": "_blank",
+      "role": "menuitem",
+      "id": "",
+      "class": ""
+    },
+    {
+      "text": "简体中文",
+      "href": "javascript:;",
+      "target": null,
+      "role": "menuitem",
+      "id": "",
+      "class": ""
+    }
+  ],
+  "fromSel": "#fromStationText",
+  "toSel": "#toStationText",
+  "dateSel": "#train_date",
+  "searchSel": "#search_one",
+  "interactions": [
+    {
+      "name": "empty_search",
+      "selector": "#search_one",
+      "resultText": null
+    },
+    {
+      "name": "invalid_station",
+      "fromSel": "#fromStationText",
+      "toSel": "#toStationText",
+      "resultText": null
+    },
+    {
+      "name": "valid_station",
+      "pageURL": "http://localhost:3002/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%2C&ts=%2C&date=2025-11-09&flag=N,N,Y"
+    }
+  ],
+  "topNavTests": [
+    {
+      "text": "我的12306",
+      "landingURL": "https://kyfw.12306.cn/otn/resources/login.html"
+    },
+    {
+      "text": "登录注册",
+      "landingURL": "https://kyfw.12306.cn/otn/resources/login.html"
+    },
+    {
+      "text": "English",
+      "landingURL": "https://www.12306.cn/en/index.html"
+    },
+    {
+      "text": "敬老版",
+      "landingURL": "http://localhost:3002/"
+    }
+  ],
+  "anchors": [],
+  "inputs": [],
+  "networkLogs": [
+    {
+      "type": "request",
+      "url": "http://localhost:3002/",
+      "method": "GET",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\""
+      },
+      "postData": null,
+      "resourceType": "document"
+    },
+    {
+      "type": "request",
+      "url": "http://localhost:3002/styles.css",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "referer": "http://localhost:3002/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "postData": null,
+      "resourceType": "stylesheet"
+    },
+    {
+      "type": "request",
+      "url": "http://localhost:3002/placeholder.png",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "referer": "http://localhost:3002/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "postData": null,
+      "resourceType": "image"
+    },
+    {
+      "type": "request",
+      "url": "http://localhost:3002/app.js",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "referer": "http://localhost:3002/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "postData": null,
+      "resourceType": "script"
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3002/placeholder.png",
+      "status": 404,
+      "headers": {
+        "transfer-encoding": "chunked",
+        "keep-alive": "timeout=5",
+        "date": "Sun, 09 Nov 2025 10:39:46 GMT",
+        "connection": "keep-alive"
+      },
+      "bodySize": 9
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3002/",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sun, 09 Nov 2025 10:39:46 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked"
+      },
+      "bodySize": 5057
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3002/styles.css",
+      "status": 200,
+      "headers": {
+        "transfer-encoding": "chunked",
+        "keep-alive": "timeout=5",
+        "date": "Sun, 09 Nov 2025 10:39:46 GMT",
+        "content-type": "text/css; charset=utf-8",
+        "connection": "keep-alive"
+      },
+      "bodySize": 2520
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3002/app.js",
+      "status": 200,
+      "headers": {
+        "transfer-encoding": "chunked",
+        "keep-alive": "timeout=5",
+        "date": "Sun, 09 Nov 2025 10:39:46 GMT",
+        "content-type": "application/javascript; charset=utf-8",
+        "connection": "keep-alive"
+      },
+      "bodySize": 8663
+    }
+  ]
+}

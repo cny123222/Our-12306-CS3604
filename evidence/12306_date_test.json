@@ -1,0 +1,64 @@
+{
+  "dateNegative": {
+    "steps": [
+      {
+        "action": "fill",
+        "selector": "#train_date",
+        "value": "2025-11-08"
+      }
+    ],
+    "observations": {
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%E4%B8%8A%E6%B5%B7%2CSHH&date=2025-11-08&flag=N,N,Y",
+      "errorText": null,
+      "dialogs": null
+    }
+  },
+  "dialogs": [],
+  "networkLogs": [
+    {
+      "type": "request",
+      "url": "http://localhost:3000/",
+      "method": "GET",
+      "resourceType": "document"
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3000/",
+      "status": 200
+    },
+    {
+      "type": "request",
+      "url": "http://localhost:3000/styles.css",
+      "method": "GET",
+      "resourceType": "stylesheet"
+    },
+    {
+      "type": "request",
+      "url": "http://localhost:3000/placeholder.png",
+      "method": "GET",
+      "resourceType": "image"
+    },
+    {
+      "type": "request",
+      "url": "http://localhost:3000/app.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3000/placeholder.png",
+      "status": 404
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3000/styles.css",
+      "status": 200
+    },
+    {
+      "type": "response",
+      "url": "http://localhost:3000/app.js",
+      "status": 200
+    }
+  ]
+}

@@ -1,0 +1,3936 @@
+[
+  {
+    "label": "BJ-SH",
+    "input": {
+      "from": "北京",
+      "to": "上海",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "上海",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%E4%B8%8A%E6%B5%B7%2CSHH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_BJ-SH.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "北京,BJP",
+          "ts": "上海,SHH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "BJX-SHHQ",
+    "input": {
+      "from": "北京西",
+      "to": "上海虹桥",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "北京西",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "上海虹桥",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BXP",
+        "fromText": "北京西",
+        "toHidden": "AOH",
+        "toText": "上海虹桥"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%E8%A5%BF%2CBXP&ts=%E4%B8%8A%E6%B5%B7%E8%99%B9%E6%A1%A5%2CAOH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_BJX-SHHQ.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "北京西,BXP",
+          "ts": "上海虹桥,AOH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BXP",
+        "fromText": "北京西",
+        "toHidden": "AOH",
+        "toText": "上海虹桥"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "GZN-SZB",
+    "input": {
+      "from": "广州南",
+      "to": "深圳北",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "广州南",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "深圳北",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "IZQ",
+        "fromText": "广州南",
+        "toHidden": "IOQ",
+        "toText": "深圳北"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%B9%BF%E5%B7%9E%E5%8D%97%2CIZQ&ts=%E6%B7%B1%E5%9C%B3%E5%8C%97%2CIOQ&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_GZN-SZB.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "广州南,IZQ",
+          "ts": "深圳北,IOQ",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "IZQ",
+        "fromText": "广州南",
+        "toHidden": "IOQ",
+        "toText": "深圳北"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "CDO-CQB",
+    "input": {
+      "from": "成都东",
+      "to": "重庆北",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "成都东",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "重庆北",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "ICW",
+        "fromText": "成都东",
+        "toHidden": "CUW",
+        "toText": "重庆北"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E6%88%90%E9%83%BD%E4%B8%9C%2CICW&ts=%E9%87%8D%E5%BA%86%E5%8C%97%2CCUW&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_CDO-CQB.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "成都东,ICW",
+          "ts": "重庆北,CUW",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "ICW",
+        "fromText": "成都东",
+        "toHidden": "CUW",
+        "toText": "重庆北"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "NJ-HF",
+    "input": {
+      "from": "南京",
+      "to": "合肥",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "南京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "合肥",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "NJH",
+        "fromText": "南京",
+        "toHidden": "HFH",
+        "toText": "合肥"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8D%97%E4%BA%AC%2CNJH&ts=%E5%90%88%E8%82%A5%2CHFH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_NJ-HF.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "南京,NJH",
+          "ts": "合肥,HFH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "NJH",
+        "fromText": "南京",
+        "toHidden": "HFH",
+        "toText": "合肥"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "HZE-SZ",
+    "input": {
+      "from": "杭州东",
+      "to": "苏州",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "杭州东",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "苏州",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "HGH",
+        "fromText": "杭州东",
+        "toHidden": "SZH",
+        "toText": "苏州"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E6%9D%AD%E5%B7%9E%E4%B8%9C%2CHGH&ts=%E8%8B%8F%E5%B7%9E%2CSZH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_HZE-SZ.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "杭州东,HGH",
+          "ts": "苏州,SZH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "HGH",
+        "fromText": "杭州东",
+        "toHidden": "SZH",
+        "toText": "苏州"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "WH-ZZ",
+    "input": {
+      "from": "武汉",
+      "to": "郑州",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "武汉",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "郑州",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "WHN",
+        "fromText": "武汉",
+        "toHidden": "ZZF",
+        "toText": "郑州"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E6%AD%A6%E6%B1%89%2CWHN&ts=%E9%83%91%E5%B7%9E%2CZZF&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_WH-ZZ.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "武汉,WHN",
+          "ts": "郑州,ZZF",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "WHN",
+        "fromText": "武汉",
+        "toHidden": "ZZF",
+        "toText": "郑州"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "XAB-CDO",
+    "input": {
+      "from": "西安北",
+      "to": "成都东",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "西安北",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "成都东",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "EAY",
+        "fromText": "西安北",
+        "toHidden": "ICW",
+        "toText": "成都东"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E8%A5%BF%E5%AE%89%E5%8C%97%2CEAY&ts=%E6%88%90%E9%83%BD%E4%B8%9C%2CICW&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_XAB-CDO.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "西安北,EAY",
+          "ts": "成都东,ICW",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "EAY",
+        "fromText": "西安北",
+        "toHidden": "ICW",
+        "toText": "成都东"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "CSN-NND",
+    "input": {
+      "from": "长沙南",
+      "to": "南宁东",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "长沙南",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "南宁东",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "IZQ",
+        "fromText": "长沙南",
+        "toHidden": "KNZ",
+        "toText": "南宁东"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E9%95%BF%E6%B2%99%E5%8D%97%2CIZQ&ts=%E5%8D%97%E5%AE%81%E4%B8%9C%2CKNZ&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_CSN-NND.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "长沙南,IZQ",
+          "ts": "南宁东,KNZ",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "IZQ",
+        "fromText": "长沙南",
+        "toHidden": "KNZ",
+        "toText": "南宁东"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "TJ-BJ",
+    "input": {
+      "from": "天津",
+      "to": "北京",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "天津",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "TJP",
+        "fromText": "天津",
+        "toHidden": "BJP",
+        "toText": "北京"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%A4%A9%E6%B4%A5%2CTJP&ts=%E5%8C%97%E4%BA%AC%2CBJP&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_TJ-BJ.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "天津,TJP",
+          "ts": "北京,BJP",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "TJP",
+        "fromText": "天津",
+        "toHidden": "BJP",
+        "toText": "北京"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "CQB-GYN",
+    "input": {
+      "from": "重庆北",
+      "to": "贵阳北",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "重庆北",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": false
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "CUW",
+        "fromText": "重庆北",
+        "toHidden": null,
+        "toText": "贵阳北"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E9%87%8D%E5%BA%86%E5%8C%97%2CCUW&ts=%E8%B4%B5%E9%98%B3%E5%8C%97%2C&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_CQB-GYN.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "重庆北,CUW",
+          "ts": "贵阳北,",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "CUW",
+        "fromText": "重庆北",
+        "toHidden": null,
+        "toText": "贵阳北"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "QD-JN",
+    "input": {
+      "from": "青岛",
+      "to": "济南",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "青岛",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "济南",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "QDK",
+        "fromText": "青岛",
+        "toHidden": "JNK",
+        "toText": "济南"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E9%9D%92%E5%B2%9B%2CQDK&ts=%E6%B5%8E%E5%8D%97%2CJNK&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_QD-JN.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "青岛,QDK",
+          "ts": "济南,JNK",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "QDK",
+        "fromText": "青岛",
+        "toHidden": "JNK",
+        "toText": "济南"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "FZ-XMB",
+    "input": {
+      "from": "福州",
+      "to": "厦门北",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "福州",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "厦门北",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "FZS",
+        "fromText": "福州",
+        "toHidden": "XKS",
+        "toText": "厦门北"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E7%A6%8F%E5%B7%9E%2CFZS&ts=%E5%8E%A6%E9%97%A8%E5%8C%97%2CXKS&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_FZ-XMB.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "福州,FZS",
+          "ts": "厦门北,XKS",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "FZS",
+        "fromText": "福州",
+        "toHidden": "XKS",
+        "toText": "厦门北"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "XMB-SHHQ",
+    "input": {
+      "from": "厦门北",
+      "to": "上海虹桥",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "厦门北",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "上海虹桥",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "XKS",
+        "fromText": "厦门北",
+        "toHidden": "AOH",
+        "toText": "上海虹桥"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8E%A6%E9%97%A8%E5%8C%97%2CXKS&ts=%E4%B8%8A%E6%B5%B7%E8%99%B9%E6%A1%A5%2CAOH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_XMB-SHHQ.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "厦门北,XKS",
+          "ts": "上海虹桥,AOH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "XKS",
+        "fromText": "厦门北",
+        "toHidden": "AOH",
+        "toText": "上海虹桥"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "LZ-WLMQ",
+    "input": {
+      "from": "兰州",
+      "to": "乌鲁木齐",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "兰州",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "乌鲁木齐",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "LZJ",
+        "fromText": "兰州",
+        "toHidden": "WAR",
+        "toText": "乌鲁木齐"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%85%B0%E5%B7%9E%2CLZJ&ts=%E4%B9%8C%E9%B2%81%E6%9C%A8%E9%BD%90%2CWAR&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_LZ-WLMQ.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "兰州,LZJ",
+          "ts": "乌鲁木齐,WAR",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "LZJ",
+        "fromText": "兰州",
+        "toHidden": "WAR",
+        "toText": "乌鲁木齐"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "SYB-DL",
+    "input": {
+      "from": "沈阳北",
+      "to": "大连",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "沈阳北",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "大连",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "SBT",
+        "fromText": "沈阳北",
+        "toHidden": "DLT",
+        "toText": "大连"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E6%B2%88%E9%98%B3%E5%8C%97%2CSBT&ts=%E5%A4%A7%E8%BF%9E%2CDLT&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_SYB-DL.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "沈阳北,SBT",
+          "ts": "大连,DLT",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "SBT",
+        "fromText": "沈阳北",
+        "toHidden": "DLT",
+        "toText": "大连"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "BJ-SH-suggest",
+    "input": {
+      "from": "北京",
+      "to": "上海",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": null,
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "上海",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%E4%B8%8A%E6%B5%B7%2CSHH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_BJ-SH-suggest.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "北京,BJP",
+          "ts": "上海,SHH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "GZN-SZB-suggest",
+    "input": {
+      "from": "广州南",
+      "to": "深圳北",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": null,
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "广州南",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "深圳北",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "IZQ",
+        "fromText": "广州南",
+        "toHidden": "IOQ",
+        "toText": "深圳北"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%B9%BF%E5%B7%9E%E5%8D%97%2CIZQ&ts=%E6%B7%B1%E5%9C%B3%E5%8C%97%2CIOQ&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_GZN-SZB-suggest.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "广州南,IZQ",
+          "ts": "深圳北,IOQ",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "IZQ",
+        "fromText": "广州南",
+        "toHidden": "IOQ",
+        "toText": "深圳北"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "HZE-SZ-suggest",
+    "input": {
+      "from": "杭州东",
+      "to": "苏州",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": null,
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "杭州东",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "苏州",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "HGH",
+        "fromText": "杭州东",
+        "toHidden": "SZH",
+        "toText": "苏州"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E6%9D%AD%E5%B7%9E%E4%B8%9C%2CHGH&ts=%E8%8B%8F%E5%B7%9E%2CSZH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_HZE-SZ-suggest.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "杭州东,HGH",
+          "ts": "苏州,SZH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "HGH",
+        "fromText": "杭州东",
+        "toHidden": "SZH",
+        "toText": "苏州"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "same_city",
+    "input": {
+      "from": "北京",
+      "to": "北京",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "BJP",
+        "toText": "北京"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%E5%8C%97%E4%BA%AC%2CBJP&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_same_city.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "北京,BJP",
+          "ts": "北京,BJP",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "BJP",
+        "toText": "北京"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "invalid_from",
+    "input": {
+      "from": "不存在站点",
+      "to": "上海",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": false
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "上海",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": null,
+        "fromText": "不存在站点",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E4%B8%8D%E5%AD%98%E5%9C%A8%E7%AB%99%E7%82%B9%2C&ts=%E4%B8%8A%E6%B5%B7%2CSHH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_invalid_from.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "不存在站点,",
+          "ts": "上海,SHH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": null,
+        "fromText": "不存在站点",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "invalid_to",
+    "input": {
+      "from": "北京",
+      "to": "不存在站点",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": false
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": null,
+        "toText": "不存在站点"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%E4%B8%8D%E5%AD%98%E5%9C%A8%E7%AB%99%E7%82%B9%2C&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_invalid_to.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "北京,BJP",
+          "ts": "不存在站点,",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": null,
+        "toText": "不存在站点"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "english_names",
+    "input": {
+      "from": "Beijing",
+      "to": "Shanghai",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": false
+        },
+        "to": {
+          "listVisible": false
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": null,
+        "fromText": "Beijing",
+        "toHidden": null,
+        "toText": "Shanghai"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=Beijing%2C&ts=Shanghai%2C&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_english_names.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "Beijing,",
+          "ts": "Shanghai,",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": null,
+        "fromText": "Beijing",
+        "toHidden": null,
+        "toText": "Shanghai"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "non_chinese",
+    "input": {
+      "from": "abc",
+      "to": "xyz",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": false
+        },
+        "to": {
+          "listVisible": false
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": null,
+        "fromText": "abc",
+        "toHidden": null,
+        "toText": "xyz"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=abc%2C&ts=xyz%2C&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_non_chinese.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "abc,",
+          "ts": "xyz,",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": null,
+        "fromText": "abc",
+        "toHidden": null,
+        "toText": "xyz"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "empty_from",
+    "input": {
+      "from": "",
+      "to": "上海",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "to": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "上海",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": null,
+        "fromText": null,
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%2C&ts=%E4%B8%8A%E6%B5%B7%2CSHH&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_empty_from.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": ",",
+          "ts": "上海,SHH",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": null,
+        "fromText": null,
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "empty_to",
+    "input": {
+      "from": "北京",
+      "to": "",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "from-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": null,
+        "toText": null
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%2C&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_empty_to.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "北京,BJP",
+          "ts": ",",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": null,
+        "toText": null
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "typo_to",
+    "input": {
+      "from": "北京",
+      "to": "上海X",
+      "date": "2025-11-16",
+      "mode": "单程"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": false
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "单程",
+        "tabClicked": false,
+        "searchBtnSelector": "#search_one",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "#search_one"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": null,
+        "toText": "上海X"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%E4%B8%8A%E6%B5%B7X%2C&date=2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_typo_to.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "dc",
+          "fs": "北京,BJP",
+          "ts": "上海X,",
+          "date": "2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": null,
+        "toText": "上海X"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "BJ-SH-roundtrip",
+    "input": {
+      "from": "北京",
+      "to": "上海",
+      "date": "2025-11-16",
+      "mode": "往返"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "北京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 2,
+          "anchorCount": 2,
+          "clickedText": "上海",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "往返",
+        "tabClicked": true,
+        "searchBtnSelector": "a.btn.btn-primary.form-block:visible",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": false
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_two",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "a.btn.btn-primary.form-block:visible"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=wf&fs=%E5%8C%97%E4%BA%AC%2CBJP&ts=%E4%B8%8A%E6%B5%B7%2CSHH&date=2025-11-16%2C2025-11-16&flag=N,N,Y",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_BJ-SH-roundtrip.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "wf",
+          "fs": "北京,BJP",
+          "ts": "上海,SHH",
+          "date": "2025-11-16,2025-11-16",
+          "flag": "N,N,Y"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "BJP",
+        "fromText": "北京",
+        "toHidden": "SHH",
+        "toText": "上海"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "GZN-SZB-transfer",
+    "input": {
+      "from": "广州南",
+      "to": "深圳北",
+      "date": "2025-11-16",
+      "mode": "中转换乘"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "广州南",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "深圳北",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "中转换乘",
+        "tabClicked": true,
+        "searchBtnSelector": "a.btn.btn-primary.form-block:visible",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": false
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "search_three",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "a.btn.btn-primary.form-block:visible"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "IZQ",
+        "fromText": "广州南",
+        "toHidden": "IOQ",
+        "toText": "深圳北"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/lcQuery/init?linktypeid=lx&fs=%E5%B9%BF%E5%B7%9E%E5%8D%97%2CIZQ&ts=%E6%B7%B1%E5%9C%B3%E5%8C%97%2CIOQ&date=2025-11-16",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_GZN-SZB-transfer.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "linktypeid": "lx",
+          "fs": "广州南,IZQ",
+          "ts": "深圳北,IOQ",
+          "date": "2025-11-16"
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "IZQ",
+        "fromText": "广州南",
+        "toHidden": "IOQ",
+        "toText": "深圳北"
+      },
+      "errorText": null
+    }
+  },
+  {
+    "label": "NJ-HF-refund",
+    "input": {
+      "from": "南京",
+      "to": "合肥",
+      "date": "2025-11-16",
+      "mode": "退改签"
+    },
+    "meta": {
+      "directApplied": {
+        "from": null,
+        "to": null
+      },
+      "suggestionLogs": {
+        "from": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "南京",
+          "clickedId": "from-suggest-0"
+        },
+        "to": {
+          "listVisible": true,
+          "optionCount": 1,
+          "anchorCount": 1,
+          "clickedText": "合肥",
+          "clickedId": "to-suggest-0"
+        }
+      },
+      "dateWidget": {
+        "requested": "2025-11-16",
+        "widgetVisible": false,
+        "clickedDay": null,
+        "overlaySelectorsFound": [
+          ".layui-laydate",
+          "#laydate_box",
+          ".cal-wrap",
+          ".cal-cm"
+        ],
+        "hiddenOverlays": [
+          ".cal-wrap",
+          ".cal-cm",
+          ".layui-laydate",
+          "#laydate_box"
+        ]
+      },
+      "modeInfo": {
+        "mode": "退改签",
+        "tabClicked": true,
+        "searchBtnSelector": "a.btn.btn-primary.form-block:visible",
+        "candidates": [
+          {
+            "selector": "#search_one",
+            "id": "search_one",
+            "text": "查    询",
+            "visible": false
+          },
+          {
+            "selector": "#search_rt",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_round",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_transfer",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "#search_refund",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a.btn.btn-primary.form-block:visible",
+            "id": "refund_button",
+            "text": "查    询",
+            "visible": true
+          },
+          {
+            "selector": "button.btn.btn-primary.form-block:visible",
+            "id": null,
+            "text": null,
+            "visible": false
+          },
+          {
+            "selector": "a:has-text(\"查询\"):visible",
+            "id": null,
+            "text": "常用查询",
+            "visible": true
+          }
+        ],
+        "usedSelector": "a.btn.btn-primary.form-block:visible"
+      }
+    },
+    "result": {
+      "fieldsBeforeClick": {
+        "fromHidden": "NJH",
+        "fromText": "南京",
+        "toHidden": "HFH",
+        "toText": "合肥"
+      },
+      "pageURL": "http://localhost:3000/",
+      "popupURL": "https://kyfw.12306.cn/otn/view/train_order.html?type=common&query_type=gundong&begin_date=2025-11-16&end_date=2025-11-16&sequence_no=",
+      "leftTicket": {
+        "screenshot": "evidence/leftTicket_init_NJ-HF-refund.png",
+        "title": "中国铁路12306网站",
+        "bodySnippetLen": 2000,
+        "queryParams": {
+          "type": "common",
+          "query_type": "gundong",
+          "begin_date": "2025-11-16",
+          "end_date": "2025-11-16",
+          "sequence_no": ""
+        }
+      },
+      "fieldsAfterClick": {
+        "fromHidden": "NJH",
+        "fromText": "南京",
+        "toHidden": "HFH",
+        "toText": "合肥"
+      },
+      "errorText": null
+    }
+  }
+]
