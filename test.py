@@ -60,7 +60,7 @@ def save_doc(doc, out_dir="browsertool/evidence/12306_index_scrape", base_name=N
 
 
 if __name__ == "__main__":
-    api_key = os.getenv("FIRECRAWL_API_KEY", "fc-d391212e98864253816f4b5677755622")
+    api_key = os.getenv("FIRECRAWL_API_KEY", "fc-xxxxxxxxxxxxx")
     print(api_key)
     firecrawl = Firecrawl(api_key=api_key)
     target_url = "https://www.12306.cn/index/"
