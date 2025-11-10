@@ -3,10 +3,11 @@
  * 源文件：frontend/src/components/ValidationInput.tsx
  * 测试文件：frontend/test/components/ValidationInput.test.tsx
  * 
- * 说明：这是代码骨架，仅用于让测试可执行且失败
+ * 说明：带验证功能的输入框组件
  */
 
 import React, { useState } from 'react';
+import './ValidationInput.css';
 
 interface ValidationInputProps {
   value: string;
@@ -19,6 +20,8 @@ interface ValidationInputProps {
   showCheckmark?: boolean;
   errorMessage?: string;
   disabled?: boolean;
+  label?: string;
+  testIdPrefix?: string;
 }
 
 const ValidationInput: React.FC<ValidationInputProps> = ({
@@ -31,48 +34,63 @@ const ValidationInput: React.FC<ValidationInputProps> = ({
   required = false,
   showCheckmark = false,
   errorMessage = '',
-  disabled = false
+  disabled = false,
+  label,
+  testIdPrefix
 }) => {
   const [isValidating, setIsValidating] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TODO: 实现输入处理逻辑
     onChange(e.target.value);
   };
 
   const handleBlur = async () => {
-    // TODO: 实现验证逻辑
-    setIsValidating(true);
-    await onValidate(value);
-    setIsValidating(false);
+    if (!disabled) {
+      setIsValidating(true);
+      try {
+        await onValidate(value);
+      } finally {
+        setIsValidating(false);
+      }
+    }
   };
 
   return (
-    <div className="validation-input">
-      {required && <span className="required">*</span>}
-      <input
-        type={type}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        disabled={disabled}
-        className={`${errorMessage ? 'error' : ''} ${disabled ? 'disabled' : ''}`}
-      />
-      {showCheckmark && (
-        <span 
-          data-testid="validation-checkmark" 
-          className="checkmark valid"
-        >
-          ✓
-        </span>
+    <div className="validation-input-container">
+      {label && (
+        <label className="validation-input-label">
+          {required && <span className="required-asterisk">*</span>}
+          {label}
+        </label>
       )}
-      {isValidating && (
-        <span data-testid="validation-loading">...</span>
-      )}
+      <div className="validation-input-wrapper">
+        {required && !label && <span className="required">*</span>}
+        <input
+          type={type}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          disabled={disabled}
+          className={`validation-input ${errorMessage ? 'error' : ''} ${disabled ? 'disabled' : ''}`}
+        />
+        {isValidating && (
+          <span className="validation-loading" data-testid="validation-loading">
+            <span className="loading-spinner"></span>
+          </span>
+        )}
+        {showCheckmark && !isValidating && !errorMessage && (
+          <span 
+            data-testid={testIdPrefix ? `${testIdPrefix}-checkmark` : 'validation-checkmark'}
+            className="checkmark valid"
+          >
+            ✓
+          </span>
+        )}
+      </div>
       {errorMessage && (
-        <span className="error-message">{errorMessage}</span>
+        <div className="error-message">{errorMessage}</div>
       )}
     </div>
   );

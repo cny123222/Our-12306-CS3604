@@ -3,10 +3,11 @@
  * 源文件：frontend/src/components/SuccessModal.tsx
  * 测试文件：frontend/test/components/SuccessModal.test.tsx
  * 
- * 说明：这是代码骨架，仅用于让测试可执行且失败
+ * 说明：注册成功弹窗组件
  */
 
 import React from 'react';
+import './SuccessModal.css';
 
 interface SuccessModalProps {
   isVisible: boolean;
