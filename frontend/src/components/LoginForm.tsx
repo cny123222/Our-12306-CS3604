@@ -3,9 +3,11 @@ import './LoginForm.css'
 
 interface LoginFormProps {
   onSubmit: (data: { username: string; password: string }) => void
-  onQrLogin: () => void
-  onRegister: () => void
-  onForgotPassword: () => void
+  onQrLogin?: () => void
+  onRegister?: () => void
+  onForgotPassword?: () => void
+  onRegisterClick?: () => void
+  onForgotPasswordClick?: () => void
   isLoading?: boolean
   error?: string
 }
@@ -15,6 +17,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
   onQrLogin,
   onRegister,
   onForgotPassword,
+  onRegisterClick,
+  onForgotPasswordClick,
   isLoading = false,
   error
 }) => {
@@ -48,7 +52,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         </button>
       </div>
 
-      <form className="login-form" onSubmit={handleSubmit}>
+      <form className="login-form" onSubmit={handleSubmit} role="form">
         {error && <div className="error-message">{error}</div>}
         
         {loginType === 'account' && (
@@ -60,6 +64,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="form-input"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -70,6 +75,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="form-input"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -103,11 +109,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
         )}
 
         <div className="form-links">
-          <button type="button" className="link-button" onClick={onForgotPassword}>
+          <button type="button" className="link-button" onClick={onForgotPasswordClick || onForgotPassword}>
             忘记密码？
           </button>
-          <button type="button" className="link-button" onClick={onRegister}>
-            注册12306账号
+          <button type="button" className="link-button" onClick={onRegisterClick || onRegister}>
+            注册12306账户
           </button>
         </div>
       </form>

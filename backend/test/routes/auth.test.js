@@ -1,7 +1,32 @@
 const request = require('supertest')
 const app = require('../../src/app')
+const bcrypt = require('bcryptjs')
+const dbService = require('../../src/services/dbService')
 
 describe('Authentication Routes', () => {
+  // 在所有测试前创建测试用户
+  beforeAll(async () => {
+    const hashedPassword = await bcrypt.hash('password123', 10)
+    
+    // 创建测试用户
+    await dbService.run(`
+      INSERT OR REPLACE INTO users (username, password, email, phone, id_card_type, id_card_number, name)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, ['testuser', hashedPassword, 'test@example.com', '13800138000', '中国居民身份证', '110101199001011234', '测试用户'])
+  })
+  
+  // 每个测试后清理验证码
+  afterEach(async () => {
+    await dbService.run('DELETE FROM verification_codes WHERE phone = ?', ['13800138000'])
+  })
+  
+  // 清理测试数据
+  afterAll(async () => {
+    await dbService.run('DELETE FROM users WHERE username = ?', ['testuser'])
+    await dbService.run('DELETE FROM verification_codes WHERE phone = ?', ['13800138000'])
+    await dbService.run('DELETE FROM sessions WHERE id LIKE ?', ['%'])
+  })
+  
   describe('POST /api/auth/login', () => {
     it('应该成功登录有效用户', async () => {
       const loginData = {
@@ -132,9 +157,21 @@ describe('Authentication Routes', () => {
 
   describe('POST /api/auth/verify-login', () => {
     it('应该成功验证短信登录', async () => {
+      // 先发送验证码
+      await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({ phoneNumber: '13800138000' })
+        .expect(200)
+      
+      // 获取刚发送的验证码（从数据库）
+      const codeRecord = await dbService.get(
+        'SELECT code FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 1',
+        ['13800138000']
+      )
+      
       const verifyData = {
         phoneNumber: '13800138000',
-        verificationCode: '123456'
+        verificationCode: codeRecord.code
       }
 
       const response = await request(app)
