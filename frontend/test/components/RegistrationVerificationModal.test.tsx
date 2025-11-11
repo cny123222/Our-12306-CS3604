@@ -23,7 +23,7 @@ describe('RegistrationVerificationModal Component Tests', () => {
 
   // ==================== UI元素存在性检查 ====================
   describe('UI元素存在性检查', () => {
-    it('应该渲染标题"手机双向验证"', () => {
+    it('应该渲染标题"手机验证"', () => {
       // When: 渲染组件
       render(
         <RegistrationVerificationModal
@@ -35,10 +35,10 @@ describe('RegistrationVerificationModal Component Tests', () => {
       )
 
       // Then: 标题应该显示
-      expect(screen.getByText('手机双向验证')).toBeInTheDocument()
+      expect(screen.getByText('手机验证')).toBeInTheDocument()
     })
 
-    it('应该显示信息提示框', () => {
+    it('应该显示验证码发送提示信息', () => {
       // When: 渲染组件
       render(
         <RegistrationVerificationModal
@@ -49,11 +49,8 @@ describe('RegistrationVerificationModal Component Tests', () => {
         />
       )
 
-      // Then: 应该包含操作说明
-      expect(screen.getByText(/为了保护您的信息安全/)).toBeInTheDocument()
-      expect(screen.getByText(/第一步/)).toBeInTheDocument()
-      expect(screen.getByText(/第二步/)).toBeInTheDocument()
-      expect(screen.getByText(/发送短信"999"至12306/)).toBeInTheDocument()
+      // Then: 应该显示验证码已发送提示
+      expect(screen.getByText(`验证码已发送至${testPhoneNumber}`)).toBeInTheDocument()
     })
 
     it('应该显示手机号码', () => {
@@ -379,7 +376,7 @@ describe('RegistrationVerificationModal Component Tests', () => {
       )
 
       // When: 点击弹窗内容区域
-      const modal = screen.getByText('手机双向验证').parentElement
+      const modal = screen.getByText('手机验证').parentElement
       if (modal) {
         fireEvent.click(modal)
       }
@@ -406,7 +403,7 @@ describe('RegistrationVerificationModal Component Tests', () => {
       expect(container.querySelector('.reg-verification-modal-backdrop')).toBeInTheDocument()
       expect(container.querySelector('.reg-verification-modal')).toBeInTheDocument()
       expect(container.querySelector('.reg-verification-modal-header')).toBeInTheDocument()
-      expect(container.querySelector('.info-box')).toBeInTheDocument()
+      expect(container.querySelector('.verification-message')).toBeInTheDocument()
       expect(container.querySelector('.verification-form')).toBeInTheDocument()
     })
 
@@ -457,7 +454,7 @@ describe('RegistrationVerificationModal Component Tests', () => {
       )
 
       // Then: 组件应该正常渲染
-      expect(screen.getByText('手机双向验证')).toBeInTheDocument()
+      expect(screen.getByText('手机验证')).toBeInTheDocument()
     })
 
     it('应该正确处理特殊字符手机号', () => {

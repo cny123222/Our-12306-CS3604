@@ -123,7 +123,7 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByText('Login'))
     
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Login successful with session:', 'test-session-id')
+      expect(consoleSpy).toHaveBeenCalledWith('Login data:', 'test-session-id')
     })
     
     consoleSpy.mockRestore()
