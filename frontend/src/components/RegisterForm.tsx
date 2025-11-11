@@ -85,14 +85,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
     // 调用API检查用户名是否已存在
     try {
-      const response = await axios.post('/api/auth/validate-username', { username: value });
+      const response = await axios.post('/api/register/validate-username', { username: value });
       if (response.data.valid) {
         setUsernameValidation({ isValid: true, errorMessage: '', showCheckmark: true });
       } else {
         setUsernameValidation({ isValid: false, errorMessage: response.data.error, showCheckmark: false });
       }
-    } catch (error) {
-      setUsernameValidation({ isValid: false, errorMessage: '验证失败，请稍后重试', showCheckmark: false });
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.error || '验证失败，请稍后重试';
+      setUsernameValidation({ isValid: false, errorMessage: errorMsg, showCheckmark: false });
     }
   };
 
@@ -155,7 +156,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     }, 0);
 
     if (charLength < 3 || charLength > 30) {
-      setNameValidation({ isValid: false, errorMessage: '允许输入的字符串在3-30个字符之间！', showCheckmark: false });
+      setNameValidation({ isValid: false, errorMessage: '姓名长度不符合要求', showCheckmark: false });
       return;
     }
 
@@ -190,7 +191,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
     // 调用API检查证件号是否已注册
     try {
-      const response = await axios.post('/api/auth/validate-idcard', { 
+      const response = await axios.post('/api/register/validate-idcard', { 
         idCardType: idCardType,
         idCardNumber: value 
       });
@@ -199,8 +200,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       } else {
         setIdCardValidation({ isValid: false, errorMessage: response.data.error, showCheckmark: false });
       }
-    } catch (error) {
-      setIdCardValidation({ isValid: false, errorMessage: '验证失败，请稍后重试', showCheckmark: false });
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.error || '验证失败，请稍后重试';
+      setIdCardValidation({ isValid: false, errorMessage: errorMsg, showCheckmark: false });
     }
   };
 
@@ -388,16 +390,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
               {passwordValidation.showCheckmark && (
                 <span className="input-checkmark" data-testid="password-checkmark">✓</span>
               )}
-            </div>
-            {password && (
-              <div className="password-strength">
-                <div className="strength-bars">
-                  <div className={`strength-bar ${passwordStrength >= 1 ? 'weak' : ''}`}></div>
-                  <div className={`strength-bar ${passwordStrength >= 2 ? 'medium' : ''}`}></div>
-                  <div className={`strength-bar ${passwordStrength >= 3 ? 'strong' : ''}`}></div>
+              {password && (
+                <div className="password-strength">
+                  <div className="strength-bars">
+                    <div className={`strength-bar ${passwordStrength >= 1 ? 'weak' : ''}`}></div>
+                    <div className={`strength-bar ${passwordStrength >= 2 ? 'medium' : ''}`}></div>
+                    <div className={`strength-bar ${passwordStrength >= 3 ? 'strong' : ''}`}></div>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
             {passwordValidation.errorMessage && (
               <div className="form-error-message">{passwordValidation.errorMessage}</div>
             )}

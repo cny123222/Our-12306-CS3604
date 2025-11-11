@@ -8,16 +8,31 @@ const { v4: uuidv4 } = require('uuid');
 
 class SessionService {
   /**
-   * 创建注册会话
+   * 创建会话
+   * 支持两种调用方式：
+   * 1. createSession(userData) - 自动生成sessionId和过期时间（用于注册）
+   * 2. createSession(sessionId, userData, expiresAt) - 使用指定的sessionId和过期时间（用于登录）
    */
-  async createSession(userData) {
+  async createSession(sessionIdOrUserData, userData, expiresAt) {
     try {
-      const sessionId = uuidv4();
-      const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30分钟后过期
+      let sessionId, sessionData, expireTime;
+      
+      // 判断调用方式
+      if (typeof sessionIdOrUserData === 'string') {
+        // 方式2: createSession(sessionId, userData, expiresAt)
+        sessionId = sessionIdOrUserData;
+        sessionData = userData;
+        expireTime = expiresAt || new Date(Date.now() + 30 * 60 * 1000);
+      } else {
+        // 方式1: createSession(userData)
+        sessionId = uuidv4();
+        sessionData = sessionIdOrUserData;
+        expireTime = new Date(Date.now() + 30 * 60 * 1000); // 30分钟后过期
+      }
       
       await dbService.run(
-        `INSERT INTO sessions (session_id, user_data, expires_at) VALUES (?, ?, ?)`,
-        [sessionId, JSON.stringify(userData), expiresAt.toISOString()]
+        `INSERT OR REPLACE INTO sessions (session_id, user_data, expires_at) VALUES (?, ?, ?)`,
+        [sessionId, JSON.stringify(sessionData), expireTime.toISOString()]
       );
       
       return sessionId;

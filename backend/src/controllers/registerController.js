@@ -403,12 +403,21 @@ class RegisterController {
       }
 
       // 发送短信验证码（如果提供了phone）
+      let smsCode = null;
       if (phone) {
-        await registrationDbService.createSmsVerificationCode(phone);
+        smsCode = await registrationDbService.createSmsVerificationCode(phone);
+        console.log(`\n=================================`);
+        console.log(`📱 注册验证码已生成`);
+        console.log(`手机号: ${phone}`);
+        console.log(`验证码: ${smsCode}`);
+        console.log(`有效期: 5分钟`);
+        console.log(`=================================\n`);
       }
 
       res.status(200).json({
-        message: '验证码发送成功'
+        message: '验证码发送成功',
+        // 开发环境下返回验证码，生产环境应该移除
+        verificationCode: smsCode
       });
     } catch (error) {
       console.error('Send verification code error:', error);
@@ -424,25 +433,35 @@ class RegisterController {
   async completeRegistration(req, res) {
     try {
       const { sessionId, smsCode, emailCode } = req.body;
+      
+      console.log('\n🔍 完成注册请求:');
+      console.log('SessionId:', sessionId);
+      console.log('提交的验证码:', smsCode);
 
       // 验证会话
       const session = await sessionService.getSession(sessionId);
       if (!session) {
+        console.log('❌ 会话不存在或已过期');
         return res.status(400).json({
           error: '会话无效或已过期'
         });
       }
 
       const userData = session.user_data;
+      console.log('✅ 会话有效，用户数据:', { phone: userData.phone, username: userData.username });
 
       // 验证短信验证码（如果提供了smsCode）
       if (smsCode) {
+        console.log(`🔐 验证手机号 ${userData.phone} 的验证码 ${smsCode}`);
         const isValidSms = await registrationDbService.verifySmsCode(userData.phone, smsCode);
+        console.log('验证结果:', isValidSms);
         if (!isValidSms) {
+          console.log('❌ 验证码错误或已过期');
           return res.status(400).json({
             error: '验证码错误或已过期'
           });
         }
+        console.log('✅ 验证码验证通过');
       }
 
       // 验证邮箱验证码（如果提供了emailCode）
@@ -467,9 +486,13 @@ class RegisterController {
           userId: userId
         });
       } catch (error) {
-        if (error.message === 'User already exists') {
+        // 如果是用户已存在的错误，返回具体信息
+        if (error.message && (
+          error.message.includes('已被注册') || 
+          error.message === 'User already exists'
+        )) {
           return res.status(409).json({
-            error: '用户已存在'
+            error: error.message
           });
         }
         throw error;

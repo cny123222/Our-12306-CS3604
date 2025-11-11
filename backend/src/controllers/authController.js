@@ -107,7 +107,9 @@ class AuthController {
 
         return res.status(200).json({
           success: true,
-          message: result.message
+          message: result.message,
+          // 开发环境下返回验证码，生产环境应该移除
+          verificationCode: result.verificationCode
         });
       }
       

@@ -11,13 +11,17 @@ interface RegistrationVerificationModalProps {
   onClose: () => void;
   onComplete: (code: string) => void;
   onBack: () => void;
+  isSuccess?: boolean;
+  successMessage?: string;
 }
 
 const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps> = ({
   phoneNumber,
   onClose,
   onComplete,
-  onBack
+  onBack,
+  isSuccess = false,
+  successMessage = ''
 }) => {
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState('');
@@ -62,13 +66,21 @@ const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps
 
         {/* 内容区域 */}
         <div className="reg-verification-modal-content">
-          {/* 验证码发送提示 */}
-          <p className="verification-message">
-            验证码已发送至{phoneNumber}
-          </p>
+          {isSuccess ? (
+            /* 成功消息 */
+            <div className="success-content">
+              <div className="success-icon">✓</div>
+              <p className="success-message">{successMessage}</p>
+            </div>
+          ) : (
+            <>
+              {/* 验证码发送提示 */}
+              <p className="verification-message">
+                验证码已发送至{phoneNumber}
+              </p>
 
-          {/* 验证码输入表单 */}
-          <form className="verification-form" onSubmit={handleSubmit}>
+              {/* 验证码输入表单 */}
+              <form className="verification-form" onSubmit={handleSubmit}>
             <div className="form-row">
               <label className="form-label">验证码：</label>
               <input
@@ -106,6 +118,8 @@ const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps
               </button>
             </div>
           </form>
+            </>
+          )}
         </div>
       </div>
     </div>

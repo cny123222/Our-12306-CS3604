@@ -38,18 +38,18 @@ router.post('/validate-phone', (req, res) => {
   registerController.validatePhone(req, res);
 });
 
-// POST /api/auth/register - 用户注册
-router.post('/register', (req, res) => {
+// POST /api/register - 用户注册
+router.post('/', (req, res) => {
   registerController.register(req, res);
 });
 
-// POST /api/auth/send-registration-verification-code - 发送注册验证码
-router.post('/send-registration-verification-code', (req, res) => {
+// POST /api/register/send-verification-code - 发送注册验证码
+router.post('/send-verification-code', (req, res) => {
   registerController.sendRegistrationVerificationCode(req, res);
 });
 
-// POST /api/auth/complete-registration - 完成注册
-router.post('/complete-registration', (req, res) => {
+// POST /api/register/complete - 完成注册
+router.post('/complete', (req, res) => {
   registerController.completeRegistration(req, res);
 });
 
