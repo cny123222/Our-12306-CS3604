@@ -62,9 +62,9 @@ class RegistrationDbService {
           userData.name,
           userData.email || null,
           userData.phone,
-          userData.id_card_type,
-          userData.id_card_number,
-          userData.discount_type
+          userData.idCardType || userData.id_card_type,
+          userData.idCardNumber || userData.id_card_number,
+          userData.discountType || userData.discount_type
         ]
       );
 
@@ -74,7 +74,18 @@ class RegistrationDbService {
       console.error('Error creating user:', error);
       // 检查唯一性约束错误
       if (error.message && error.message.includes('UNIQUE constraint failed')) {
-        throw new Error('User already exists');
+        // 检查是哪个字段冲突
+        if (error.message.includes('users.username')) {
+          throw new Error('该用户名已被注册');
+        } else if (error.message.includes('users.phone')) {
+          throw new Error('该手机号已被注册');
+        } else if (error.message.includes('users.email')) {
+          throw new Error('该邮箱已被注册');
+        } else if (error.message.includes('users.id_card_number')) {
+          throw new Error('该证件号已被注册');
+        } else {
+          throw new Error('该账号信息已被注册');
+        }
       }
       throw error;
     }
@@ -185,6 +196,10 @@ class RegistrationDbService {
    */
   async verifySmsCode(phone, code) {
     try {
+      console.log(`\n🔍 验证短信验证码:`);
+      console.log(`手机号: ${phone}`);
+      console.log(`验证码: ${code}`);
+      
       const record = await dbService.get(
         `SELECT * FROM verification_codes 
          WHERE phone = ? AND code = ? AND used = 0 
@@ -193,13 +208,26 @@ class RegistrationDbService {
       );
 
       if (!record) {
+        console.log('❌ 未找到匹配的验证码记录');
+        // 查看该手机号的所有验证码
+        const allCodes = await dbService.all(
+          'SELECT code, created_at, expires_at, used FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 5',
+          [phone]
+        );
+        console.log('该手机号最近的验证码记录:', allCodes);
         return false;
       }
+
+      console.log('✅ 找到验证码记录:', { code: record.code, created_at: record.created_at, expires_at: record.expires_at });
 
       // 检查是否过期
       const now = new Date();
       const expiresAt = new Date(record.expires_at);
+      console.log('当前时间:', now.toISOString());
+      console.log('过期时间:', expiresAt.toISOString());
+      
       if (now > expiresAt) {
+        console.log('❌ 验证码已过期');
         return false;
       }
 
@@ -209,6 +237,7 @@ class RegistrationDbService {
         [record.id]
       );
 
+      console.log('✅ 验证码验证成功并已标记为使用');
       return true;
     } catch (error) {
       console.error('Error verifying sms code:', error);

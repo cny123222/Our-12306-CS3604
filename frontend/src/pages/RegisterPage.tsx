@@ -25,13 +25,14 @@ const RegisterPage: React.FC = () => {
   const navigate = useNavigate()
   const [showVerificationModal, setShowVerificationModal] = useState(false)
   const [registrationData, setRegistrationData] = useState<RegistrationData | null>(null)
+  const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false)
 
   const handleSubmit = async (data: RegistrationData) => {
     console.log('Registration submitted:', data)
     
     try {
       // 步骤1: 提交注册信息到后端，获取sessionId
-      const registerResponse = await axios.post('/api/auth/register', data)
+      const registerResponse = await axios.post('/api/register', data)
       
       const sessionId = registerResponse.data.sessionId
       if (!sessionId) {
@@ -44,14 +45,21 @@ const RegisterPage: React.FC = () => {
       
       // 步骤2: 发送验证码
       try {
-        await axios.post('/api/auth/send-registration-verification-code', {
+        const verifyResponse = await axios.post('/api/register/send-verification-code', {
           sessionId,
           phone: data.phone
         })
         
-        // 生成验证码（模拟，实际由后端发送）
-        const generatedCode = Math.floor(100000 + Math.random() * 900000).toString()
-        console.log(`向手机号 ${data.phone} 发送验证码: ${generatedCode}`)
+        // 从后端获取真实验证码（开发环境）
+        const realCode = verifyResponse.data.verificationCode
+        if (realCode) {
+          console.log(`\n=================================`)
+          console.log(`📱 注册验证码`)
+          console.log(`手机号: ${data.phone}`)
+          console.log(`验证码: ${realCode}`)
+          console.log(`有效期: 5分钟`)
+          console.log(`=================================\n`)
+        }
         
         // 显示验证弹窗
         setShowVerificationModal(true)
@@ -83,13 +91,13 @@ const RegisterPage: React.FC = () => {
 
     try {
       // 调用后端完成注册API
-      const response = await axios.post('/api/auth/complete-registration', {
+      await axios.post('/api/register/complete', {
         sessionId: sessionId,
         smsCode: code
       })
 
-      // 显示成功提示
-      alert(response.data.message || '恭喜您注册成功，请到登录页面进行登录！')
+      // 显示成功状态
+      setIsRegistrationSuccess(true)
       
       // 2秒后跳转到登录页
       setTimeout(() => {
@@ -107,9 +115,18 @@ const RegisterPage: React.FC = () => {
 
   const handleVerificationBack = () => {
     setShowVerificationModal(false)
+    setIsRegistrationSuccess(false)
   }
 
   const handleVerificationClose = () => {
+    // 如果已经成功，直接关闭
+    if (isRegistrationSuccess) {
+      setShowVerificationModal(false)
+      setIsRegistrationSuccess(false)
+      setRegistrationData(null)
+      return
+    }
+    
     if (window.confirm('确定要关闭验证弹窗吗？关闭后需要重新提交注册信息。')) {
       setShowVerificationModal(false)
       setRegistrationData(null)
@@ -155,6 +172,8 @@ const RegisterPage: React.FC = () => {
           onClose={handleVerificationClose}
           onComplete={handleVerificationComplete}
           onBack={handleVerificationBack}
+          isSuccess={isRegistrationSuccess}
+          successMessage="恭喜您注册成功！正在跳转登录页..."
         />
       )}
     </div>

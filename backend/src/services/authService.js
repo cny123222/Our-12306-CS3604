@@ -88,16 +88,17 @@ class AuthService {
         return { success: false, error: '会话无效或已过期' };
       }
 
-      const sessionData = JSON.parse(session.data);
+      // session.user_data 已经在 sessionService.getSession 中被解析了
+      const sessionData = session.user_data;
       
       // 验证证件号后4位
       if (!sessionData.id_card_number) {
-        return { success: false, error: '用户未设置证件号' };
+        return { success: false, error: '请输入正确的用户信息！' };
       }
 
       const last4 = sessionData.id_card_number.slice(-4);
       if (last4 !== idCardLast4) {
-        return { success: false, error: '证件号后4位不正确' };
+        return { success: false, error: '请输入正确的用户信息！' };
       }
 
       return { success: true, sessionData };
@@ -133,7 +134,7 @@ class AuthService {
       // TODO: 实际发送短信（这里模拟）
       console.log(`[SMS] 发送验证码 ${code} 到 ${sessionData.phone}`);
 
-      return { success: true, message: '验证码已发送' };
+      return { success: true, message: '验证码已发送', verificationCode: code };
     } catch (error) {
       console.error('Generate and send SMS code error:', error);
       throw error;
@@ -150,7 +151,8 @@ class AuthService {
         return { success: false, error: '会话无效或已过期' };
       }
 
-      const sessionData = JSON.parse(session.data);
+      // session.user_data 已经在 sessionService.getSession 中被解析了
+      const sessionData = session.user_data;
 
       // 验证短信验证码
       const isValid = await registrationDbService.verifySmsCode(sessionData.phone, verificationCode);

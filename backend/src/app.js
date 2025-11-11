@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/auth', registerRoutes);
+app.use('/api/register', registerRoutes);
 app.use('/api/terms', registerRoutes);
 
 // Health check

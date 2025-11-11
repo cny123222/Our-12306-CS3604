@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import TopNavigation from '../components/TopNavigation'
 import LoginForm from '../components/LoginForm'
 import BottomNavigation from '../components/BottomNavigation'
@@ -9,14 +10,34 @@ import '../components/LoginPage.css'
 const LoginPage: React.FC = () => {
   const navigate = useNavigate()
   const [showSmsModal, setShowSmsModal] = useState(false)
-  // const [sessionId, setSessionId] = useState('')
-  // const [error, setError] = useState('')
-  // const [isLoading, setIsLoading] = useState(false)
+  const [sessionId, setSessionId] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleLoginSuccess = (data: { username: string; password: string }) => {
-    // TODO: 实现登录成功后的逻辑
-    console.log('Login data:', data)
-    setShowSmsModal(true)
+  const handleLoginSuccess = async (data: { username: string; password: string }) => {
+    setIsLoading(true)
+    setError('')
+    
+    try {
+      // 调用登录API
+      const response = await axios.post('/api/auth/login', {
+        identifier: data.username,
+        password: data.password
+      })
+      
+      if (response.data.success) {
+        // 保存sessionId并显示验证弹窗
+        setSessionId(response.data.sessionId)
+        setShowSmsModal(true)
+        console.log('Login data:', response.data.sessionId)
+      }
+    } catch (error: any) {
+      console.error('Login error:', error)
+      setError(error.response?.data?.error || '登录失败，请重试')
+      alert(error.response?.data?.error || '登录失败，请重试')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleNavigateToRegister = () => {
@@ -38,10 +59,31 @@ const LoginPage: React.FC = () => {
     setShowSmsModal(false)
   }
 
-  const handleSmsVerificationSubmit = (data: { idCardLast4: string; code: string }) => {
-    console.log('SMS verification:', data)
-    setShowSmsModal(false)
-    // 实现短信验证登录逻辑
+  const handleSmsVerificationSubmit = async (data: { idCardLast4: string; code: string }) => {
+    try {
+      // 调用验证登录API
+      const response = await axios.post('/api/auth/verify-login', {
+        sessionId,
+        verificationCode: data.code
+      })
+      
+      if (response.data.success) {
+        console.log('SMS verification success:', response.data)
+        alert('登录成功！')
+        setShowSmsModal(false)
+        // TODO: 跳转到首页或用户中心
+        // navigate('/')
+      }
+    } catch (error: any) {
+      console.error('SMS verification error:', error)
+      const errorMsg = error.response?.data?.error || '验证失败，请重试'
+      // 根据错误类型显示不同的提示
+      if (errorMsg.includes('验证码')) {
+        alert('很抱歉，您输入的短信验证码有误。')
+      } else {
+        alert(errorMsg)
+      }
+    }
   }
 
   return (
@@ -81,16 +123,17 @@ const LoginPage: React.FC = () => {
             onQrLogin={() => console.log('QR login')}
             onRegisterClick={handleNavigateToRegister}
             onForgotPasswordClick={handleNavigateToForgotPassword}
-            error=""
-            isLoading={false}
+            error={error}
+            isLoading={isLoading}
           />
         </div>
       </div>
       
       <BottomNavigation />
       
-      {showSmsModal && (
+      {showSmsModal && sessionId && (
         <SmsVerificationModal
+          sessionId={sessionId}
           onClose={handleCloseSmsModal}
           onSubmit={handleSmsVerificationSubmit}
         />

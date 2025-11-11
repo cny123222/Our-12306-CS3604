@@ -349,7 +349,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText('允许输入的字符串在3-30个字符之间！')).toBeInTheDocument();
+        expect(screen.getByText('姓名长度不符合要求')).toBeInTheDocument();
       });
     });
 
@@ -364,7 +364,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText('允许输入的字符串在3-30个字符之间！')).toBeInTheDocument();
+        expect(screen.getByText('姓名长度不符合要求')).toBeInTheDocument();
       });
     });
 
