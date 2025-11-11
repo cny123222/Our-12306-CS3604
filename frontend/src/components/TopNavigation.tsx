@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import './TopNavigation.css'
 
 interface TopNavigationProps {
@@ -27,8 +28,8 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onLogoClick }) => {
       </div>
       <div className="welcome-section">
         <span className="welcome-text">您好，请</span>
-        <a href="/login" className="login-link">登录</a>
-        <a href="/register" className="register-link">注册</a>
+        <Link to="/login" className="login-link">登录</Link>
+        <Link to="/register" className="register-link">注册</Link>
       </div>
     </div>
   )

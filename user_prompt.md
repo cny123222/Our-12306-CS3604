@@ -19,3 +19,8 @@ Integration Tester:
 UI Developer:
 根据需求 [requirement.md] 和页面图片，复刻UI界面，开始任务
 
+Navigation Test Generator:
+之前完成的页面是：[登录页面]，现在完成了：[注册页面]，开始任务
+
+Navigation Integrator:
+新增了：[注册页面]，完成它与其他页面之间的衔接，通过所有测试，开始任务
