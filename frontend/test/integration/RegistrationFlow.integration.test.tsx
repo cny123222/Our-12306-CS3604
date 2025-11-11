@@ -39,17 +39,17 @@ global.confirm = vi.fn(() => true)
 describe('注册流程集成测试', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    vi.runOnlyPendingTimers()
-    vi.useRealTimers()
+    // Cleanup
   })
 
   // ==================== 完整注册流程测试 ====================
   describe('完整注册流程', () => {
     it('应该完成完整的注册流程：填表 → 验证 → 成功', async () => {
+      vi.useRealTimers() // 使用真实定时器避免超时问题
+      
       // Given: Mock后端API
       mockedAxios.post.mockImplementation((url) => {
         if (url === '/api/auth/validate-username') {
@@ -89,8 +89,8 @@ describe('注册流程集成测试', () => {
       const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/)
       await userEvent.type(passwordInput, 'Test123_')
 
-      const confirmPasswordInputs = screen.getAllByPlaceholderText(/6-20位字母、数字或号/)
-      await userEvent.type(confirmPasswordInputs[1], 'Test123_')
+      const confirmPasswordInput = screen.getByPlaceholderText(/请再次输入您的登录密码/)
+      await userEvent.type(confirmPasswordInput, 'Test123_')
 
       const nameInput = screen.getByPlaceholderText(/^请输入姓名$/)
       await userEvent.type(nameInput, '测试用户')
@@ -133,7 +133,7 @@ describe('注册流程集成测试', () => {
 
       // Then: 应该显示验证弹窗
       await waitFor(() => {
-        expect(screen.getByText('手机双向验证')).toBeInTheDocument()
+        expect(screen.getByText('手机验证')).toBeInTheDocument()
       })
 
       // Step 3: 输入验证码
@@ -163,10 +163,8 @@ describe('注册流程集成测试', () => {
       })
 
       // Step 5: 2秒后应该跳转到登录页
-      vi.advanceTimersByTime(2000)
-      await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/login')
-      })
+      await new Promise(resolve => setTimeout(resolve, 2100))
+      expect(mockNavigate).toHaveBeenCalledWith('/login')
     })
   })
 
@@ -199,8 +197,7 @@ describe('注册流程集成测试', () => {
       // 快速填写表单
       await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'testuser')
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
-      const confirmInputs = screen.getAllByPlaceholderText(/6-20位字母、数字或号/)
-      await userEvent.type(confirmInputs[1], 'Test123_')
+      await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
       await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
@@ -209,7 +206,7 @@ describe('注册流程集成测试', () => {
 
       // 等待验证弹窗出现
       await waitFor(() => {
-        expect(screen.getByText('手机双向验证')).toBeInTheDocument()
+        expect(screen.getByText('手机验证')).toBeInTheDocument()
       })
 
       // When: 输入错误的验证码
@@ -252,8 +249,7 @@ describe('注册流程集成测试', () => {
       // 填写并提交表单
       await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'testuser')
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
-      const confirmInputs = screen.getAllByPlaceholderText(/6-20位字母、数字或号/)
-      await userEvent.type(confirmInputs[1], 'Test123_')
+      await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
       await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
@@ -262,7 +258,7 @@ describe('注册流程集成测试', () => {
 
       // 等待验证弹窗出现
       await waitFor(() => {
-        expect(screen.getByText('手机双向验证')).toBeInTheDocument()
+        expect(screen.getByText('手机验证')).toBeInTheDocument()
       })
 
       // When: 点击返回修改
@@ -271,7 +267,7 @@ describe('注册流程集成测试', () => {
 
       // Then: 验证弹窗应该关闭
       await waitFor(() => {
-        expect(screen.queryByText('手机双向验证')).not.toBeInTheDocument()
+        expect(screen.queryByText('手机验证')).not.toBeInTheDocument()
       })
 
       // Then: 表单数据应该保留
@@ -301,8 +297,7 @@ describe('注册流程集成测试', () => {
 
       await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'testuser')
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
-      const confirmInputs = screen.getAllByPlaceholderText(/6-20位字母、数字或号/)
-      await userEvent.type(confirmInputs[1], 'Test123_')
+      await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
       await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
@@ -315,7 +310,7 @@ describe('注册流程集成测试', () => {
       })
 
       // Then: 不应该显示验证弹窗
-      expect(screen.queryByText('手机双向验证')).not.toBeInTheDocument()
+      expect(screen.queryByText('手机验证')).not.toBeInTheDocument()
     })
 
     it('发送验证码API失败应该显示错误提示', async () => {
@@ -341,8 +336,7 @@ describe('注册流程集成测试', () => {
 
       await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'testuser')
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
-      const confirmInputs = screen.getAllByPlaceholderText(/6-20位字母、数字或号/)
-      await userEvent.type(confirmInputs[1], 'Test123_')
+      await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
       await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
@@ -356,7 +350,7 @@ describe('注册流程集成测试', () => {
 
       // Then: 不应该显示验证弹窗
       await waitFor(() => {
-        expect(screen.queryByText('手机双向验证')).not.toBeInTheDocument()
+        expect(screen.queryByText('手机验证')).not.toBeInTheDocument()
       })
     })
   })
@@ -387,8 +381,7 @@ describe('注册流程集成测试', () => {
 
       await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'testuser')
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
-      const confirmInputs = screen.getAllByPlaceholderText(/6-20位字母、数字或号/)
-      await userEvent.type(confirmInputs[1], 'Test123_')
+      await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
       await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')

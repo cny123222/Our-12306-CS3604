@@ -64,53 +64,13 @@
   padding: 30px 40px;
 }
 
-/* 信息提示框 */
-.info-box {
-  background: #fffbe5;
-  border: 1px solid #f5d680;
-  border-radius: 4px;
-  padding: 20px;
-  margin-bottom: 30px;
-  display: flex;
-  gap: 15px;
-}
-
-.info-icon {
-  flex-shrink: 0;
-  width: 50px;
-  height: 50px;
-}
-
-.info-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.info-text {
-  flex: 1;
-  color: #333;
+/* 验证码发送提示 */
+.verification-message {
   font-size: 14px;
-  line-height: 1.8;
-}
-
-.info-title {
-  margin: 0 0 15px 0;
-  font-weight: 500;
-}
-
-.info-step {
-  margin: 10px 0;
-}
-
-.step-label {
-  font-weight: 600;
-  color: #2681d5;
-}
-
-.info-note {
-  margin: 15px 0 0 0;
-  color: #666;
+  color: #333;
+  margin: 0 0 30px 0;
+  text-align: center;
+  line-height: 1.6;
 }
 
 /* 验证码表单 */
@@ -126,64 +86,71 @@
 }
 
 .form-label {
-  width: 100px;
+  width: 80px;
   text-align: right;
-  margin-right: 15px;
+  margin-right: 10px;
   font-size: 14px;
   color: #333;
+  flex-shrink: 0;
 }
 
 .form-input {
   flex: 1;
-  height: 38px;
-  padding: 0 12px;
-  border: 1px solid #d9d9d9;
+  max-width: 300px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
   border-radius: 2px;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
   transition: border-color 0.3s;
+  background: white;
 }
 
 .form-input:focus {
-  border-color: #2681d5;
-  box-shadow: 0 0 0 2px rgba(38, 129, 213, 0.1);
+  border-color: #5ca3e6;
+  box-shadow: 0 0 0 1px rgba(92, 163, 230, 0.2);
 }
 
 .error-message {
   color: #ff4d4f;
-  font-size: 13px;
-  margin: -10px 0 15px 115px;
+  font-size: 12px;
+  margin: -10px 0 15px 90px;
 }
 
 /* 按钮组 */
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
+  gap: 30px;
+  margin-top: 35px;
+  padding-top: 10px;
 }
 
 .complete-button,
 .back-button {
-  padding: 10px 40px;
+  padding: 8px 35px;
   font-size: 14px;
-  border: none;
-  border-radius: 2px;
+  border-radius: 3px;
   cursor: pointer;
   transition: all 0.3s;
+  font-weight: normal;
+  min-width: 120px;
 }
 
 .complete-button {
-  background: #ff7300;
+  background: #ff8533;
   color: white;
+  border: none;
 }
 
 .complete-button:hover {
-  background: #ff8c1a;
+  background: #ff9547;
+  box-shadow: 0 2px 4px rgba(255, 133, 51, 0.3);
 }
 
 .complete-button:active {
-  background: #e66600;
+  background: #e67529;
 }
 
 .back-button {
@@ -193,11 +160,13 @@
 }
 
 .back-button:hover {
-  background: #f0f7ff;
+  background: #f5f9ff;
+  border-color: #5ca3e6;
+  color: #5ca3e6;
 }
 
 .back-button:active {
-  background: #e6f2ff;
+  background: #e8f3ff;
 }
 
 /* 响应式设计 */
@@ -209,12 +178,6 @@
 
   .reg-verification-modal-content {
     padding: 20px;
-  }
-
-  .info-box {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
   }
 
   .button-group {

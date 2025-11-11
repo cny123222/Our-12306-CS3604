@@ -178,7 +178,7 @@ describe('RegisterForm Component Tests', () => {
       await waitFor(() => {
         const checkmark = screen.getByTestId('username-checkmark');
         expect(checkmark).toBeInTheDocument();
-        expect(checkmark).toHaveClass('valid');
+        expect(checkmark).toHaveClass('input-checkmark');
       });
     });
   });
@@ -243,7 +243,7 @@ describe('RegisterForm Component Tests', () => {
       await waitFor(() => {
         const checkmark = screen.getByTestId('password-checkmark');
         expect(checkmark).toBeInTheDocument();
-        expect(checkmark).toHaveClass('valid');
+        expect(checkmark).toHaveClass('input-checkmark');
       });
     });
   });
@@ -254,7 +254,7 @@ describe('RegisterForm Component Tests', () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
       const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
-      const confirmPasswordInput = screen.getByPlaceholderText(/请确认登录密码/);
+      const confirmPasswordInput = screen.getByPlaceholderText(/请再次输入您的登录密码/);
 
       // When: 输入不一致的确认密码
       await userEvent.type(passwordInput, 'abc123');
@@ -271,7 +271,7 @@ describe('RegisterForm Component Tests', () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
       const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
-      const confirmPasswordInput = screen.getByPlaceholderText(/请确认登录密码/);
+      const confirmPasswordInput = screen.getByPlaceholderText(/请再次输入您的登录密码/);
 
       // When: 输入一致的确认密码
       await userEvent.type(passwordInput, 'abc123');
@@ -282,7 +282,7 @@ describe('RegisterForm Component Tests', () => {
       await waitFor(() => {
         const checkmark = screen.getByTestId('confirm-password-checkmark');
         expect(checkmark).toBeInTheDocument();
-        expect(checkmark).toHaveClass('valid');
+        expect(checkmark).toHaveClass('input-checkmark');
       });
     });
   });
@@ -293,8 +293,8 @@ describe('RegisterForm Component Tests', () => {
       // When: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
 
-      // Then: 应该显示默认占位符
-      expect(screen.getByText('请选择证件类型')).toBeInTheDocument();
+      // Then: 应该显示默认值"居民身份证"
+      expect(screen.getByText('居民身份证')).toBeInTheDocument();
     });
 
     test('应该支持8种证件类型', async () => {
@@ -307,7 +307,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示8种证件类型选项
       await waitFor(() => {
-        expect(screen.getByText('居民身份证')).toBeInTheDocument();
+        expect(screen.getAllByText('居民身份证').length).toBeGreaterThan(0);
         expect(screen.getByText('港澳居民居住证')).toBeInTheDocument();
         expect(screen.getByText('台湾居民居住证')).toBeInTheDocument();
         expect(screen.getByText('外国人永久居留身份证')).toBeInTheDocument();
@@ -325,8 +325,8 @@ describe('RegisterForm Component Tests', () => {
 
       // When: 打开下拉框并选择一个选项
       await userEvent.click(dropdown);
-      const option = screen.getByText('居民身份证');
-      await userEvent.click(option);
+      const options = screen.getAllByText('居民身份证');
+      await userEvent.click(options[options.length - 1]); // 点击下拉列表中的选项
 
       // Then: 下拉框应该关闭并显示选中的值
       await waitFor(() => {
@@ -396,7 +396,7 @@ describe('RegisterForm Component Tests', () => {
       await waitFor(() => {
         const checkmark = screen.getByTestId('name-checkmark');
         expect(checkmark).toBeInTheDocument();
-        expect(checkmark).toHaveClass('valid');
+        expect(checkmark).toHaveClass('input-checkmark');
       });
     });
 
@@ -485,7 +485,7 @@ describe('RegisterForm Component Tests', () => {
       await waitFor(() => {
         const checkmark = screen.getByTestId('id-card-checkmark');
         expect(checkmark).toBeInTheDocument();
-        expect(checkmark).toHaveClass('valid');
+        expect(checkmark).toHaveClass('input-checkmark');
       });
     });
   });
@@ -496,8 +496,8 @@ describe('RegisterForm Component Tests', () => {
       // When: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
 
-      // Then: 应该显示默认占位符
-      expect(screen.getByText('请选择优惠等级')).toBeInTheDocument();
+      // Then: 应该显示默认值"成人"
+      expect(screen.getByText('成人')).toBeInTheDocument();
     });
 
     test('应该支持4种优惠类型', async () => {
@@ -510,7 +510,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示4种优惠类型选项
       await waitFor(() => {
-        expect(screen.getByText('成人')).toBeInTheDocument();
+        expect(screen.getAllByText('成人').length).toBeGreaterThan(0);
         expect(screen.getByText('儿童')).toBeInTheDocument();
         expect(screen.getByText('学生')).toBeInTheDocument();
         expect(screen.getByText('残疾军人')).toBeInTheDocument();
@@ -638,9 +638,9 @@ describe('RegisterForm Component Tests', () => {
       await userEvent.click(checkbox);
       await userEvent.click(nextButton);
 
-      // Then: 应该显示错误提示
+      // Then: 应该显示错误提示（包含缺失字段）
       await waitFor(() => {
-        expect(screen.getByText('请填写完整信息！')).toBeInTheDocument();
+        expect(screen.getByText(/请填写完整信息！缺少：/)).toBeInTheDocument();
       });
     });
 
@@ -679,18 +679,14 @@ describe('RegisterForm Component Tests', () => {
       // When: 填写所有必填字段
       await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'validUser123');
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'abc123');
-      await userEvent.type(screen.getByPlaceholderText(/请确认登录密码/), 'abc123');
+      await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'abc123');
       
-      // 选择证件类型
-      await userEvent.click(screen.getByTestId('id-card-type-dropdown'));
-      await userEvent.click(screen.getByText('居民身份证'));
+      // 选择证件类型（已默认选中居民身份证，无需再选）
       
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '张三');
       await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234');
       
-      // 选择优惠类型
-      await userEvent.click(screen.getByTestId('discount-type-dropdown'));
-      await userEvent.click(screen.getByText('成人'));
+      // 选择优惠类型（已默认选中成人，无需再选）
       
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000');
       await userEvent.click(screen.getByRole('checkbox'));

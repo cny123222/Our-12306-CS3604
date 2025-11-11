@@ -50,7 +50,7 @@ const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps
       <div className="reg-verification-modal">
         {/* 标题栏 */}
         <div className="reg-verification-modal-header">
-          <h3>手机双向验证</h3>
+          <h3>手机验证</h3>
           <button 
             className="close-button" 
             onClick={onClose}
@@ -62,28 +62,10 @@ const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps
 
         {/* 内容区域 */}
         <div className="reg-verification-modal-content">
-          {/* 信息提示框 */}
-          <div className="info-box">
-            <div className="info-icon">
-              <img src="/images/user-icon.png" alt="用户" />
-            </div>
-            <div className="info-text">
-              <p className="info-title">
-                为了保护您的信息安全，便于今后为您服务，请按以下程序进行手机双向核验：
-              </p>
-              <p className="info-step">
-                <span className="step-label">第一步：</span>
-                请您用手机+86-{phoneNumber}发送短信"999"至12306，以便确认您的手机可以联络。
-              </p>
-              <p className="info-step">
-                <span className="step-label">第二步：</span>
-                12306接到您的短信后将给您的手机回复六位数字短信，请您在十分钟内将六位数字短信填写在下方空白框中，并点击"完成注册"按钮。
-              </p>
-              <p className="info-note">
-                现在先请您发送"999"短信，并稍候我们的回复。
-              </p>
-            </div>
-          </div>
+          {/* 验证码发送提示 */}
+          <p className="verification-message">
+            验证码已发送至{phoneNumber}
+          </p>
 
           {/* 验证码输入表单 */}
           <form className="verification-form" onSubmit={handleSubmit}>
