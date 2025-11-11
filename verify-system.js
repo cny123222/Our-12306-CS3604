@@ -79,7 +79,15 @@ function makeRequest(options) {
   return new Promise((resolve, reject) => {
     const protocol = options.protocol === 'https' ? https : http;
     
-    const req = protocol.request(options, (res) => {
+    const requestOptions = {
+      hostname: options.host,
+      port: options.port,
+      path: options.path,
+      method: options.method,
+      headers: options.headers || {}
+    };
+    
+    const req = protocol.request(requestOptions, (res) => {
       let data = '';
       
       res.on('data', (chunk) => {
