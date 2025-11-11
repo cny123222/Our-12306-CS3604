@@ -28,11 +28,11 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-ValidateUsername ====================
-  describe('POST /api/auth/validate-username - 验证用户名', () => {
+  describe('POST /api/register/validate-username - 验证用户名', () => {
     test('用户名长度小于6位时应返回400错误', async () => {
       // When: 发送用户名长度小于6位的请求
       const response = await request(app)
-        .post('/api/auth/validate-username')
+        .post('/api/register/validate-username')
         .send({ username: 'abc' })
         .expect(400);
 
@@ -44,7 +44,7 @@ describe('Registration API Routes Tests', () => {
     test('用户名长度大于30位时应返回400错误', async () => {
       // When: 发送用户名长度大于30位的请求
       const response = await request(app)
-        .post('/api/auth/validate-username')
+        .post('/api/register/validate-username')
         .send({ username: 'a'.repeat(31) })
         .expect(400);
 
@@ -56,7 +56,7 @@ describe('Registration API Routes Tests', () => {
     test('用户名不以字母开头时应返回400错误', async () => {
       // When: 发送以数字开头的用户名
       const response = await request(app)
-        .post('/api/auth/validate-username')
+        .post('/api/register/validate-username')
         .send({ username: '123abc' })
         .expect(400);
 
@@ -68,7 +68,7 @@ describe('Registration API Routes Tests', () => {
     test('用户名包含特殊字符时应返回400错误', async () => {
       // When: 发送包含特殊字符的用户名
       const response = await request(app)
-        .post('/api/auth/validate-username')
+        .post('/api/register/validate-username')
         .send({ username: 'user@#$' })
         .expect(400);
 
@@ -86,7 +86,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 尝试验证已存在的用户名
       const response = await request(app)
-        .post('/api/auth/validate-username')
+        .post('/api/register/validate-username')
         .send({ username: 'existingUser' })
         .expect(409);
 
@@ -98,7 +98,7 @@ describe('Registration API Routes Tests', () => {
     test('合法且未被占用的用户名应返回200成功', async () => {
       // When: 发送合法的用户名
       const response = await request(app)
-        .post('/api/auth/validate-username')
+        .post('/api/register/validate-username')
         .send({ username: 'validUser123' })
         .expect(200);
 
@@ -109,11 +109,11 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-ValidatePassword ====================
-  describe('POST /api/auth/validate-password - 验证密码', () => {
+  describe('POST /api/register/validate-password - 验证密码', () => {
     test('密码长度小于6位时应返回400错误', async () => {
       // When: 发送长度小于6位的密码
       const response = await request(app)
-        .post('/api/auth/validate-password')
+        .post('/api/register/validate-password')
         .send({ password: 'abc12' })
         .expect(400);
 
@@ -125,7 +125,7 @@ describe('Registration API Routes Tests', () => {
     test('密码包含特殊字符时应返回400错误', async () => {
       // When: 发送包含特殊字符的密码
       const response = await request(app)
-        .post('/api/auth/validate-password')
+        .post('/api/register/validate-password')
         .send({ password: 'abc@#$123' })
         .expect(400);
 
@@ -137,19 +137,19 @@ describe('Registration API Routes Tests', () => {
     test('密码只包含一种字符类型时应返回400错误', async () => {
       // When: 发送只包含数字的密码
       const response1 = await request(app)
-        .post('/api/auth/validate-password')
+        .post('/api/register/validate-password')
         .send({ password: '123456' })
         .expect(400);
 
       // When: 发送只包含字母的密码
       const response2 = await request(app)
-        .post('/api/auth/validate-password')
+        .post('/api/register/validate-password')
         .send({ password: 'abcdef' })
         .expect(400);
 
       // When: 发送只包含下划线的密码
       const response3 = await request(app)
-        .post('/api/auth/validate-password')
+        .post('/api/register/validate-password')
         .send({ password: '______' })
         .expect(400);
 
@@ -162,7 +162,7 @@ describe('Registration API Routes Tests', () => {
     test('符合规范的密码应返回200成功', async () => {
       // When: 发送符合规范的密码
       const response = await request(app)
-        .post('/api/auth/validate-password')
+        .post('/api/register/validate-password')
         .send({ password: 'abc123' })
         .expect(200);
 
@@ -173,11 +173,11 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-ValidateName ====================
-  describe('POST /api/auth/validate-name - 验证姓名', () => {
+  describe('POST /api/register/validate-name - 验证姓名', () => {
     test('姓名长度小于3个字符时应返回400错误', async () => {
       // When: 发送过短的姓名
       const response = await request(app)
-        .post('/api/auth/validate-name')
+        .post('/api/register/validate-name')
         .send({ name: '李' })
         .expect(400);
 
@@ -189,7 +189,7 @@ describe('Registration API Routes Tests', () => {
     test('姓名长度大于30个字符时应返回400错误', async () => {
       // When: 发送过长的姓名
       const response = await request(app)
-        .post('/api/auth/validate-name')
+        .post('/api/register/validate-name')
         .send({ name: '李'.repeat(16) }) // 16个汉字 = 32个字符
         .expect(400);
 
@@ -201,7 +201,7 @@ describe('Registration API Routes Tests', () => {
     test('姓名包含特殊字符时应返回400错误', async () => {
       // When: 发送包含特殊字符的姓名
       const response = await request(app)
-        .post('/api/auth/validate-name')
+        .post('/api/register/validate-name')
         .send({ name: '张三@#$' })
         .expect(400);
 
@@ -213,19 +213,19 @@ describe('Registration API Routes Tests', () => {
     test('符合规范的姓名应返回200成功', async () => {
       // When: 发送符合规范的中文姓名
       const response1 = await request(app)
-        .post('/api/auth/validate-name')
+        .post('/api/register/validate-name')
         .send({ name: '张三' })
         .expect(200);
 
       // When: 发送符合规范的英文姓名
       const response2 = await request(app)
-        .post('/api/auth/validate-name')
+        .post('/api/register/validate-name')
         .send({ name: 'John Smith' })
         .expect(200);
 
       // When: 发送包含点的姓名
       const response3 = await request(app)
-        .post('/api/auth/validate-name')
+        .post('/api/register/validate-name')
         .send({ name: 'John.Smith' })
         .expect(200);
 
@@ -237,11 +237,11 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-ValidateIdCard ====================
-  describe('POST /api/auth/validate-idcard - 验证证件号码', () => {
+  describe('POST /api/register/validate-idcard - 验证证件号码', () => {
     test('证件号码长度不是18位时应返回400错误', async () => {
       // When: 发送长度不足18位的证件号码
       const response1 = await request(app)
-        .post('/api/auth/validate-idcard')
+        .post('/api/register/validate-idcard')
         .send({ 
           idCardType: '居民身份证',
           idCardNumber: '12345'
@@ -250,7 +250,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 发送长度超过18位的证件号码
       const response2 = await request(app)
-        .post('/api/auth/validate-idcard')
+        .post('/api/register/validate-idcard')
         .send({ 
           idCardType: '居民身份证',
           idCardNumber: '1234567890123456789'
@@ -267,7 +267,7 @@ describe('Registration API Routes Tests', () => {
     test('证件号码包含非法字符时应返回400错误', async () => {
       // When: 发送包含特殊字符的证件号码
       const response = await request(app)
-        .post('/api/auth/validate-idcard')
+        .post('/api/register/validate-idcard')
         .send({ 
           idCardType: '居民身份证',
           idCardNumber: '11010119900101@#$'
@@ -288,7 +288,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 尝试验证已存在的证件号码
       const response = await request(app)
-        .post('/api/auth/validate-idcard')
+        .post('/api/register/validate-idcard')
         .send({ 
           idCardType: '居民身份证',
           idCardNumber: '110101199001011234'
@@ -303,7 +303,7 @@ describe('Registration API Routes Tests', () => {
     test('符合规范且未被注册的证件号码应返回200成功', async () => {
       // When: 发送符合规范的证件号码
       const response = await request(app)
-        .post('/api/auth/validate-idcard')
+        .post('/api/register/validate-idcard')
         .send({ 
           idCardType: '居民身份证',
           idCardNumber: '110101199001011235'
@@ -317,11 +317,11 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-ValidateEmail ====================
-  describe('POST /api/auth/validate-email - 验证邮箱', () => {
+  describe('POST /api/register/validate-email - 验证邮箱', () => {
     test('邮箱不包含@符号时应返回400错误', async () => {
       // When: 发送不包含@的邮箱
       const response = await request(app)
-        .post('/api/auth/validate-email')
+        .post('/api/register/validate-email')
         .send({ email: 'invalidemail.com' })
         .expect(400);
 
@@ -333,7 +333,7 @@ describe('Registration API Routes Tests', () => {
     test('邮箱不包含域名时应返回400错误', async () => {
       // When: 发送不包含域名的邮箱
       const response = await request(app)
-        .post('/api/auth/validate-email')
+        .post('/api/register/validate-email')
         .send({ email: 'user@' })
         .expect(400);
 
@@ -345,7 +345,7 @@ describe('Registration API Routes Tests', () => {
     test('符合规范的邮箱应返回200成功', async () => {
       // When: 发送符合规范的邮箱
       const response = await request(app)
-        .post('/api/auth/validate-email')
+        .post('/api/register/validate-email')
         .send({ email: 'user@example.com' })
         .expect(200);
 
@@ -356,17 +356,17 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-ValidatePhone ====================
-  describe('POST /api/auth/validate-phone - 验证手机号', () => {
+  describe('POST /api/register/validate-phone - 验证手机号', () => {
     test('手机号长度不是11位时应返回400错误', async () => {
       // When: 发送长度不足11位的手机号
       const response1 = await request(app)
-        .post('/api/auth/validate-phone')
+        .post('/api/register/validate-phone')
         .send({ phone: '138001380' })
         .expect(400);
 
       // When: 发送长度超过11位的手机号
       const response2 = await request(app)
-        .post('/api/auth/validate-phone')
+        .post('/api/register/validate-phone')
         .send({ phone: '138001380001' })
         .expect(400);
 
@@ -379,7 +379,7 @@ describe('Registration API Routes Tests', () => {
     test('手机号包含非数字字符时应返回400错误', async () => {
       // When: 发送包含字母的手机号
       const response = await request(app)
-        .post('/api/auth/validate-phone')
+        .post('/api/register/validate-phone')
         .send({ phone: '1380013800a' })
         .expect(400);
 
@@ -391,7 +391,7 @@ describe('Registration API Routes Tests', () => {
     test('符合规范的手机号应返回200成功', async () => {
       // When: 发送符合规范的手机号
       const response = await request(app)
-        .post('/api/auth/validate-phone')
+        .post('/api/register/validate-phone')
         .send({ phone: '13800138000' })
         .expect(200);
 
@@ -406,7 +406,7 @@ describe('Registration API Routes Tests', () => {
     test('缺少必填字段时应返回400错误', async () => {
       // When: 发送不完整的注册信息
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'testUser',
           password: 'test123'
@@ -421,7 +421,7 @@ describe('Registration API Routes Tests', () => {
     test('密码和确认密码不一致时应返回400错误', async () => {
       // When: 发送密码不一致的注册信息
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'testUser',
           password: 'test123',
@@ -442,7 +442,7 @@ describe('Registration API Routes Tests', () => {
     test('未勾选用户协议时应返回400错误', async () => {
       // When: 发送未勾选协议的注册信息
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'testUser',
           password: 'test123',
@@ -469,7 +469,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 尝试使用已存在的用户名注册
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'existingUser',
           password: 'test123',
@@ -496,7 +496,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 尝试使用已注册的证件号注册
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'newUser',
           password: 'test123',
@@ -517,7 +517,7 @@ describe('Registration API Routes Tests', () => {
     test('所有信息合法时应返回201并创建会话', async () => {
       // When: 发送完整且合法的注册信息
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'validUser123',
           password: 'test123',
@@ -539,11 +539,11 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-SendRegistrationVerificationCode ====================
-  describe('POST /api/auth/send-registration-verification-code - 发送注册验证码', () => {
+  describe('POST /api/register/send-verification-code - 发送注册验证码', () => {
     test('会话无效时应返回400错误', async () => {
       // When: 发送无效的会话ID
       const response = await request(app)
-        .post('/api/auth/send-registration-verification-code')
+        .post('/api/register/send-verification-code')
         .send({
           sessionId: 'invalid-session-id',
           phone: '13800138000'
@@ -557,7 +557,7 @@ describe('Registration API Routes Tests', () => {
     test('请求过于频繁时应返回429错误', async () => {
       // Given: 创建有效会话
       const registerResponse = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'frequentUser',
           password: 'test123',
@@ -574,7 +574,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 第一次请求验证码
       await request(app)
-        .post('/api/auth/send-registration-verification-code')
+        .post('/api/register/send-verification-code')
         .send({
           sessionId: sessionId,
           phone: '13800138006'
@@ -583,7 +583,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 立即再次请求
       const response = await request(app)
-        .post('/api/auth/send-registration-verification-code')
+        .post('/api/register/send-verification-code')
         .send({
           sessionId: sessionId,
           phone: '13800138006'
@@ -597,7 +597,7 @@ describe('Registration API Routes Tests', () => {
     test('有效请求应返回200成功', async () => {
       // Given: 创建有效会话
       const registerResponse = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'validCodeUser',
           password: 'test123',
@@ -615,7 +615,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 请求发送验证码
       const response = await request(app)
-        .post('/api/auth/send-registration-verification-code')
+        .post('/api/register/send-verification-code')
         .send({
           sessionId: sessionId,
           phone: '13800138007',
@@ -629,11 +629,11 @@ describe('Registration API Routes Tests', () => {
   });
 
   // ==================== API-POST-CompleteRegistration ====================
-  describe('POST /api/auth/complete-registration - 完成注册', () => {
+  describe('POST /api/register/complete - 完成注册', () => {
     test('验证码错误时应返回400错误', async () => {
       // Given: 创建有效会话并发送验证码
       const registerResponse = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'completeUser',
           password: 'test123',
@@ -649,7 +649,7 @@ describe('Registration API Routes Tests', () => {
       const sessionId = registerResponse.body.sessionId;
 
       await request(app)
-        .post('/api/auth/send-registration-verification-code')
+        .post('/api/register/send-verification-code')
         .send({
           sessionId: sessionId,
           phone: '13800138008'
@@ -657,7 +657,7 @@ describe('Registration API Routes Tests', () => {
 
       // When: 使用错误的验证码
       const response = await request(app)
-        .post('/api/auth/complete-registration')
+        .post('/api/register/complete')
         .send({
           sessionId: sessionId,
           smsCode: '000000'
@@ -671,7 +671,7 @@ describe('Registration API Routes Tests', () => {
     test('验证码正确时应返回201并创建用户', async () => {
       // Given: 创建有效会话并获取正确的验证码
       const registerResponse = await request(app)
-        .post('/api/auth/register')
+        .post('/api/register')
         .send({
           username: 'successUser',
           password: 'test123',
@@ -688,7 +688,7 @@ describe('Registration API Routes Tests', () => {
 
       // 发送验证码（实际测试中需要从数据库获取验证码）
       await request(app)
-        .post('/api/auth/send-registration-verification-code')
+        .post('/api/register/send-verification-code')
         .send({
           sessionId: sessionId,
           phone: '13800138009'
@@ -699,7 +699,7 @@ describe('Registration API Routes Tests', () => {
 
       // When & Then: 使用正确的验证码完成注册
       // const response = await request(app)
-      //   .post('/api/auth/complete-registration')
+      //   .post('/api/register/complete')
       //   .send({
       //     sessionId: sessionId,
       //     smsCode: actualCode

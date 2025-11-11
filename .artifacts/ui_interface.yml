@@ -141,12 +141,15 @@
       type: string
       description: "登录会话ID"
   state:
-    - idCardLast4Digits
-    - verificationCode
-    - error
-    - isLoading
-    - buttonState  # 获取验证码按钮状态：1-禁用，2-可点击，3-倒计时
-    - countdown
+    - idCardLast4  # 证件号后4位
+    - verificationCode  # 验证码
+    - error  # 错误信息
+    - message  # 成功/提示信息
+    - messageType  # 消息类型：success, error, warning
+    - isLoading  # 加载状态
+    - buttonState  # 获取验证码按钮状态：1-禁用（证件号<4位），2-可点击（证件号=4位），3-倒计时（60秒）
+    - countdown  # 倒计时秒数
+    - isSending  # 是否正在发送验证码
   dependencies:
     - API-POST-SendVerificationCode
     - API-POST-VerifyLogin
@@ -158,9 +161,16 @@
       - "请输入登录绑定的证件号后4位"输入框（最多4位）
       - "输入验证码"输入框（最多6位）和"获取验证码"按钮
       - "确定"按钮（橙色背景，白色文字）
-    - "获取验证码"按钮三种状态切换
-    - 60秒倒计时功能
-    - 完整的输入验证和错误提示
+    - "获取验证码"按钮三种状态：
+      - 状态1：背景灰色，文字灰色"获取验证码"，禁用（证件号<4位）
+      - 状态2：背景白色，文字黑色"获取验证码"，可点击（证件号=4位）
+      - 状态3：背景灰色，文字灰色"重新发送(XXs)"，禁用（60秒倒计时）
+    - 客户端验证：
+      - 证件号后4位为空时显示："请输入登录账号绑定的证件号后4位"
+      - 验证码为空时显示："请输入验证码"
+      - 验证码少于6位时显示："请输入正确的验证码"
+    - 成功/错误消息显示在"确定"按钮上方
+    - 支持点击获取验证码后自动启动60秒倒计时
   changeLog:
     - date: "2025-01-25"
       description: "初始创建，短信验证弹窗组件。"

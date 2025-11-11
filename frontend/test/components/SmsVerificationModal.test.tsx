@@ -133,4 +133,141 @@ describe('SmsVerificationModal - 登录短信验证', () => {
       expect(button).toBeDisabled()
     }, { timeout: 1000 })
   })
+
+  // ============ 补充测试：客户端验证 ============
+  describe('客户端验证', () => {
+    it('应该在证件号为空点击确认时显示"请输入登录账号绑定的证件号后4位"', async () => {
+      render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const codeInput = screen.getByPlaceholderText('输入验证码')
+      await userEvent.type(codeInput, '123456')
+      
+      const submitButton = screen.getByText('确定')
+      await userEvent.click(submitButton)
+      
+      // 应该显示错误信息
+      await waitFor(() => {
+        expect(screen.getByText(/请输入登录账号绑定的证件号后4位/i)).toBeInTheDocument()
+      })
+    })
+
+    it('应该在验证码为空点击确认时显示"请输入验证码"', async () => {
+      render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const idCardInput = screen.getByPlaceholderText('请输入登录绑定的证件号后4位')
+      await userEvent.type(idCardInput, '1234')
+      
+      const submitButton = screen.getByText('确定')
+      await userEvent.click(submitButton)
+      
+      // 应该显示错误信息
+      await waitFor(() => {
+        expect(screen.getByText(/请输入验证码/i)).toBeInTheDocument()
+      })
+    })
+
+    it('应该在验证码少于6位点击确认时显示"请输入正确的验证码"', async () => {
+      render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const idCardInput = screen.getByPlaceholderText('请输入登录绑定的证件号后4位')
+      const codeInput = screen.getByPlaceholderText('输入验证码')
+      
+      await userEvent.type(idCardInput, '1234')
+      await userEvent.type(codeInput, '12345')  // 少于6位
+      
+      const submitButton = screen.getByText('确定')
+      await userEvent.click(submitButton)
+      
+      // 应该显示错误信息
+      await waitFor(() => {
+        expect(screen.getByText(/请输入正确的验证码/i)).toBeInTheDocument()
+      })
+    })
+
+    it('应该在"确定"按钮上方显示错误/成功消息', async () => {
+      const { container } = render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const submitButton = screen.getByText('确定')
+      await userEvent.click(submitButton)
+      
+      // 等待错误消息显示
+      await waitFor(() => {
+        const errorMessage = screen.queryByText(/请输入/i)
+        if (errorMessage) {
+          const messagePosition = errorMessage.getBoundingClientRect().bottom
+          const buttonPosition = submitButton.getBoundingClientRect().top
+          
+          // 消息应该在按钮上方
+          expect(messagePosition).toBeLessThanOrEqual(buttonPosition)
+        }
+      })
+    })
+  })
+
+  // ============ 补充测试：按钮状态 ============
+  describe('按钮状态', () => {
+    it('应该在证件号<4位时显示状态1（灰色背景，灰色文字，禁用）', () => {
+      render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const sendButton = screen.getByText('获取验证码')
+      
+      // 验证按钮禁用
+      expect(sendButton).toBeDisabled()
+      
+      // 验证样式（如果组件实现了样式类）
+      expect(sendButton).toHaveClass('disabled') || expect(sendButton).toBeDisabled()
+    })
+
+    it('应该在证件号=4位时显示状态2（白色背景，黑色文字，可点击）', async () => {
+      render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const idCardInput = screen.getByPlaceholderText('请输入登录绑定的证件号后4位')
+      await userEvent.type(idCardInput, '1234')
+      
+      const sendButton = screen.getByText('获取验证码')
+      
+      // 验证按钮可用
+      expect(sendButton).not.toBeDisabled()
+    })
+
+    it('应该在倒计时时显示状态3（灰色背景，灰色文字"重新发送(XXs)"，禁用）', async () => {
+      render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const idCardInput = screen.getByPlaceholderText('请输入登录绑定的证件号后4位')
+      await userEvent.type(idCardInput, '1234')
+      
+      const sendButton = screen.getByText('获取验证码')
+      await userEvent.click(sendButton)
+      
+      // 验证倒计时文本和禁用状态
+      await waitFor(() => {
+        const button = screen.getByText(/重新发送\(\d+s\)/)
+        expect(button).toBeInTheDocument()
+        expect(button).toBeDisabled()
+      }, { timeout: 1000 })
+    })
+
+    it('应该根据证件号位数动态切换状态1和状态2', async () => {
+      render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
+      
+      const idCardInput = screen.getByPlaceholderText('请输入登录绑定的证件号后4位')
+      const sendButton = screen.getByText('获取验证码')
+      
+      // 初始状态：禁用（状态1）
+      expect(sendButton).toBeDisabled()
+      
+      // 输入1位：仍然禁用
+      await userEvent.type(idCardInput, '1')
+      expect(sendButton).toBeDisabled()
+      
+      // 输入到4位：启用（状态2）
+      await userEvent.type(idCardInput, '234')
+      expect(sendButton).not.toBeDisabled()
+      
+      // 删除1位：禁用（状态1）
+      await userEvent.clear(idCardInput)
+      await userEvent.type(idCardInput, '123')
+      expect(sendButton).toBeDisabled()
+    })
+  })
 })

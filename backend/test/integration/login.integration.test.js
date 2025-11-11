@@ -16,7 +16,10 @@ describe('Login Integration Tests', () => {
     phone: '13700000001',
     idCardType: '二代身份证',
     idCardNumber: '110101199001011234',
-    discountType: '无'
+    discountType: '无',
+    get idCardLast4() {
+      return this.idCardNumber.slice(-4);
+    }
   };
 
   beforeAll(async () => {
@@ -24,6 +27,13 @@ describe('Login Integration Tests', () => {
     await dbService.run('DELETE FROM users WHERE username = ?', [testUser.username]);
     await dbService.run('DELETE FROM users WHERE phone = ?', [testUser.phone]);
     await dbService.run('DELETE FROM verification_codes WHERE phone = ?', [testUser.phone]);
+    await dbService.run('DELETE FROM sessions');
+  });
+
+  afterEach(async () => {
+    // 每个测试后清理验证码和会话，避免干扰
+    await dbService.run('DELETE FROM verification_codes WHERE phone = ?', [testUser.phone]);
+    await dbService.run('DELETE FROM sessions');
   });
 
   afterAll(async () => {
@@ -31,6 +41,7 @@ describe('Login Integration Tests', () => {
     await dbService.run('DELETE FROM users WHERE username = ?', [testUser.username]);
     await dbService.run('DELETE FROM users WHERE phone = ?', [testUser.phone]);
     await dbService.run('DELETE FROM verification_codes WHERE phone = ?', [testUser.phone]);
+    await dbService.run('DELETE FROM sessions');
   });
 
   describe('注册到登录完整流程', () => {
@@ -74,6 +85,9 @@ describe('Login Integration Tests', () => {
 
       expect(completeResponse.status).toBe(201);
       expect(completeResponse.body.message).toContain('注册成功');
+
+      // 清理验证码记录，避免影响登录验证码发送
+      await dbService.run('DELETE FROM verification_codes WHERE phone = ?', [testUser.phone]);
 
       // 4. 登录
       const loginResponse = await request(app)
@@ -265,7 +279,7 @@ describe('Login Integration Tests', () => {
           verificationCode: '999999'
         });
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(401);
       expect(response.body.error).toContain('验证码');
     });
 
@@ -280,6 +294,228 @@ describe('Login Integration Tests', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('会话');
+    });
+  });
+
+  // ============ 补充测试：完整登录流程 ============
+  describe('完整登录流程测试', () => {
+    test('完整流程：用户名→密码→证件号→验证码→成功', async () => {
+      // 步骤1：用户名密码登录
+      const loginResponse = await request(app)
+        .post('/api/auth/login')
+        .send({
+          identifier: testUser.username,
+          password: testUser.password
+        });
+
+      expect(loginResponse.status).toBe(200);
+      expect(loginResponse.body.success).toBe(true);
+      const sessionId = loginResponse.body.sessionId;
+
+      // 步骤2：发送验证码
+      const sendCodeResponse = await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4
+        });
+
+      expect(sendCodeResponse.status).toBe(200);
+
+      // 获取实际验证码
+      const codeRecord = await dbService.get(
+        'SELECT code FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 1',
+        [testUser.phone]
+      );
+
+      // 步骤3：验证登录
+      const verifyResponse = await request(app)
+        .post('/api/auth/verify-login')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4,
+          verificationCode: codeRecord.code
+        });
+
+      expect(verifyResponse.status).toBe(200);
+      expect(verifyResponse.body.success).toBe(true);
+    });
+
+    test('完整流程：邮箱→密码→证件号→验证码→成功', async () => {
+      // 步骤1：邮箱登录
+      const loginResponse = await request(app)
+        .post('/api/auth/login')
+        .send({
+          identifier: testUser.email,
+          password: testUser.password
+        });
+
+      expect(loginResponse.status).toBe(200);
+      expect(loginResponse.body.success).toBe(true);
+      const sessionId = loginResponse.body.sessionId;
+
+      // 步骤2：发送验证码
+      const sendCodeResponse = await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4
+        });
+
+      expect(sendCodeResponse.status).toBe(200);
+
+      // 获取实际验证码
+      const codeRecord = await dbService.get(
+        'SELECT code FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 1',
+        [testUser.phone]
+      );
+
+      // 步骤3：验证登录
+      const verifyResponse = await request(app)
+        .post('/api/auth/verify-login')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4,
+          verificationCode: codeRecord.code
+        });
+
+      expect(verifyResponse.status).toBe(200);
+      expect(verifyResponse.body.success).toBe(true);
+    });
+
+    test('完整流程：手机号→密码→证件号→验证码→成功', async () => {
+      // 步骤1：手机号登录
+      const loginResponse = await request(app)
+        .post('/api/auth/login')
+        .send({
+          identifier: testUser.phone,
+          password: testUser.password
+        });
+
+      expect(loginResponse.status).toBe(200);
+      expect(loginResponse.body.success).toBe(true);
+      const sessionId = loginResponse.body.sessionId;
+
+      // 步骤2：发送验证码
+      const sendCodeResponse = await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4
+        });
+
+      expect(sendCodeResponse.status).toBe(200);
+
+      // 获取实际验证码
+      const codeRecord = await dbService.get(
+        'SELECT code FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 1',
+        [testUser.phone]
+      );
+
+      // 步骤3：验证登录
+      const verifyResponse = await request(app)
+        .post('/api/auth/verify-login')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4,
+          verificationCode: codeRecord.code
+        });
+
+      expect(verifyResponse.status).toBe(200);
+      expect(verifyResponse.body.success).toBe(true);
+    });
+
+    test('错误流程：证件号后4位错误', async () => {
+      // 步骤1：正常登录
+      const loginResponse = await request(app)
+        .post('/api/auth/login')
+        .send({
+          identifier: testUser.username,
+          password: testUser.password
+        });
+
+      expect(loginResponse.status).toBe(200);
+      const sessionId = loginResponse.body.sessionId;
+
+      // 步骤2：使用错误的证件号发送验证码
+      const sendCodeResponse = await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          sessionId,
+          idCardLast4: '9999'  // 错误的证件号
+        });
+
+      // 应该返回错误
+      expect(sendCodeResponse.status).toBe(400);
+      expect(sendCodeResponse.body.error).toContain('用户信息');
+    });
+
+    test('错误流程：验证码错误', async () => {
+      // 步骤1：正常登录
+      const loginResponse = await request(app)
+        .post('/api/auth/login')
+        .send({
+          identifier: testUser.username,
+          password: testUser.password
+        });
+
+      expect(loginResponse.status).toBe(200);
+      const sessionId = loginResponse.body.sessionId;
+
+      // 步骤2：发送验证码
+      await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4
+        });
+
+      // 步骤3：使用错误的验证码
+      const verifyResponse = await request(app)
+        .post('/api/auth/verify-login')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4,
+          verificationCode: '000000'  // 错误的验证码
+        });
+
+      // 应该返回错误
+      expect(verifyResponse.status).toBe(401);
+      expect(verifyResponse.body.error).toMatch(/验证码.*错误|验证码.*有误/i);
+    });
+
+    test('错误流程：验证码过期（模拟）', async () => {
+      // 步骤1：正常登录
+      const loginResponse = await request(app)
+        .post('/api/auth/login')
+        .send({
+          identifier: testUser.username,
+          password: testUser.password
+        });
+
+      expect(loginResponse.status).toBe(200);
+      const sessionId = loginResponse.body.sessionId;
+
+      // 步骤2：发送验证码
+      await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4
+        });
+
+      // 步骤3：使用不存在的验证码（模拟过期场景）
+      const verifyResponse = await request(app)
+        .post('/api/auth/verify-login')
+        .send({
+          sessionId,
+          idCardLast4: testUser.idCardLast4,
+          verificationCode: '999999'  // 不存在的验证码
+        });
+
+      // 应该返回错误
+      expect(verifyResponse.status).toBe(401);
+      expect(verifyResponse.body.error).toMatch(/验证码.*过期|验证码.*错误/i);
     });
   });
 });

@@ -368,7 +368,7 @@ class RegisterController {
    */
   async sendRegistrationVerificationCode(req, res) {
     try {
-      const { sessionId, phone, email } = req.body;
+      const { sessionId, phone: reqPhone, email: reqEmail } = req.body;
 
       // 验证会话
       const session = await sessionService.getSession(sessionId);
@@ -377,6 +377,11 @@ class RegisterController {
           error: '会话无效或已过期'
         });
       }
+
+      // 从会话或请求中获取 phone 和 email
+      const sessionData = session.user_data;
+      const phone = reqPhone || sessionData.phone;
+      const email = reqEmail || sessionData.email;
 
       // 检查发送频率限制
       if (email) {

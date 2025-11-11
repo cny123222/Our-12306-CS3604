@@ -125,11 +125,8 @@ class AuthService {
         return { success: false, error: '发送过于频繁，请稍后再试', code: 429 };
       }
 
-      // 生成6位验证码
-      const code = Math.floor(100000 + Math.random() * 900000).toString();
-      
-      // 保存验证码
-      await registrationDbService.createSmsVerificationCode(sessionData.phone, code);
+      // 生成并保存验证码
+      const code = await registrationDbService.createSmsVerificationCode(sessionData.phone);
 
       // TODO: 实际发送短信（这里模拟）
       console.log(`[SMS] 发送验证码 ${code} 到 ${sessionData.phone}`);
@@ -170,6 +167,9 @@ class AuthService {
       const updateQuery = 'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?';
       await dbService.run(updateQuery, [sessionData.userId]);
 
+      // 查询完整用户信息
+      const user = await dbService.get('SELECT * FROM users WHERE id = ?', [sessionData.userId]);
+
       // 生成token
       const token = this.generateToken(sessionData);
 
@@ -179,7 +179,9 @@ class AuthService {
         token,
         user: {
           id: sessionData.userId,
-          username: sessionData.username
+          username: sessionData.username,
+          email: user?.email,
+          phone: user?.phone
         }
       };
     } catch (error) {
