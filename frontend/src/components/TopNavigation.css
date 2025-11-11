@@ -40,10 +40,35 @@
   line-height: 1.2;
 }
 
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
 .welcome-text {
-  font-size: 18px;
   color: #333333;
-  font-weight: 500;
+  margin-right: 2px;
+}
+
+.login-link {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.3s;
+  margin-right: 8px;
+}
+
+.register-link {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.login-link:hover,
+.register-link:hover {
+  color: #0052a3;
+  text-decoration: underline;
 }
 
 .logo-section:hover {

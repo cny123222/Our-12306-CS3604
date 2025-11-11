@@ -30,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     e.preventDefault()
     if (loginType === 'account') {
       onSubmit({ username, password })
-    } else if (loginType === 'qr') {
+    } else if (loginType === 'qr' && onQrLogin) {
       onQrLogin()
     }
   }

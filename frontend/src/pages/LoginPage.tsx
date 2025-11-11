@@ -7,9 +7,9 @@ import '../components/LoginPage.css'
 
 const LoginPage: React.FC = () => {
   const [showSmsModal, setShowSmsModal] = useState(false)
-  const [sessionId, setSessionId] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  // const [sessionId, setSessionId] = useState('')
+  // const [error, setError] = useState('')
+  // const [isLoading, setIsLoading] = useState(false)
 
   const handleLoginSuccess = (data: { username: string; password: string }) => {
     // TODO: 实现登录成功后的逻辑
@@ -27,11 +27,11 @@ const LoginPage: React.FC = () => {
     console.log('Navigate to forgot password')
   }
 
-  const handleSmsVerificationSuccess = () => {
-    // TODO: 实现短信验证成功后的逻辑
-    console.log('SMS verification success')
-    setShowSmsModal(false)
-  }
+  // const handleSmsVerificationSuccess = () => {
+  //   // TODO: 实现短信验证成功后的逻辑
+  //   console.log('SMS verification success')
+  //   setShowSmsModal(false)
+  // }
 
   const handleCloseSmsModal = () => {
     setShowSmsModal(false)
@@ -80,8 +80,8 @@ const LoginPage: React.FC = () => {
             onQrLogin={() => console.log('QR login')}
             onRegisterClick={handleNavigateToRegister}
             onForgotPasswordClick={handleNavigateToForgotPassword}
-            error={error}
-            isLoading={isLoading}
+            error=""
+            isLoading={false}
           />
         </div>
       </div>

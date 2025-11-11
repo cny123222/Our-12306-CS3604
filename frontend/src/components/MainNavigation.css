@@ -1,0 +1,63 @@
+/* 主导航栏样式 - 12306蓝色导航 */
+.main-navigation {
+  background: linear-gradient(to bottom, #3ba3e2 0%, #2a8bc7 100%);
+  border-bottom: 2px solid #2180b0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 20px;
+}
+
+.nav-item {
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-item:active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* 响应式适配 */
+@media (max-width: 1024px) {
+  .nav-container {
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .nav-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  .nav-item {
+    padding: 12px 15px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-item {
+    padding: 12px 12px;
+    font-size: 13px;
+  }
+}
+

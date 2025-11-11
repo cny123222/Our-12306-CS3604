@@ -22,7 +22,7 @@ interface FieldValidation {
   showCheckmark: boolean;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onNavigateToLogin }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   // 表单数据状态
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -282,205 +282,294 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onNavigateToLogin
     onSubmit(formData);
   };
 
+  // 计算密码强度
+  const getPasswordStrength = (pwd: string): number => {
+    if (pwd.length < 6) return 0;
+    let strength = 0;
+    if (/[a-z]/.test(pwd)) strength++;
+    if (/[A-Z]/.test(pwd)) strength++;
+    if (/[0-9]/.test(pwd)) strength++;
+    if (/[_]/.test(pwd)) strength++;
+    return Math.min(strength, 3);
+  };
+
+  const passwordStrength = getPasswordStrength(password);
+
   return (
     <div className="register-form-container">
+      {generalError && (
+        <div className="general-error-message">{generalError}</div>
+      )}
+      
       <form className="register-form" onSubmit={handleSubmit}>
-        {generalError && (
-          <div className="general-error-message">{generalError}</div>
-        )}
-
         {/* 用户名 */}
         <div className="form-row">
-          <label className="form-label">
-            *用户名
-          </label>
-          <div className="form-input-wrapper">
-            <input
-              className={`form-input ${usernameValidation.errorMessage ? 'error' : ''}`}
-              type="text"
-              placeholder="请输入用户名"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              onBlur={() => validateUsername(username)}
-            />
-            {usernameValidation.showCheckmark && (
-              <span className="input-checkmark valid" data-testid="username-checkmark">✓</span>
+          <div className="form-label-wrapper">
+            <label className="form-label">
+              <span className="required-mark">*</span>用户名：
+            </label>
+          </div>
+          <div className="form-input-container">
+            <div className="form-input-wrapper">
+              <input
+                className={`form-input ${usernameValidation.errorMessage ? 'error' : usernameValidation.showCheckmark ? 'valid' : ''}`}
+                type="text"
+                placeholder="用户名设置成功后不可修改"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onBlur={() => validateUsername(username)}
+              />
+              {usernameValidation.showCheckmark && (
+                <span className="input-checkmark" data-testid="username-checkmark">✓</span>
+              )}
+              <span className="form-hint-message">6-30位字母、数字或"_"，须以字母开头</span>
+            </div>
+            {usernameValidation.errorMessage && (
+              <div className="form-error-message">{usernameValidation.errorMessage}</div>
             )}
           </div>
-          <div className="form-error-message">{usernameValidation.errorMessage}</div>
         </div>
 
         {/* 登录密码 */}
         <div className="form-row">
-          <label className="form-label">
-            *登录密码
-          </label>
-          <div className="form-input-wrapper">
-            <input
-              className={`form-input ${passwordValidation.errorMessage ? 'error' : ''}`}
-              type="password"
-              placeholder="请输入登录密码"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onBlur={() => validatePassword(password)}
-            />
-            {passwordValidation.showCheckmark && (
-              <span className="input-checkmark valid" data-testid="password-checkmark">✓</span>
+          <div className="form-label-wrapper">
+            <label className="form-label">
+              <span className="required-mark">*</span>登录密码：
+            </label>
+          </div>
+          <div className="form-input-container">
+            <div className="form-input-wrapper">
+              <input
+                className={`form-input ${passwordValidation.errorMessage ? 'error' : passwordValidation.showCheckmark ? 'valid' : ''}`}
+                type="password"
+                placeholder="6-20位字母、数字或号"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onBlur={() => validatePassword(password)}
+              />
+              {passwordValidation.showCheckmark && (
+                <span className="input-checkmark" data-testid="password-checkmark">✓</span>
+              )}
+            </div>
+            {password && (
+              <div className="password-strength">
+                <div className="strength-bars">
+                  <div className={`strength-bar ${passwordStrength >= 1 ? 'weak' : ''}`}></div>
+                  <div className={`strength-bar ${passwordStrength >= 2 ? 'medium' : ''}`}></div>
+                  <div className={`strength-bar ${passwordStrength >= 3 ? 'strong' : ''}`}></div>
+                </div>
+              </div>
+            )}
+            {passwordValidation.errorMessage && (
+              <div className="form-error-message">{passwordValidation.errorMessage}</div>
             )}
           </div>
-          <div className="form-error-message">{passwordValidation.errorMessage}</div>
         </div>
 
         {/* 确认密码 */}
         <div className="form-row">
-          <label className="form-label">
-            *确认密码
-          </label>
-          <div className="form-input-wrapper">
-            <input
-              className={`form-input ${confirmPasswordValidation.errorMessage ? 'error' : ''}`}
-              type="password"
-              placeholder="请确认登录密码"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              onBlur={() => validateConfirmPassword(confirmPassword)}
-            />
-            {confirmPasswordValidation.showCheckmark && (
-              <span className="input-checkmark valid" data-testid="confirm-password-checkmark">✓</span>
+          <div className="form-label-wrapper">
+            <label className="form-label">
+              <span className="required-mark">*</span>确认密码：
+            </label>
+          </div>
+          <div className="form-input-container">
+            <div className="form-input-wrapper">
+              <input
+                className={`form-input ${confirmPasswordValidation.errorMessage ? 'error' : confirmPasswordValidation.showCheckmark ? 'valid' : ''}`}
+                type="password"
+                placeholder="请再次输入您的登录密码"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={() => validateConfirmPassword(confirmPassword)}
+              />
+              {confirmPasswordValidation.showCheckmark && (
+                <span className="input-checkmark" data-testid="confirm-password-checkmark">✓</span>
+              )}
+            </div>
+            {confirmPasswordValidation.errorMessage && (
+              <div className="form-error-message">{confirmPasswordValidation.errorMessage}</div>
             )}
           </div>
-          <div className="form-error-message">{confirmPasswordValidation.errorMessage}</div>
         </div>
 
         {/* 证件类型 */}
         <div className="form-row">
-          <label className="form-label">
-            *证件类型
-          </label>
-          <SelectDropdown
-            options={idCardTypes}
-            value={idCardType}
-            placeholder="请选择证件类型"
-            onChange={setIdCardType}
-            testId="id-card-type-dropdown"
-          />
+          <div className="form-label-wrapper">
+            <label className="form-label">
+              <span className="required-mark">*</span>证件类型：
+            </label>
+          </div>
+          <div className="form-input-container">
+            <SelectDropdown
+              options={idCardTypes}
+              value={idCardType}
+              placeholder="居民身份证"
+              onChange={setIdCardType}
+              testId="id-card-type-dropdown"
+            />
+          </div>
         </div>
 
         {/* 姓名 */}
         <div className="form-row">
-          <label className="form-label">
-            *姓名
-          </label>
-          <div className="form-input-wrapper">
-            <input
-              className={`form-input ${nameValidation.errorMessage ? 'error' : ''}`}
-              type="text"
-              placeholder="请输入姓名"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onBlur={() => validateName(name)}
-            />
-            {nameValidation.showCheckmark && (
-              <span className="input-checkmark valid" data-testid="name-checkmark">✓</span>
+          <div className="form-label-wrapper">
+            <label className="form-label">
+              <span className="required-mark">*</span>姓名：
+            </label>
+          </div>
+          <div className="form-input-container">
+            <div className="form-input-wrapper">
+              <input
+                className={`form-input ${nameValidation.errorMessage ? 'error' : nameValidation.showCheckmark ? 'valid' : ''}`}
+                type="text"
+                placeholder="请输入姓名"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={() => validateName(name)}
+              />
+              {nameValidation.showCheckmark && (
+                <span className="input-checkmark" data-testid="name-checkmark">✓</span>
+              )}
+              <span className="form-hint-message">姓名填写规则：（用于身份核验，请正确填写真实姓名）</span>
+            </div>
+            {nameValidation.errorMessage && (
+              <div className="form-error-message">{nameValidation.errorMessage}</div>
             )}
           </div>
-          <div className="form-error-message">{nameValidation.errorMessage}</div>
         </div>
 
         {/* 证件号码 */}
         <div className="form-row">
-          <label className="form-label">
-            *证件号码
-          </label>
-          <div className="form-input-wrapper">
-            <input
-              className={`form-input ${idCardValidation.errorMessage ? 'error' : ''}`}
-              type="text"
-              placeholder="请输入证件号码"
-              value={idCardNumber}
-              onChange={(e) => setIdCardNumber(e.target.value)}
-              onBlur={() => validateIdCard(idCardNumber)}
-            />
-            {idCardValidation.showCheckmark && (
-              <span className="input-checkmark valid" data-testid="id-card-checkmark">✓</span>
+          <div className="form-label-wrapper">
+            <label className="form-label">
+              <span className="required-mark">*</span>证件号码：
+            </label>
+          </div>
+          <div className="form-input-container">
+            <div className="form-input-wrapper">
+              <input
+                className={`form-input ${idCardValidation.errorMessage ? 'error' : idCardValidation.showCheckmark ? 'valid' : ''}`}
+                type="text"
+                placeholder="请输入您的证件号码"
+                value={idCardNumber}
+                onChange={(e) => setIdCardNumber(e.target.value)}
+                onBlur={() => validateIdCard(idCardNumber)}
+              />
+              {idCardValidation.showCheckmark && (
+                <span className="input-checkmark" data-testid="id-card-checkmark">✓</span>
+              )}
+              <span className="form-hint-message">（用于身份核验，请正确填写号码）</span>
+            </div>
+            {idCardValidation.errorMessage && (
+              <div className="form-error-message">{idCardValidation.errorMessage}</div>
             )}
           </div>
-          <div className="form-error-message">{idCardValidation.errorMessage}</div>
         </div>
 
         {/* 优惠类型 */}
         <div className="form-row">
-          <label className="form-label">
-            *优惠类型
-          </label>
-          <SelectDropdown
-            options={discountTypes}
-            value={discountType}
-            placeholder="请选择优惠等级"
-            onChange={setDiscountType}
-            testId="discount-type-dropdown"
-          />
+          <div className="form-label-wrapper">
+            <label className="form-label">优惠（待）类型：</label>
+          </div>
+          <div className="form-input-container">
+            <SelectDropdown
+              options={discountTypes}
+              value={discountType}
+              placeholder="成人"
+              onChange={setDiscountType}
+              testId="discount-type-dropdown"
+            />
+          </div>
         </div>
 
         {/* 邮箱 */}
         <div className="form-row">
-          <label className="form-label">邮箱</label>
-          <div className="form-input-wrapper">
-            <input
-              className={`form-input ${emailValidation.errorMessage ? 'error' : ''}`}
-              type="email"
-              placeholder="请输入邮箱"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onBlur={() => validateEmail(email)}
-            />
+          <div className="form-label-wrapper">
+            <label className="form-label">邮箱：</label>
           </div>
-          <div className="form-error-message">{emailValidation.errorMessage}</div>
+          <div className="form-input-container">
+            <div className="form-input-wrapper">
+              <input
+                className={`form-input ${emailValidation.errorMessage ? 'error' : ''}`}
+                type="email"
+                placeholder="请正确填写您的邮箱地址"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => validateEmail(email)}
+              />
+            </div>
+            {emailValidation.errorMessage && (
+              <div className="form-error-message">{emailValidation.errorMessage}</div>
+            )}
+          </div>
         </div>
 
         {/* 手机号码 */}
         <div className="form-row">
-          <label className="form-label">
-            *手机号码
-          </label>
-          <div className="form-input-wrapper">
-            <input
-              className={`form-input ${phoneValidation.errorMessage ? 'error' : ''}`}
-              type="tel"
-              placeholder="请输入手机号"
-              value={phone}
-              onChange={(e) => handlePhoneChange(e.target.value)}
-              onBlur={() => validatePhone(phone)}
-              maxLength={11}
-            />
+          <div className="form-label-wrapper">
+            <label className="form-label">
+              <span className="required-mark">*</span>手机号码：
+            </label>
           </div>
-          <div className="form-error-message">{phoneValidation.errorMessage}</div>
+          <div className="form-input-container">
+            <div className="form-input-wrapper">
+              <div className="phone-input-wrapper">
+                <div className="phone-country-select">
+                  <SelectDropdown
+                    options={['+86 中国']}
+                    value="+86 中国"
+                    placeholder="+86 中国"
+                    onChange={() => {}}
+                    testId="country-code-dropdown"
+                  />
+                </div>
+                <input
+                  className={`form-input phone-input ${phoneValidation.errorMessage ? 'error' : ''}`}
+                  type="tel"
+                  placeholder="手机号码"
+                  value={phone}
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  onBlur={() => validatePhone(phone)}
+                  maxLength={11}
+                />
+              </div>
+              <span className="form-hint-message">请正确填写手机号码，稍后将向该手机号发送短信验证码</span>
+            </div>
+            {phoneValidation.errorMessage && (
+              <div className="form-error-message">{phoneValidation.errorMessage}</div>
+            )}
+          </div>
         </div>
 
         {/* 用户协议 */}
         <div className="agreement-section">
-          <input
-            type="checkbox"
-            className="agreement-checkbox"
-            checked={agreedToTerms}
-            onChange={(e) => setAgreedToTerms(e.target.checked)}
-          />
-          <span className="agreement-text">
-            我已阅读并同意遵守{' '}
-            <a href="/service-terms" className="agreement-link" onClick={(e) => e.preventDefault()}>
-              《中国铁路客户服务中心网站服务条款》
-            </a>
-            {' '}
-            <a href="/privacy-policy" className="agreement-link" onClick={(e) => e.preventDefault()}>
-              《隐私权政策》
-            </a>
-          </span>
+          <div className="agreement-wrapper">
+            <input
+              type="checkbox"
+              className="agreement-checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+            />
+            <span className="agreement-text">
+              我已阅读并同意遵守{' '}
+              <a href="/service-terms" className="agreement-link" onClick={(e) => e.preventDefault()}>
+                《中国铁路客户服务中心网站服务条款》
+              </a>
+              {' '}
+              <a href="/privacy-policy" className="agreement-link" onClick={(e) => e.preventDefault()}>
+                《隐私权政策》
+              </a>
+            </span>
+          </div>
         </div>
 
         {/* 提交按钮 */}
-        <button type="submit" className="submit-button">
-          下一步
-        </button>
+        <div className="submit-section">
+          <button type="submit" className="submit-button">
+            下一步
+          </button>
+        </div>
       </form>
     </div>
   );
