@@ -169,7 +169,7 @@ class AuthController {
   // 短信验证登录
   async verifyLogin(req, res) {
     try {
-      const { sessionId, verificationCode, phoneNumber } = req.body;
+      const { sessionId, verificationCode, phoneNumber, idCardLast4 } = req.body;
 
       // 验证必填字段
       const errors = [];
@@ -192,7 +192,9 @@ class AuthController {
         const result = await authService.verifySmsCode(sessionId, verificationCode);
         
         if (!result.success) {
-          return res.status(401).json({
+          // 区分会话错误(400)和验证码错误(401)
+          const statusCode = result.error.includes('会话') ? 400 : 401;
+          return res.status(statusCode).json({
             success: false,
             error: result.error
           });
@@ -250,7 +252,9 @@ class AuthController {
           token,
           user: {
             id: user.id,
-            username: user.username
+            username: user.username,
+            email: user.email,
+            phone: user.phone
           },
           message: '登录成功'
         });

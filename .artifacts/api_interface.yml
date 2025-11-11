@@ -48,7 +48,7 @@
     type: JSON
     body:
       sessionId: string
-      idCardLast4Digits: string  # 证件号后4位
+      idCardLast4: string  # 证件号后4位
   output:
     success:
       statusCode: 200
@@ -83,7 +83,7 @@
     type: JSON
     body:
       sessionId: string
-      idCardLast4Digits: string
+      idCardLast4: string
       verificationCode: string
   output:
     success:
@@ -102,7 +102,7 @@
         body: { error: "请输入正确的验证码" }
       - statusCode: 400
         body: { error: "验证码校验失败！" }
-      - statusCode: 400
+      - statusCode: 401
         body: { error: "很抱歉，您输入的短信验证码有误。" }
       - statusCode: 401
         body: { error: "会话无效或已过期" }
@@ -166,7 +166,7 @@
 
 - type: Backend
   id: API-POST-ValidateUsername
-  route: POST /api/auth/validate-username
+  route: POST /api/register/validate-username
   description: 验证用户名的合法性和可用性
   input:
     type: JSON
@@ -198,7 +198,7 @@
 
 - type: Backend
   id: API-POST-ValidatePassword
-  route: POST /api/auth/validate-password
+  route: POST /api/register/validate-password
   description: 验证密码的合法性
   input:
     type: JSON
@@ -225,7 +225,7 @@
 
 - type: Backend
   id: API-POST-ValidateName
-  route: POST /api/auth/validate-name
+  route: POST /api/register/validate-name
   description: 验证姓名的合法性
   input:
     type: JSON
@@ -251,7 +251,7 @@
 
 - type: Backend
   id: API-POST-ValidateIdCard
-  route: POST /api/auth/validate-idcard
+  route: POST /api/register/validate-idcard
   description: 验证证件号码的合法性和可用性
   input:
     type: JSON
@@ -281,7 +281,7 @@
 
 - type: Backend
   id: API-POST-ValidateEmail
-  route: POST /api/auth/validate-email
+  route: POST /api/register/validate-email
   description: 验证邮箱格式的合法性
   input:
     type: JSON
@@ -306,7 +306,7 @@
 
 - type: Backend
   id: API-POST-ValidatePhone
-  route: POST /api/auth/validate-phone
+  route: POST /api/register/validate-phone
   description: 验证手机号码的合法性
   input:
     type: JSON
@@ -332,7 +332,7 @@
 
 - type: Backend
   id: API-POST-Register
-  route: POST /api/auth/register
+  route: POST /api/register
   description: 处理用户注册请求，创建新用户账户
   input:
     type: JSON
@@ -382,7 +382,7 @@
 
 - type: Backend
   id: API-POST-SendRegistrationVerificationCode
-  route: POST /api/auth/send-registration-verification-code
+  route: POST /api/register/send-verification-code
   description: 发送注册验证码（短信和邮箱）
   input:
     type: JSON
@@ -414,7 +414,7 @@
 
 - type: Backend
   id: API-POST-CompleteRegistration
-  route: POST /api/auth/complete-registration
+  route: POST /api/register/complete
   description: 验证验证码并完成用户注册
   input:
     type: JSON
