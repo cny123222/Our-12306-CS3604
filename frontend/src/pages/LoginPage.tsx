@@ -78,8 +78,8 @@ const LoginPage: React.FC = () => {
           <LoginForm
             onSubmit={handleLoginSuccess}
             onQrLogin={() => console.log('QR login')}
-            onRegister={handleNavigateToRegister}
-            onForgotPassword={handleNavigateToForgotPassword}
+            onRegisterClick={handleNavigateToRegister}
+            onForgotPasswordClick={handleNavigateToForgotPassword}
             error={error}
             isLoading={isLoading}
           />
