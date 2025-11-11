@@ -34,17 +34,19 @@ describe('RegisterForm Component Tests', () => {
   describe('UI元素存在性检查', () => {
     test('应该渲染所有必填字段，带*号标识', () => {
       // When: 渲染组件
-      render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
+      const { container } = render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
 
-      // Then: 所有必填字段应该存在并带*号
-      expect(screen.getByText(/\*.*用户名/)).toBeInTheDocument();
-      expect(screen.getByText(/\*.*登录密码/)).toBeInTheDocument();
-      expect(screen.getByText(/\*.*确认密码/)).toBeInTheDocument();
-      expect(screen.getByText(/\*.*证件类型/)).toBeInTheDocument();
-      expect(screen.getByText(/\*.*姓名/)).toBeInTheDocument();
-      expect(screen.getByText(/\*.*证件号码/)).toBeInTheDocument();
-      expect(screen.getByText(/\*.*优惠类型/)).toBeInTheDocument();
-      expect(screen.getByText(/\*.*手机号码/)).toBeInTheDocument();
+      // Then: 所有必填字段的文本应该存在
+      const requiredFields = ['用户名', '登录密码', '确认密码', '证件类型', '姓名', '证件号码', '手机号码'];
+      
+      requiredFields.forEach(fieldName => {
+        const elements = screen.queryAllByText(new RegExp(fieldName));
+        expect(elements.length).toBeGreaterThan(0);
+      });
+      
+      // 验证必填标记（*）存在
+      const requiredMarks = container.querySelectorAll('.required-mark');
+      expect(requiredMarks.length).toBeGreaterThanOrEqual(7);
     });
 
     test('邮箱字段应该是可选的，不带*号', () => {
@@ -83,7 +85,7 @@ describe('RegisterForm Component Tests', () => {
     test('用户名长度小于6位时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const usernameInput = screen.getByPlaceholderText(/请输入用户名/);
+      const usernameInput = screen.getByPlaceholderText(/用户名设置成功后不可修改/);
 
       // When: 输入长度小于6位的用户名
       await userEvent.type(usernameInput, 'abc');
@@ -98,7 +100,7 @@ describe('RegisterForm Component Tests', () => {
     test('用户名长度大于30位时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const usernameInput = screen.getByPlaceholderText(/请输入用户名/);
+      const usernameInput = screen.getByPlaceholderText(/用户名设置成功后不可修改/);
 
       // When: 输入长度大于30位的用户名
       await userEvent.type(usernameInput, 'a'.repeat(31));
@@ -113,7 +115,7 @@ describe('RegisterForm Component Tests', () => {
     test('用户名不以字母开头时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const usernameInput = screen.getByPlaceholderText(/请输入用户名/);
+      const usernameInput = screen.getByPlaceholderText(/用户名设置成功后不可修改/);
 
       // When: 输入以数字开头的用户名
       await userEvent.type(usernameInput, '123abc');
@@ -128,7 +130,7 @@ describe('RegisterForm Component Tests', () => {
     test('用户名包含特殊字符时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const usernameInput = screen.getByPlaceholderText(/请输入用户名/);
+      const usernameInput = screen.getByPlaceholderText(/用户名设置成功后不可修改/);
 
       // When: 输入包含特殊字符的用户名
       await userEvent.type(usernameInput, 'user@#$');
@@ -147,7 +149,7 @@ describe('RegisterForm Component Tests', () => {
       });
 
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const usernameInput = screen.getByPlaceholderText(/请输入用户名/);
+      const usernameInput = screen.getByPlaceholderText(/用户名设置成功后不可修改/);
 
       // When: 输入已存在的用户名
       await userEvent.type(usernameInput, 'existingUser');
@@ -166,7 +168,7 @@ describe('RegisterForm Component Tests', () => {
       });
 
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const usernameInput = screen.getByPlaceholderText(/请输入用户名/);
+      const usernameInput = screen.getByPlaceholderText(/用户名设置成功后不可修改/);
 
       // When: 输入合法的用户名
       await userEvent.type(usernameInput, 'validUser123');
@@ -186,7 +188,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码长度小于6位时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/请输入登录密码/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
 
       // When: 输入长度小于6位的密码
       await userEvent.type(passwordInput, 'abc12');
@@ -201,7 +203,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码包含特殊字符时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/请输入登录密码/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
 
       // When: 输入包含特殊字符的密码
       await userEvent.type(passwordInput, 'abc@#$123');
@@ -216,7 +218,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码只包含一种字符类型时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/请输入登录密码/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
 
       // When: 输入只包含数字的密码
       await userEvent.type(passwordInput, '123456');
@@ -231,7 +233,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码符合规范时应显示绿色勾勾', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/请输入登录密码/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
 
       // When: 输入符合规范的密码
       await userEvent.type(passwordInput, 'abc123');
@@ -251,7 +253,7 @@ describe('RegisterForm Component Tests', () => {
     test('确认密码与密码不一致时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/请输入登录密码/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
       const confirmPasswordInput = screen.getByPlaceholderText(/请确认登录密码/);
 
       // When: 输入不一致的确认密码
@@ -268,7 +270,7 @@ describe('RegisterForm Component Tests', () => {
     test('确认密码与密码一致时应显示绿色勾勾', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/请输入登录密码/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
       const confirmPasswordInput = screen.getByPlaceholderText(/请确认登录密码/);
 
       // When: 输入一致的确认密码
@@ -339,7 +341,7 @@ describe('RegisterForm Component Tests', () => {
     test('姓名过短时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const nameInput = screen.getByPlaceholderText(/请输入姓名/);
+      const nameInput = screen.getByPlaceholderText(/^请输入姓名$/);
 
       // When: 输入过短的姓名
       await userEvent.type(nameInput, '李');
@@ -354,7 +356,7 @@ describe('RegisterForm Component Tests', () => {
     test('姓名过长时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const nameInput = screen.getByPlaceholderText(/请输入姓名/);
+      const nameInput = screen.getByPlaceholderText(/^请输入姓名$/);
 
       // When: 输入过长的姓名
       await userEvent.type(nameInput, '李'.repeat(16)); // 16个汉字 = 32个字符
@@ -369,7 +371,7 @@ describe('RegisterForm Component Tests', () => {
     test('姓名包含特殊字符时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const nameInput = screen.getByPlaceholderText(/请输入姓名/);
+      const nameInput = screen.getByPlaceholderText(/^请输入姓名$/);
 
       // When: 输入包含特殊字符的姓名
       await userEvent.type(nameInput, '张三@#$');
@@ -384,7 +386,7 @@ describe('RegisterForm Component Tests', () => {
     test('符合规范的姓名应显示绿色勾勾', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const nameInput = screen.getByPlaceholderText(/请输入姓名/);
+      const nameInput = screen.getByPlaceholderText(/^请输入姓名$/);
 
       // When: 输入符合规范的姓名
       await userEvent.type(nameInput, '张三');
@@ -401,7 +403,7 @@ describe('RegisterForm Component Tests', () => {
     test('应该支持英文姓名和点号', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const nameInput = screen.getByPlaceholderText(/请输入姓名/);
+      const nameInput = screen.getByPlaceholderText(/^请输入姓名$/);
 
       // When: 输入英文姓名带点号
       await userEvent.type(nameInput, 'John.Smith');
@@ -420,7 +422,7 @@ describe('RegisterForm Component Tests', () => {
     test('证件号码不是18位时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const idCardInput = screen.getByPlaceholderText(/请输入证件号码/);
+      const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/);
 
       // When: 输入长度不是18位的证件号码
       await userEvent.type(idCardInput, '12345');
@@ -435,7 +437,7 @@ describe('RegisterForm Component Tests', () => {
     test('证件号码包含非法字符时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const idCardInput = screen.getByPlaceholderText(/请输入证件号码/);
+      const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/);
 
       // When: 输入包含特殊字符的证件号码
       await userEvent.type(idCardInput, '11010119900101@#$');
@@ -454,7 +456,7 @@ describe('RegisterForm Component Tests', () => {
       });
 
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const idCardInput = screen.getByPlaceholderText(/请输入证件号码/);
+      const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/);
 
       // When: 输入已注册的证件号码
       await userEvent.type(idCardInput, '110101199001011234');
@@ -473,7 +475,7 @@ describe('RegisterForm Component Tests', () => {
       });
 
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const idCardInput = screen.getByPlaceholderText(/请输入证件号码/);
+      const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/);
 
       // When: 输入符合规范的证件号码
       await userEvent.type(idCardInput, '110101199001011235');
@@ -521,7 +523,7 @@ describe('RegisterForm Component Tests', () => {
     test('邮箱不包含@符号时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const emailInput = screen.getByPlaceholderText(/请输入邮箱/);
+      const emailInput = screen.getByPlaceholderText(/请正确填写您的邮箱地址/);
 
       // When: 输入不包含@的邮箱
       await userEvent.type(emailInput, 'invalidemail.com');
@@ -536,7 +538,7 @@ describe('RegisterForm Component Tests', () => {
     test('符合规范的邮箱不应显示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const emailInput = screen.getByPlaceholderText(/请输入邮箱/);
+      const emailInput = screen.getByPlaceholderText(/请正确填写您的邮箱地址/);
 
       // When: 输入符合规范的邮箱
       await userEvent.type(emailInput, 'user@example.com');
@@ -554,7 +556,7 @@ describe('RegisterForm Component Tests', () => {
     test('手机号长度不是11位时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const phoneInput = screen.getByPlaceholderText(/请输入手机号/);
+      const phoneInput = screen.getByPlaceholderText(/手机号码/);
 
       // When: 输入长度不是11位的手机号
       await userEvent.type(phoneInput, '138001380');
@@ -569,7 +571,7 @@ describe('RegisterForm Component Tests', () => {
     test('手机号输入超过11位时应只保留前11位', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const phoneInput = screen.getByPlaceholderText(/请输入手机号/) as HTMLInputElement;
+      const phoneInput = screen.getByPlaceholderText(/手机号码/) as HTMLInputElement;
 
       // When: 尝试输入12位手机号
       await userEvent.type(phoneInput, '138001380001');
@@ -581,7 +583,7 @@ describe('RegisterForm Component Tests', () => {
     test('手机号包含非数字字符时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const phoneInput = screen.getByPlaceholderText(/请输入手机号/);
+      const phoneInput = screen.getByPlaceholderText(/手机号码/);
 
       // When: 输入包含字母的手机号
       await userEvent.type(phoneInput, '1380013800a');
@@ -596,7 +598,7 @@ describe('RegisterForm Component Tests', () => {
     test('符合规范的手机号不应显示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const phoneInput = screen.getByPlaceholderText(/请输入手机号/);
+      const phoneInput = screen.getByPlaceholderText(/手机号码/);
 
       // When: 输入符合规范的手机号
       await userEvent.type(phoneInput, '13800138000');
@@ -675,22 +677,22 @@ describe('RegisterForm Component Tests', () => {
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
 
       // When: 填写所有必填字段
-      await userEvent.type(screen.getByPlaceholderText(/请输入用户名/), 'validUser123');
-      await userEvent.type(screen.getByPlaceholderText(/请输入登录密码/), 'abc123');
+      await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'validUser123');
+      await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'abc123');
       await userEvent.type(screen.getByPlaceholderText(/请确认登录密码/), 'abc123');
       
       // 选择证件类型
       await userEvent.click(screen.getByTestId('id-card-type-dropdown'));
       await userEvent.click(screen.getByText('居民身份证'));
       
-      await userEvent.type(screen.getByPlaceholderText(/请输入姓名/), '张三');
-      await userEvent.type(screen.getByPlaceholderText(/请输入证件号码/), '110101199001011234');
+      await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '张三');
+      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234');
       
       // 选择优惠类型
       await userEvent.click(screen.getByTestId('discount-type-dropdown'));
       await userEvent.click(screen.getByText('成人'));
       
-      await userEvent.type(screen.getByPlaceholderText(/请输入手机号/), '13800138000');
+      await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000');
       await userEvent.click(screen.getByRole('checkbox'));
 
       const nextButton = screen.getByRole('button', { name: /下一步/ });

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import TopNavigation from '../components/TopNavigation'
 import LoginForm from '../components/LoginForm'
 import BottomNavigation from '../components/BottomNavigation'
@@ -6,6 +7,7 @@ import SmsVerificationModal from '../components/SmsVerificationModal'
 import '../components/LoginPage.css'
 
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate()
   const [showSmsModal, setShowSmsModal] = useState(false)
   // const [sessionId, setSessionId] = useState('')
   // const [error, setError] = useState('')
@@ -18,8 +20,7 @@ const LoginPage: React.FC = () => {
   }
 
   const handleNavigateToRegister = () => {
-    // TODO: 实现跳转到注册页面
-    console.log('Navigate to register')
+    navigate('/register')
   }
 
   const handleNavigateToForgotPassword = () => {

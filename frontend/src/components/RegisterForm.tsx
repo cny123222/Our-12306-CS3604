@@ -27,10 +27,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [idCardType, setIdCardType] = useState('');
+  const [idCardType, setIdCardType] = useState('居民身份证'); // 默认值为"居民身份证"
   const [name, setName] = useState('');
   const [idCardNumber, setIdCardNumber] = useState('');
-  const [discountType, setDiscountType] = useState('');
+  const [discountType, setDiscountType] = useState('成人'); // 默认值为"成人"
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -259,9 +259,47 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       return;
     }
 
-    // 检查必填字段
-    if (!username || !password || !confirmPassword || !idCardType || !name || !idCardNumber || !discountType || !phone) {
-      setGeneralError('请填写完整信息！');
+    // 检查必填字段（证件类型和优惠类型有默认值，不需要检查）
+    const missingFields = [];
+    if (!username) missingFields.push('用户名');
+    if (!password) missingFields.push('登录密码');
+    if (!confirmPassword) missingFields.push('确认密码');
+    if (!name) missingFields.push('姓名');
+    if (!idCardNumber) missingFields.push('证件号码');
+    if (!phone) missingFields.push('手机号码');
+    
+    if (missingFields.length > 0) {
+      setGeneralError(`请填写完整信息！缺少：${missingFields.join('、')}`);
+      return;
+    }
+
+    // 检查字段验证状态
+    if (usernameValidation.errorMessage) {
+      setGeneralError('用户名验证失败，请检查并重新输入');
+      return;
+    }
+    if (passwordValidation.errorMessage) {
+      setGeneralError('密码验证失败，请检查并重新输入');
+      return;
+    }
+    if (confirmPasswordValidation.errorMessage) {
+      setGeneralError('确认密码验证失败，请检查并重新输入');
+      return;
+    }
+    if (nameValidation.errorMessage) {
+      setGeneralError('姓名验证失败，请检查并重新输入');
+      return;
+    }
+    if (idCardValidation.errorMessage) {
+      setGeneralError('证件号码验证失败，请检查并重新输入');
+      return;
+    }
+    if (phoneValidation.errorMessage) {
+      setGeneralError('手机号码验证失败，请检查并重新输入');
+      return;
+    }
+    if (emailValidation.errorMessage && email) {
+      setGeneralError('邮箱验证失败，请检查并重新输入');
       return;
     }
 
