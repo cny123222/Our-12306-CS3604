@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './LoginForm.css'
 
 interface LoginFormProps {
-  onSubmit: (data: { username: string; password: string }) => void
+  onSubmit: (data: { identifier?: string; username?: string; password: string }) => void
   onQrLogin?: () => void
   onRegister?: () => void
   onForgotPassword?: () => void
@@ -25,11 +25,40 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginType, setLoginType] = useState<'account' | 'qr'>('account')
+  const [validationError, setValidationError] = useState('')
+
+  // 当有error时清空密码字段
+  useEffect(() => {
+    if (error) {
+      setPassword('')
+    }
+  }, [error])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // 清除之前的验证错误
+    setValidationError('')
+    
     if (loginType === 'account') {
-      onSubmit({ username, password })
+      // 客户端验证
+      if (!username || username.trim() === '') {
+        setValidationError('请输入用户名！')
+        return
+      }
+      
+      if (!password || password.trim() === '') {
+        setValidationError('请输入密码！')
+        return
+      }
+      
+      if (password.length < 6) {
+        setValidationError('密码长度不能少于6位！')
+        return
+      }
+      
+      // 传递identifier和password
+      onSubmit({ identifier: username, password })
     } else if (loginType === 'qr' && onQrLogin) {
       onQrLogin()
     }
@@ -53,7 +82,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
       </div>
 
       <form className="login-form" onSubmit={handleSubmit} role="form">
-        {error && <div className="error-message">{error}</div>}
+        {(error || validationError) && (
+          <div className="error-message">{validationError || error}</div>
+        )}
         
         {loginType === 'account' && (
           <>
@@ -65,7 +96,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 onChange={(e) => setUsername(e.target.value)}
                 className="form-input"
                 disabled={isLoading}
-                required
               />
             </div>
             <div className="form-group">
@@ -76,7 +106,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 onChange={(e) => setPassword(e.target.value)}
                 className="form-input"
                 disabled={isLoading}
-                required
               />
             </div>
           </>

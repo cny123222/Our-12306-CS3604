@@ -14,14 +14,14 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleLoginSuccess = async (data: { username: string; password: string }) => {
+  const handleLoginSuccess = async (data: { identifier?: string; username?: string; password: string }) => {
     setIsLoading(true)
     setError('')
     
     try {
-      // 调用登录API
+      // 调用登录API（支持identifier或username）
       const response = await axios.post('/api/auth/login', {
-        identifier: data.username,
+        identifier: data.identifier || data.username,
         password: data.password
       })
       
@@ -64,6 +64,7 @@ const LoginPage: React.FC = () => {
       // 调用验证登录API
       const response = await axios.post('/api/auth/verify-login', {
         sessionId,
+        idCardLast4: data.idCardLast4,
         verificationCode: data.code
       })
       

@@ -6,12 +6,11 @@ describe('BottomNavigation - 底部导航组件', () => {
   it('应该显示友情链接', () => {
     render(<BottomNavigation />)
     
-    // 验证友情链接区域存在
-    const friendLinks = screen.getByText(/友情链接/i) || 
-                       screen.queryByText(/中国铁路/i) ||
-                       screen.queryByText(/12306/i)
+    // 验证友情链接图片存在
+    const friendLinksImage = screen.getByAltText(/友情链接/i)
     
-    expect(friendLinks || screen.getByRole('navigation')).toBeInTheDocument()
+    expect(friendLinksImage).toBeInTheDocument()
+    expect(friendLinksImage.tagName).toBe('IMG')
   })
 
   it('应该显示四个二维码', () => {
