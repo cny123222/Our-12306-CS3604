@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
-import '@testing-library/jest-dom'
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -24,15 +23,15 @@ Object.defineProperty(window, 'scrollTo', {
 })
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+window.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}))
+})) as any
 
-// Mock IntersectionObserver
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+// Mock IntersectionObserver  
+window.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}))
+})) as any

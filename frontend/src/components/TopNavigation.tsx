@@ -25,8 +25,10 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onLogoClick }) => {
           <div className="logo-english">12306 CHINA RAILWAY</div>
         </div>
       </div>
-      <div className="welcome-text">
-        欢迎登录12306
+      <div className="welcome-section">
+        <span className="welcome-text">您好，请</span>
+        <a href="/login" className="login-link">登录</a>
+        <a href="/register" className="register-link">注册</a>
       </div>
     </div>
   )

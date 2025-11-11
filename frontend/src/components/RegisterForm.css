@@ -1,60 +1,89 @@
-/* RegisterForm组件样式 */
-.register-form-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 24px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.register-form-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 24px;
-  text-align: center;
-}
+/* RegisterForm组件样式 - 像素级还原12306注册表单 */
 
 .register-form {
   width: 100%;
+  max-width: 950px;
+  margin: 0 auto;
 }
 
+/* 表单行 */
 .form-row {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 标签区域 */
+.form-label-wrapper {
+  width: 160px;
+  text-align: right;
+  padding-top: 10px;
+  flex-shrink: 0;
 }
 
 .form-label {
-  display: block;
-  margin-bottom: 8px;
   font-size: 14px;
   color: #333;
-  font-weight: 500;
+  line-height: 20px;
+  display: inline-block;
 }
 
 .required-mark {
   color: #ff4d4f;
   margin-right: 4px;
+  font-weight: bold;
+}
+
+/* 输入区域 */
+.form-input-container {
+  flex: 1;
+  margin-left: 20px;
+  max-width: 600px;
 }
 
 .form-input-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
+/* 输入框 */
 .form-input {
-  width: 100%;
-  padding: 10px 40px 10px 12px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
+  width: 350px;
+  min-width: 350px;
+  max-width: 350px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #b8b8b8;
+  border-radius: 2px;
   font-size: 14px;
-  transition: all 0.3s;
+  color: #333;
   outline: none;
+  transition: all 0.3s;
   box-sizing: border-box;
+  background: white;
+  flex-shrink: 0;
+}
+
+/* 选择框统一宽度 */
+.form-input-container > .select-dropdown {
+  width: 350px;
+  min-width: 350px;
+  max-width: 350px;
+  flex-shrink: 0;
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+.form-input:hover {
+  border-color: #40a9ff;
 }
 
 .form-input:focus {
   border-color: #40a9ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1);
 }
 
 .form-input.error {
@@ -62,111 +91,227 @@
 }
 
 .form-input.error:focus {
-  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
 }
 
+.form-input.valid {
+  border-color: #52c41a;
+}
+
+/* 对号标记 */
 .input-checkmark {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
+  margin-left: 8px;
   color: #52c41a;
+  font-size: 16px;
   font-weight: bold;
-  pointer-events: none;
+  flex-shrink: 0;
 }
 
-.input-checkmark.valid {
-  color: #52c41a;
+/* 密码强度条 */
+.password-strength {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+.strength-bars {
+  display: flex;
+  gap: 4px;
+}
+
+.strength-bar {
+  width: 60px;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+}
+
+.strength-bar.weak {
+  background: #ff4d4f;
+}
+
+.strength-bar.medium {
+  background: #faad14;
+}
+
+.strength-bar.strong {
+  background: #52c41a;
+}
+
+/* 错误消息 */
 .form-error-message {
   color: #ff4d4f;
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: 6px;
   line-height: 1.5;
   min-height: 18px;
 }
 
+/* 提示信息 */
+.form-hint-message {
+  color: #ff8800;
+  font-size: 12px;
+  margin-left: 12px;
+  line-height: 20px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 手机号码区域 */
+.phone-input-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 350px;
+}
+
+.phone-country-select {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.phone-input {
+  width: 230px;
+  min-width: 230px;
+  max-width: 230px;
+  flex-shrink: 0;
+}
+
+/* 协议勾选区域 */
 .agreement-section {
-  margin: 24px 0;
+  margin: 30px 0 24px;
+  padding-left: 180px;
+}
+
+.agreement-wrapper {
   display: flex;
   align-items: flex-start;
 }
 
 .agreement-checkbox {
-  margin-right: 8px;
-  margin-top: 2px;
+  margin: 3px 8px 0 0;
+  width: 14px;
+  height: 14px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .agreement-text {
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
   line-height: 1.6;
 }
 
 .agreement-link {
-  color: #1890ff;
+  color: #0066cc;
   text-decoration: none;
   cursor: pointer;
-  transition: color 0.3s;
 }
 
 .agreement-link:hover {
-  color: #40a9ff;
   text-decoration: underline;
 }
 
+/* 提交按钮区域 */
+.submit-section {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
 .submit-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #ff6600;
+  width: 200px;
+  height: 38px;
+  background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
+  border: 1px solid #e66600;
+  border-radius: 3px;
   color: white;
-  border: none;
-  border-radius: 4px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .submit-button:hover {
-  background-color: #ff8533;
+  background: linear-gradient(to bottom, #ffaa55 0%, #ff8822 100%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .submit-button:active {
-  background-color: #e65c00;
+  background: linear-gradient(to bottom, #ff7700 0%, #ee6600 100%);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .submit-button:disabled {
-  background-color: #d9d9d9;
+  background: #cccccc;
+  border-color: #bbbbbb;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
+/* 通用错误消息 */
 .general-error-message {
   color: #ff4d4f;
   font-size: 14px;
   text-align: center;
-  margin-bottom: 16px;
-  padding: 8px;
-  background-color: #fff2f0;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  background: #fff2f0;
   border: 1px solid #ffccc7;
-  border-radius: 4px;
+  border-radius: 3px;
+  line-height: 1.5;
 }
 
-/* 移动端适配 */
+/* 选择框样式覆盖（针对SelectDropdown） */
+.form-row .select-dropdown {
+  width: 100%;
+}
+
+/* 响应式适配 */
 @media (max-width: 768px) {
-  .register-form-container {
-    padding: 16px;
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .register-form-title {
-    font-size: 20px;
+  .form-label-wrapper {
+    width: 100%;
+    text-align: left;
+    padding-top: 0;
+    margin-bottom: 8px;
   }
 
+  .form-input-container {
+    margin-left: 0;
+    max-width: 100%;
+  }
+
+  .agreement-section,
+  .submit-section {
+    padding-left: 0;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+
+  .phone-input-wrapper {
+    flex-direction: column;
+  }
+
+  .phone-country-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
   .form-input {
     font-size: 16px; /* 防止iOS自动缩放 */
   }
-}
 
+  .strength-bar {
+    width: 40px;
+  }
+}
