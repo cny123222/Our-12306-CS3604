@@ -46,7 +46,7 @@ class RegisterController {
       if (existingUser) {
         return res.status(409).json({
           valid: false,
-          error: '该用户名已经被占用，请重新选择用户名！'
+          error: '该用户名已经占用，请重新选择用户名！'
         });
       }
 
@@ -327,7 +327,7 @@ class RegisterController {
       const existingUser = await registrationDbService.findUserByUsername(username);
       if (existingUser) {
         return res.status(409).json({
-          error: '该用户名已经被占用，请重新选择用户名！'
+          error: '该用户名已经占用，请重新选择用户名！'
         });
       }
 

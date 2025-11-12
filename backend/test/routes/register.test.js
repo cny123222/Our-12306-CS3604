@@ -92,7 +92,7 @@ describe('Registration API Routes Tests', () => {
 
       // Then: 应该返回冲突错误
       expect(response.body.valid).toBe(false);
-      expect(response.body.error).toBe('该用户名已经被占用，请重新选择用户名！');
+      expect(response.body.error).toBe('该用户名已经占用，请重新选择用户名！');
     });
 
     test('合法且未被占用的用户名应返回200成功', async () => {
@@ -484,7 +484,7 @@ describe('Registration API Routes Tests', () => {
         .expect(409);
 
       // Then: 应该返回冲突错误
-      expect(response.body.error).toBe('该用户名已经被占用，请重新选择用户名！');
+      expect(response.body.error).toBe('该用户名已经占用，请重新选择用户名！');
     });
 
     test('证件号已被注册时应返回409冲突错误', async () => {

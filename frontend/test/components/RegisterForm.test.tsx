@@ -145,7 +145,7 @@ describe('RegisterForm Component Tests', () => {
     test('用户名已被占用时应提示错误', async () => {
       // Given: Mock API返回用户名已存在
       (axios.post as any).mockResolvedValue({
-        data: { valid: false, error: '该用户名已经被占用，请重新选择用户名！' }
+        data: { valid: false, error: '该用户名已经占用，请重新选择用户名！' }
       });
 
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
@@ -157,7 +157,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText('该用户名已经被占用，请重新选择用户名！')).toBeInTheDocument();
+        expect(screen.getByText('该用户名已经占用，请重新选择用户名！')).toBeInTheDocument();
       });
     });
 
@@ -349,7 +349,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText('姓名长度不符合要求')).toBeInTheDocument();
+        expect(screen.getByText('允许输入的字符串在3-30个字符之间！')).toBeInTheDocument();
       });
     });
 
@@ -364,7 +364,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText('姓名长度不符合要求')).toBeInTheDocument();
+        expect(screen.getByText('允许输入的字符串在3-30个字符之间！')).toBeInTheDocument();
       });
     });
 
@@ -458,8 +458,8 @@ describe('RegisterForm Component Tests', () => {
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
       const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/);
 
-      // When: 输入已注册的证件号码
-      await userEvent.type(idCardInput, '110101199001011234');
+      // When: 输入已注册的证件号码（使用正确的校验码）
+      await userEvent.type(idCardInput, '110101199001011237');
       fireEvent.blur(idCardInput);
 
       // Then: 应该显示错误提示
@@ -477,8 +477,8 @@ describe('RegisterForm Component Tests', () => {
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
       const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/);
 
-      // When: 输入符合规范的证件号码
-      await userEvent.type(idCardInput, '110101199001011235');
+      // When: 输入符合规范的证件号码（使用正确的校验码）
+      await userEvent.type(idCardInput, '110101199001011237');
       fireEvent.blur(idCardInput);
 
       // Then: 应该显示绿色勾勾
@@ -684,7 +684,7 @@ describe('RegisterForm Component Tests', () => {
       // 选择证件类型（已默认选中居民身份证，无需再选）
       
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '张三');
-      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234');
+      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011237');
       
       // 选择优惠类型（已默认选中成人，无需再选）
       

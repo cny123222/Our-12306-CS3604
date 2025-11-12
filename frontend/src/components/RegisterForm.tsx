@@ -156,7 +156,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     }, 0);
 
     if (charLength < 3 || charLength > 30) {
-      setNameValidation({ isValid: false, errorMessage: '姓名长度不符合要求', showCheckmark: false });
+      setNameValidation({ isValid: false, errorMessage: '允许输入的字符串在3-30个字符之间！', showCheckmark: false });
       return;
     }
 
@@ -168,6 +168,37 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     }
 
     setNameValidation({ isValid: true, errorMessage: '', showCheckmark: true });
+  };
+
+  // 身份证校验码验证
+  const validateIdCardCheckCode = (idCard: string): boolean => {
+    // 前17位必须是数字
+    const first17 = idCard.substring(0, 17);
+    if (!/^\d{17}$/.test(first17)) {
+      return false;
+    }
+
+    // 最后一位校验码
+    const checkCode = idCard.charAt(17).toUpperCase();
+
+    // 加权系数
+    const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+    // 校验码对照表
+    const checkCodes = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'];
+
+    // 步骤一和二：计算加权求和
+    let sum = 0;
+    for (let i = 0; i < 17; i++) {
+      sum += parseInt(first17.charAt(i)) * weights[i];
+    }
+
+    // 步骤三：求余数
+    const remainder = sum % 11;
+
+    // 步骤四：根据余数确定校验码
+    const expectedCheckCode = checkCodes[remainder];
+
+    return checkCode === expectedCheckCode;
   };
 
   // 证件号码验证
@@ -185,6 +216,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     }
 
     if (value.length !== 18) {
+      setIdCardValidation({ isValid: false, errorMessage: '请正确输入18位证件号码！', showCheckmark: false });
+      return;
+    }
+
+    // 验证身份证号码格式（前17位必须是数字，最后一位是校验码）
+    if (!validateIdCardCheckCode(value)) {
       setIdCardValidation({ isValid: false, errorMessage: '请正确输入18位证件号码！', showCheckmark: false });
       return;
     }
@@ -470,7 +507,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
               {nameValidation.showCheckmark && (
                 <span className="input-checkmark" data-testid="name-checkmark">✓</span>
               )}
-              <span className="form-hint-message">姓名填写规则：（用于身份核验，请正确填写真实姓名）</span>
+              <span className="form-hint-message">姓名填写规则（用于身份核验，请正确填写真实姓名）</span>
             </div>
             {nameValidation.errorMessage && (
               <div className="form-error-message">{nameValidation.errorMessage}</div>
@@ -498,7 +535,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
               {idCardValidation.showCheckmark && (
                 <span className="input-checkmark" data-testid="id-card-checkmark">✓</span>
               )}
-              <span className="form-hint-message">（用于身份核验，请正确填写号码）</span>
+              <span className="form-hint-message">（用于身份核验，请正确填写）</span>
             </div>
             {idCardValidation.errorMessage && (
               <div className="form-error-message">{idCardValidation.errorMessage}</div>

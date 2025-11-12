@@ -88,7 +88,7 @@ describe('跨组件交互：注册表单验证流程', () => {
 
     // 6. 填写证件号码（合法：18位数字和字母）
     const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/i)
-    await user.type(idCardInput, '110101199001011234')
+    await user.type(idCardInput, '110101199001011237')
     await user.tab()
 
     await waitFor(() => {
@@ -255,7 +255,7 @@ describe('跨组件交互：注册表单验证流程', () => {
     await user.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请再次输入您的登录密码/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请输入姓名/i), '张三')
-    await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011234')
+    await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011237')
     await user.type(screen.getByPlaceholderText(/手机号码/i), '13800138000')
 
     // 不勾选协议，直接点击下一步

@@ -45,7 +45,7 @@ describe('跨页流程：注册页 → 验证页 → 登录页', () => {
     await user.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请再次输入您的登录密码/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请输入姓名/i), '张三')
-    await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011234')
+    await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011237')
     await user.type(screen.getByPlaceholderText(/手机号码/i), '13800138000')
 
     // 勾选协议
@@ -112,7 +112,7 @@ describe('跨页流程：注册页 → 验证页 → 登录页', () => {
     await user.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请再次输入您的登录密码/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请输入姓名/i), '张三')
-    await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011234')
+    await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011237')
     await user.type(screen.getByPlaceholderText(/手机号码/i), '13800138000')
 
     // 勾选协议
