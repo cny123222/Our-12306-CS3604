@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './StationInput.css';
+import { getAllStations, searchStations } from '../services/stationService';
 
 interface StationInputProps {
   value: string;
@@ -11,7 +12,7 @@ interface StationInputProps {
 
 /**
  * 站点输入组件
- * 骨架实现：仅包含组件结构，不实现真实逻辑
+ * 实现站点搜索和推荐功能
  */
 const StationInput: React.FC<StationInputProps> = ({
   value,
@@ -25,20 +26,61 @@ const StationInput: React.FC<StationInputProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // TODO: 实现站点搜索和推荐
-  const handleFocus = () => {
-    // TODO: 显示所有站点列表
+  // 加载所有站点（当输入框获得焦点时）
+  const handleFocus = async () => {
     setShowSuggestions(true);
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const stations = await getAllStations();
+      const stationNames = stations.map(station => station.name);
+      setSuggestions(stationNames);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('加载站点列表失败:', err);
+      setError('加载站点列表失败');
+      setSuggestions([]);
+      setIsLoading(false);
+    }
   };
 
-  // TODO: 实现站点输入处理
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 实时搜索站点
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     onChange(inputValue);
-    // TODO: 实时搜索站点
+
+    // 如果输入为空，显示所有站点
+    if (!inputValue.trim()) {
+      setIsLoading(true);
+      try {
+        const stations = await getAllStations();
+        const stationNames = stations.map(station => station.name);
+        setSuggestions(stationNames);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('加载站点列表失败:', err);
+        setSuggestions([]);
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    // 搜索匹配的站点
+    setIsLoading(true);
+    try {
+      const stations = await searchStations(inputValue);
+      const stationNames = stations.map(station => station.name);
+      setSuggestions(stationNames);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('搜索站点失败:', err);
+      setSuggestions([]);
+      setIsLoading(false);
+    }
   };
 
-  // TODO: 实现站点选择
+  // 选择站点
   const handleSelectStation = (station: string) => {
     onSelect(station);
     setShowSuggestions(false);
