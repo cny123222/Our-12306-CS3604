@@ -22,21 +22,70 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
 }) => {
   const [departureStation, setDepartureStation] = useState(initialDepartureStation);
   const [arrivalStation, setArrivalStation] = useState(initialArrivalStation);
-  const [departureDate, setDepartureDate] = useState(initialDepartureDate);
+  // 如果没有提供初始日期，使用当前日期
+  const [departureDate, setDepartureDate] = useState(
+    initialDepartureDate || new Date().toISOString().split('T')[0]
+  );
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // TODO: 实现查询功能
-  const handleSearch = () => {
-    // TODO: 验证输入
-    // TODO: 调用API查询
-    // TODO: 更新车次列表
+  // 实现查询功能
+  const handleSearch = async () => {
+    const newErrors: { [key: string]: string } = {};
+
+    // 验证输入
+    if (!departureStation || departureStation.trim() === '') {
+      newErrors.departureStation = '请输入出发地';
+      setErrors(newErrors);
+      return;
+    }
+
+    if (!arrivalStation || arrivalStation.trim() === '') {
+      newErrors.arrivalStation = '请输入到达地';
+      setErrors(newErrors);
+      return;
+    }
+
+    // 清除之前的错误
+    setErrors({});
+    setIsLoading(true);
+
+    try {
+      // 尝试调用trains API查询
+      // 如果网络或API失败，会抛出错误
+      const response = await fetch(
+        `/api/trains?departureStation=${encodeURIComponent(departureStation)}&arrivalStation=${encodeURIComponent(arrivalStation)}&departureDate=${departureDate}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      // API调用成功，通过回调传递搜索参数
+      onSearch({
+        departureStation,
+        arrivalStation,
+        departureDate,
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setErrors({ general: '查询失败，请稍后重试' });
+      setIsLoading(false);
+    }
+  };
+
+  // 交换出发地和到达地
+  const handleSwapStations = () => {
+    const temp = departureStation;
+    setDepartureStation(arrivalStation);
+    setArrivalStation(temp);
   };
 
   return (
     <div className="train-search-bar">
-      <div className="search-fields">
+      <div className="search-bar-container">
         <div className="search-field">
+          <label className="search-field-label">出发地</label>
           <StationInput
             value={departureStation}
             placeholder="简拼/全拼/汉字"
@@ -48,7 +97,17 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
             <div className="field-error">{errors.departureStation}</div>
           )}
         </div>
+        
+        <button 
+          className="swap-stations-btn" 
+          onClick={handleSwapStations}
+          aria-label="交换出发地和到达地"
+        >
+          ⇅
+        </button>
+        
         <div className="search-field">
+          <label className="search-field-label">到达地</label>
           <StationInput
             value={arrivalStation}
             placeholder="简拼/全拼/汉字"
@@ -58,7 +117,9 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           />
           {errors.arrivalStation && <div className="field-error">{errors.arrivalStation}</div>}
         </div>
+        
         <div className="search-field">
+          <label className="search-field-label">出发日期</label>
           <DatePicker
             value={departureDate}
             onChange={setDepartureDate}
@@ -66,12 +127,12 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
             maxDate=""
           />
         </div>
-        <div className="search-field">
-          <button className="search-button" onClick={handleSearch} disabled={isLoading}>
-            {isLoading ? '查询中...' : '查询'}
-          </button>
-        </div>
+        
+        <button className="search-submit-btn" onClick={handleSearch} disabled={isLoading}>
+          {isLoading ? '查询中...' : '查询'}
+        </button>
       </div>
+      {errors.general && <div className="search-error-message">{errors.general}</div>}
     </div>
   );
 };

@@ -9,16 +9,27 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
+import { BrowserRouter } from 'react-router-dom';
 import HomePage from '../../src/pages/HomePage';
+
+// Helper function to render with router
+const renderWithRouter = (component: React.ReactElement) => {
+  return render(<BrowserRouter>{component}</BrowserRouter>);
+};
+
+// Mock fetch globally
+global.fetch = vi.fn();
 
 describe('首页/查询页 - 业务逻辑测试', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset fetch mock
+    (global.fetch as any).mockReset();
   });
 
   describe('需求1.2.1: 校验用户输入的出发地是否为空', () => {
     it('用户未输入出发地点击查询，系统提示"请选择出发地"', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const searchButton = screen.getByRole('button', { name: /查询/i });
       
@@ -35,7 +46,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.2: 校验用户输入的到达地是否为空', () => {
     it('用户未输入到达地点击查询，系统提示"请选择到达地"', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       const searchButton = screen.getByRole('button', { name: /查询/i });
@@ -54,13 +65,25 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.3: 校验用户输入的出发地是否合法', () => {
     it('用户输入不在系统支持列表中的出发地，系统提示"无法匹配该出发地"', async () => {
-      render(<HomePage />);
+      // Mock invalid station validation
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({
+          valid: false,
+          error: '无法匹配该出发地',
+          suggestions: []
+        })
+      });
+
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
+      const arrivalInput = screen.getByPlaceholderText(/到达地/i);
       const searchButton = screen.getByRole('button', { name: /查询/i });
       
-      // 输入无效的出发地
+      // 输入无效的出发地和有效的到达地
       fireEvent.change(departureInput, { target: { value: '不存在的城市' } });
+      fireEvent.change(arrivalInput, { target: { value: '上海' } });
       fireEvent.click(searchButton);
       
       // 验证错误提示
@@ -71,7 +94,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('系统推荐具有相似度的城市供用户选择', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       
@@ -88,7 +111,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('用户可以点击推荐城市填充到出发地输入框', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       
@@ -107,7 +130,25 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.4: 校验用户输入的到达地是否合法', () => {
     it('用户输入不在系统支持列表中的到达地，系统提示"无法匹配该到达地"', async () => {
-      render(<HomePage />);
+      // Mock valid departure station, then invalid arrival station
+      (global.fetch as any)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            valid: true,
+            station: { stationName: '北京' }
+          })
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          json: async () => ({
+            valid: false,
+            error: '无法匹配该到达地',
+            suggestions: []
+          })
+        });
+
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       const arrivalInput = screen.getByPlaceholderText(/到达地/i);
@@ -128,7 +169,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.5: 合法出发地推荐', () => {
     it('用户点击出发地输入框，系统显示所有站点', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       
@@ -147,7 +188,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.6: 合法到达地推荐', () => {
     it('用户点击到达地输入框，系统显示所有站点', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const arrivalInput = screen.getByPlaceholderText(/到达地/i);
       
@@ -166,7 +207,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.7: 合法出发日期推荐', () => {
     it('用户点击出发日期选择框，系统显示日历', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const dateInput = screen.getByPlaceholderText(/出发日期/i) ||
                         screen.getByDisplayValue(new RegExp(new Date().toISOString().split('T')[0]));
@@ -193,7 +234,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.8: 出发地/到达地交换', () => {
     it('用户点击交换按钮，系统交换出发地和到达地的内容', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       const arrivalInput = screen.getByPlaceholderText(/到达地/i);
@@ -215,7 +256,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('出发地或到达地为空时也可以交换', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       const arrivalInput = screen.getByPlaceholderText(/到达地/i);
@@ -238,7 +279,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.2.9: 出发日期自动填入当前日期', () => {
     it('页面加载时出发日期自动填入当前日期', () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const dateInput = screen.getByDisplayValue(new RegExp(new Date().toISOString().split('T')[0]));
       
@@ -247,7 +288,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('用户未进行出发日期操作时保持当前日期', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const dateInput = screen.getByDisplayValue(new RegExp(new Date().toISOString().split('T')[0]));
       const today = new Date().toISOString().split('T')[0];
@@ -264,7 +305,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     it('用户输入正确信息且系统响应，100毫秒内跳转至车次列表页', async () => {
       const mockNavigate = vi.fn();
       
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       const arrivalInput = screen.getByPlaceholderText(/到达地/i);
@@ -287,8 +328,10 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('用户输入正确信息但系统未响应，不跳转且提示"查询失败，请稍后重试"', async () => {
-      // TODO: Mock API失败响应
-      render(<HomePage />);
+      // Mock API失败响应
+      (global.fetch as any).mockRejectedValue(new Error('Network error'));
+
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       const arrivalInput = screen.getByPlaceholderText(/到达地/i);
@@ -314,7 +357,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('需求1.3: 用户在首页/查询页登录/注册', () => {
     it('用户未登录点击登录按钮，100毫秒内跳转至登录页', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const loginButton = screen.getByRole('button', { name: /登录/i });
       
@@ -330,7 +373,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('用户未登录点击注册按钮，100毫秒内跳转至注册页', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const registerButton = screen.getByRole('button', { name: /注册/i });
       
@@ -347,7 +390,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
     it('用户已登录时仅显示"个人中心"入口，不显示"登录"和"注册"入口', () => {
       // TODO: Mock已登录状态
-      // render(<HomePage />);
+      // renderWithRouter(<HomePage />);
       
       // const personalCenterButton = screen.getByRole('button', { name: /个人中心/i });
       // expect(personalCenterButton).toBeInTheDocument();
@@ -377,7 +420,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
 
   describe('边界情况测试', () => {
     it('出发地和到达地相同时的验证', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       const arrivalInput = screen.getByPlaceholderText(/到达地/i);
@@ -392,7 +435,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('输入超长城市名称时的处理', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       
@@ -404,7 +447,7 @@ describe('首页/查询页 - 业务逻辑测试', () => {
     });
 
     it('输入特殊字符时的处理', async () => {
-      render(<HomePage />);
+      renderWithRouter(<HomePage />);
       
       const departureInput = screen.getByPlaceholderText(/出发地/i);
       

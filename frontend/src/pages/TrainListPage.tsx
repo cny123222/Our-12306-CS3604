@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './TrainListPage.css';
 import TopNavigation from '../components/TopNavigation';
 import MainNavigation from '../components/MainNavigation';
@@ -9,10 +10,17 @@ import BottomNavigation from '../components/BottomNavigation';
 
 /**
  * 车次列表页主容器组件
- * 骨架实现：仅包含组件结构，不实现真实逻辑
  */
 const TrainListPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useState<any>({});
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const [searchParams, setSearchParams] = useState<any>({
+    departureStation: location.state?.departureStation || '',
+    arrivalStation: location.state?.arrivalStation || '',
+    departureDate: location.state?.departureDate || new Date().toISOString().split('T')[0],
+    isHighSpeed: location.state?.isHighSpeed || false
+  });
   const [trains, setTrains] = useState<any[]>([]);
   const [filteredTrains, setFilteredTrains] = useState<any[]>([]);
   const [filterOptions, setFilterOptions] = useState<any>({});
@@ -31,22 +39,36 @@ const TrainListPage: React.FC = () => {
     // TODO: 定时检查查询时间是否超过5分钟
   }, [queryTimestamp]);
 
-  // TODO: 实现导航功能
+  // 实现导航功能
   const handleNavigateToHome = () => {
-    // TODO: 跳转到首页
+    navigate('/');
   };
 
   const handleNavigateToLogin = () => {
-    // TODO: 跳转到登录页
+    navigate('/login');
+  };
+
+  const handleNavigateToRegister = () => {
+    navigate('/register');
+  };
+
+  const handleNavigateToPersonalCenter = () => {
+    if (isLoggedIn) {
+      // TODO: navigate('/profile');
+    } else {
+      navigate('/login');
+    }
   };
 
   const handleNavigateToOrderPage = (trainNo: string) => {
     // TODO: 跳转到订单页
+    console.log('Navigate to order page for train:', trainNo);
   };
 
-  // TODO: 实现筛选功能
+  // 实现筛选功能
   const handleFilterChange = (filters: any) => {
     // TODO: 根据筛选条件更新车次列表
+    console.log('Filter changed:', filters);
   };
 
   return (
@@ -55,8 +77,8 @@ const TrainListPage: React.FC = () => {
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
-        onRegisterClick={() => {}}
-        onPersonalCenterClick={() => {}}
+        onRegisterClick={handleNavigateToRegister}
+        onPersonalCenterClick={handleNavigateToPersonalCenter}
       />
       <div className="train-list-content">
         <TrainSearchBar

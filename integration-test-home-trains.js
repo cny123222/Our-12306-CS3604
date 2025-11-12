@@ -6,7 +6,15 @@
  */
 
 const axios = require('axios');
-const chalk = require('chalk');
+
+// 颜色代码
+const colors = {
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  reset: '\x1b[0m'
+};
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -18,26 +26,26 @@ let testsFailed = 0;
  * 测试工具函数
  */
 function logSuccess(message) {
-  console.log(chalk.green('✓'), message);
+  console.log(colors.green + '✓' + colors.reset, message);
   testsPassed++;
 }
 
 function logFailure(message, error) {
-  console.log(chalk.red('✗'), message);
+  console.log(colors.red + '✗' + colors.reset, message);
   if (error) {
-    console.log(chalk.red('  Error:'), error.message || error);
+    console.log(colors.red + '  Error:' + colors.reset, error.message || error);
   }
   testsFailed++;
 }
 
 function logInfo(message) {
-  console.log(chalk.blue('ℹ'), message);
+  console.log(colors.blue + 'ℹ' + colors.reset, message);
 }
 
 function logSection(title) {
-  console.log('\n' + chalk.bold.cyan('═'.repeat(60)));
-  console.log(chalk.bold.cyan(title));
-  console.log(chalk.bold.cyan('═'.repeat(60)));
+  console.log('\n' + colors.blue + '═'.repeat(60) + colors.reset);
+  console.log(colors.blue + title + colors.reset);
+  console.log(colors.blue + '═'.repeat(60) + colors.reset);
 }
 
 /**
@@ -478,15 +486,15 @@ async function testCompleteUserFlow() {
  * 主测试函数
  */
 async function runAllTests() {
-  console.log(chalk.bold.yellow('\n🚀 开始运行首页和车次列表页集成测试\n'));
-  console.log(chalk.gray(`后端服务: ${BACKEND_URL}`));
-  console.log(chalk.gray(`前端服务: ${FRONTEND_URL}\n`));
+  console.log(colors.yellow + '\n🚀 开始运行首页和车次列表页集成测试\n' + colors.reset);
+  console.log(`后端服务: ${BACKEND_URL}`);
+  console.log(`前端服务: ${FRONTEND_URL}\n`);
   
   // 检查后端服务
   const backendHealthy = await testBackendHealth();
   
   if (!backendHealthy) {
-    console.log(chalk.red.bold('\n❌ 后端服务不可用，测试终止\n'));
+    console.log(colors.red + '\n❌ 后端服务不可用，测试终止\n' + colors.reset);
     process.exit(1);
   }
   
@@ -500,25 +508,25 @@ async function runAllTests() {
   await testCompleteUserFlow();
   
   // 输出测试总结
-  console.log('\n' + chalk.bold.cyan('═'.repeat(60)));
-  console.log(chalk.bold.cyan('测试总结'));
-  console.log(chalk.bold.cyan('═'.repeat(60)));
-  console.log(chalk.green(`✓ 通过: ${testsPassed} 个测试`));
-  console.log(chalk.red(`✗ 失败: ${testsFailed} 个测试`));
-  console.log(chalk.cyan('═'.repeat(60)) + '\n');
+  console.log('\n' + colors.blue + '═'.repeat(60) + colors.reset);
+  console.log(colors.blue + '测试总结' + colors.reset);
+  console.log(colors.blue + '═'.repeat(60) + colors.reset);
+  console.log(colors.green + `✓ 通过: ${testsPassed} 个测试` + colors.reset);
+  console.log(colors.red + `✗ 失败: ${testsFailed} 个测试` + colors.reset);
+  console.log(colors.blue + '═'.repeat(60) + colors.reset + '\n');
   
   if (testsFailed === 0) {
-    console.log(chalk.bold.green('🎉 所有测试通过！\n'));
+    console.log(colors.green + '🎉 所有测试通过！\n' + colors.reset);
     process.exit(0);
   } else {
-    console.log(chalk.bold.red(`⚠️  有 ${testsFailed} 个测试失败\n`));
+    console.log(colors.red + `⚠️  有 ${testsFailed} 个测试失败\n` + colors.reset);
     process.exit(1);
   }
 }
 
 // 运行测试
 runAllTests().catch(error => {
-  console.error(chalk.red('测试运行出错:'), error);
+  console.error(colors.red + '测试运行出错:' + colors.reset, error);
   process.exit(1);
 });
 

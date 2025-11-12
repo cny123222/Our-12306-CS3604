@@ -5,6 +5,9 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const registerRoutes = require('./routes/register');
+const stationsRoutes = require('./routes/stations');
+const trainsRoutes = require('./routes/trains');
+const ticketsRoutes = require('./routes/tickets');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/register', registerRoutes);
 app.use('/api/terms', registerRoutes);
+app.use('/api/stations', stationsRoutes);
+app.use('/api/trains', trainsRoutes);
+app.use('/api/tickets', ticketsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

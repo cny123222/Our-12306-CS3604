@@ -23,96 +23,182 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
   const [selectedArrivalStations, setSelectedArrivalStations] = useState<string[]>([]);
   const [selectedSeatTypes, setSelectedSeatTypes] = useState<string[]>([]);
 
-  // TODO: 实现筛选逻辑
+  // 实现筛选逻辑
   const handleTrainTypeChange = (type: string) => {
-    // TODO: 更新车次类型筛选
+    let newTypes = [...selectedTrainTypes];
+    if (type === 'GC') {
+      const hasG = newTypes.includes('G');
+      const hasC = newTypes.includes('C');
+      if (hasG || hasC) {
+        newTypes = newTypes.filter(t => t !== 'G' && t !== 'C');
+      } else {
+        newTypes.push('G', 'C');
+      }
+    } else if (type === 'D') {
+      if (newTypes.includes('D')) {
+        newTypes = newTypes.filter(t => t !== 'D');
+      } else {
+        newTypes.push('D');
+      }
+    }
+    setSelectedTrainTypes(newTypes);
+    onFilterChange({
+      trainTypes: newTypes,
+      departureStations: selectedDepartureStations,
+      arrivalStations: selectedArrivalStations,
+      seatTypes: selectedSeatTypes,
+    });
   };
 
   const handleDepartureStationChange = (station: string) => {
-    // TODO: 更新出发站筛选
+    let newStations = [...selectedDepartureStations];
+    if (newStations.includes(station)) {
+      newStations = newStations.filter(s => s !== station);
+    } else {
+      newStations.push(station);
+    }
+    setSelectedDepartureStations(newStations);
+    onFilterChange({
+      trainTypes: selectedTrainTypes,
+      departureStations: newStations,
+      arrivalStations: selectedArrivalStations,
+      seatTypes: selectedSeatTypes,
+    });
   };
 
   const handleArrivalStationChange = (station: string) => {
-    // TODO: 更新到达站筛选
+    let newStations = [...selectedArrivalStations];
+    if (newStations.includes(station)) {
+      newStations = newStations.filter(s => s !== station);
+    } else {
+      newStations.push(station);
+    }
+    setSelectedArrivalStations(newStations);
+    onFilterChange({
+      trainTypes: selectedTrainTypes,
+      departureStations: selectedDepartureStations,
+      arrivalStations: newStations,
+      seatTypes: selectedSeatTypes,
+    });
   };
 
   const handleSeatTypeChange = (type: string) => {
-    // TODO: 更新席别筛选
+    let newTypes = [...selectedSeatTypes];
+    if (newTypes.includes(type)) {
+      newTypes = newTypes.filter(t => t !== type);
+    } else {
+      newTypes.push(type);
+    }
+    setSelectedSeatTypes(newTypes);
+    onFilterChange({
+      trainTypes: selectedTrainTypes,
+      departureStations: selectedDepartureStations,
+      arrivalStations: selectedArrivalStations,
+      seatTypes: newTypes,
+    });
   };
+
+  const handleClearFilters = () => {
+    setSelectedTrainTypes(['G', 'C', 'D']);
+    setSelectedDepartureStations([]);
+    setSelectedArrivalStations([]);
+    setSelectedSeatTypes([]);
+    onFilterChange({
+      trainTypes: ['G', 'C', 'D'],
+      departureStations: [],
+      arrivalStations: [],
+      seatTypes: [],
+    });
+  };
+
+  const hasFilters = 
+    selectedDepartureStations.length > 0 || 
+    selectedArrivalStations.length > 0 || 
+    selectedSeatTypes.length > 0 ||
+    selectedTrainTypes.length !== 3;
 
   return (
     <div className="train-filter-panel">
-      <div className="filter-section">
-        <h3 className="filter-title">车次类型</h3>
-        <div className="filter-options">
-          <label className="filter-option">
-            <input
-              type="checkbox"
-              checked={selectedTrainTypes.includes('G') || selectedTrainTypes.includes('C')}
-              onChange={() => handleTrainTypeChange('GC')}
-            />
-            <span>GC-高铁/城际</span>
-          </label>
-          <label className="filter-option">
-            <input
-              type="checkbox"
-              checked={selectedTrainTypes.includes('D')}
-              onChange={() => handleTrainTypeChange('D')}
-            />
-            <span>D-动车</span>
-          </label>
-        </div>
-      </div>
-
-      {departureStations.length > 0 && (
-        <div className="filter-section">
-          <h3 className="filter-title">出发车站</h3>
+      <div className="filter-panel-container">
+        <div className="filter-group">
+          <div className="filter-label">车次类型</div>
           <div className="filter-options">
-            {departureStations.map((station) => (
-              <label key={station} className="filter-option">
-                <input
-                  type="checkbox"
-                  checked={selectedDepartureStations.includes(station)}
-                  onChange={() => handleDepartureStationChange(station)}
-                />
-                <span>{station}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {arrivalStations.length > 0 && (
-        <div className="filter-section">
-          <h3 className="filter-title">到达车站</h3>
-          <div className="filter-options">
-            {arrivalStations.map((station) => (
-              <label key={station} className="filter-option">
-                <input
-                  type="checkbox"
-                  checked={selectedArrivalStations.includes(station)}
-                  onChange={() => handleArrivalStationChange(station)}
-                />
-                <span>{station}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="filter-section">
-        <h3 className="filter-title">车次席别</h3>
-        <div className="filter-options">
-          {['商务座', '一等座', '二等座', '软卧', '硬卧'].map((type) => (
-            <label key={type} className="filter-option">
+            <label className="filter-option">
               <input
                 type="checkbox"
-                checked={selectedSeatTypes.includes(type)}
-                onChange={() => handleSeatTypeChange(type)}
+                checked={selectedTrainTypes.includes('G') || selectedTrainTypes.includes('C')}
+                onChange={() => handleTrainTypeChange('GC')}
               />
-              <span>{type}</span>
+              <span className="filter-option-label">GC-高铁/城际</span>
             </label>
-          ))}
+            <label className="filter-option">
+              <input
+                type="checkbox"
+                checked={selectedTrainTypes.includes('D')}
+                onChange={() => handleTrainTypeChange('D')}
+              />
+              <span className="filter-option-label">D-动车</span>
+            </label>
+            <button 
+              className="filter-clear-btn" 
+              onClick={handleClearFilters}
+              disabled={!hasFilters}
+            >
+              清除筛选
+            </button>
+          </div>
+        </div>
+
+        {departureStations.length > 0 && (
+          <div className="filter-group">
+            <div className="filter-label">出发车站</div>
+            <div className="filter-options">
+              {departureStations.map((station) => (
+                <label key={station} className="filter-option">
+                  <input
+                    type="checkbox"
+                    checked={selectedDepartureStations.includes(station)}
+                    onChange={() => handleDepartureStationChange(station)}
+                  />
+                  <span className="filter-option-label">{station}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {arrivalStations.length > 0 && (
+          <div className="filter-group">
+            <div className="filter-label">到达车站</div>
+            <div className="filter-options">
+              {arrivalStations.map((station) => (
+                <label key={station} className="filter-option">
+                  <input
+                    type="checkbox"
+                    checked={selectedArrivalStations.includes(station)}
+                    onChange={() => handleArrivalStationChange(station)}
+                  />
+                  <span className="filter-option-label">{station}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="filter-group">
+          <div className="filter-label">车次席别</div>
+          <div className="filter-options">
+            {['商务座', '一等座', '二等座', '软卧', '硬卧'].map((type) => (
+              <label key={type} className="filter-option">
+                <input
+                  type="checkbox"
+                  checked={selectedSeatTypes.includes(type)}
+                  onChange={() => handleSeatTypeChange(type)}
+                />
+                <span className="filter-option-label">{type}</span>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
     </div>
