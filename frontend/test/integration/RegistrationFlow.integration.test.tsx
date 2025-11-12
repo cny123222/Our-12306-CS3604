@@ -99,7 +99,7 @@ describe.skip('注册流程集成测试', () => {
       await userEvent.type(nameInput, '测试用户')
 
       const idCardInput = screen.getByPlaceholderText(/请输入您的证件号码/)
-      await userEvent.type(idCardInput, '110101199001011234')
+      await userEvent.type(idCardInput, '110101199001011237')
       fireEvent.blur(idCardInput)
 
       const phoneInput = screen.getByPlaceholderText(/手机号码/)
@@ -203,7 +203,7 @@ describe.skip('注册流程集成测试', () => {
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
-      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
+      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011237')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
       fireEvent.click(screen.getByRole('checkbox'))
       fireEvent.click(screen.getByRole('button', { name: /下一步/ }))
@@ -256,7 +256,7 @@ describe.skip('注册流程集成测试', () => {
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
-      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
+      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011237')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
       fireEvent.click(screen.getByRole('checkbox'))
       fireEvent.click(screen.getByRole('button', { name: /下一步/ }))
@@ -288,7 +288,7 @@ describe.skip('注册流程集成测试', () => {
       mockedAxios.post.mockImplementation((url) => {
         if (url === '/api/auth/register') {
           return Promise.reject({
-            response: { data: { error: '该用户名已经被占用' } }
+            response: { data: { error: '该用户名已经占用' } }
           })
         }
         return Promise.resolve({ data: { valid: true } })
@@ -305,14 +305,14 @@ describe.skip('注册流程集成测试', () => {
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
-      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
+      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011237')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
       fireEvent.click(screen.getByRole('checkbox'))
       fireEvent.click(screen.getByRole('button', { name: /下一步/ }))
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(global.alert).toHaveBeenCalledWith('该用户名已经被占用')
+        expect(global.alert).toHaveBeenCalledWith('该用户名已经占用')
       })
 
       // Then: 不应该显示验证弹窗
@@ -345,7 +345,7 @@ describe.skip('注册流程集成测试', () => {
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
-      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
+      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011237')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
       fireEvent.click(screen.getByRole('checkbox'))
       fireEvent.click(screen.getByRole('button', { name: /下一步/ }))
@@ -390,7 +390,7 @@ describe.skip('注册流程集成测试', () => {
       await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'Test123_')
       await userEvent.type(screen.getByPlaceholderText(/^请输入姓名$/), '测试')
-      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011234')
+      await userEvent.type(screen.getByPlaceholderText(/请输入您的证件号码/), '110101199001011237')
       await userEvent.type(screen.getByPlaceholderText(/手机号码/), '13800138000')
       fireEvent.click(screen.getByRole('checkbox'))
       fireEvent.click(screen.getByRole('button', { name: /下一步/ }))

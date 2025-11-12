@@ -184,7 +184,7 @@
       - statusCode: 400
         body: { valid: false, error: "用户名只能由字母、数字和_组成，须以字母开头！" }
       - statusCode: 409
-        body: { valid: false, error: "该用户名已经被占用，请重新选择用户名！" }
+        body: { valid: false, error: "该用户名已经占用，请重新选择用户名！" }
   dependencies:
     - DB-FindUserByUsername
   acceptanceCriteria:
@@ -361,7 +361,7 @@
       - statusCode: 400
         body: { error: "请修正填写的信息！" }
       - statusCode: 409
-        body: { error: "该用户名已经被占用，请重新选择用户名！" }
+        body: { error: "该用户名已经占用，请重新选择用户名！" }
       - statusCode: 409
         body: { error: "该证件号码已经被注册过" }
   dependencies:
