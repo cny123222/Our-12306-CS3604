@@ -41,6 +41,41 @@ class RegistrationDbService {
   }
 
   /**
+   * DB-FindUserByPhone - 根据手机号查找用户
+   */
+  async findUserByPhone(phone) {
+    try {
+      const user = await dbService.get(
+        'SELECT * FROM users WHERE phone = ?',
+        [phone]
+      );
+      return user || null;
+    } catch (error) {
+      console.error('Error finding user by phone:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * DB-FindUserByEmail - 根据邮箱查找用户
+   */
+  async findUserByEmail(email) {
+    try {
+      if (!email) {
+        return null;
+      }
+      const user = await dbService.get(
+        'SELECT * FROM users WHERE email = ?',
+        [email]
+      );
+      return user || null;
+    } catch (error) {
+      console.error('Error finding user by email:', error);
+      throw error;
+    }
+  }
+
+  /**
    * DB-CreateUser - 在数据库中创建新用户记录
    */
   async createUser(userData) {

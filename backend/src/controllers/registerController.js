@@ -188,18 +188,10 @@ class RegisterController {
         });
       }
 
-      // 检查证件号码是否已注册
-      const existingUser = await registrationDbService.findUserByIdCardNumber(idCardType, idCardNumber);
-      if (existingUser) {
-        return res.status(409).json({
-          valid: false,
-          error: '该证件号码已经被注册过，请确认是否您本人注册，"是"请使用原账号登录，"不是"请通过铁路12306App办理抢注或持该证件到就近的办理客运业务的铁路车站办理被抢注处理，完成后即可继续注册，或致电12306客服咨询。'
-        });
-      }
-
+      // 注意：证件号码是否已注册的检查在点击"下一步"时进行，这里只做格式验证
       res.status(200).json({
         valid: true,
-        message: '证件号码格式正确且可用'
+        message: '证件号码格式正确'
       });
     } catch (error) {
       console.error('Validate ID card error:', error);
@@ -335,8 +327,26 @@ class RegisterController {
       const existingIdCard = await registrationDbService.findUserByIdCardNumber(idCardType, idCardNumber);
       if (existingIdCard) {
         return res.status(409).json({
-          error: '该证件号码已经被注册过'
+          error: '该证件号码已经被注册过，请确认是否您本人注册，"是"请使用原账号登录，"不是"请通过铁路12306App办理抢注或持该证件到就近的办理客运业务的铁路车站办理被抢注处理，完成后即可继续注册，或致电12306客服咨询。'
         });
+      }
+
+      // 检查手机号是否已被其他用户使用
+      const existingPhone = await registrationDbService.findUserByPhone(phone);
+      if (existingPhone) {
+        return res.status(409).json({
+          error: '您输入的手机号码已被其他注册用户使用，请确认是否本人注册。如果此手机号是本人注册，您可使用此手机号进行登录，或返回登录页点击忘记密码进行重置密码;如果手机号不是您注册的，您可更换手机号码或致电12306客服协助处理。'
+        });
+      }
+
+      // 检查邮箱是否已被其他用户使用（如果用户填写了邮箱）
+      if (email) {
+        const existingEmail = await registrationDbService.findUserByEmail(email);
+        if (existingEmail) {
+          return res.status(409).json({
+            error: '您输入的邮箱已被其他注册用户使用，请确认是否本人注册。如果此邮箱是本人注册，您可使用此邮箱进行登录，或返回登录页点击忘记密码进行重置密码;如果邮箱不是您注册的，您可更换邮箱或致电12306客服协助处理。'
+          });
+        }
       }
 
       // 创建会话，存储用户数据
