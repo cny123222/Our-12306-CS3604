@@ -318,9 +318,9 @@
       body: { valid: true, message: "手机号码格式正确" }
     error:
       - statusCode: 400
-        body: { valid: false, error: "您输入的手机号不是有效格式！" }
+        body: { valid: false, error: "您输入的手机号码不是有效的格式！" }
       - statusCode: 400
-        body: { valid: false, error: "请输入正确的手机号码！" }
+        body: { valid: false, error: "您输入的手机号码不是有效的格式！" }
   dependencies:
     - none
   acceptanceCriteria:

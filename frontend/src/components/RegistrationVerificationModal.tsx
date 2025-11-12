@@ -13,6 +13,7 @@ interface RegistrationVerificationModalProps {
   onBack: () => void;
   isSuccess?: boolean;
   successMessage?: string;
+  externalError?: string; // 外部传入的错误信息（如验证码错误或已过期）
 }
 
 const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps> = ({
@@ -21,7 +22,8 @@ const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps
   onComplete,
   onBack,
   isSuccess = false,
-  successMessage = ''
+  successMessage = '',
+  externalError = ''
 }) => {
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState('');
@@ -97,8 +99,8 @@ const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps
               />
             </div>
 
-            {error && (
-              <div className="error-message">{error}</div>
+            {(error || externalError) && (
+              <div className="error-message">{externalError || error}</div>
             )}
 
             {/* 按钮区域 */}

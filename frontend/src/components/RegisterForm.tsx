@@ -269,12 +269,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     // 先检查是否包含非数字字符
     const phoneRegex = /^[0-9]+$/;
     if (!phoneRegex.test(value)) {
-      setPhoneValidation({ isValid: false, errorMessage: '请输入正确的手机号码！', showCheckmark: false });
+      setPhoneValidation({ isValid: false, errorMessage: '您输入的手机号码不是有效的格式！', showCheckmark: false });
       return;
     }
 
     if (value.length !== 11) {
-      setPhoneValidation({ isValid: false, errorMessage: '您输入的手机号不是有效格式！', showCheckmark: false });
+      setPhoneValidation({ isValid: false, errorMessage: '您输入的手机号码不是有效的格式！', showCheckmark: false });
       return;
     }
 
@@ -308,7 +308,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     if (!phone) missingFields.push('手机号码');
     
     if (missingFields.length > 0) {
-      setGeneralError(`请填写完整信息！缺少：${missingFields.join('、')}`);
+      setGeneralError('请填写完整信息！');
       return;
     }
 

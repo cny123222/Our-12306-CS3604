@@ -26,6 +26,7 @@ const RegisterPage: React.FC = () => {
   const [showVerificationModal, setShowVerificationModal] = useState(false)
   const [registrationData, setRegistrationData] = useState<RegistrationData | null>(null)
   const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false)
+  const [verificationError, setVerificationError] = useState('')
 
   const handleSubmit = async (data: RegistrationData) => {
     console.log('Registration submitted:', data)
@@ -79,17 +80,20 @@ const RegisterPage: React.FC = () => {
 
   const handleVerificationComplete = async (code: string) => {
     if (!registrationData) {
-      alert('注册信息丢失，请重新注册')
+      setVerificationError('注册信息丢失，请重新注册')
       return
     }
 
     const sessionId = (registrationData as any).sessionId
     if (!sessionId) {
-      alert('会话信息丢失，请重新注册')
+      setVerificationError('会话信息丢失，请重新注册')
       return
     }
 
     try {
+      // 清除之前的错误信息
+      setVerificationError('')
+      
       // 调用后端完成注册API
       await axios.post('/api/register/complete', {
         sessionId: sessionId,
@@ -106,9 +110,9 @@ const RegisterPage: React.FC = () => {
     } catch (error: any) {
       console.error('Verification error:', error)
       if (error.response?.data?.error) {
-        alert(error.response.data.error)
+        setVerificationError(error.response.data.error)
       } else {
-        alert('验证失败，请重试')
+        setVerificationError('验证失败，请重试')
       }
     }
   }
@@ -116,6 +120,7 @@ const RegisterPage: React.FC = () => {
   const handleVerificationBack = () => {
     setShowVerificationModal(false)
     setIsRegistrationSuccess(false)
+    setVerificationError('')
   }
 
   const handleVerificationClose = () => {
@@ -124,12 +129,14 @@ const RegisterPage: React.FC = () => {
       setShowVerificationModal(false)
       setIsRegistrationSuccess(false)
       setRegistrationData(null)
+      setVerificationError('')
       return
     }
     
     if (window.confirm('确定要关闭验证弹窗吗？关闭后需要重新提交注册信息。')) {
       setShowVerificationModal(false)
       setRegistrationData(null)
+      setVerificationError('')
     }
   }
 
@@ -174,6 +181,7 @@ const RegisterPage: React.FC = () => {
           onBack={handleVerificationBack}
           isSuccess={isRegistrationSuccess}
           successMessage="恭喜您注册成功！正在跳转登录页..."
+          externalError={verificationError}
         />
       )}
     </div>

@@ -257,7 +257,7 @@ class RegisterController {
       if (!phone || phone.length !== 11) {
         return res.status(400).json({
           valid: false,
-          error: '您输入的手机号不是有效格式！'
+          error: '您输入的手机号码不是有效的格式！'
         });
       }
 
@@ -266,7 +266,7 @@ class RegisterController {
       if (!phoneRegex.test(phone)) {
         return res.status(400).json({
           valid: false,
-          error: '请输入正确的手机号码！'
+          error: '您输入的手机号码不是有效的格式！'
         });
       }
 
