@@ -26,37 +26,61 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn }) =
   };
 
   const getSeatClass = (count: number | null) => {
-    if (count === null) return 'seat-unavailable';
-    if (count === 0) return 'seat-soldout';
-    if (count >= 20) return 'seat-available';
-    return 'seat-limited';
+    if (count === null) return 'not-available';
+    if (count === 0) return 'sold-out';
+    if (count >= 20) return 'available';
+    return 'limited';
   };
 
   return (
     <div className="train-item">
-      <div className="item-cell">{train.trainNo || '--'}</div>
-      <div className="item-cell">
-        {train.departureStation || '--'} / {train.arrivalStation || '--'}
+      <div className="train-item-cell align-left">
+        <div className="train-number">{train.trainNo || '--'}</div>
       </div>
-      <div className="item-cell">{train.departureTime || '--'}</div>
-      <div className="item-cell">{train.arrivalTime || '--'}</div>
-      <div className="item-cell">{train.duration || '--'}</div>
-      <div className={`item-cell ${getSeatClass(availableSeats.business)}`}>
-        {formatSeatStatus(availableSeats.business)}
+      <div className="train-item-cell">
+        <div className="train-stations">
+          <div className="station-row">
+            <span className="station-name">{train.departureStation || '--'}</span>
+            <span className="station-arrow">→</span>
+            <span className="station-name">{train.arrivalStation || '--'}</span>
+          </div>
+        </div>
       </div>
-      <div className={`item-cell ${getSeatClass(availableSeats.firstClass)}`}>
-        {formatSeatStatus(availableSeats.firstClass)}
+      <div className="train-item-cell">
+        <div className="train-time">{train.departureTime || '--'}</div>
       </div>
-      <div className={`item-cell ${getSeatClass(availableSeats.secondClass)}`}>
-        {formatSeatStatus(availableSeats.secondClass)}
+      <div className="train-item-cell">
+        <div className="train-time">{train.arrivalTime || '--'}</div>
       </div>
-      <div className={`item-cell ${getSeatClass(availableSeats.softSleeper)}`}>
-        {formatSeatStatus(availableSeats.softSleeper)}
+      <div className="train-item-cell">
+        <div className="train-duration">{train.duration || '--'}</div>
       </div>
-      <div className={`item-cell ${getSeatClass(availableSeats.hardSleeper)}`}>
-        {formatSeatStatus(availableSeats.hardSleeper)}
+      <div className="train-item-cell">
+        <div className={`seat-info ${getSeatClass(availableSeats.business)}`}>
+          {formatSeatStatus(availableSeats.business)}
+        </div>
       </div>
-      <div className="item-cell">
+      <div className="train-item-cell">
+        <div className={`seat-info ${getSeatClass(availableSeats.firstClass)}`}>
+          {formatSeatStatus(availableSeats.firstClass)}
+        </div>
+      </div>
+      <div className="train-item-cell">
+        <div className={`seat-info ${getSeatClass(availableSeats.secondClass)}`}>
+          {formatSeatStatus(availableSeats.secondClass)}
+        </div>
+      </div>
+      <div className="train-item-cell">
+        <div className={`seat-info ${getSeatClass(availableSeats.softSleeper)}`}>
+          {formatSeatStatus(availableSeats.softSleeper)}
+        </div>
+      </div>
+      <div className="train-item-cell">
+        <div className={`seat-info ${getSeatClass(availableSeats.hardSleeper)}`}>
+          {formatSeatStatus(availableSeats.hardSleeper)}
+        </div>
+      </div>
+      <div className="train-item-cell train-reserve-cell">
         <ReserveButton
           trainNo={train.trainNo}
           departureStation={train.departureStation}

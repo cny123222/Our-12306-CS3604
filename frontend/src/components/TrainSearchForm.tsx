@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './TrainSearchForm.css';
 import StationInput from './StationInput';
 import DatePicker from './DatePicker';
+import { validateStation } from '../services/stationService';
 
 interface TrainSearchFormProps {
   onNavigateToTrainList: (params: any) => void;
@@ -9,7 +10,6 @@ interface TrainSearchFormProps {
 
 /**
  * 车票查询表单组件
- * 骨架实现：仅包含组件结构，不实现真实逻辑
  */
 const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList }) => {
   const [departureStation, setDepartureStation] = useState('');
@@ -18,16 +18,73 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
   const [isHighSpeed, setIsHighSpeed] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // TODO: 实现交换出发地和到达地
+  // 实现交换出发地和到达地
   const handleSwapStations = () => {
-    // TODO: 交换逻辑
+    const temp = departureStation;
+    setDepartureStation(arrivalStation);
+    setArrivalStation(temp);
   };
 
-  // TODO: 实现查询功能
-  const handleSearch = () => {
-    // TODO: 验证输入
-    // TODO: 调用API查询
-    // TODO: 跳转到车次列表页
+  // 实现查询功能
+  const handleSearch = async () => {
+    const newErrors: { [key: string]: string } = {};
+
+    // 验证出发地
+    if (!departureStation || departureStation.trim() === '') {
+      newErrors.departure = '请选择出发地';
+      setErrors({ ...newErrors, general: '请选择出发地' });
+      return;
+    }
+
+    // 验证到达地
+    if (!arrivalStation || arrivalStation.trim() === '') {
+      newErrors.arrival = '请选择到达地';
+      setErrors({ ...newErrors, general: '请选择到达地' });
+      return;
+    }
+
+    // 验证出发地是否合法
+    const departureResult = await validateStation(departureStation);
+    if (!departureResult.valid) {
+      // Check if this is a network error
+      if (departureResult.error === '验证站点失败，请稍后重试') {
+        setErrors({
+          general: '查询失败，请稍后重试'
+        });
+        return;
+      }
+      setErrors({
+        departure: departureResult.error || '无法匹配该出发地',
+        general: departureResult.error || '无法匹配该出发地'
+      });
+      return;
+    }
+
+    // 验证到达地是否合法
+    const arrivalResult = await validateStation(arrivalStation);
+    if (!arrivalResult.valid) {
+      // Check if this is a network error
+      if (arrivalResult.error === '验证站点失败，请稍后重试') {
+        setErrors({
+          general: '查询失败，请稍后重试'
+        });
+        return;
+      }
+      setErrors({
+        arrival: arrivalResult.error || '无法匹配该到达地',
+        general: arrivalResult.error || '无法匹配该到达地'
+      });
+      return;
+    }
+
+    // 所有验证通过，跳转到车次列表页
+    setErrors({});
+    onNavigateToTrainList({
+      departureStation,
+      arrivalStation,
+      departureDate,
+      isHighSpeed
+    });
   };
 
   return (

@@ -1,25 +1,29 @@
+/* 顶部导航栏样式 */
 .top-navigation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
-  height: 80px;
+  padding: 15px 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .logo-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   align-items: center;
-  cursor: pointer;
   gap: 15px;
+  cursor: pointer;
 }
 
+/* Logo图片 */
 .logo-image {
+  width: 50px;
   height: 50px;
-  width: auto;
+  object-fit: contain;
 }
 
+/* Logo文字区域 */
 .logo-text {
   display: flex;
   flex-direction: column;
@@ -27,58 +31,135 @@
 }
 
 .logo-chinese {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #333333;
-  line-height: 1.2;
+  letter-spacing: 1px;
 }
 
 .logo-english {
   font-size: 12px;
-  color: #666666;
-  letter-spacing: 1px;
-  line-height: 1.2;
+  color: #999999;
+  letter-spacing: 0.5px;
 }
 
+/* 欢迎登录文字 */
 .welcome-login-text {
-  font-size: 20px;
-  color: #333333;
-  margin-left: 20px;
+  margin-left: 30px;
+  font-size: 16px;
   font-weight: 500;
+  color: #666666;
 }
 
+/* 欢迎信息区域（登录/注册页不显示） */
 .welcome-section {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
 }
 
 .welcome-text {
-  color: #333333;
-  margin-right: 2px;
+  font-size: 14px;
+  color: #666666;
 }
 
-.login-link {
-  color: #0066cc;
-  text-decoration: none;
-  transition: color 0.3s;
-  margin-right: 8px;
-}
-
+.login-link,
 .register-link {
-  color: #0066cc;
+  font-size: 14px;
+  color: #2196f3;
   text-decoration: none;
-  transition: color 0.3s;
+  padding: 4px 12px;
+  border-radius: 3px;
+  transition: all 0.3s;
 }
 
 .login-link:hover,
 .register-link:hover {
-  color: #0052a3;
-  text-decoration: underline;
+  background-color: #e3f2fd;
+  color: #1976d2;
 }
 
-.logo-section:hover {
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+.login-link:active,
+.register-link:active {
+  background-color: #bbdefb;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .top-navigation {
+    padding: 12px 0;
+  }
+
+  .logo-section {
+    padding: 0 15px;
+    gap: 10px;
+  }
+
+  .logo-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logo-chinese {
+    font-size: 16px;
+  }
+
+  .logo-english {
+    font-size: 10px;
+  }
+
+  .welcome-login-text {
+    margin-left: 15px;
+    font-size: 14px;
+  }
+
+  .welcome-text,
+  .login-link,
+  .register-link {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-navigation {
+    padding: 10px 0;
+  }
+
+  .logo-section {
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .logo-image {
+    width: 36px;
+    height: 36px;
+  }
+
+  .logo-chinese {
+    font-size: 14px;
+  }
+
+  .logo-english {
+    font-size: 9px;
+  }
+
+  .welcome-login-text {
+    margin-left: 10px;
+    font-size: 12px;
+  }
+
+  .welcome-section {
+    gap: 5px;
+  }
+
+  .welcome-text {
+    display: none;
+  }
+
+  .login-link,
+  .register-link {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
 }
