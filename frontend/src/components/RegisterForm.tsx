@@ -324,7 +324,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
   // 计算密码强度
   const getPasswordStrength = (pwd: string): number => {
-    if (pwd.length < 6) return 0;
+    if (!pwd || pwd.length === 0) return 0; // 完全没输入时返回0
+    if (pwd.length < 6) return 1; // 不满6位时显示一格（弱）
     let strength = 0;
     if (/[a-z]/.test(pwd)) strength++;
     if (/[A-Z]/.test(pwd)) strength++;
@@ -362,7 +363,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
               {usernameValidation.showCheckmark && (
                 <span className="input-checkmark" data-testid="username-checkmark">✓</span>
               )}
-              <span className="form-hint-message">6-30位字母、数字或"_"，须以字母开头</span>
+              <span className="form-hint-message">6-30位字母、数字或"_"，字母开头</span>
             </div>
             {usernameValidation.errorMessage && (
               <div className="form-error-message">{usernameValidation.errorMessage}</div>
@@ -382,7 +383,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
               <input
                 className={`form-input ${passwordValidation.errorMessage ? 'error' : passwordValidation.showCheckmark ? 'valid' : ''}`}
                 type="password"
-                placeholder="6-20位字母、数字或号"
+                placeholder="6-20位字母、数字或符号"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onBlur={() => validatePassword(password)}
@@ -390,15 +391,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
               {passwordValidation.showCheckmark && (
                 <span className="input-checkmark" data-testid="password-checkmark">✓</span>
               )}
-              {password && (
-                <div className="password-strength">
-                  <div className="strength-bars">
-                    <div className={`strength-bar ${passwordStrength >= 1 ? 'weak' : ''}`}></div>
-                    <div className={`strength-bar ${passwordStrength >= 2 ? 'medium' : ''}`}></div>
-                    <div className={`strength-bar ${passwordStrength >= 3 ? 'strong' : ''}`}></div>
-                  </div>
+              <div className="password-strength">
+                <div className="strength-bars">
+                  <div className={`strength-bar ${passwordStrength >= 1 ? 'weak' : ''}`}></div>
+                  <div className={`strength-bar ${passwordStrength >= 2 ? 'medium' : ''}`}></div>
+                  <div className={`strength-bar ${passwordStrength >= 3 ? 'strong' : ''}`}></div>
                 </div>
-              )}
+              </div>
             </div>
             {passwordValidation.errorMessage && (
               <div className="form-error-message">{passwordValidation.errorMessage}</div>

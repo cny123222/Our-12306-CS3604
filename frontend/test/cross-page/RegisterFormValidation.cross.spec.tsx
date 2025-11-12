@@ -48,7 +48,7 @@ describe('跨组件交互：注册表单验证流程', () => {
     })
 
     // 2. 填写登录密码（合法：6位以上，包含字母和数字）
-    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/i)
+    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/i)
     await user.type(passwordInput, 'Pass123')
     await user.tab()
 
@@ -162,7 +162,7 @@ describe('跨组件交互：注册表单验证流程', () => {
     })
 
     // 测试密码过短
-    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/i)
+    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/i)
     await user.type(passwordInput, '123')
     await user.tab()
 
@@ -196,7 +196,7 @@ describe('跨组件交互：注册表单验证流程', () => {
     })
 
     // 填写密码
-    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/i)
+    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/i)
     await user.type(passwordInput, 'Pass123')
     await user.tab()
 
@@ -252,7 +252,7 @@ describe('跨组件交互：注册表单验证流程', () => {
 
     // 填写所有必填字段
     await user.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/i), 'testUser123')
-    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或号/i), 'Pass123')
+    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请再次输入您的登录密码/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请输入姓名/i), '张三')
     await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011234')

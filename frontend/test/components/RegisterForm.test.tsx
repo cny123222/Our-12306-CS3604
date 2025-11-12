@@ -188,7 +188,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码长度小于6位时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/);
 
       // When: 输入长度小于6位的密码
       await userEvent.type(passwordInput, 'abc12');
@@ -203,7 +203,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码包含特殊字符时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/);
 
       // When: 输入包含特殊字符的密码
       await userEvent.type(passwordInput, 'abc@#$123');
@@ -218,7 +218,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码只包含一种字符类型时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/);
 
       // When: 输入只包含数字的密码
       await userEvent.type(passwordInput, '123456');
@@ -233,7 +233,7 @@ describe('RegisterForm Component Tests', () => {
     test('密码符合规范时应显示绿色勾勾', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/);
 
       // When: 输入符合规范的密码
       await userEvent.type(passwordInput, 'abc123');
@@ -253,7 +253,7 @@ describe('RegisterForm Component Tests', () => {
     test('确认密码与密码不一致时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/);
       const confirmPasswordInput = screen.getByPlaceholderText(/请再次输入您的登录密码/);
 
       // When: 输入不一致的确认密码
@@ -270,7 +270,7 @@ describe('RegisterForm Component Tests', () => {
     test('确认密码与密码一致时应显示绿色勾勾', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/);
+      const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/);
       const confirmPasswordInput = screen.getByPlaceholderText(/请再次输入您的登录密码/);
 
       // When: 输入一致的确认密码
@@ -678,7 +678,7 @@ describe('RegisterForm Component Tests', () => {
 
       // When: 填写所有必填字段
       await userEvent.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/), 'validUser123');
-      await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或号/), 'abc123');
+      await userEvent.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/), 'abc123');
       await userEvent.type(screen.getByPlaceholderText(/请再次输入您的登录密码/), 'abc123');
       
       // 选择证件类型（已默认选中居民身份证，无需再选）
