@@ -34,7 +34,6 @@ const LoginPage: React.FC = () => {
     } catch (error: any) {
       console.error('Login error:', error)
       setError(error.response?.data?.error || '登录失败，请重试')
-      alert(error.response?.data?.error || '登录失败，请重试')
     } finally {
       setIsLoading(false)
     }
@@ -89,7 +88,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="login-page">
-      <TopNavigation onLogoClick={() => console.log('Logo clicked')} />
+      <TopNavigation onLogoClick={() => console.log('Logo clicked')} showWelcomeLogin={true} />
       
       <div className="login-content">
         <div className="login-promotion">
