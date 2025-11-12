@@ -131,7 +131,12 @@ class AuthService {
       // TODO: 实际发送短信（这里模拟）
       console.log(`[SMS] 发送验证码 ${code} 到 ${sessionData.phone}`);
 
-      return { success: true, message: '验证码已发送', verificationCode: code };
+      return { 
+        success: true, 
+        message: '验证码已发送', 
+        verificationCode: code,
+        phone: sessionData.phone  // 返回手机号，便于前端显示
+      };
     } catch (error) {
       console.error('Generate and send SMS code error:', error);
       throw error;
