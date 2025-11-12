@@ -1,0 +1,173 @@
+/* 车次列表区域样式 */
+.train-list {
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.train-list-container {
+  width: 100%;
+}
+
+/* 列表表头 */
+.train-list-header {
+  display: grid;
+  grid-template-columns: 80px 180px 120px 120px 100px repeat(5, 1fr) 100px;
+  gap: 10px;
+  padding: 15px 20px;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 13px;
+  color: #495057;
+  align-items: center;
+}
+
+.train-list-header-cell {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.train-list-header-cell.align-left {
+  text-align: left;
+}
+
+/* 列表主体 */
+.train-list-body {
+  background-color: #ffffff;
+}
+
+/* 空状态 */
+.train-list-empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: #999999;
+}
+
+.train-list-empty-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.train-list-empty-text {
+  font-size: 16px;
+  color: #666666;
+  margin-bottom: 10px;
+}
+
+.train-list-empty-hint {
+  font-size: 14px;
+  color: #999999;
+}
+
+/* 加载更多 */
+.train-list-load-more {
+  padding: 20px;
+  text-align: center;
+}
+
+.train-list-load-more-btn {
+  padding: 10px 30px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.train-list-load-more-btn:hover {
+  background-color: #1976d2;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(33, 150, 243, 0.3);
+}
+
+.train-list-load-more-btn:active {
+  transform: translateY(0);
+}
+
+.train-list-load-more-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 响应式设计 - 平板 */
+@media (max-width: 1024px) {
+  .train-list-header {
+    grid-template-columns: 70px 160px 110px 110px 90px repeat(5, minmax(60px, 1fr)) 90px;
+    gap: 8px;
+    padding: 12px 15px;
+    font-size: 12px;
+  }
+}
+
+/* 响应式设计 - 手机 */
+@media (max-width: 768px) {
+  .train-list {
+    border-radius: 6px;
+  }
+
+  .train-list-header {
+    display: none; /* 在手机上隐藏表头，改用卡片式布局 */
+  }
+
+  .train-list-empty {
+    padding: 40px 15px;
+  }
+
+  .train-list-empty-icon {
+    font-size: 40px;
+  }
+
+  .train-list-empty-text {
+    font-size: 15px;
+  }
+
+  .train-list-empty-hint {
+    font-size: 13px;
+  }
+
+  .train-list-load-more {
+    padding: 15px;
+  }
+
+  .train-list-load-more-btn {
+    padding: 9px 25px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .train-list-empty {
+    padding: 30px 10px;
+  }
+
+  .train-list-empty-icon {
+    font-size: 36px;
+  }
+
+  .train-list-empty-text {
+    font-size: 14px;
+  }
+
+  .train-list-empty-hint {
+    font-size: 12px;
+  }
+
+  .train-list-load-more {
+    padding: 12px;
+  }
+
+  .train-list-load-more-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+}

@@ -168,7 +168,7 @@
     ],
     "fares": {
       "currency": "CNY",
-      "second_class": 6517,
+      "second_class": 517,
       "hard_sleeper": 1170,
       "soft_sleeper": 1420,
       "segments": [
@@ -224,7 +224,7 @@
     ],
     "fares": {
       "currency": "CNY",
-      "second_class": 6517,
+      "second_class": 517,
       "hard_sleeper": 1170,
       "soft_sleeper": 1420,
       "segments": [

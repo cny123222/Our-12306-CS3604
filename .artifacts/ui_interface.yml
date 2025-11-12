@@ -1,6 +1,6 @@
 
 # 前端UI接口定义
-# 基于登录页和注册页需求文档生成
+# 基于登录页、注册页、首页查询页和车次列表页需求文档生成
 
 - type: Frontend
   id: UI-LoginPage
@@ -55,6 +55,8 @@
   changeLog:
     - date: "2025-01-25"
       description: "初始创建，顶部导航组件。"
+    - date: "2025-11-12"
+      description: "复用于首页和车次列表页，支持根据登录状态显示不同的导航选项。"
 
 - type: Frontend
   id: UI-LoginForm
@@ -123,6 +125,8 @@
   changeLog:
     - date: "2025-01-25"
       description: "初始创建，底部导航组件。"
+    - date: "2025-11-12"
+      description: "复用于所有页面的底部导航。"
 
 - type: Frontend
   id: UI-SmsVerificationModal
@@ -397,46 +401,48 @@
       description: "初始创建，带验证功能的输入框组件。"
 
 - type: Frontend
-  id: UI-RegistrationVerification
-  description: 注册验证界面组件
+  id: UI-RegistrationVerificationModal
+  description: 注册验证弹窗组件
   properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
     - name: sessionId
       type: string
       description: "注册会话ID"
     - name: phone
       type: string
       description: "手机号码"
-    - name: email
-      type: string
-      description: "邮箱地址（可选）"
     - name: onVerificationSuccess
       type: function
       description: "验证成功回调函数"
+    - name: onCancel
+      type: function
+      description: "返回修改回调函数"
   state:
-    - smsCode
-    - emailCode
+    - verificationCode
     - error
     - isLoading
-    - showSuccessModal
   dependencies:
     - API-POST-SendRegistrationVerificationCode
     - API-POST-CompleteRegistration
     - UI-SuccessModal
   acceptanceCriteria:
-    - 显示"验证"标题
-    - 包含短信验证码输入框（6位数字）
-    - 如果提供了邮箱，显示邮箱验证码输入框
-    - "立即注册"按钮（橙色背景，白色文字）
-    - 自动发送验证码到手机和邮箱
-    - 点击"立即注册"按钮后验证验证码
-    - 验证成功后显示成功弹窗
+    - 弹窗标题为"手机验证"
+    - 显示"验证码已发送至【手机号】"文字
+    - 包含验证码输入框（6位数字）
+    - "完成注册"按钮（橙色背景，白色文字）
+    - "返回修改"按钮
+    - 自动发送验证码到手机
+    - 点击"完成注册"按钮后验证验证码
+    - 验证成功后显示成功提示并跳转登录页
   changeLog:
     - date: "2025-11-10"
-      description: "初始创建，注册验证界面组件。"
+      description: "初始创建，注册验证弹窗组件。"
 
 - type: Frontend
   id: UI-SuccessModal
-  description: 注册成功弹窗组件
+  description: 成功提示弹窗组件
   properties:
     - name: isVisible
       type: boolean
@@ -454,12 +460,12 @@
   acceptanceCriteria:
     - 弹窗占据页面30%
     - 居中显示
-    - 显示成功消息："恭喜您注册成功，请到登录页面进行登录！"
+    - 显示成功消息
     - 包含"确认"按钮
-    - 点击"确认"按钮关闭弹窗并跳转到登录页面
+    - 点击"确认"按钮关闭弹窗并执行回调
   changeLog:
     - date: "2025-11-10"
-      description: "初始创建，注册成功弹窗组件。"
+      description: "初始创建，成功提示弹窗组件。"
 
 - type: Frontend
   id: UI-ServiceTermsPage
@@ -507,3 +513,491 @@
   changeLog:
     - date: "2025-11-10"
       description: "初始创建，隐私权政策页面组件。"
+
+# === 首页查询页相关UI组件 ===
+
+- type: Frontend
+  id: UI-HomePage
+  description: 首页/查询页主容器组件
+  properties:
+    - name: onNavigateToLogin
+      type: function
+      description: "跳转到登录页的回调函数"
+    - name: onNavigateToRegister
+      type: function
+      description: "跳转到注册页的回调函数"
+    - name: onNavigateToPersonalCenter
+      type: function
+      description: "跳转到个人中心的回调函数"
+    - name: onNavigateToTrainList
+      type: function
+      description: "跳转到车次列表页的回调函数"
+  state:
+    - isLoggedIn
+    - userInfo
+    - error
+  dependencies:
+    - API-GET-HomePage
+    - UI-TopNavigation
+    - UI-MainNavigation
+    - UI-TrainSearchForm
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 整体页面背景为白色，分为上中下三部分布局
+    - 最上方为顶部导航区域
+    - 中间为车票查询表单区域
+    - 最下方为底部导航区域
+    - 根据登录状态显示不同的导航选项
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，首页/查询页主容器组件。"
+
+- type: Frontend
+  id: UI-MainNavigation
+  description: 主导航栏组件（包含登录/注册/个人中心入口）
+  properties:
+    - name: isLoggedIn
+      type: boolean
+      description: "用户登录状态"
+    - name: onLoginClick
+      type: function
+      description: "登录按钮点击处理函数"
+    - name: onRegisterClick
+      type: function
+      description: "注册按钮点击处理函数"
+    - name: onPersonalCenterClick
+      type: function
+      description: "个人中心按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 如果用户未登录，显示"登录"和"注册"入口
+    - 如果用户已登录，仅显示"个人中心"入口，不显示"登录"和"注册"
+    - 点击"登录"跳转到登录页，在100毫秒内完成
+    - 点击"注册"跳转到注册页，在100毫秒内完成
+    - 点击"个人中心"跳转到个人中心页，在100毫秒内完成
+    - 如果用户未登录点击"个人中心"，跳转到登录页
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，主导航栏组件。"
+
+- type: Frontend
+  id: UI-TrainSearchForm
+  description: 车票查询表单组件
+  properties:
+    - name: onSearch
+      type: function
+      description: "查询按钮点击处理函数"
+    - name: onNavigateToTrainList
+      type: function
+      description: "跳转到车次列表页的回调函数"
+  state:
+    - departureStation
+    - arrivalStation
+    - departureDate
+    - isHighSpeed  # 是否勾选高铁/动车
+    - errors
+    - isLoading
+    - stationSuggestions  # 站点推荐列表
+  dependencies:
+    - API-GET-Stations
+    - API-POST-ValidateStation
+    - API-POST-SearchTrains
+    - UI-StationInput
+    - UI-DatePicker
+  acceptanceCriteria:
+    - 背景使用12306官方APP推广图片
+    - 表单镶嵌于推广背景左侧，位于主页面中间偏左位置
+    - 从上至下依次包含：
+      - 出发地输入框
+      - 到达地输入框
+      - 出发地和到达地之间有橙色双箭头按钮（交换功能）
+      - 出发日期输入框
+      - "高铁/动车"勾选框
+      - "查询"按钮（橙色背景，白色文字）
+    - 点击双箭头按钮交换出发地和到达地
+    - 出发日期默认自动填入当前日期
+    - 查询前验证出发地和到达地不为空
+    - 查询前验证出发地和到达地在系统支持的城市列表中
+    - 成功查询后在100毫秒内跳转到车次列表页
+    - 查询失败时显示错误提示并保持在当前页面
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，车票查询表单组件。"
+
+- type: Frontend
+  id: UI-StationInput
+  description: 站点输入组件（支持自动推荐）
+  properties:
+    - name: value
+      type: string
+      description: "当前输入值"
+    - name: placeholder
+      type: string
+      description: "占位符文本"
+    - name: onChange
+      type: function
+      description: "值变化时的回调函数"
+    - name: onSelect
+      type: function
+      description: "选择站点时的回调函数"
+    - name: type
+      type: string
+      description: "输入框类型（departure/arrival）"
+  state:
+    - inputValue
+    - suggestions  # 推荐站点列表
+    - showSuggestions  # 是否显示推荐列表
+    - isLoading
+    - error
+  dependencies:
+    - API-GET-Stations
+    - API-POST-ValidateStation
+  acceptanceCriteria:
+    - 点击输入框时显示所有站点列表
+    - 用户输入时实时搜索并显示匹配的站点
+    - 支持简拼、全拼、汉字搜索
+    - 如果输入的站点不在系统支持列表中，显示"无法匹配该出发地/到达地"
+    - 显示相似度匹配的推荐站点
+    - 用户可点击推荐站点填充到输入框
+    - 输入框为空时显示"请选择出发地/到达地"提示
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，站点输入组件。"
+
+- type: Frontend
+  id: UI-DatePicker
+  description: 日期选择器组件
+  properties:
+    - name: value
+      type: string
+      description: "当前选中的日期"
+    - name: onChange
+      type: function
+      description: "日期变化时的回调函数"
+    - name: minDate
+      type: string
+      description: "最小可选日期"
+    - name: maxDate
+      type: string
+      description: "最大可选日期"
+  state:
+    - selectedDate
+    - showCalendar  # 是否显示日历
+    - availableDates  # 已放票的日期列表
+  dependencies:
+    - API-GET-AvailableDates
+  acceptanceCriteria:
+    - 默认显示当前日期
+    - 点击输入框展开日历选择器
+    - 已放票的日期显示为黑色，可点击选择
+    - 已过期或未开票的日期显示为灰色，不可点击
+    - 选择日期后自动收起日历并更新输入框显示
+    - 如果点击不可选日期，页面保持不变
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，日期选择器组件。"
+
+# === 车次列表页相关UI组件 ===
+
+- type: Frontend
+  id: UI-TrainListPage
+  description: 车次列表页主容器组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+    - name: onNavigateToLogin
+      type: function
+      description: "跳转到登录页的回调函数"
+    - name: onNavigateToOrderPage
+      type: function
+      description: "跳转到订单页的回调函数"
+  state:
+    - searchParams  # 查询参数
+    - trains  # 车次列表
+    - filteredTrains  # 筛选后的车次列表
+    - filterOptions  # 筛选选项
+    - isLoading
+    - error
+    - queryTimestamp  # 查询时间戳
+    - isLoggedIn
+  dependencies:
+    - API-POST-SearchTrains
+    - API-GET-FilterOptions
+    - UI-TopNavigation
+    - UI-MainNavigation
+    - UI-TrainSearchBar
+    - UI-TrainFilterPanel
+    - UI-TrainList
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 整体页面背景为白色，从上到下分为5个部分：
+      - 页面顶部导航区域
+      - 车次搜索和查询区域
+      - 车次信息筛选区域
+      - 车次列表区域
+      - 底部导航区域
+    - 页面加载时自动根据查询参数获取车次列表
+    - 支持车次筛选功能
+    - 记录查询时间戳，超过5分钟提示用户重新查询
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，车次列表页主容器组件。"
+
+- type: Frontend
+  id: UI-TrainSearchBar
+  description: 车次搜索和查询区域组件
+  properties:
+    - name: initialDepartureStation
+      type: string
+      description: "初始出发站"
+    - name: initialArrivalStation
+      type: string
+      description: "初始到达站"
+    - name: initialDepartureDate
+      type: string
+      description: "初始出发日期"
+    - name: onSearch
+      type: function
+      description: "查询按钮点击处理函数"
+  state:
+    - departureStation
+    - arrivalStation
+    - departureDate
+    - errors
+    - isLoading
+  dependencies:
+    - API-POST-SearchTrains
+    - UI-StationInput
+    - UI-DatePicker
+  acceptanceCriteria:
+    - 包含出发地输入框、到达地输入框、出发日期选择框
+    - 包含"查询"按钮
+    - 自动填充从首页传递的查询参数
+    - 出发地和到达地未填写时显示默认状态"简拼/全拼/汉字"
+    - 出发日期未填写时默认填入当前日期
+    - 查询前验证出发地和到达地不为空
+    - 查询成功后在100毫秒内更新车次列表
+    - 查询失败时显示"查询失败，请稍后重试"
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，车次搜索和查询区域组件。"
+
+- type: Frontend
+  id: UI-TrainFilterPanel
+  description: 车次信息筛选区域组件
+  properties:
+    - name: onFilterChange
+      type: function
+      description: "筛选条件变化时的回调函数"
+    - name: departureStations
+      type: array
+      description: "出发站列表"
+    - name: arrivalStations
+      type: array
+      description: "到达站列表"
+    - name: seatTypes
+      type: array
+      description: "席别类型列表"
+  state:
+    - selectedTrainTypes  # 已选车次类型
+    - selectedDepartureStations  # 已选出发站
+    - selectedArrivalStations  # 已选到达站
+    - selectedSeatTypes  # 已选席别
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示在车次搜索和查询区域下方
+    - 包含以下筛选栏：
+      - 车次类型：GC-高铁/城际、D-动车
+      - 出发车站：根据查询结果自动补全
+      - 到达车站：根据查询结果自动补全
+      - 车次席别：商务座、一等座、二等座、软卧、硬卧
+    - 默认初始化车次类型为"GC-高铁/城际"和"D-动车"
+    - 其他筛选栏初始为空
+    - 用户勾选或取消勾选筛选条件时，实时更新车次列表
+    - 支持同一筛选栏多选（满足任一条件）
+    - 支持跨筛选栏多选（同时满足所有条件）
+    - 筛选时不检查余票状态
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，车次信息筛选区域组件。"
+
+- type: Frontend
+  id: UI-TrainList
+  description: 车次列表组件
+  properties:
+    - name: trains
+      type: array
+      description: "车次列表数据"
+    - name: onReserve
+      type: function
+      description: "预订按钮点击处理函数"
+    - name: isLoggedIn
+      type: boolean
+      description: "用户登录状态"
+  state:
+    - none
+  dependencies:
+    - UI-TrainItem
+  acceptanceCriteria:
+    - 显示在车次信息筛选区域下方
+    - 以表格形式展示车次列表
+    - 表格列包含：车次、出发站/到达站、出发时间、到达时间、历时、商务座、一等座、二等座、软卧、硬卧、预订按钮
+    - 如果没有符合条件的车次，显示"暂无符合条件的车次"
+    - 每个车次项最右侧有"预订"按钮
+    - 不包含换乘车次，仅展示直达车次
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，车次列表组件。"
+
+- type: Frontend
+  id: UI-TrainItem
+  description: 车次列表项组件
+  properties:
+    - name: train
+      type: object
+      description: "车次数据"
+    - name: onReserve
+      type: function
+      description: "预订按钮点击处理函数"
+    - name: isLoggedIn
+      type: boolean
+      description: "用户登录状态"
+  state:
+    - availableSeats  # 余票信息
+  dependencies:
+    - API-POST-CalculateAvailableSeats
+    - UI-ReserveButton
+  acceptanceCriteria:
+    - 显示车次基本信息：车次号、出发站、到达站、出发时间、到达时间、历时
+    - 显示各席别余票状态：
+      - 余票数<20：显示具体数字，黑色字体
+      - 余票数>=20：显示"有"，绿色字体
+      - 余票数=0：显示"无"，灰色字体
+      - 该车次无该席别：显示"--"
+    - 最右侧显示"预订"按钮
+    - 如果所有席别都售罄，"预订"按钮显示为灰色且不可点击
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，车次列表项组件。"
+
+- type: Frontend
+  id: UI-ReserveButton
+  description: 预订按钮组件
+  properties:
+    - name: trainNo
+      type: string
+      description: "车次号"
+    - name: departureStation
+      type: string
+      description: "出发站"
+    - name: arrivalStation
+      type: string
+      description: "到达站"
+    - name: departureDate
+      type: string
+      description: "出发日期"
+    - name: departureTime
+      type: string
+      description: "出发时间"
+    - name: hasSoldOut
+      type: boolean
+      description: "是否已售罄"
+    - name: isLoggedIn
+      type: boolean
+      description: "用户登录状态"
+    - name: onReserve
+      type: function
+      description: "预订成功回调函数"
+    - name: queryTimestamp
+      type: string
+      description: "查询时间戳"
+  state:
+    - isLoading
+    - showConfirmModal  # 是否显示确认弹窗
+    - showExpiredModal  # 是否显示过期弹窗
+  dependencies:
+    - API-POST-ReserveTicket
+  acceptanceCriteria:
+    - 如果所有席别售罄，按钮显示为灰色且不可点击
+    - 如果用户未登录，点击后弹窗提示"请先登录！"，包含"确认"和"取消"按钮
+    - 点击"确认"跳转到登录页，点击"取消"关闭弹窗
+    - 如果距离发车时间不足3小时，弹窗提示安全检查提醒，包含"确认"和"取消"按钮
+    - 点击"确认"在100毫秒内跳转到购票页面，点击"取消"关闭弹窗
+    - 如果距离查询时间超过5分钟，弹窗提示"页面内容已过期，请重新查询！"
+    - 如果网络异常，弹窗提示"网络忙，请稍后重试"
+    - 如果点击时车票恰好售罄，弹窗提示"手慢了，该车次车票已售罄！"并刷新车次列表
+    - 正常情况下在100毫秒内跳转到购票页面
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，预订按钮组件。"
+
+- type: Frontend
+  id: UI-ConfirmModal
+  description: 确认弹窗组件（用于各种确认场景）
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: title
+      type: string
+      description: "弹窗标题"
+    - name: message
+      type: string
+      description: "提示消息"
+    - name: confirmText
+      type: string
+      description: "确认按钮文本"
+    - name: cancelText
+      type: string
+      description: "取消按钮文本"
+    - name: onConfirm
+      type: function
+      description: "确认按钮点击处理函数"
+    - name: onCancel
+      type: function
+      description: "取消按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 弹窗居中显示
+    - 包含标题、消息内容、确认和取消按钮
+    - 点击确认按钮执行确认操作
+    - 点击取消按钮关闭弹窗
+    - 支持点击遮罩层关闭弹窗
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，确认弹窗组件。"
+
+- type: Frontend
+  id: UI-ExpiredQueryModal
+  description: 查询过期提示弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: onRefresh
+      type: function
+      description: "刷新按钮点击处理函数"
+    - name: onCancel
+      type: function
+      description: "取消按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 当距离上次查询超过5分钟时自动显示
+    - 提示"页面内容已过期，请重新查询！"
+    - 包含"确认"和"取消"按钮
+    - 点击"确认"重新加载并刷新当前车次列表
+    - 点击"取消"关闭弹窗，车次列表保持不变
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，查询过期提示弹窗组件。"

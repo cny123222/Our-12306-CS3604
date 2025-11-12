@@ -1,22 +1,59 @@
-import React from 'react'
-import './MainNavigation.css'
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import './MainNavigation.css';
 
-const MainNavigation: React.FC = () => {
+interface MainNavigationProps {
+  isLoggedIn: boolean;
+  onLoginClick: () => void;
+  onRegisterClick: () => void;
+  onPersonalCenterClick: () => void;
+}
+
+/**
+ * 主导航栏组件
+ * 12306 蓝色导航栏，包含主要功能入口
+ */
+const MainNavigation: React.FC<MainNavigationProps> = ({
+  isLoggedIn,
+  onLoginClick,
+  onRegisterClick,
+  onPersonalCenterClick,
+}) => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const isTrainsPage = location.pathname === '/trains';
+
   return (
     <nav className="main-navigation">
       <div className="nav-container">
-        <a href="/" className="nav-item">首页</a>
-        <a href="/tickets" className="nav-item">车票</a>
-        <a href="/group-service" className="nav-item">团组服务</a>
-        <a href="/member-service" className="nav-item">会员服务</a>
-        <a href="/station-service" className="nav-item">站车服务</a>
-        <a href="/business-service" className="nav-item">商旅服务</a>
-        <a href="/travel-guide" className="nav-item">出行指南</a>
-        <a href="/info-query" className="nav-item">信息查询</a>
+        <Link to="/" className={`nav-item ${isHomePage ? 'active' : ''}`}>首页</Link>
+        <Link to="/trains" className={`nav-item ${isTrainsPage ? 'active' : ''}`}>车票 <span className="nav-arrow">▼</span></Link>
+        <a href="#" className="nav-item">团购服务 <span className="nav-arrow">▼</span></a>
+        <a href="#" className="nav-item">会员服务 <span className="nav-arrow">▼</span></a>
+        <a href="#" className="nav-item">站车服务 <span className="nav-arrow">▼</span></a>
+        <a href="#" className="nav-item">商旅服务 <span className="nav-arrow">▼</span></a>
+        <a href="#" className="nav-item">出行指南 <span className="nav-arrow">▼</span></a>
+        <a href="#" className="nav-item">信息查询 <span className="nav-arrow">▼</span></a>
+        
+        <div className="nav-right">
+          {!isLoggedIn ? (
+            <>
+              <button className="nav-auth-button login-button" onClick={onLoginClick}>
+                登录
+              </button>
+              <button className="nav-auth-button register-button" onClick={onRegisterClick}>
+                注册
+              </button>
+            </>
+          ) : (
+            <button className="nav-auth-button personal-center-button" onClick={onPersonalCenterClick}>
+              个人中心
+            </button>
+          )}
+        </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default MainNavigation
-
+export default MainNavigation;
