@@ -144,10 +144,23 @@ const RegisterPage: React.FC = () => {
     navigate('/login')
   }
 
+  const handleNavigateToHome = () => {
+    navigate('/')
+  }
+
+  const handleNavigateToRegister = () => {
+    navigate('/register')
+  }
+
   return (
     <div className="register-page">
-      <TopNavigation />
-      <MainNavigation />
+      <TopNavigation onLogoClick={handleNavigateToHome} />
+      <MainNavigation
+        isLoggedIn={false}
+        onLoginClick={handleNavigateToLogin}
+        onRegisterClick={handleNavigateToRegister}
+        onPersonalCenterClick={handleNavigateToLogin}
+      />
       <main className="register-main">
         {/* 面包屑导航 */}
         <div className="breadcrumb">

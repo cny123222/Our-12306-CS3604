@@ -50,6 +50,10 @@ const LoginPage: React.FC = () => {
     console.log('Navigate to forgot password')
   }
 
+  const handleNavigateToHome = () => {
+    navigate('/')
+  }
+
   // const handleSmsVerificationSuccess = () => {
   //   // TODO: 实现短信验证成功后的逻辑
   //   console.log('SMS verification success')
@@ -98,7 +102,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="login-page">
-      <TopNavigation onLogoClick={() => console.log('Logo clicked')} showWelcomeLogin={true} />
+      <TopNavigation onLogoClick={handleNavigateToHome} showWelcomeLogin={true} />
       
       <div className="login-content">
         <div className="login-promotion">
