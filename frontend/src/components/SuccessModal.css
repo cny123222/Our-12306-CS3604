@@ -1,0 +1,90 @@
+/* SuccessModal组件样式 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-30-percent {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  min-width: 320px;
+  max-width: 500px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  padding: 24px;
+}
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.modal-content {
+  text-align: center;
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.modal-content button {
+  padding: 10px 32px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.modal-content button:hover {
+  background-color: #40a9ff;
+}
+
+.modal-content button:active {
+  background-color: #096dd9;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .modal-30-percent {
+    width: 80%;
+    min-width: 280px;
+  }
+}
+

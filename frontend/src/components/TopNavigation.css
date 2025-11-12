@@ -1,0 +1,84 @@
+.top-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  height: 80px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 15px;
+}
+
+.logo-image {
+  height: 50px;
+  width: auto;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo-chinese {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+  line-height: 1.2;
+}
+
+.logo-english {
+  font-size: 12px;
+  color: #666666;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+.welcome-login-text {
+  font-size: 20px;
+  color: #333333;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.welcome-text {
+  color: #333333;
+  margin-right: 2px;
+}
+
+.login-link {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.3s;
+  margin-right: 8px;
+}
+
+.register-link {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.login-link:hover,
+.register-link:hover {
+  color: #0052a3;
+  text-decoration: underline;
+}
+
+.logo-section:hover {
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}

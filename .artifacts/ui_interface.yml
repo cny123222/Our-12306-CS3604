@@ -1,0 +1,509 @@
+
+# 前端UI接口定义
+# 基于登录页和注册页需求文档生成
+
+- type: Frontend
+  id: UI-LoginPage
+  description: 登录主页面组件，包含完整的登录界面布局
+  properties:
+    - name: onLoginSuccess
+      type: function
+      description: "登录成功后的回调函数"
+    - name: onNavigateToRegister
+      type: function
+      description: "跳转到注册页面的回调函数"
+    - name: onNavigateToForgotPassword
+      type: function
+      description: "跳转到忘记密码页面的回调函数"
+  state:
+    - identifier  # 用户名/邮箱/手机号
+    - password
+    - error
+    - isLoading
+    - showSmsModal
+  dependencies:
+    - API-POST-Login
+    - UI-TopNavigation
+    - UI-LoginForm
+    - UI-BottomNavigation
+    - UI-SmsVerificationModal
+  acceptanceCriteria:
+    - 整体页面背景为白色，分为上中下三部分布局
+    - 集成顶部导航、登录表单和底部导航组件
+    - 处理登录状态管理和错误显示
+    - 支持短信验证弹窗的显示和隐藏
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，登录页面主容器组件。"
+
+- type: Frontend
+  id: UI-TopNavigation
+  description: 顶部导航区域组件
+  properties:
+    - name: onLogoClick
+      type: function
+      description: "Logo点击事件处理函数"
+  state:
+    - none
+  dependencies:
+    - API-GET-HomePage
+  acceptanceCriteria:
+    - 左侧显示Logo区域，使用图片"登录页-顶部导航区域-Logo区域.png"
+    - Logo包含中国铁路12306官方标识和文字
+    - Logo右侧显示"欢迎登录12306"文字（黑色）
+    - Logo点击可跳转到12306首页
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，顶部导航组件。"
+
+- type: Frontend
+  id: UI-LoginForm
+  description: 登录表单组件
+  properties:
+    - name: onSubmit
+      type: function
+      description: "表单提交处理函数"
+    - name: onRegisterClick
+      type: function
+      description: "注册链接点击处理函数"
+    - name: onForgotPasswordClick
+      type: function
+      description: "忘记密码链接点击处理函数"
+    - name: identifier
+      type: string
+      description: "用户名/邮箱/手机号输入值"
+    - name: password
+      type: string
+      description: "密码输入值"
+    - name: error
+      type: string
+      description: "错误信息"
+    - name: isLoading
+      type: boolean
+      description: "加载状态"
+  state:
+    - localIdentifier
+    - localPassword
+    - validationErrors
+  dependencies:
+    - API-POST-Login
+  acceptanceCriteria:
+    - 背景使用推广图片"登录页-登录表单区域-推广背景.png"
+    - 表单位于页面中间偏右位置
+    - 包含"账号登录"标题（蓝色）
+    - "用户名/邮箱/手机号"输入框（灰色边框，黑色文字）
+    - "密码"输入框（灰色边框，密码显示为黑色圆点）
+    - "立即登录"按钮（橙色背景，白色文字）
+    - "注册12306账户"链接（蓝色文字）
+    - "忘记密码？"链接（灰色文字）
+    - 支持各种输入验证和错误提示
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，登录表单组件。"
+
+- type: Frontend
+  id: UI-BottomNavigation
+  description: 底部导航区域组件
+  properties:
+    - name: onFriendLinkClick
+      type: function
+      description: "友情链接点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 左侧显示友情链接区域
+    - 右侧显示四个官方平台二维码
+    - 使用指定的二维码图片：
+      - "中国铁路官方微信二维码.png"
+      - "中国铁路官方微博二维码.png"
+      - "12306公众号二维码.png"
+      - "铁路12306二维码.png"
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，底部导航组件。"
+
+- type: Frontend
+  id: UI-SmsVerificationModal
+  description: 短信验证弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: onClose
+      type: function
+      description: "关闭弹窗处理函数"
+    - name: onVerificationSuccess
+      type: function
+      description: "验证成功回调函数"
+    - name: sessionId
+      type: string
+      description: "登录会话ID"
+  state:
+    - idCardLast4  # 证件号后4位
+    - verificationCode  # 验证码
+    - error  # 错误信息
+    - message  # 成功/提示信息
+    - messageType  # 消息类型：success, error, warning
+    - isLoading  # 加载状态
+    - buttonState  # 获取验证码按钮状态：1-禁用（证件号<4位），2-可点击（证件号=4位），3-倒计时（60秒）
+    - countdown  # 倒计时秒数
+    - isSending  # 是否正在发送验证码
+  dependencies:
+    - API-POST-SendVerificationCode
+    - API-POST-VerifyLogin
+  acceptanceCriteria:
+    - 弹窗位于页面正中央，大小为登录页面的30%
+    - 顶部导航栏为浅灰色，包含"选择验证方式"文字和"x"关闭按钮
+    - 内容区包含：
+      - "短信验证"标题（蓝色，居中）
+      - "请输入登录账号绑定的证件号后4位"输入框（最多4位）
+      - "输入验证码"输入框（最多6位）和"获取验证码"按钮
+      - "确定"按钮（橙色背景，白色文字）
+    - "获取验证码"按钮三种状态：
+      - 状态1：背景灰色，文字灰色"获取验证码"，禁用（证件号<4位）
+      - 状态2：背景白色，文字黑色"获取验证码"，可点击（证件号=4位）
+      - 状态3：背景灰色，文字灰色"重新发送(XXs)"，禁用（60秒倒计时）
+    - 客户端验证：
+      - 证件号后4位为空时显示："请输入登录账号绑定的证件号后4位"
+      - 验证码为空时显示："请输入验证码"
+      - 验证码少于6位时显示："请输入正确的验证码"
+    - 成功/错误消息显示在"确定"按钮上方
+    - 支持点击获取验证码后自动启动60秒倒计时
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，短信验证弹窗组件。"
+
+- type: Frontend
+  id: UI-ErrorMessage
+  description: 错误信息显示组件
+  properties:
+    - name: message
+      type: string
+      description: "错误信息内容"
+    - name: type
+      type: string
+      description: "错误类型（error, warning, info）"
+    - name: onDismiss
+      type: function
+      description: "关闭错误信息处理函数"
+  state:
+    - isVisible
+    - autoHideTimer
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 在相应位置显示错误信息
+    - 支持不同类型的消息样式
+    - 支持自动隐藏和手动关闭
+    - 在登录表单中显示在"立即登录"按钮上方
+    - 在短信验证弹窗中显示在"确定"按钮上方
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，错误信息显示组件。"
+
+- type: Frontend
+  id: UI-LoadingSpinner
+  description: 加载状态指示器组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "是否显示加载状态"
+    - name: size
+      type: string
+      description: "加载器大小（small, medium, large）"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 在API请求期间显示加载状态
+    - 支持不同大小的加载器
+    - 在加载期间禁用相关按钮和输入框
+  changeLog:
+    - date: "2025-01-25"
+      description: "初始创建，加载状态指示器组件。"
+
+- type: Frontend
+  id: UI-RegisterPage
+  description: 注册主页面组件，包含完整的用户注册界面
+  properties:
+    - name: onRegistrationSuccess
+      type: function
+      description: "注册成功后的回调函数"
+    - name: onNavigateToLogin
+      type: function
+      description: "跳转到登录页面的回调函数"
+  state:
+    - currentStep  # 当前步骤：1-填写信息，2-验证
+    - registrationData
+    - error
+    - isLoading
+    - sessionId
+  dependencies:
+    - API-POST-Register
+    - UI-TopNavigation
+    - UI-RegisterForm
+    - UI-RegistrationVerification
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 整体页面背景为白色，分为上中下三部分布局
+    - 支持两步注册流程：信息填写和验证
+    - 集成顶部导航、注册表单和底部导航组件
+    - 处理注册状态管理和步骤切换
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，注册页面主容器组件。"
+
+- type: Frontend
+  id: UI-RegisterForm
+  description: 用户注册表单组件
+  properties:
+    - name: onSubmit
+      type: function
+      description: "表单提交处理函数"
+    - name: onNavigateToLogin
+      type: function
+      description: "跳转到登录页面的回调函数"
+  state:
+    - username
+    - usernameValidation  # { isValid, message, showCheckmark }
+    - password
+    - passwordValidation
+    - confirmPassword
+    - confirmPasswordValidation
+    - idCardType
+    - name
+    - nameValidation
+    - idCardNumber
+    - idCardNumberValidation
+    - discountType
+    - email
+    - emailValidation
+    - phone
+    - phoneValidation
+    - agreedToTerms
+    - errors
+    - isLoading
+  dependencies:
+    - API-POST-ValidateUsername
+    - API-POST-ValidatePassword
+    - API-POST-ValidateName
+    - API-POST-ValidateIdCard
+    - API-POST-ValidateEmail
+    - API-POST-ValidatePhone
+    - API-POST-Register
+    - API-GET-ServiceTerms
+    - API-GET-PrivacyPolicy
+  acceptanceCriteria:
+    - 显示所有必填字段，带"*"号标识
+    - 用户名输入框支持实时验证，显示绿色勾勾表示合法
+    - 密码输入框支持实时验证和格式检查
+    - 确认密码输入框验证与密码一致性
+    - 证件类型下拉选择框，支持8种证件类型
+    - 姓名输入框支持中英文及特殊字符验证
+    - 证件号码输入框支持18位验证
+    - 优惠类型下拉选择框，支持4种优惠类型
+    - 邮箱输入框为可选字段，支持格式验证
+    - 手机号码输入框限制11位，只允许数字
+    - 用户协议勾选框，支持超链接跳转
+    - "下一步"按钮，点击后进行完整性验证
+    - 实时显示各种验证错误信息
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，用户注册表单组件。"
+
+- type: Frontend
+  id: UI-SelectDropdown
+  description: 下拉选择框组件（用于证件类型和优惠类型选择）
+  properties:
+    - name: options
+      type: array
+      description: "选项列表"
+    - name: value
+      type: string
+      description: "当前选中的值"
+    - name: placeholder
+      type: string
+      description: "占位符文本"
+    - name: onChange
+      type: function
+      description: "值变化时的回调函数"
+    - name: disabled
+      type: boolean
+      description: "是否禁用"
+  state:
+    - isExpanded  # 是否展开选项
+    - selectedValue
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示当前选中的值或占位符
+    - 右侧显示向下箭头图标
+    - 点击箭头或选择框展开/收起选项列表
+    - 选择某个选项后自动收起并更新显示值
+    - 支持键盘导航（可选功能）
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，下拉选择框组件。"
+
+- type: Frontend
+  id: UI-ValidationInput
+  description: 带验证功能的输入框组件
+  properties:
+    - name: value
+      type: string
+      description: "输入值"
+    - name: onChange
+      type: function
+      description: "值变化时的回调函数"
+    - name: onValidate
+      type: function
+      description: "验证函数"
+    - name: placeholder
+      type: string
+      description: "占位符文本"
+    - name: type
+      type: string
+      description: "输入类型（text, password, email等）"
+    - name: maxLength
+      type: number
+      description: "最大长度限制"
+    - name: required
+      type: boolean
+      description: "是否必填"
+    - name: showCheckmark
+      type: boolean
+      description: "是否显示绿色勾勾"
+    - name: errorMessage
+      type: string
+      description: "错误信息"
+  state:
+    - localValue
+    - isValidating
+    - validationResult
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 支持实时输入和验证
+    - 必填字段左侧显示"*"号
+    - 验证通过时右侧显示绿色勾勾
+    - 验证失败时显示错误信息
+    - 支持不同类型的输入（文本、密码、邮箱等）
+    - 支持最大长度限制
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，带验证功能的输入框组件。"
+
+- type: Frontend
+  id: UI-RegistrationVerification
+  description: 注册验证界面组件
+  properties:
+    - name: sessionId
+      type: string
+      description: "注册会话ID"
+    - name: phone
+      type: string
+      description: "手机号码"
+    - name: email
+      type: string
+      description: "邮箱地址（可选）"
+    - name: onVerificationSuccess
+      type: function
+      description: "验证成功回调函数"
+  state:
+    - smsCode
+    - emailCode
+    - error
+    - isLoading
+    - showSuccessModal
+  dependencies:
+    - API-POST-SendRegistrationVerificationCode
+    - API-POST-CompleteRegistration
+    - UI-SuccessModal
+  acceptanceCriteria:
+    - 显示"验证"标题
+    - 包含短信验证码输入框（6位数字）
+    - 如果提供了邮箱，显示邮箱验证码输入框
+    - "立即注册"按钮（橙色背景，白色文字）
+    - 自动发送验证码到手机和邮箱
+    - 点击"立即注册"按钮后验证验证码
+    - 验证成功后显示成功弹窗
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，注册验证界面组件。"
+
+- type: Frontend
+  id: UI-SuccessModal
+  description: 注册成功弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: message
+      type: string
+      description: "成功消息内容"
+    - name: onConfirm
+      type: function
+      description: "确认按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 弹窗占据页面30%
+    - 居中显示
+    - 显示成功消息："恭喜您注册成功，请到登录页面进行登录！"
+    - 包含"确认"按钮
+    - 点击"确认"按钮关闭弹窗并跳转到登录页面
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，注册成功弹窗组件。"
+
+- type: Frontend
+  id: UI-ServiceTermsPage
+  description: 服务条款页面组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+  state:
+    - termsContent
+    - isLoading
+  dependencies:
+    - API-GET-ServiceTerms
+    - UI-TopNavigation
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 页面标题为"服务条款"
+    - 服务条款内容以文本形式展示
+    - 页面顶部导航栏与快捷页面入口均与首页一致
+    - 页面风格与首页一致
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，服务条款页面组件。"
+
+- type: Frontend
+  id: UI-PrivacyPolicyPage
+  description: 隐私权政策页面组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+  state:
+    - policyContent
+    - isLoading
+  dependencies:
+    - API-GET-PrivacyPolicy
+    - UI-TopNavigation
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 中文标题"隐私权政策"居中显示
+    - 英文标题"NOTICE"居中显示
+    - 隐私权政策内容以文本形式展示
+    - 页面顶部导航栏与快捷页面入口均与首页一致
+    - 页面风格与首页一致
+  changeLog:
+    - date: "2025-11-10"
+      description: "初始创建，隐私权政策页面组件。"
