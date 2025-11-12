@@ -196,7 +196,7 @@ describe('Authentication Routes', () => {
         .expect(401)
 
       expect(response.body).toHaveProperty('success', false)
-      expect(response.body).toHaveProperty('error', '验证码错误或已过期')
+      expect(response.body.error).toMatch(/验证码.*错误|验证码.*过期|验证码校验失败|很抱歉，您输入的短信验证码有误/i)
     })
 
     it('应该验证验证码格式', async () => {

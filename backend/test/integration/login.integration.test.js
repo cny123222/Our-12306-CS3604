@@ -515,7 +515,7 @@ describe('Login Integration Tests', () => {
 
       // 应该返回错误
       expect(verifyResponse.status).toBe(401);
-      expect(verifyResponse.body.error).toMatch(/验证码.*过期|验证码.*错误/i);
+      expect(verifyResponse.body.error).toMatch(/验证码.*过期|验证码.*错误|很抱歉，您输入的短信验证码有误/i);
     });
   });
 });

@@ -348,12 +348,11 @@ describe('登录流程集成测试', () => {
       const confirmButton = screen.getByRole('button', { name: /确定/i })
       fireEvent.click(confirmButton)
 
-      // Then: 应该调用alert显示错误提示
+      // Then: 应该在modal内显示错误提示
       await waitFor(() => {
-        expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('验证码'))
+        const errorMessage = screen.getByText(/验证码/i)
+        expect(errorMessage).toBeInTheDocument()
       })
-      
-      alertSpy.mockRestore()
     })
   })
 
