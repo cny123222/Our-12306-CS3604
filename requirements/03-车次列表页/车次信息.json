@@ -1,0 +1,242 @@
+[
+  {
+    "train_no": "G103",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京南",
+      "destination": "上海虹桥",
+      "distance_km": 1318,
+      "planned_duration_min": 338,
+      "departure_time": "06:20",
+      "arrival_time": "11:58"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京南", "arrive": null, "depart": "06:20", "stop_min": 0 },
+      { "seq": 2, "station": "沧州西", "arrive": "07:13", "depart": "07:15", "stop_min": 2 },
+      { "seq": 3, "station": "济南西", "arrive": "08:01", "depart": "08:04", "stop_min": 3 },
+      { "seq": 4, "station": "徐州东", "arrive": "09:07", "depart": "09:09", "stop_min": 2 },
+      { "seq": 5, "station": "宿州东", "arrive": "09:28", "depart": "09:33", "stop_min": 5 },
+      { "seq": 6, "station": "蚌埠南", "arrive": "09:56", "depart": "09:58", "stop_min": 2 },
+      { "seq": 7, "station": "南京南", "arrive": "10:40", "depart": "10:43", "stop_min": 3 },
+      { "seq": 8, "station": "无锡东", "arrive": "11:27", "depart": "11:29", "stop_min": 2 },
+      { "seq": 9, "station": "上海虹桥", "arrive": "11:58", "depart": "11:58", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 662,
+      "first_class": 1060,
+      "business": 2318,
+      "segments": [
+        { "from": "北京南", "to": "沧州西", "distance_km": 210, "second_class": 116, "first_class": 185, "business": 404 },
+        { "from": "沧州西", "to": "济南西", "distance_km": 196, "second_class": 107, "first_class": 172, "business": 378 },
+        { "from": "济南西", "to": "徐州东", "distance_km": 286, "second_class": 147, "first_class": 235, "business": 513 },
+        { "from": "徐州东", "to": "宿州东", "distance_km": 68,  "second_class": 34,  "first_class": 54,  "business": 118 },
+        { "from": "宿州东", "to": "蚌埠南", "distance_km": 88,  "second_class": 43,  "first_class": 70,  "business": 152 },
+        { "from": "蚌埠南", "to": "南京南", "distance_km": 175, "second_class": 86,  "first_class": 136, "business": 299 },
+        { "from": "南京南", "to": "无锡东", "distance_km": 187, "second_class": 82,  "first_class": 132, "business": 288 },
+        { "from": "无锡东", "to": "上海虹桥", "distance_km": 108, "second_class": 47,  "first_class": 76,  "business": 166 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "时刻可能随调图调整，请以12306当日开行信息为准。车厢布局为CR400AF-B长编组常见配置，用于订座分配与客座统计。"
+    }
+  },
+  {
+    "train_no": "G16",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海虹桥",
+      "destination": "北京南",
+      "distance_km": 1318,
+      "planned_duration_min": 338,
+      "departure_time": "06:20",
+      "arrival_time": "11:58"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海虹桥", "arrive": null, "depart": "06:20", "stop_min": 0 },
+      { "seq": 2, "station": "无锡东", "arrive": "06:49", "depart": "06:51", "stop_min": 2 },
+      { "seq": 3, "station": "南京南", "arrive": "07:35", "depart": "07:38", "stop_min": 3 },
+      { "seq": 4, "station": "蚌埠南", "arrive": "08:20", "depart": "08:22", "stop_min": 2 },
+      { "seq": 5, "station": "宿州东", "arrive": "08:45", "depart": "08:50", "stop_min": 5 },
+      { "seq": 6, "station": "徐州东", "arrive": "09:09", "depart": "09:11", "stop_min": 2 },
+      { "seq": 7, "station": "济南西", "arrive": "10:14", "depart": "10:17", "stop_min": 3 },
+      { "seq": 8, "station": "沧州西", "arrive": "11:03", "depart": "11:05", "stop_min": 2 },
+      { "seq": 9, "station": "北京南", "arrive": "11:58", "depart": "11:58", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 662,
+      "first_class": 1060,
+      "business": 2318,
+      "segments": [
+        { "from": "上海虹桥", "to": "无锡东", "distance_km": 108, "second_class": 47,  "first_class": 76,  "business": 166 },
+        { "from": "无锡东", "to": "南京南", "distance_km": 187, "second_class": 82,  "first_class": 132, "business": 288 },
+        { "from": "南京南", "to": "蚌埠南", "distance_km": 175, "second_class": 86,  "first_class": 136, "business": 299 },
+        { "from": "蚌埠南", "to": "宿州东", "distance_km": 88,  "second_class": 43,  "first_class": 70,  "business": 152 },
+        { "from": "宿州东", "to": "徐州东", "distance_km": 68,  "second_class": 34,  "first_class": 54,  "business": 118 },
+        { "from": "徐州东", "to": "济南西", "distance_km": 286, "second_class": 147, "first_class": 235, "business": 513 },
+        { "from": "济南西", "to": "沧州西", "distance_km": 196, "second_class": 107, "first_class": 172, "business": 378 },
+        { "from": "沧州西", "to": "北京南", "distance_km": 210, "second_class": 116, "first_class": 185, "business": 404 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "时刻可能随调图调整，请以12306当日开行信息为准。车厢布局为CR400AF-B长编组常见配置，用于订座分配与客座统计。"
+    }
+  },
+  {
+    "train_no": "D6",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海",
+      "destination": "北京",
+      "distance_km": 703,
+      "planned_duration_min": 731,
+      "departure_time": "21:15",
+      "arrival_time": "09:26"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海", "arrive": null, "depart": "21:15", "stop_min": 0 },
+      { "seq": 2, "station": "无锡", "arrive": "22:23", "depart": "22:26", "stop_min": 3 },
+      { "seq": 3, "station": "南京", "arrive": "23:50", "depart": "23:56", "stop_min": 6 },
+      { "seq": 4, "station": "天津西", "arrive": "08:08", "depart": "08:10", "stop_min": 2 },
+      { "seq": 5, "station": "北京", "arrive": "09:26", "depart": "09:26", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 6517,
+      "hard_sleeper": 1170,
+      "soft_sleeper": 1420,
+      "segments": [
+        { "from": "上海", "to": "无锡", "distance_km": 126, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "无锡", "to": "南京", "distance_km": 175, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "南京", "to": "天津西", "distance_km": 1014, "second_class": 400, "hard_sleeper": 600, "soft_sleeper": 700 },
+        { "from": "天津西", "to": "北京", "distance_km": 148, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "席位简化为二等座/硬卧/软卧；票价按用户指定的分段价格设置。"
+    }
+  },
+  {
+    "train_no": "D9",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京南",
+      "destination": "上海南",
+      "distance_km": 703,
+      "planned_duration_min": 744,
+      "departure_time": "19:36",
+      "arrival_time": "08:00"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京南", "arrive": null, "depart": "19:36", "stop_min": 0 },
+      { "seq": 2, "station": "天津西", "arrive": "20:47", "depart": "20:49", "stop_min": 2 },
+      { "seq": 3, "station": "南京", "arrive": "05:05", "depart": "05:13", "stop_min": 8 },
+      { "seq": 4, "station": "苏州", "arrive": "06:50", "depart": "06:52", "stop_min": 2 },
+      { "seq": 5, "station": "上海南", "arrive": "08:00", "depart": "08:00", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 6517,
+      "hard_sleeper": 1170,
+      "soft_sleeper": 1420,
+      "segments": [
+        { "from": "北京南", "to": "天津西", "distance_km": 144, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "天津西", "to": "南京", "distance_km": 1014, "second_class": 400, "hard_sleeper": 600, "soft_sleeper": 700 },
+        { "from": "南京", "to": "苏州", "distance_km": 196, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "苏州", "to": "上海南", "distance_km": 48, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "票价与 D6 类似（按相同区间反向设置），席位为二等座/硬卧/软卧。"
+    }
+  }
+]
