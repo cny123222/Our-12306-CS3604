@@ -115,7 +115,7 @@ describe('登录流程集成测试', () => {
       }, { timeout: 2000 })
 
       // Step 3: 输入证件号后4位
-      const idCardInput = screen.getByPlaceholderText(/请输入登录绑定的证件号后4位/i)
+      const idCardInput = screen.getByPlaceholderText(/请输入登录账号绑定的证件号后4位/i)
       await userEvent.type(idCardInput, '1234')
 
       // Step 4: 获取验证码
@@ -284,7 +284,7 @@ describe('登录流程集成测试', () => {
       })
 
       // 输入不足4位的证件号
-      const idCardInput = screen.getByPlaceholderText(/请输入登录绑定的证件号后4位/i)
+      const idCardInput = screen.getByPlaceholderText(/请输入登录账号绑定的证件号后4位/i)
       await userEvent.type(idCardInput, '123')
 
       // 获取验证码按钮应该禁用
@@ -332,7 +332,7 @@ describe('登录流程集成测试', () => {
         expect(screen.getByText('短信验证')).toBeInTheDocument()
       })
 
-      const idCardInput = screen.getByPlaceholderText(/请输入登录绑定的证件号后4位/i)
+      const idCardInput = screen.getByPlaceholderText(/请输入登录账号绑定的证件号后4位/i)
       await userEvent.type(idCardInput, '1234')
 
       const sendCodeButton = screen.getByText('获取验证码')

@@ -85,22 +85,39 @@ class AuthService {
       const session = await sessionService.getSession(sessionId);
       
       if (!session) {
+        console.log('❌ 会话无效或已过期, sessionId:', sessionId);
         return { success: false, error: '会话无效或已过期' };
       }
 
       // session.user_data 已经在 sessionService.getSession 中被解析了
       const sessionData = session.user_data;
       
+      console.log('🔍 会话数据:', { 
+        userId: sessionData.userId, 
+        username: sessionData.username,
+        phone: sessionData.phone,
+        id_card_number: sessionData.id_card_number ? '***' + sessionData.id_card_number.slice(-4) : 'undefined'
+      });
+      
       // 验证证件号后4位
       if (!sessionData.id_card_number) {
+        console.log('❌ 会话中没有证件号信息');
         return { success: false, error: '请输入正确的用户信息！' };
       }
 
       const last4 = sessionData.id_card_number.slice(-4);
+      console.log('🔍 验证证件号后4位:', { 
+        expected: last4, 
+        provided: idCardLast4, 
+        match: last4 === idCardLast4 
+      });
+      
       if (last4 !== idCardLast4) {
+        console.log('❌ 证件号后4位不匹配');
         return { success: false, error: '请输入正确的用户信息！' };
       }
 
+      console.log('✅ 证件号验证通过');
       return { success: true, sessionData };
     } catch (error) {
       console.error('Validate ID card last 4 error:', error);
@@ -122,7 +139,7 @@ class AuthService {
       // 检查发送频率
       const canSend = await sessionService.checkSmsSendFrequency(sessionData.phone);
       if (!canSend) {
-        return { success: false, error: '发送过于频繁，请稍后再试', code: 429 };
+        return { success: false, error: '请求验证码过于频繁，请稍后再试！', code: 429 };
       }
 
       // 生成并保存验证码
@@ -157,10 +174,10 @@ class AuthService {
       const sessionData = session.user_data;
 
       // 验证短信验证码
-      const isValid = await registrationDbService.verifySmsCode(sessionData.phone, verificationCode);
+      const verifyResult = await registrationDbService.verifySmsCode(sessionData.phone, verificationCode);
       
-      if (!isValid) {
-        return { success: false, error: '验证码错误或已过期' };
+      if (!verifyResult.success) {
+        return { success: false, error: verifyResult.error };
       }
 
       // 更新会话状态为已验证

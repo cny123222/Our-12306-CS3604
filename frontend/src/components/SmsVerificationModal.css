@@ -78,10 +78,27 @@
   margin-bottom: 20px !important;
 }
 
+/* ==================== 错误提示信息 ==================== */
+.sms-modal .error-message {
+  /* 【修改】颜色改亮一些的红色 */
+  color: #ff4d4f !important; 
+  font-size: 15px !important;
+  text-align: left !important;
+  /* 【关键修改】强制重置所有外边距，覆盖全局的 margin-left: 90px */
+  margin: -10px 0 15px 0 !important; 
+}
+
+.sms-modal .success-message {
+  color: #52c41a !important;  /* 绿色 */
+  font-size: 15px !important;
+  text-align: left !important;
+  margin: -10px 0 15px 0 !important;
+}
+
+
 /* ==================== 输入框通用样式 ==================== */
 .sms-modal .form-input {
-  /* 【关键覆盖】 */
-  width: auto !important; /* 重置宽度，让flex布局接管 */
+  width: auto !important;
   height: 48px !important;
   padding: 0 15px !important;
   border: 1px solid #dcdfe6 !important;
@@ -90,13 +107,11 @@
   color: #333333 !important;
   transition: border-color 0.2s ease !important;
   box-sizing: border-box !important;
-  /* 覆盖所有可能的旧样式 */
   max-width: none !important;
   min-width: 0 !important;
   background: #ffffff !important;
 }
 
-/* 【关键覆盖】第一个输入框（证件号）设为全宽 */
 .sms-modal .form-group:first-child .form-input {
   width: 100% !important;
 }
@@ -117,7 +132,6 @@
   align-items: center !important;
 }
 
-/* 验证码输入框 */
 .sms-modal .code-input {
   flex: 1 !important;
 }
@@ -139,7 +153,6 @@
   border: 1px solid #e4e7ed !important;
 }
 
-/* 可点击状态 */
 .sms-modal .send-code-button:not(:disabled) {
   background-color: #ffffff !important;
   color: #606266 !important;

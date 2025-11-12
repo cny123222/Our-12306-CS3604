@@ -458,12 +458,12 @@ class RegisterController {
       // 验证短信验证码（如果提供了smsCode）
       if (smsCode) {
         console.log(`🔐 验证手机号 ${userData.phone} 的验证码 ${smsCode}`);
-        const isValidSms = await registrationDbService.verifySmsCode(userData.phone, smsCode);
-        console.log('验证结果:', isValidSms);
-        if (!isValidSms) {
-          console.log('❌ 验证码错误或已过期');
+        const verifyResult = await registrationDbService.verifySmsCode(userData.phone, smsCode);
+        console.log('验证结果:', verifyResult);
+        if (!verifyResult.success) {
+          console.log('❌ 验证码错误:', verifyResult.error);
           return res.status(400).json({
-            error: '验证码错误或已过期'
+            error: verifyResult.error
           });
         }
         console.log('✅ 验证码验证通过');
