@@ -48,7 +48,7 @@ describe('跨页流程：登录页 → 注册页', () => {
 
     // 验证注册页的关键元素存在
     expect(screen.getByPlaceholderText(/用户名设置成功后不可修改/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/6-20位字母、数字或号/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/6-20位字母、数字或符号/i)).toBeInTheDocument()
   })
 
   it.skip('应该能从顶部导航栏的"注册"链接导航到注册页（可选功能）', async () => {

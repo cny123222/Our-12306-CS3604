@@ -42,7 +42,7 @@ describe('跨页流程：注册页 → 验证页 → 登录页', () => {
 
     // 填写所有必填字段
     await user.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/i), 'testUser123')
-    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或号/i), 'Pass123')
+    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请再次输入您的登录密码/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请输入姓名/i), '张三')
     await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011234')
@@ -74,7 +74,7 @@ describe('跨页流程：注册页 → 验证页 → 登录页', () => {
 
     // 只填写部分字段
     await user.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/i), 'testUser123')
-    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或号/i), 'Pass123')
+    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/i), 'Pass123')
 
     // 勾选协议
     const agreementCheckbox = screen.getByRole('checkbox')
@@ -109,7 +109,7 @@ describe('跨页流程：注册页 → 验证页 → 登录页', () => {
     await user.type(screen.getByPlaceholderText(/用户名设置成功后不可修改/i), '123')
     await user.tab()
     
-    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或号/i), 'Pass123')
+    await user.type(screen.getByPlaceholderText(/6-20位字母、数字或符号/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请再次输入您的登录密码/i), 'Pass123')
     await user.type(screen.getByPlaceholderText(/请输入姓名/i), '张三')
     await user.type(screen.getByPlaceholderText(/请输入您的证件号码/i), '110101199001011234')
@@ -144,7 +144,7 @@ describe('跨页流程：注册页 → 验证页 → 登录页', () => {
       expect(screen.getByText(/账户信息/i)).toBeInTheDocument()
     })
 
-    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或号/i)
+    const passwordInput = screen.getByPlaceholderText(/6-20位字母、数字或符号/i)
 
     // 输入弱密码（只有字母和数字，较短）
     await user.type(passwordInput, 'Pass12')
