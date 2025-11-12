@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './TrainSearchBar.css';
 import StationInput from './StationInput';
 import DatePicker from './DatePicker';
+import { searchTrains } from '../services/trainService';
 
 interface TrainSearchBarProps {
   initialDepartureStation: string;
@@ -12,7 +13,6 @@ interface TrainSearchBarProps {
 
 /**
  * 车次搜索和查询区域组件
- * 骨架实现：仅包含组件结构，不实现真实逻辑
  */
 const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   initialDepartureStation,
@@ -51,14 +51,15 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
     setIsLoading(true);
 
     try {
-      // 尝试调用trains API查询
-      // 如果网络或API失败，会抛出错误
-      const response = await fetch(
-        `/api/trains?departureStation=${encodeURIComponent(departureStation)}&arrivalStation=${encodeURIComponent(arrivalStation)}&departureDate=${departureDate}`
+      // 调用车次搜索API
+      const result = await searchTrains(
+        departureStation,
+        arrivalStation,
+        departureDate
       );
-      
-      if (!response.ok) {
-        throw new Error('API request failed');
+
+      if (!result.success) {
+        throw new Error(result.error || '查询失败');
       }
 
       // API调用成功，通过回调传递搜索参数
@@ -68,8 +69,8 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         departureDate,
       });
       setIsLoading(false);
-    } catch (error) {
-      setErrors({ general: '查询失败，请稍后重试' });
+    } catch (error: any) {
+      setErrors({ general: error.message || '查询失败，请稍后重试' });
       setIsLoading(false);
     }
   };

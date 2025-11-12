@@ -8,6 +8,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
+const { pinyin } = require('pinyin');
 
 const dbPath = path.join(__dirname, 'railway.db');
 const trainsJsonPath = path.join(__dirname, '../../requirements/03-车次列表页/车次信息.json');
@@ -149,6 +150,38 @@ function extractStations() {
 }
 
 /**
+ * 生成站点拼音
+ * @param {string} stationName - 站点名称
+ * @returns {object} { fullPinyin: 全拼, shortPinyin: 简拼 }
+ */
+function generatePinyin(stationName) {
+  try {
+    // 生成全拼（不带音调）
+    const fullPinyinArray = pinyin(stationName, {
+      style: pinyin.STYLE_NORMAL, // 普通风格，不带声调
+      heteronym: false // 不考虑多音字
+    });
+    const fullPinyin = fullPinyinArray.map(item => item[0]).join('');
+    
+    // 生成简拼（每个汉字的首字母）
+    const shortPinyinArray = pinyin(stationName, {
+      style: pinyin.STYLE_FIRST_LETTER, // 首字母风格
+      heteronym: false
+    });
+    const shortPinyin = shortPinyinArray.map(item => item[0]).join('');
+    
+    return { fullPinyin, shortPinyin };
+  } catch (error) {
+    console.error(`生成拼音失败 (${stationName}):`, error);
+    // 降级处理
+    return {
+      fullPinyin: stationName,
+      shortPinyin: stationName.substring(0, 1)
+    };
+  }
+}
+
+/**
  * 插入站点数据
  */
 function insertStations() {
@@ -161,12 +194,13 @@ function insertStations() {
     `);
     
     stations.forEach(station => {
-      // TODO: 实现拼音生成逻辑
+      // 生成站点代码（简化处理，取前两个汉字）
       const code = station.substring(0, 2);
-      const pinyin = station; // 简化处理，实际应该转换为拼音
-      const shortPinyin = station.substring(0, 1); // 简化处理
       
-      stmt.run(station, code, pinyin, shortPinyin);
+      // 生成拼音
+      const { fullPinyin, shortPinyin } = generatePinyin(station);
+      
+      stmt.run(station, code, fullPinyin, shortPinyin);
     });
     
     stmt.finalize((err) => {

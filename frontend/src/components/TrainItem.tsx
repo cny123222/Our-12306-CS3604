@@ -13,23 +13,35 @@ interface TrainItemProps {
  * 骨架实现：仅包含组件结构，不实现真实逻辑
  */
 const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn }) => {
-  const [availableSeats, setAvailableSeats] = useState<any>({});
+  // 从 train.availableSeats 中提取座位信息，映射中文到英文
+  const availableSeats = {
+    business: train.availableSeats?.['商务座'] ?? null,
+    firstClass: train.availableSeats?.['一等座'] ?? null,
+    secondClass: train.availableSeats?.['二等座'] ?? null,
+    softSleeper: train.availableSeats?.['软卧'] ?? null,
+    hardSleeper: train.availableSeats?.['硬卧'] ?? null,
+  };
 
-  // TODO: 实现余票信息获取
-  // TODO: 根据余票数量显示不同状态
-
-  const formatSeatStatus = (count: number | null) => {
-    if (count === null) return '--';
+  const formatSeatStatus = (count: number | null | undefined) => {
+    if (count === null || count === undefined) return '--';
     if (count === 0) return '无';
     if (count >= 20) return '有';
     return count.toString();
   };
 
-  const getSeatClass = (count: number | null) => {
-    if (count === null) return 'not-available';
+  const getSeatClass = (count: number | null | undefined) => {
+    if (count === null || count === undefined) return 'not-available';
     if (count === 0) return 'sold-out';
     if (count >= 20) return 'available';
     return 'limited';
+  };
+
+  // 格式化历时（分钟 -> "X小时Y分"）
+  const formatDuration = (minutes: number | undefined) => {
+    if (!minutes) return '--';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}小时${mins}分`;
   };
 
   return (
@@ -53,7 +65,7 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn }) =
         <div className="train-time">{train.arrivalTime || '--'}</div>
       </div>
       <div className="train-item-cell">
-        <div className="train-duration">{train.duration || '--'}</div>
+        <div className="train-duration">{formatDuration(train.duration)}</div>
       </div>
       <div className="train-item-cell">
         <div className={`seat-info ${getSeatClass(availableSeats.business)}`}>
