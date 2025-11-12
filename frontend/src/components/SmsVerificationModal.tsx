@@ -51,11 +51,13 @@ const SmsVerificationModal: React.FC<SmsVerificationModalProps> = ({ sessionId, 
       })
       
       if (response.data.success) {
-        // 从后端获取真实验证码（开发环境）
+        // 从后端获取真实验证码和手机号（开发环境）
         const realCode = response.data.verificationCode
+        const phone = response.data.phone
         if (realCode) {
           console.log(`\n=================================`)
           console.log(`📱 登录验证码`)
+          console.log(`手机号: ${phone || '未知'}`)
           console.log(`验证码: ${realCode}`)
           console.log(`有效期: 5分钟`)
           console.log(`=================================\n`)
