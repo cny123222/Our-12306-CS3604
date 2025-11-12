@@ -1,0 +1,60 @@
+name: Frontend Tests
+
+on:
+  push:
+    branches: [ main, develop, build_* ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-tests.yml'
+
+jobs:
+  test:
+    name: Run Frontend Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    defaults:
+      run:
+        working-directory: ./frontend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test -- --run
+    
+    - name: Run tests with coverage
+      if: matrix.node-version == '20.x'
+      run: npm run test:coverage -- --run
+    
+    - name: Upload coverage reports
+      if: matrix.node-version == '20.x'
+      uses: codecov/codecov-action@v4
+      with:
+        flags: frontend
+        directory: ./frontend/coverage
+        fail_ci_if_error: false
+    
+    - name: Build check
+      if: matrix.node-version == '20.x'
+      run: npm run build
+

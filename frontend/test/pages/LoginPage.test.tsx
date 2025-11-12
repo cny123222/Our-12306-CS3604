@@ -115,23 +115,11 @@ describe('LoginPage', () => {
     consoleSpy.mockRestore()
   })
 
-  it.skip('应该处理登录成功', async () => {
-    // 跳过：此测试的mock接口与实际组件接口不匹配
-    // Mock调用: onSubmit('test-session-id')
-    // 实际接口: onSubmit({ identifier, password })
-    // LoginForm组件的单元测试已全面覆盖此功能
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-    
-    renderWithRouter(<LoginPage />)
-    
-    fireEvent.click(screen.getByText('Login'))
-    
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Login data:', 'test-session-id')
-    })
-    
-    consoleSpy.mockRestore()
-  })
+  // NOTE: "应该处理登录成功" test removed - outdated mock interface
+  // Login success flow is comprehensively tested in:
+  // - frontend/test/components/LoginForm.test.tsx (component level)
+  // - frontend/test/integration/LoginFlow.integration.test.tsx (integration level)
+  // - backend/test/integration/login.integration.test.js (E2E level)
 
   it('应该显示短信验证模态框', async () => {
     renderWithRouter(<LoginPage />)

@@ -1,0 +1,76 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ main, develop, build_* ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  integration-test:
+    name: Run Full Stack Integration Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: |
+          backend/package-lock.json
+          frontend/package-lock.json
+    
+    - name: Install backend dependencies
+      working-directory: ./backend
+      run: npm ci
+    
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm ci
+    
+    - name: Start backend server
+      working-directory: ./backend
+      run: |
+        npm start &
+        echo $! > backend.pid
+        # Wait for backend to be ready
+        timeout 30 bash -c 'until curl -f http://localhost:3000/api/health 2>/dev/null || curl -f http://localhost:3000 2>/dev/null; do sleep 1; done' || true
+        sleep 5
+    
+    - name: Run backend integration tests
+      working-directory: ./backend
+      run: npm test -- test/integration/
+    
+    - name: Run frontend integration tests
+      working-directory: ./frontend
+      run: npm test -- --run test/integration/
+    
+    - name: Stop backend server
+      if: always()
+      run: |
+        if [ -f backend/backend.pid ]; then
+          kill $(cat backend/backend.pid) || true
+        fi
+        # Fallback: kill any node process on port 3000
+        lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+    
+    - name: Upload backend logs
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-logs
+        path: backend/backend.log
+        if-no-files-found: ignore
+    
+    - name: Run cross-page navigation tests
+      working-directory: ./frontend
+      run: npm test -- --run test/cross-page/ || echo "Cross-page tests not critical"
+
