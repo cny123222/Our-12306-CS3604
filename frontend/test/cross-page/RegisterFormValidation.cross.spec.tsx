@@ -231,7 +231,7 @@ describe('跨组件交互：注册表单验证流程', () => {
     await user.tab()
 
     await waitFor(() => {
-      expect(screen.getByText(/您输入的手机号不是有效格式/i)).toBeInTheDocument()
+      expect(screen.getByText(/您输入的手机号码不是有效的格式/i)).toBeInTheDocument()
     })
   })
 

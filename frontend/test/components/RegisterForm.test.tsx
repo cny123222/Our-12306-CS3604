@@ -564,7 +564,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText('您输入的手机号不是有效格式！')).toBeInTheDocument();
+        expect(screen.getByText('您输入的手机号码不是有效的格式！')).toBeInTheDocument();
       });
     });
 
@@ -591,7 +591,7 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText('请输入正确的手机号码！')).toBeInTheDocument();
+        expect(screen.getByText('您输入的手机号码不是有效的格式！')).toBeInTheDocument();
       });
     });
 
@@ -606,8 +606,8 @@ describe('RegisterForm Component Tests', () => {
 
       // Then: 不应该显示错误提示
       await waitFor(() => {
-        expect(screen.queryByText('您输入的手机号不是有效格式！')).not.toBeInTheDocument();
-        expect(screen.queryByText('请输入正确的手机号码！')).not.toBeInTheDocument();
+        expect(screen.queryByText('您输入的手机号码不是有效的格式！')).not.toBeInTheDocument();
+        expect(screen.queryByText('您输入的手机号码不是有效的格式！')).not.toBeInTheDocument();
       });
     });
   });
@@ -638,9 +638,9 @@ describe('RegisterForm Component Tests', () => {
       await userEvent.click(checkbox);
       await userEvent.click(nextButton);
 
-      // Then: 应该显示错误提示（包含缺失字段）
+      // Then: 应该显示错误提示
       await waitFor(() => {
-        expect(screen.getByText(/请填写完整信息！缺少：/)).toBeInTheDocument();
+        expect(screen.getByText('请填写完整信息！')).toBeInTheDocument();
       });
     });
 

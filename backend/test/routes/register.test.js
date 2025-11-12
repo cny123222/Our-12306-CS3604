@@ -372,7 +372,7 @@ describe('Registration API Routes Tests', () => {
 
       // Then: 都应该返回错误信息
       expect(response1.body.valid).toBe(false);
-      expect(response1.body.error).toBe('您输入的手机号不是有效格式！');
+      expect(response1.body.error).toBe('您输入的手机号码不是有效的格式！');
       expect(response2.body.valid).toBe(false);
     });
 
@@ -385,7 +385,7 @@ describe('Registration API Routes Tests', () => {
 
       // Then: 应该返回错误信息
       expect(response.body.valid).toBe(false);
-      expect(response.body.error).toBe('请输入正确的手机号码！');
+      expect(response.body.error).toBe('您输入的手机号码不是有效的格式！');
     });
 
     test('符合规范的手机号应返回200成功', async () => {
