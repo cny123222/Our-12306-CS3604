@@ -298,7 +298,7 @@ onClick={onForgotPasswordClick || onForgotPassword}
   - 实际: 400 {success: false, message: '会话ID不能为空'}
 
 × 应该限制发送频率
-  - 期望: 429 {success: false, error: '发送过于频繁，请稍后再试'}
+  - 期望: 429 {success: false, error: '请求验证码过于频繁，请稍后再试！'}
   - 实际: 400 {success: false, message: '功能尚未实现'}
 ```
 

@@ -71,6 +71,8 @@ class AuthController {
     try {
       const { phoneNumber, sessionId, idCardLast4 } = req.body;
 
+      console.log('🔍 发送验证码请求:', { sessionId, idCardLast4, phoneNumber });
+
       // 验证必填字段
       const errors = [];
       
@@ -82,14 +84,23 @@ class AuthController {
         }
 
         if (errors.length > 0) {
+          console.log('❌ 验证失败:', errors);
           return res.status(400).json({ 
             success: false, 
-            errors 
+            error: errors.join(', ')
           });
         }
 
         // 生成并发送验证码
         const result = await authService.generateAndSendSmsCode(sessionId, idCardLast4);
+        
+        if (!result.success) {
+          console.log('❌ 生成验证码失败:', result.error);
+          return res.status(400).json({
+            success: false,
+            error: result.error
+          });
+        }
         
         if (result.code === 429) {
           return res.status(429).json({
@@ -134,7 +145,7 @@ class AuthController {
         if (!canSend) {
           return res.status(429).json({
             success: false,
-            error: '发送过于频繁，请稍后再试'
+            error: '请求验证码过于频繁，请稍后再试！'
           });
         }
 
@@ -216,12 +227,12 @@ class AuthController {
         const dbService = require('../services/dbService');
         
         // 验证短信验证码
-        const isValid = await registrationDbService.verifySmsCode(phoneNumber, verificationCode);
+        const verifyResult = await registrationDbService.verifySmsCode(phoneNumber, verificationCode);
         
-        if (!isValid) {
+        if (!verifyResult.success) {
           return res.status(401).json({
             success: false,
-            error: '验证码错误或已过期'
+            error: verifyResult.error
           });
         }
 

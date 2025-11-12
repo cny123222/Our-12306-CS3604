@@ -193,6 +193,7 @@ class RegistrationDbService {
 
   /**
    * 验证短信验证码
+   * @returns {Object} { success: boolean, error: string }
    */
   async verifySmsCode(phone, code) {
     try {
@@ -200,45 +201,52 @@ class RegistrationDbService {
       console.log(`手机号: ${phone}`);
       console.log(`验证码: ${code}`);
       
-      const record = await dbService.get(
+      // 首先检查该手机号是否有未使用且未过期的验证码
+      const now = new Date();
+      const validCode = await dbService.get(
         `SELECT * FROM verification_codes 
-         WHERE phone = ? AND code = ? AND used = 0 
+         WHERE phone = ? AND used = 0 AND datetime(expires_at) > datetime('now')
          ORDER BY created_at DESC LIMIT 1`,
-        [phone, code]
+        [phone]
       );
 
-      if (!record) {
-        console.log('❌ 未找到匹配的验证码记录');
+      if (!validCode) {
+        console.log('❌ 该手机号没有有效的验证码（未成功获取过验证码）');
         // 查看该手机号的所有验证码
         const allCodes = await dbService.all(
           'SELECT code, created_at, expires_at, used FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 5',
           [phone]
         );
         console.log('该手机号最近的验证码记录:', allCodes);
-        return false;
+        return { success: false, error: '验证码校验失败！' };
       }
 
-      console.log('✅ 找到验证码记录:', { code: record.code, created_at: record.created_at, expires_at: record.expires_at });
+      console.log('✅ 找到有效的验证码记录:', { code: validCode.code, created_at: validCode.created_at, expires_at: validCode.expires_at });
 
-      // 检查是否过期
-      const now = new Date();
-      const expiresAt = new Date(record.expires_at);
+      // 检查用户输入的验证码是否与有效验证码匹配
+      if (validCode.code !== code) {
+        console.log('❌ 验证码输入错误');
+        return { success: false, error: '很抱歉，您输入的短信验证码有误。' };
+      }
+
+      // 再次检查是否过期（双重保险）
+      const expiresAt = new Date(validCode.expires_at);
       console.log('当前时间:', now.toISOString());
       console.log('过期时间:', expiresAt.toISOString());
       
       if (now > expiresAt) {
         console.log('❌ 验证码已过期');
-        return false;
+        return { success: false, error: '很抱歉，您输入的短信验证码有误。' };
       }
 
       // 标记为已使用
       await dbService.run(
         'UPDATE verification_codes SET used = 1 WHERE id = ?',
-        [record.id]
+        [validCode.id]
       );
 
       console.log('✅ 验证码验证成功并已标记为使用');
-      return true;
+      return { success: true };
     } catch (error) {
       console.error('Error verifying sms code:', error);
       throw error;

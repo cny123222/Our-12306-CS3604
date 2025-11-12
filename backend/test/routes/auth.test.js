@@ -151,7 +151,7 @@ describe('Authentication Routes', () => {
         .expect(429)
 
       expect(response.body).toHaveProperty('success', false)
-      expect(response.body).toHaveProperty('error', '发送过于频繁，请稍后再试')
+      expect(response.body).toHaveProperty('error', '请求验证码过于频繁，请稍后再试！')
     })
   })
 

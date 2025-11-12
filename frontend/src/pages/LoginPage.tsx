@@ -13,6 +13,8 @@ const LoginPage: React.FC = () => {
   const [sessionId, setSessionId] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [smsError, setSmsError] = useState('')
+  const [smsSuccess, setSmsSuccess] = useState('')
 
   const handleLoginSuccess = async (data: { identifier?: string; username?: string; password: string }) => {
     setIsLoading(true)
@@ -56,9 +58,15 @@ const LoginPage: React.FC = () => {
 
   const handleCloseSmsModal = () => {
     setShowSmsModal(false)
+    setSmsError('')
+    setSmsSuccess('')
   }
 
   const handleSmsVerificationSubmit = async (data: { idCardLast4: string; code: string }) => {
+    // 清除之前的消息
+    setSmsError('')
+    setSmsSuccess('')
+    
     try {
       // 调用验证登录API
       const response = await axios.post('/api/auth/verify-login', {
@@ -69,20 +77,22 @@ const LoginPage: React.FC = () => {
       
       if (response.data.success) {
         console.log('SMS verification success:', response.data)
-        alert('登录成功！')
-        setShowSmsModal(false)
-        // TODO: 跳转到首页或用户中心
-        // navigate('/')
+        setSmsSuccess('登录成功！')
+        // 2秒后关闭弹窗并跳转
+        setTimeout(() => {
+          setShowSmsModal(false)
+          // TODO: 跳转到首页或用户中心
+          // navigate('/')
+        }, 2000)
       }
     } catch (error: any) {
       console.error('SMS verification error:', error)
+      console.log('错误响应数据:', error.response?.data)
+      console.log('错误状态码:', error.response?.status)
       const errorMsg = error.response?.data?.error || '验证失败，请重试'
-      // 根据错误类型显示不同的提示
-      if (errorMsg.includes('验证码')) {
-        alert('很抱歉，您输入的短信验证码有误。')
-      } else {
-        alert(errorMsg)
-      }
+      console.log('最终显示的错误信息:', errorMsg)
+      // 直接显示后端返回的错误信息
+      setSmsError(errorMsg)
     }
   }
 
@@ -136,6 +146,8 @@ const LoginPage: React.FC = () => {
           sessionId={sessionId}
           onClose={handleCloseSmsModal}
           onSubmit={handleSmsVerificationSubmit}
+          externalError={smsError}
+          externalSuccess={smsSuccess}
         />
       )}
     </div>

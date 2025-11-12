@@ -6,9 +6,17 @@ interface SmsVerificationModalProps {
   sessionId?: string
   onClose: () => void
   onSubmit: (data: { idCardLast4: string; code: string }) => void
+  externalError?: string  // 外部传入的错误信息
+  externalSuccess?: string  // 外部传入的成功信息
 }
 
-const SmsVerificationModal: React.FC<SmsVerificationModalProps> = ({ sessionId, onClose, onSubmit }) => {
+const SmsVerificationModal: React.FC<SmsVerificationModalProps> = ({ 
+  sessionId, 
+  onClose, 
+  onSubmit,
+  externalError = '',
+  externalSuccess = ''
+}) => {
   const [idCardLast4, setIdCardLast4] = useState('')
   const [code, setCode] = useState('')
   const [countdown, setCountdown] = useState(0)
@@ -71,15 +79,9 @@ const SmsVerificationModal: React.FC<SmsVerificationModalProps> = ({ sessionId, 
       }
     } catch (error: any) {
       console.error('Failed to send SMS:', error)
-      // 在测试环境中(没有真实后端响应)仍然启动倒计时
-      // 在生产环境中显示错误信息
-      if (!error.response || error.response.status === 400 || error.response.status === 404) {
-        // 测试环境或后端未准备好，仍然启动倒计时以便测试UI
-        setCountdown(60)
-      } else {
-        const errorMsg = error.response?.data?.error || '发送验证码失败，请重试'
-        setValidationError(errorMsg)
-      }
+      // 显示错误信息
+      const errorMsg = error.response?.data?.error || '发送验证码失败，请重试'
+      setValidationError(errorMsg)
     } finally {
       setIsLoading(false)
     }
@@ -142,7 +144,7 @@ const SmsVerificationModal: React.FC<SmsVerificationModalProps> = ({ sessionId, 
           <div className="form-group">
             <input
               type="text"
-              placeholder="请输入登录绑定的证件号后4位"
+              placeholder="请输入登录账号绑定的证件号后4位"
               value={idCardLast4}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, '').slice(0, 4)
@@ -183,8 +185,12 @@ const SmsVerificationModal: React.FC<SmsVerificationModalProps> = ({ sessionId, 
             </div>
           </div>
           
-          {validationError && (
-            <div className="error-message">{validationError}</div>
+          {(validationError || externalError) && (
+            <div className="error-message">{externalError || validationError}</div>
+          )}
+          
+          {externalSuccess && (
+            <div className="success-message">{externalSuccess}</div>
           )}
           
           <button type="submit" className="confirm-button">
