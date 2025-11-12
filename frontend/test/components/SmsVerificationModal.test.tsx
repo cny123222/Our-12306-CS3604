@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import SmsVerificationModal from '../../src/components/SmsVerificationModal'
+import axios from 'axios'
+
+vi.mock('axios')
 
 describe('SmsVerificationModal - 登录短信验证', () => {
   const mockOnClose = vi.fn()
@@ -231,6 +234,11 @@ describe('SmsVerificationModal - 登录短信验证', () => {
     })
 
     it('应该在倒计时时显示状态3（灰色背景，灰色文字"重新发送(XXs)"，禁用）', async () => {
+      // Mock成功的API响应
+      vi.mocked(axios.post).mockResolvedValueOnce({
+        data: { success: true, message: '验证码已发送' }
+      })
+
       render(<SmsVerificationModal onClose={mockOnClose} onSubmit={mockOnSubmit} sessionId="test-session" />)
       
       const idCardInput = screen.getByPlaceholderText('请输入登录账号绑定的证件号后4位')
