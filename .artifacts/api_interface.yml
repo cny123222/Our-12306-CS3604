@@ -1,5 +1,5 @@
 # 后端API接口定义
-# 基于登录页和注册页需求文档生成
+# 基于登录页、注册页、首页查询页和车次列表页需求文档生成
 
 - type: Backend
   id: API-POST-Login
@@ -492,3 +492,316 @@
   changeLog:
     - date: "2025-11-10"
       description: "初始创建，支持隐私权政策页面访问。"
+
+# === 首页查询页和车次列表页相关API接口 ===
+
+- type: Backend
+  id: API-GET-Stations
+  route: GET /api/stations
+  description: 获取所有可用站点列表
+  input:
+    type: Query
+    params:
+      keyword: string  # 可选，用于站点搜索
+  output:
+    success:
+      statusCode: 200
+      body:
+        stations: "array"  # [{ name: string, code: string, pinyin: string }]
+    error:
+      - statusCode: 500
+        body: { error: "获取站点列表失败" }
+  dependencies:
+    - DB-GetAllStations
+    - DB-SearchStations
+  acceptanceCriteria:
+    - 如果未提供keyword，返回所有站点列表
+    - 如果提供keyword，返回模糊匹配的站点列表
+    - 支持按简拼、全拼、汉字搜索
+    - 用于出发地和到达地的下拉推荐
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持站点查询和推荐功能。"
+
+- type: Backend
+  id: API-POST-SearchTrains
+  route: POST /api/trains/search
+  description: 搜索符合条件的车次列表
+  input:
+    type: JSON
+    body:
+      departureStation: string
+      arrivalStation: string
+      departureDate: string  # YYYY-MM-DD格式
+      trainTypes: array  # 可选，如 ["G", "C", "D"]
+  output:
+    success:
+      statusCode: 200
+      body:
+        trains: "array"  # 车次列表
+        timestamp: "string"  # 查询时间戳，用于检测5分钟过期
+    error:
+      - statusCode: 400
+        body: { error: "请选择出发地" }
+      - statusCode: 400
+        body: { error: "请选择到达地" }
+      - statusCode: 400
+        body: { error: "无法匹配该出发地" }
+      - statusCode: 400
+        body: { error: "无法匹配该到达地" }
+      - statusCode: 500
+        body: { error: "查询失败，请稍后重试" }
+  dependencies:
+    - DB-SearchTrains
+    - DB-GetAllStations
+  acceptanceCriteria:
+    - 验证出发地和到达地不为空
+    - 验证出发地和到达地在系统支持的站点列表中
+    - 出发日期默认为当前日期
+    - 支持按车次类型筛选（高铁/动车）
+    - 在100毫秒内返回查询结果
+    - 仅返回直达车次，不包含换乘
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次查询功能。"
+
+- type: Backend
+  id: API-GET-TrainDetails
+  route: GET /api/trains/:trainNo
+  description: 获取指定车次的详细信息
+  input:
+    type: Path
+    params:
+      trainNo: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        trainNo: string
+        trainType: string
+        model: string
+        route: object
+        stops: array
+        cars: array
+        fares: object
+        availableSeats: object
+    error:
+      - statusCode: 404
+        body: { error: "车次不存在" }
+      - statusCode: 500
+        body: { error: "获取车次详情失败" }
+  dependencies:
+    - DB-GetTrainDetails
+    - DB-GetTrainStops
+    - DB-CalculateAvailableSeats
+  acceptanceCriteria:
+    - 返回车次的完整信息
+    - 包含所有停靠站点和时刻表
+    - 包含车厢配置和席别信息
+    - 包含票价和余票信息
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次详情查询。"
+
+- type: Backend
+  id: API-POST-CalculateAvailableSeats
+  route: POST /api/trains/available-seats
+  description: 计算指定车次在指定区间的余票数
+  input:
+    type: JSON
+    body:
+      trainNo: string
+      departureStation: string
+      arrivalStation: string
+      departureDate: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        trainNo: string
+        availableSeats: object  # { "商务座": 10, "一等座": 50, "二等座": 100 }
+    error:
+      - statusCode: 400
+        body: { error: "参数错误" }
+      - statusCode: 404
+        body: { error: "车次不存在" }
+      - statusCode: 500
+        body: { error: "计算余票失败" }
+  dependencies:
+    - DB-CalculateAvailableSeats
+    - DB-GetSeatStatus
+  acceptanceCriteria:
+    - 准确计算各席别的余票数
+    - 对于非相邻两站，只计算全程空闲的座位
+    - 返回各席别的准确余票数量
+    - 如果余票为0，返回"无"；大于等于20，返回"有"；小于20，返回具体数字
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持余票计算功能。"
+
+- type: Backend
+  id: API-GET-FilterOptions
+  route: GET /api/trains/filter-options
+  description: 获取车次筛选选项（出发站、到达站、席别）
+  input:
+    type: Query
+    params:
+      departureStation: string
+      arrivalStation: string
+      departureDate: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        departureStations: array
+        arrivalStations: array
+        seatTypes: array
+    error:
+      - statusCode: 400
+        body: { error: "参数错误" }
+      - statusCode: 500
+        body: { error: "获取筛选选项失败" }
+  dependencies:
+    - DB-GetDepartureStations
+    - DB-GetArrivalStations
+    - DB-GetSeatTypes
+  acceptanceCriteria:
+    - 返回当前查询结果中所有唯一的出发站
+    - 返回当前查询结果中所有唯一的到达站
+    - 返回当前查询结果中所有唯一的席别类型
+    - 用于车次信息筛选区域的选项自动补全
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次筛选选项获取。"
+
+- type: Backend
+  id: API-POST-ReserveTicket
+  route: POST /api/tickets/reserve
+  description: 预订车票
+  input:
+    type: JSON
+    body:
+      trainNo: string
+      departureStation: string
+      arrivalStation: string
+      departureDate: string
+      seatType: string
+      passengerId: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        message: "预订成功"
+        orderId: string
+        redirectUrl: "/order-details"
+    error:
+      - statusCode: 401
+        body: { error: "请先登录！" }
+      - statusCode: 400
+        body: { error: "手慢了，该车次车票已售罄！" }
+      - statusCode: 400
+        body: { error: "您选择的列车距开车时间很近了，进站约需20分钟，请确保有足够的时间办理安全检查、实名制验证及检票等手续，以免耽误您的旅行。" }
+      - statusCode: 400
+        body: { error: "页面内容已过期，请重新查询！" }
+      - statusCode: 500
+        body: { error: "网络忙，请稍后重试" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-CalculateAvailableSeats
+    - DB-CreateReservation
+    - DB-UpdateSeatStatus
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 检查车次是否有余票
+    - 检查距离发车时间是否不足3小时，如果是则提示用户
+    - 检查查询时间是否超过5分钟
+    - 预订成功后更新座位状态并创建订单
+    - 在100毫秒内跳转到购票页面
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车票预订功能。"
+
+- type: Backend
+  id: API-GET-PersonalCenter
+  route: GET /api/user/personal-center
+  description: 获取用户个人中心页面
+  input:
+    type: Header
+    params:
+      Authorization: string  # JWT token
+  output:
+    success:
+      statusCode: 200
+      body:
+        user: object
+        orders: array
+        passengers: array
+    error:
+      - statusCode: 401
+        body: { error: "请先登录12306账号！" }
+      - statusCode: 500
+        body: { error: "前往个人中心失败，请稍后重试" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 返回用户基本信息和订单列表
+    - 如果用户未登录，重定向到登录页
+    - 在100毫秒内加载个人中心页面
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持个人中心访问。"
+
+- type: Backend
+  id: API-GET-AvailableDates
+  route: GET /api/trains/available-dates
+  description: 获取可选的出发日期列表
+  input:
+    type: Query
+    params: {}
+  output:
+    success:
+      statusCode: 200
+      body:
+        availableDates: array  # 已放票的日期列表
+        currentDate: string
+    error:
+      - statusCode: 500
+        body: { error: "获取可选日期失败" }
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 返回已放票的日期列表
+    - 不包含已过期或未开票的日期
+    - 用于日期选择器的日期状态显示
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持出发日期选择。"
+
+- type: Backend
+  id: API-POST-ValidateStation
+  route: POST /api/stations/validate
+  description: 验证站点是否有效
+  input:
+    type: JSON
+    body:
+      stationName: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        valid: true
+        station: object
+    error:
+      - statusCode: 400
+        body: { valid: false, error: "无法匹配该出发地/到达地", suggestions: array }
+  dependencies:
+    - DB-GetAllStations
+    - DB-SearchStations
+  acceptanceCriteria:
+    - 验证站点名称是否在系统支持的站点列表中
+    - 如果站点无效，返回相似度匹配的推荐站点
+    - 用于用户输入验证和智能推荐
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持站点验证和推荐。"

@@ -1,5 +1,5 @@
 # 数据库操作接口定义
-# 基于登录页和注册页需求文档生成
+# 基于登录页、注册页、首页查询页和车次列表页需求文档生成
 
 - type: Database
   id: DB-FindUserByUsername
@@ -166,3 +166,225 @@
   changeLog:
     - date: "2025-11-10"
       description: "初始创建，支持邮箱验证码验证功能。"
+
+# === 首页查询页和车次列表页相关数据库接口 ===
+
+- type: Database
+  id: DB-GetAllStations
+  description: 获取数据库中所有站点/城市列表
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 返回系统支持的所有站点列表
+    - 包含站点名称、站点代码等信息
+    - 支持按拼音、汉字等多种方式检索
+    - 用于出发地和到达地的推荐和验证
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持首页和车次列表页的站点查询功能。"
+
+- type: Database
+  id: DB-SearchStations
+  description: 根据关键词搜索站点
+  dependencies:
+    - DB-GetAllStations
+  acceptanceCriteria:
+    - 支持按简拼、全拼、汉字搜索站点
+    - 返回相似度匹配的站点列表
+    - 用于用户输入时的智能推荐
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持站点模糊搜索和推荐功能。"
+
+- type: Database
+  id: DB-SearchTrains
+  description: 根据出发地、到达地、出发日期搜索车次
+  dependencies:
+    - DB-GetAllStations
+  acceptanceCriteria:
+    - 接收出发站、到达站、出发日期作为查询参数
+    - 支持高铁/动车类型筛选
+    - 返回符合条件的直达车次列表（不包含换乘）
+    - 包含车次号、出发时间、到达时间、历时等基本信息
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次查询功能。"
+
+- type: Database
+  id: DB-GetTrainDetails
+  description: 获取指定车次的详细信息
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 根据车次号获取完整的车次信息
+    - 包含所有途经站点、停靠时间、车厢配置等
+    - 返回车次类型、车型、是否空调等元数据
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次详情查询。"
+
+- type: Database
+  id: DB-GetTrainStops
+  description: 获取车次的所有停靠站点信息
+  dependencies:
+    - DB-GetTrainDetails
+  acceptanceCriteria:
+    - 返回车次的所有停靠站点列表
+    - 包含站点序号、到达时间、出发时间、停靠时长
+    - 按站点序号排序
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次停靠站查询。"
+
+- type: Database
+  id: DB-GetSeatTypes
+  description: 获取指定车次支持的席别类型
+  dependencies:
+    - DB-GetTrainDetails
+  acceptanceCriteria:
+    - 返回车次支持的所有席别类型
+    - 包含商务座、一等座、二等座、软卧、硬卧等
+    - 不同车次类型支持不同的席别组合
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持席别类型查询。"
+
+- type: Database
+  id: DB-CalculateAvailableSeats
+  description: 计算指定车次在指定区间的余票数
+  dependencies:
+    - DB-GetTrainDetails
+    - DB-GetSeatStatus
+  acceptanceCriteria:
+    - 接收车次号、出发站、到达站、席别类型作为参数
+    - 对于相邻两站，直接检索空闲座位数量
+    - 对于非相邻两站，遍历所有座位，只有全程空闲的座位才计入余票
+    - 返回各席别的准确余票数
+    - 统计时以座位为单位，座位从始至终都空闲才计入余票
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持余票计算功能。"
+
+- type: Database
+  id: DB-GetSeatStatus
+  description: 获取车次座位在各站点区间的状态
+  dependencies:
+    - DB-GetTrainDetails
+  acceptanceCriteria:
+    - 返回指定车次的所有座位状态
+    - 包含车厢号、座位号、席别类型
+    - 记录每个座位在各站点区间是否为空闲或已预订状态
+    - 用于余票计算和座位分配
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持座位状态查询。"
+
+- type: Database
+  id: DB-UpdateSeatStatus
+  description: 更新座位的预订状态
+  dependencies:
+    - DB-GetSeatStatus
+  acceptanceCriteria:
+    - 修改指定车次、车厢、座位在指定站点区间的状态
+    - 将空闲状态更新为已预订状态
+    - 支持事务操作，确保数据一致性
+    - 用于用户预订成功后更新座位状态
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持座位状态更新。"
+
+- type: Database
+  id: DB-CalculateFare
+  description: 计算指定车次在指定区间的票价
+  dependencies:
+    - DB-GetTrainDetails
+  acceptanceCriteria:
+    - 接收车次号、出发站、到达站、席别类型作为参数
+    - 根据途经站点计算区间总票价
+    - 票价等于所有途经站点之间该席别票价之和
+    - 返回各席别的准确票价
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持票价计算功能。"
+
+- type: Database
+  id: DB-CreateTrain
+  description: 在数据库中创建新的车次记录
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 支持添加新车次到数据库
+    - 包含车次基本信息、停靠站点、车厢配置、票价等
+    - 初始化所有座位为空闲状态
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次数据维护。"
+
+- type: Database
+  id: DB-DeleteTrain
+  description: 从数据库中删除车次记录
+  dependencies:
+    - DB-GetTrainDetails
+  acceptanceCriteria:
+    - 支持删除指定车次及其相关数据
+    - 删除前检查是否有未完成的订单
+    - 级联删除相关座位状态数据
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次数据维护。"
+
+- type: Database
+  id: DB-GetDepartureStations
+  description: 获取指定查询结果中的所有出发站列表
+  dependencies:
+    - DB-SearchTrains
+  acceptanceCriteria:
+    - 从车次查询结果中提取所有唯一的出发站
+    - 用于车次筛选区域的出发车站选项
+    - 返回站点名称列表
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次筛选功能。"
+
+- type: Database
+  id: DB-GetArrivalStations
+  description: 获取指定查询结果中的所有到达站列表
+  dependencies:
+    - DB-SearchTrains
+  acceptanceCriteria:
+    - 从车次查询结果中提取所有唯一的到达站
+    - 用于车次筛选区域的到达车站选项
+    - 返回站点名称列表
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持车次筛选功能。"
+
+- type: Database
+  id: DB-CheckUserLoginStatus
+  description: 检查用户的登录状态
+  dependencies:
+    - DB-UpdateUserLoginStatus
+  acceptanceCriteria:
+    - 根据会话令牌验证用户是否已登录
+    - 检查会话是否有效且未过期
+    - 返回用户ID和登录状态
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持用户登录状态验证。"
+
+- type: Database
+  id: DB-CreateReservation
+  description: 创建订单预订记录
+  dependencies:
+    - DB-GetTrainDetails
+    - DB-CalculateAvailableSeats
+    - DB-CalculateFare
+    - DB-CheckUserLoginStatus
+  acceptanceCriteria:
+    - 创建新的订单记录
+    - 包含用户ID、车次信息、席别、出发到达站、票价等
+    - 记录预订时间和订单状态
+    - 与座位状态更新在同一事务中执行
+  changeLog:
+    - date: "2025-11-12"
+      description: "初始创建，支持订单预订功能。"

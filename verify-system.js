@@ -253,6 +253,107 @@ async function verifyRegistrationAPIs() {
   return successCount === endpoints.length;
 }
 
+// 测试7: 验证站点相关API端点
+async function verifyStationsAPIs() {
+  logSection('测试 7: 站点相关API端点验证');
+  
+  const endpoints = [
+    { path: '/api/stations', method: 'GET', name: '获取所有站点API' },
+    { path: '/api/stations/validate', method: 'POST', name: '验证站点API' }
+  ];
+  
+  let successCount = 0;
+  
+  for (const endpoint of endpoints) {
+    try {
+      const response = await makeRequest({
+        protocol: CONFIG.backend.protocol,
+        host: CONFIG.backend.host,
+        port: CONFIG.backend.port,
+        path: endpoint.path,
+        method: endpoint.method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: endpoint.method === 'POST' ? JSON.stringify({ stationName: '北京南' }) : undefined
+      });
+      
+      if (response.statusCode < 500) {
+        logSuccess(`${endpoint.name} 端点可访问 (${endpoint.method} ${endpoint.path})`);
+        successCount++;
+      } else {
+        logError(`${endpoint.name} 服务器错误: HTTP ${response.statusCode}`);
+      }
+    } catch (error) {
+      logError(`${endpoint.name} 无法访问: ${error.message}`);
+    }
+  }
+  
+  logInfo(`\nAPI端点验证: ${successCount}/${endpoints.length} 通过`);
+  return successCount === endpoints.length;
+}
+
+// 测试8: 验证车次相关API端点
+async function verifyTrainsAPIs() {
+  logSection('测试 8: 车次相关API端点验证');
+  
+  const endpoints = [
+    { path: '/api/trains/search', method: 'POST', name: '搜索车次API' },
+    { path: '/api/trains/G103', method: 'GET', name: '获取车次详情API' },
+    { path: '/api/trains/available-seats', method: 'POST', name: '计算余票API' },
+    { path: '/api/trains/filter-options', method: 'GET', name: '获取筛选选项API' },
+    { path: '/api/trains/available-dates', method: 'GET', name: '获取可选日期API' }
+  ];
+  
+  let successCount = 0;
+  
+  for (const endpoint of endpoints) {
+    try {
+      let body = undefined;
+      if (endpoint.method === 'POST') {
+        if (endpoint.path === '/api/trains/search') {
+          body = JSON.stringify({
+            departureStation: '北京南',
+            arrivalStation: '上海虹桥',
+            departureDate: '2025-11-15'
+          });
+        } else if (endpoint.path === '/api/trains/available-seats') {
+          body = JSON.stringify({
+            trainNo: 'G103',
+            departureStation: '北京南',
+            arrivalStation: '上海虹桥',
+            departureDate: '2025-11-15'
+          });
+        }
+      }
+      
+      const response = await makeRequest({
+        protocol: CONFIG.backend.protocol,
+        host: CONFIG.backend.host,
+        port: CONFIG.backend.port,
+        path: endpoint.path,
+        method: endpoint.method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: body
+      });
+      
+      if (response.statusCode < 500) {
+        logSuccess(`${endpoint.name} 端点可访问 (${endpoint.method} ${endpoint.path})`);
+        successCount++;
+      } else {
+        logError(`${endpoint.name} 服务器错误: HTTP ${response.statusCode}`);
+      }
+    } catch (error) {
+      logError(`${endpoint.name} 无法访问: ${error.message}`);
+    }
+  }
+  
+  logInfo(`\nAPI端点验证: ${successCount}/${endpoints.length} 通过`);
+  return successCount === endpoints.length;
+}
+
 // 测试5: 验证数据库连接
 async function verifyDatabaseConnection() {
   logSection('测试 5: 数据库连接验证');
@@ -387,6 +488,8 @@ async function main() {
   await verifyRegistrationAPIs();
   await verifyDatabaseConnection();
   await verifyRegistrationFlow();
+  await verifyStationsAPIs();
+  await verifyTrainsAPIs();
   
   // 生成报告
   const exitCode = generateReport();

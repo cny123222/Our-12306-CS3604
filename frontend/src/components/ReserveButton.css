@@ -1,0 +1,51 @@
+/* 预订按钮样式 */
+.reserve-button {
+  padding: 8px 20px;
+  background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
+  white-space: nowrap;
+}
+
+.reserve-button:hover:not(:disabled) {
+  background: linear-gradient(to bottom, #ffaa44 0%, #ff8822 100%);
+  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.reserve-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
+}
+
+.reserve-button:disabled,
+.reserve-button.soldout {
+  background: linear-gradient(to bottom, #cccccc 0%, #bbbbbb 100%);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  opacity: 0.6;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .reserve-button {
+    padding: 10px;
+    font-size: 13px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .reserve-button {
+    padding: 9px;
+    font-size: 12px;
+  }
+}
+
