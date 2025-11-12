@@ -1,0 +1,37 @@
+.train-item {
+  display: grid;
+  grid-template-columns: 100px 150px 100px 100px 80px 80px 80px 80px 80px 80px 120px;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.train-item:hover {
+  background-color: #f9f9f9;
+}
+
+.item-cell {
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat-available {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.seat-limited {
+  color: #333;
+}
+
+.seat-soldout {
+  color: #999;
+}
+
+.seat-unavailable {
+  color: #bbb;
+}
+

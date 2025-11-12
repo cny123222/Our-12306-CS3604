@@ -1,22 +1,41 @@
-import React from 'react'
-import './MainNavigation.css'
+import React from 'react';
+import './MainNavigation.css';
 
-const MainNavigation: React.FC = () => {
-  return (
-    <nav className="main-navigation">
-      <div className="nav-container">
-        <a href="/" className="nav-item">首页</a>
-        <a href="/tickets" className="nav-item">车票</a>
-        <a href="/group-service" className="nav-item">团组服务</a>
-        <a href="/member-service" className="nav-item">会员服务</a>
-        <a href="/station-service" className="nav-item">站车服务</a>
-        <a href="/business-service" className="nav-item">商旅服务</a>
-        <a href="/travel-guide" className="nav-item">出行指南</a>
-        <a href="/info-query" className="nav-item">信息查询</a>
-      </div>
-    </nav>
-  )
+interface MainNavigationProps {
+  isLoggedIn: boolean;
+  onLoginClick: () => void;
+  onRegisterClick: () => void;
+  onPersonalCenterClick: () => void;
 }
 
-export default MainNavigation
+/**
+ * 主导航栏组件
+ * 骨架实现：仅包含组件结构，不实现真实逻辑
+ */
+const MainNavigation: React.FC<MainNavigationProps> = ({
+  isLoggedIn,
+  onLoginClick,
+  onRegisterClick,
+  onPersonalCenterClick,
+}) => {
+  return (
+    <nav className="main-navigation">
+      {!isLoggedIn ? (
+        <>
+          <button className="nav-button login-button" onClick={onLoginClick}>
+            登录
+          </button>
+          <button className="nav-button register-button" onClick={onRegisterClick}>
+            注册
+          </button>
+        </>
+      ) : (
+        <button className="nav-button personal-center-button" onClick={onPersonalCenterClick}>
+          个人中心
+        </button>
+      )}
+    </nav>
+  );
+};
 
+export default MainNavigation;
