@@ -138,11 +138,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
         )}
 
         <div className="form-links">
-          <button type="button" className="link-button" onClick={onForgotPasswordClick || onForgotPassword}>
-            忘记密码？
-          </button>
           <button type="button" className="link-button" onClick={onRegisterClick || onRegister}>
             注册12306账户
+          </button>
+          <button type="button" className="link-button forgot-password-link" onClick={onForgotPasswordClick || onForgotPassword}>
+            忘记密码？
           </button>
         </div>
       </form>

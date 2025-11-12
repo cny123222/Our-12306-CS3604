@@ -4,9 +4,10 @@ import './TopNavigation.css'
 
 interface TopNavigationProps {
   onLogoClick?: () => void
+  showWelcomeLogin?: boolean  // 是否显示"欢迎登录12306"（用于登录页面）
 }
 
-const TopNavigation: React.FC<TopNavigationProps> = ({ onLogoClick }) => {
+const TopNavigation: React.FC<TopNavigationProps> = ({ onLogoClick, showWelcomeLogin = false }) => {
   const handleLogoClick = () => {
     if (onLogoClick) {
       onLogoClick()
@@ -25,12 +26,17 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onLogoClick }) => {
           <div className="logo-chinese">中国铁路12306</div>
           <div className="logo-english">12306 CHINA RAILWAY</div>
         </div>
+        {showWelcomeLogin && (
+          <div className="welcome-login-text">欢迎登录12306</div>
+        )}
       </div>
-      <div className="welcome-section">
-        <span className="welcome-text">您好，请</span>
-        <Link to="/login" className="login-link">登录</Link>
-        <Link to="/register" className="register-link">注册</Link>
-      </div>
+      {!showWelcomeLogin && (
+        <div className="welcome-section">
+          <span className="welcome-text">您好，请</span>
+          <Link to="/login" className="login-link">登录</Link>
+          <Link to="/register" className="register-link">注册</Link>
+        </div>
+      )}
     </div>
   )
 }
