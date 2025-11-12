@@ -240,13 +240,14 @@ const TrainListPage: React.FC = () => {
         {error && <div className="error-message">{error}</div>}
         {isLoading ? (
           <div className="loading">加载中...</div>
-        ) : (
-          <TrainList
-            trains={filteredTrains}
-            onReserve={handleNavigateToOrderPage}
-            isLoggedIn={isLoggedIn}
-          />
-        )}
+               ) : (
+                 <TrainList
+                   trains={filteredTrains}
+                   onReserve={handleNavigateToOrderPage}
+                   isLoggedIn={isLoggedIn}
+                   queryTimestamp={queryTimestamp.toISOString()}
+                 />
+               )}
       </div>
       <BottomNavigation onFriendLinkClick={() => {}} />
     </div>

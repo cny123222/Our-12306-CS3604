@@ -6,13 +6,13 @@ interface TrainListProps {
   trains: any[];
   onReserve: (trainNo: string) => void;
   isLoggedIn: boolean;
+  queryTimestamp: string;
 }
 
 /**
  * 车次列表组件
- * 骨架实现：仅包含组件结构，不实现真实逻辑
  */
-const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn }) => {
+const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, queryTimestamp }) => {
   return (
     <div className="train-list">
       <div className="train-list-container">
@@ -43,6 +43,7 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn }) 
                 train={train}
                 onReserve={onReserve}
                 isLoggedIn={isLoggedIn}
+                queryTimestamp={queryTimestamp}
               />
             ))}
           </div>

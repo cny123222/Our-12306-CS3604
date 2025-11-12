@@ -6,13 +6,13 @@ interface TrainItemProps {
   train: any;
   onReserve: (trainNo: string) => void;
   isLoggedIn: boolean;
+  queryTimestamp: string;
 }
 
 /**
  * 车次列表项组件
- * 骨架实现：仅包含组件结构，不实现真实逻辑
  */
-const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn }) => {
+const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, queryTimestamp }) => {
   // 从 train.availableSeats 中提取座位信息，映射中文到英文
   const availableSeats = {
     business: train.availableSeats?.['商务座'] ?? null,
@@ -102,7 +102,7 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn }) =
           hasSoldOut={false}
           isLoggedIn={isLoggedIn}
           onReserve={onReserve}
-          queryTimestamp={new Date().toISOString()}
+          queryTimestamp={queryTimestamp}
         />
       </div>
     </div>
