@@ -1,13 +1,14 @@
 /* 车票查询表单样式 */
 .train-search-form {
   width: 100%;
-  max-width: 480px;
+  max-width: 530px;
   display: flex;
   gap: 0;
   position: relative;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   border-radius: 0;
   overflow: visible;
+  background: white;
 }
 
 /* 左侧三栏 - 横向显示 */
@@ -15,7 +16,7 @@
   display: flex;
   flex-direction: column;
   background: #3B99FC;
-  width: 110px;
+  width: 100px;
   flex-shrink: 0;
 }
 
@@ -25,7 +26,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 5px;
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -34,8 +35,8 @@
   color: white;
   cursor: pointer;
   transition: all 0.3s;
-  padding: 20px 10px 20px 12px;
-  font-size: 14px;
+  padding: 20px 10px 20px 5px;
+  font-size: 16px;
   line-height: 1.2;
   text-align: left;
 }
@@ -55,22 +56,51 @@
   border-radius: 0;
 }
 
-.sidebar-tab svg {
+.sidebar-tab svg,
+.sidebar-tab .sidebar-icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
 }
 
+.sidebar-icon {
+  display: inline-block;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.sidebar-icon-train {
+  background-color: currentColor;
+  mask: url('/images/train.svg') no-repeat center / contain;
+  -webkit-mask: url('/images/train.svg') no-repeat center / contain;
+}
+
+.sidebar-icon-query {
+  background-color: currentColor;
+  mask: url('/images/查询.svg') no-repeat center / contain;
+  -webkit-mask: url('/images/查询.svg') no-repeat center / contain;
+}
+
+.sidebar-icon-meal {
+  background-color: currentColor;
+  mask: url('/images/订餐.svg') no-repeat center / contain;
+  -webkit-mask: url('/images/订餐.svg') no-repeat center / contain;
+}
+
 .sidebar-tab span {
   writing-mode: horizontal-tb;
   white-space: nowrap;
-  font-weight: normal;
+  font-weight: bold;
 }
 
 .search-form-container {
   flex: 1;
   background: #ffffff;
-  padding: 0;
+  padding: 0 24px 24px 24px;
   display: flex;
   flex-direction: column;
 }
@@ -80,19 +110,19 @@
   display: flex;
   background: #ffffff;
   border-bottom: 2px solid #e0e0e0;
-  padding: 8px 0 0 0;
+  padding: 20px 0 0 0;
   gap: 0;
 }
 
 .form-tab-button {
   flex: 1;
-  padding: 10px 10px 12px 10px;
+  padding: 10px 5px 8px 5px;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
   border-radius: 0;
-  color: #666666;
-  font-size: 13px;
+  color: #999999;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
@@ -123,39 +153,97 @@
   border-radius: 0;
 }
 
-/* 表单行 */
-.form-row {
-  margin-bottom: 16px;
-  padding: 0 20px;
+.form-tab-button .form-tab-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-color: currentColor;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  flex-shrink: 0;
 }
 
-.form-row:first-of-type {
-  margin-top: 18px;
+.form-tab-icon-single {
+  mask-image: url('/images/单程.svg');
+  -webkit-mask-image: url('/images/单程.svg');
 }
 
-.form-row:last-child {
-  margin-bottom: 0;
-  padding-bottom: 20px;
+.form-tab-icon-round {
+  mask-image: url('/images/往返.svg');
+  -webkit-mask-image: url('/images/往返.svg');
 }
 
-/* 站点输入框样式 */
-.form-row .station-input-container {
-  width: 100%;
+.form-tab-icon-transfer {
+  mask-image: url('/images/换乘.svg');
+  -webkit-mask-image: url('/images/换乘.svg');
 }
 
-/* 交换按钮样式 */
-.swap-button {
-  width: 38px;
-  height: 38px;
+.form-tab-icon-ticket {
+  mask-image: url('/images/ticket.svg');
+  -webkit-mask-image: url('/images/ticket.svg');
+}
+
+/* 站点选择容器 - 包含出发地、到达地和连接线 */
+.stations-container {
+  padding: 20px 30px 0 30px;
+  position: relative;
+  padding-right: 70px;
+}
+
+/* 水平布局的表单行 - 标签在左，输入框在右 */
+.form-row-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* 左侧标签 */
+.field-label-left {
+  font-size: 14px;
+  color: #333333;
+  font-weight: normal;
+  min-width: 56px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 连接器包装器 - 包含折线和转换按钮 */
+.connector-wrapper {
+  position: absolute;
+  right: 25px;
+  top: 20px;
+  width: 40px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+/* 灰色连接折线 - Z字形：右-下-左 */
+.connector-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 80px;
+}
+
+/* 中间的转换按钮 */
+.swap-button-center {
+  width: 20px;
+  height: 20px;
   padding: 0;
-  margin: -8px auto;
   background-color: #ff7700;
   color: white;
-  border: 2px solid #ffffff;
+  border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,16 +251,75 @@
   box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
   position: relative;
   z-index: 10;
+  transform: translateX(4px) translateY(-3px);
 }
 
-.swap-button:hover {
+.swap-button-center:hover {
   background-color: #ff8822;
   transform: scale(1.08);
   box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
 }
 
-.swap-button:active {
+.swap-button-center:active {
   transform: scale(0.96);
+}
+
+.swap-button-center svg {
+  width: 16px;
+  height: 16px;
+}
+
+.swap-button-center .swap-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background-color: #ffffff;
+  mask: url('/images/转换.svg') no-repeat center / contain;
+  -webkit-mask: url('/images/转换.svg') no-repeat center / contain;
+}
+
+/* 表单行 */
+.form-row {
+  margin-bottom: 0;
+  padding: 0 15px;
+  position: relative;
+}
+
+.form-row:first-of-type {
+  margin-top: 20px;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+  padding-bottom: 5px;
+}
+
+/* 出发日期行 - 与站点输入框对齐 */
+.form-row-horizontal.date-row {
+  padding: 0 30px;
+  margin-bottom: 5px;
+}
+
+/* 带图标的输入框容器 */
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+/* 图标样式 */
+.location-icon,
+.calendar-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 站点输入框样式 */
+.form-row .station-input-container {
+  width: 100%;
 }
 
 /* 日期选择器行 */
@@ -180,28 +327,45 @@
   margin-bottom: 15px;
 }
 
-/* 复选框样式 */
+/* 复选框行 - 两个复选框居中 */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 5px 5px !important;
+  margin-bottom: 10px !important; 
+}
+
+/* 复选框样式 - 文字在左，勾选框在右 */
 .checkbox-label {
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  padding: 8px 0;
   font-size: 14px;
   color: #333333;
+  flex-direction: row;
+}
+
+.checkbox-label span {
+  user-select: none;
+  order: 1;
 }
 
 .checkbox-label input[type="checkbox"] {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #3B99FC;
   border-radius: 0;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   border: 1px solid #d0d0d0;
   position: relative;
+  order: 2;
+  flex-shrink: 0;
+  background-color: white;
 }
 
 .checkbox-label input[type="checkbox"]:checked {
@@ -217,26 +381,24 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.checkbox-label span {
-  user-select: none;
+  font-weight: bold;
 }
 
 /* 查询按钮样式 */
 .search-button {
   width: 100%;
-  padding: 13px;
-  background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
+  padding: 5px;
+  background: #FF8001;
   color: white;
   border: none;
-  border-radius: 0;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: bold;
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
-  letter-spacing: 3px;
+  letter-spacing: 8px;
+  text-indent: 8px;
 }
 
 .search-button:hover {
@@ -307,21 +469,51 @@
     font-size: 12px;
   }
 
-  .form-tab-title {
-    font-size: 15px;
-  }
-
-  .form-tab-button {
-    font-size: 13px;
-    padding: 7px 10px;
-  }
-
   .form-row {
     padding: 0 18px;
   }
 
   .form-row:last-child {
     padding-bottom: 20px;
+  }
+
+  .form-row-horizontal {
+    gap: 8px;
+  }
+
+  .field-label-left {
+    min-width: 60px;
+    font-size: 13px;
+  }
+
+  .stations-container {
+    padding: 15px 18px 0 18px;
+    padding-right: 60px;
+  }
+
+  .connector-wrapper {
+    right: 15px;
+    width: 35px;
+    height: 85px;
+  }
+
+  .connector-line {
+    width: 35px;
+    height: 85px;
+  }
+
+  .swap-button-center {
+    width: 32px;
+    height: 32px;
+  }
+
+  .swap-button-center svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .date-row {
+    padding: 0 18px;
   }
 
   .search-button {
@@ -370,10 +562,43 @@
     padding-bottom: 18px;
   }
 
-  .swap-button {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+  .form-row-horizontal {
+    gap: 6px;
+  }
+
+  .field-label-left {
+    min-width: 50px;
+    font-size: 12px;
+  }
+
+  .stations-container {
+    padding: 12px 15px 0 15px;
+    padding-right: 55px;
+  }
+
+  .connector-wrapper {
+    right: 12px;
+    width: 30px;
+    height: 80px;
+  }
+
+  .connector-line {
+    width: 30px;
+    height: 80px;
+  }
+
+  .swap-button-center {
+    width: 30px;
+    height: 30px;
+  }
+
+  .swap-button-center svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .date-row {
+    padding: 0 15px;
   }
 
   .error-message {

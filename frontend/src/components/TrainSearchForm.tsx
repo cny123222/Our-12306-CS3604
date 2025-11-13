@@ -15,6 +15,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
   const [departureStation, setDepartureStation] = useState('');
   const [arrivalStation, setArrivalStation] = useState('');
   const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
+  const [isStudent, setIsStudent] = useState(false); // 【新增】学生票状态
   const [isHighSpeed, setIsHighSpeed] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -92,23 +93,15 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
       {/* 左侧三栏 - 横向显示文字 */}
       <div className="form-sidebar">
         <button className="sidebar-tab active">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="8" width="18" height="10" rx="2" stroke="currentColor" strokeWidth="2"/>
-            <path d="M7 8V6a2 2 0 012-2h6a2 2 0 012 2v2" stroke="currentColor" strokeWidth="2"/>
-          </svg>
+          <span className="sidebar-icon sidebar-icon-train" aria-hidden="true" />
           <span>车票</span>
         </button>
         <button className="sidebar-tab">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
-            <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
+          <span className="sidebar-icon sidebar-icon-query" aria-hidden="true" />
           <span>常用查询</span>
         </button>
         <button className="sidebar-tab">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" fill="currentColor"/>
-          </svg>
+          <span className="sidebar-icon sidebar-icon-meal" aria-hidden="true" />
           <span>订餐</span>
         </button>
       </div>
@@ -117,75 +110,110 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
         {/* 车票内四个选项卡 - 只有下方蓝线 */}
         <div className="form-tabs">
           <button className="form-tab-button active">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-            </svg>
+            <span className="form-tab-icon form-tab-icon-single" aria-hidden="true" />
             <span>单程</span>
           </button>
           <button className="form-tab-button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2l-5 9h10l-5-9zm0 20l5-9H7l5 9z" fill="currentColor"/>
-            </svg>
+            <span className="form-tab-icon form-tab-icon-round" aria-hidden="true" />
             <span>往返</span>
           </button>
           <button className="form-tab-button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor"/>
-            </svg>
+            <span className="form-tab-icon form-tab-icon-transfer" aria-hidden="true" />
             <span>中转换乘</span>
           </button>
           <button className="form-tab-button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" fill="currentColor"/>
-            </svg>
+            <span className="form-tab-icon form-tab-icon-ticket" aria-hidden="true" />
             <span>退改签</span>
           </button>
         </div>
         
-        <div className="form-row">
-          <StationInput
-            value={departureStation}
-            placeholder="出发地"
-            type="departure"
-            onChange={setDepartureStation}
-            onSelect={setDepartureStation}
-          />
+        {/* 站点选择区域 - 带灰色折线和转换按钮 */}
+        <div className="stations-container">
+          {/* 出发地 */}
+          <div className="form-row-horizontal">
+            <label className="field-label-left">出发地</label>
+            <div className="input-with-icon">
+              <StationInput
+                value={departureStation}
+                placeholder="简拼/全拼/汉字"
+                type="departure"
+                onChange={setDepartureStation}
+                onSelect={setDepartureStation}
+              />
+              <svg className="location-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#cccccc"/>
+              </svg>
+            </div>
+          </div>
+
+          {/* 灰色折线和转换按钮 */}
+          <div className="connector-wrapper">
+            <svg className="connector-line" width="40" height="90" viewBox="0 0 40 90">
+              <path d="M0 10 H25 V80 H0" stroke="#e5e5e5" strokeWidth="2" fill="none"/>
+            </svg>
+            <button className="swap-button-center" onClick={handleSwapStations} aria-label="交换出发地和到达地">
+              <span className="swap-icon" aria-hidden="true" />
+            </button>
+          </div>
+
+          {/* 到达地 */}
+          <div className="form-row-horizontal">
+            <label className="field-label-left">到达地</label>
+            <div className="input-with-icon">
+              <StationInput
+                value={arrivalStation}
+                placeholder="简拼/全拼/汉字"
+                type="arrival"
+                onChange={setArrivalStation}
+                onSelect={setArrivalStation}
+              />
+              <svg className="location-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#cccccc"/>
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="form-row">
-          <button className="swap-button" onClick={handleSwapStations} aria-label="交换出发地和到达地">
-            ⇅
-          </button>
+
+        {/* 出发日期 */}
+        <div className="form-row-horizontal date-row">
+          <label className="field-label-left">出发日期</label>
+          <div className="input-with-icon">
+            <DatePicker
+              value={departureDate}
+              onChange={setDepartureDate}
+              minDate={new Date().toISOString().split('T')[0]}
+              maxDate=""
+            />
+            <svg className="calendar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="#cccccc"/>
+            </svg>
+          </div>
         </div>
-        <div className="form-row">
-          <StationInput
-            value={arrivalStation}
-            placeholder="到达地"
-            type="arrival"
-            onChange={setArrivalStation}
-            onSelect={setArrivalStation}
-          />
-        </div>
-        <div className="form-row">
-          <DatePicker
-            value={departureDate}
-            onChange={setDepartureDate}
-            minDate={new Date().toISOString().split('T')[0]}
-            maxDate=""
-          />
-        </div>
-        <div className="form-row">
+
+        {/* 两个勾选框居中 */}
+        <div className="form-row checkbox-row">
           <label className="checkbox-label">
+            <span>学生</span>
+            <input
+              type="checkbox"
+              checked={isStudent}
+              onChange={(e) => setIsStudent(e.target.checked)}
+            />
+          </label>
+          <label className="checkbox-label">
+            <span>高铁/动车</span>
             <input
               type="checkbox"
               checked={isHighSpeed}
               onChange={(e) => setIsHighSpeed(e.target.checked)}
             />
-            <span>高铁/动车</span>
           </label>
         </div>
+
+        {/* 查询按钮 */}
         <div className="form-row">
           <button className="search-button" onClick={handleSearch}>
-            查询
+            查    询
           </button>
         </div>
         {errors.general && <div className="error-message">{errors.general}</div>}
