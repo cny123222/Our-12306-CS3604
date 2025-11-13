@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './TrainListPage.css';
-import TopNavigation from '../components/TopNavigation';
+import HomeTopBar from '../components/HomeTopBar';
 import MainNavigation from '../components/MainNavigation';
 import TrainSearchBar from '../components/TrainSearchBar';
 import TrainFilterPanel from '../components/TrainFilterPanel';
@@ -16,7 +16,7 @@ const TrainListPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const [searchParams, setSearchParams] = useState<any>({
+  const [searchParams] = useState<any>({
     departureStation: location.state?.departureStation || '',
     arrivalStation: location.state?.arrivalStation || '',
     departureDate: location.state?.departureDate || new Date().toISOString().split('T')[0],
@@ -32,7 +32,7 @@ const TrainListPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [queryTimestamp, setQueryTimestamp] = useState<Date>(new Date());
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn] = useState(false);
 
   // 查询车次
   const fetchTrains = async (params: any) => {
@@ -136,10 +136,6 @@ const TrainListPage: React.FC = () => {
   }, [queryTimestamp, trains]);
 
   // 实现导航功能
-  const handleNavigateToHome = () => {
-    navigate('/');
-  };
-
   const handleNavigateToLogin = () => {
     navigate('/login');
   };
@@ -202,7 +198,7 @@ const TrainListPage: React.FC = () => {
     // 4. 按席别筛选（只显示有该席别的车次）
     if (filters.seatTypes && filters.seatTypes.length > 0) {
       filtered = filtered.filter(train => {
-        return filters.seatTypes.some(seatType => 
+        return filters.seatTypes.some((seatType: string) => 
           train.availableSeats && train.availableSeats[seatType] !== undefined
         );
       });
@@ -214,7 +210,7 @@ const TrainListPage: React.FC = () => {
 
   return (
     <div className="train-list-page">
-      <TopNavigation onLogoClick={handleNavigateToHome} />
+      <HomeTopBar isLoggedIn={isLoggedIn} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
@@ -249,7 +245,7 @@ const TrainListPage: React.FC = () => {
                  />
                )}
       </div>
-      <BottomNavigation onFriendLinkClick={() => {}} />
+      <BottomNavigation />
     </div>
   );
 };

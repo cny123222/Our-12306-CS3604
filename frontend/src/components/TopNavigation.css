@@ -61,9 +61,9 @@
 /* 欢迎登录文字 */
 .welcome-login-text {
   margin-left: 30px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
-  color: #666666;
+  color: #4f4f4f;
 }
 
 /* 欢迎信息区域（登录/注册页不显示） */
