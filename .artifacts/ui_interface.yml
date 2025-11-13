@@ -1001,3 +1001,482 @@
   changeLog:
     - date: "2025-11-12"
       description: "初始创建，查询过期提示弹窗组件。"
+
+# === 订单填写页相关UI组件 ===
+
+- type: Frontend
+  id: UI-OrderPage
+  description: 订单填写页主容器组件
+  properties:
+    - name: trainNo
+      type: string
+      description: "车次号"
+    - name: departureStation
+      type: string
+      description: "出发站"
+    - name: arrivalStation
+      type: string
+      description: "到达站"
+    - name: departureDate
+      type: string
+      description: "出发日期"
+    - name: onNavigateToTrainList
+      type: function
+      description: "跳转到车次列表页的回调函数"
+    - name: onOrderSuccess
+      type: function
+      description: "订单成功后的回调函数"
+  state:
+    - trainInfo  # 列车信息
+    - fareInfo  # 票价信息
+    - availableSeats  # 余票信息
+    - passengers  # 用户乘客列表
+    - selectedPassengers  # 已选乘客
+    - purchaseInfo  # 购票信息列表
+    - defaultSeatType  # 默认席别
+    - isLoading
+    - error
+    - showConfirmModal  # 是否显示信息核对弹窗
+    - orderId  # 订单ID
+  dependencies:
+    - API-GET-OrderPage
+    - API-POST-SubmitOrder
+    - UI-TopNavigation
+    - UI-TrainInfoSection
+    - UI-PassengerInfoSection
+    - UI-OrderSubmitSection
+    - UI-WarmTipsSection
+    - UI-BottomNavigation
+    - UI-OrderConfirmationModal
+  acceptanceCriteria:
+    - 整体页面背景为白色，分为五大部分：
+      - 顶部导航栏区域（复用）
+      - 列车信息区域
+      - 乘客信息区域
+      - 订单提交与温馨提示区域
+      - 底部导航区域（复用）
+    - 页面加载时自动获取车次信息、票价、余票和乘客列表
+    - 支持乘客选择和购票信息填写
+    - 支持订单提交和信息核对
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，订单填写页主容器组件。"
+
+- type: Frontend
+  id: UI-TrainInfoSection
+  description: 列车信息区域组件
+  properties:
+    - name: trainInfo
+      type: object
+      description: "列车基本信息"
+    - name: fareInfo
+      type: object
+      description: "票价信息"
+    - name: availableSeats
+      type: object
+      description: "余票信息"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示列车基本信息：日期、车次、出发站、到达站、发车与到达时间
+    - 格式示例："2025-09-14（周日）G27次 北京南站（19:00开）— 上海虹桥（23:35到）"
+    - 显示不同座席的票价与余票状态
+    - 价格以人民币显示，字体为灰黑色
+    - 余票数用橙色标识
+    - 底部显示提示："票价仅为参考，最终以实际出票为准"
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，列车信息区域组件。"
+
+- type: Frontend
+  id: UI-PassengerInfoSection
+  description: 乘客信息区域组件
+  properties:
+    - name: passengers
+      type: array
+      description: "用户乘客列表"
+    - name: onPassengerSelect
+      type: function
+      description: "乘客选择变化时的回调函数"
+    - name: onSearchPassenger
+      type: function
+      description: "搜索乘客的回调函数"
+    - name: availableSeatTypes
+      type: array
+      description: "当前有票的席别列表"
+    - name: defaultSeatType
+      type: string
+      description: "默认席别"
+  state:
+    - selectedPassengers  # 已选乘客ID列表
+    - purchaseInfo  # 购票信息数组
+    - searchKeyword  # 搜索关键词
+    - filteredPassengers  # 筛选后的乘客列表
+  dependencies:
+    - API-POST-SearchPassengers
+    - API-GET-AvailableSeatTypes
+    - UI-PassengerList
+    - UI-PurchaseInfoTable
+  acceptanceCriteria:
+    - 包含乘客列表，每个乘客姓名前有勾选框
+    - 右上角有搜索框，支持按姓名搜索乘客
+    - 包含购票信息填写区域
+    - 购票信息表格包含：序号、票种、席别、姓名、证件类型、证件号码
+    - 默认有一条序号为1的购票信息行
+    - 票种固定为成人票，不支持其他票种
+    - 席别下拉框根据车次类型自动选择默认值（G/C/D字头默认二等座）
+    - 证件类型默认居民身份证
+    - 姓名、证件类型、证件号码不可手动输入，只能通过选择乘客自动填充
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘客信息区域组件。"
+
+- type: Frontend
+  id: UI-PassengerList
+  description: 乘客列表组件
+  properties:
+    - name: passengers
+      type: array
+      description: "乘客列表数据"
+    - name: selectedPassengerIds
+      type: array
+      description: "已选乘客ID列表"
+    - name: onSelect
+      type: function
+      description: "乘客选择变化时的回调函数"
+    - name: searchKeyword
+      type: string
+      description: "搜索关键词"
+  state:
+    - none
+  dependencies:
+    - UI-PassengerCheckbox
+  acceptanceCriteria:
+    - 显示用户的所有乘客
+    - 每个乘客前有勾选框
+    - 支持勾选和取消勾选
+    - 支持搜索功能
+    - 勾选乘客时自动填充购票信息
+    - 取消勾选时移除对应的购票信息行
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘客列表组件。"
+
+- type: Frontend
+  id: UI-PassengerCheckbox
+  description: 乘客勾选框组件
+  properties:
+    - name: passenger
+      type: object
+      description: "乘客信息"
+    - name: isChecked
+      type: boolean
+      description: "是否已选中"
+    - name: onChange
+      type: function
+      description: "选中状态变化时的回调函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示乘客姓名和勾选框
+    - 支持勾选和取消勾选
+    - 勾选时触发onChange回调
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘客勾选框组件。"
+
+- type: Frontend
+  id: UI-PurchaseInfoTable
+  description: 购票信息填写表格组件
+  properties:
+    - name: purchaseInfo
+      type: array
+      description: "购票信息数组"
+    - name: availableSeatTypes
+      type: array
+      description: "可选席别列表"
+    - name: onSeatTypeChange
+      type: function
+      description: "席别变化时的回调函数"
+    - name: onTicketTypeChange
+      type: function
+      description: "票种变化时的回调函数"
+  state:
+    - none
+  dependencies:
+    - UI-PurchaseInfoRow
+  acceptanceCriteria:
+    - 以表格形式展示购票信息
+    - 包含列：序号、票种、席别、姓名、证件类型、证件号码
+    - 每个乘客一行
+    - 支持选择票种和席别
+    - 姓名、证件类型、证件号码不可编辑
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，购票信息填写表格组件。"
+
+- type: Frontend
+  id: UI-PurchaseInfoRow
+  description: 购票信息行组件
+  properties:
+    - name: sequence
+      type: number
+      description: "序号"
+    - name: passenger
+      type: object
+      description: "乘客信息"
+    - name: ticketType
+      type: string
+      description: "票种"
+    - name: seatType
+      type: string
+      description: "席别"
+    - name: availableSeatTypes
+      type: array
+      description: "可选席别列表"
+    - name: onSeatTypeChange
+      type: function
+      description: "席别变化时的回调函数"
+    - name: onTicketTypeChange
+      type: function
+      description: "票种变化时的回调函数"
+  state:
+    - none
+  dependencies:
+    - UI-SelectDropdown
+  acceptanceCriteria:
+    - 显示序号、票种、席别、姓名、证件类型、证件号码
+    - 票种和席别为下拉选择框
+    - 姓名、证件类型、证件号码为只读显示
+    - 证件号码部分脱敏显示
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，购票信息行组件。"
+
+- type: Frontend
+  id: UI-OrderSubmitSection
+  description: 订单提交与温馨提示区域组件
+  properties:
+    - name: onSubmit
+      type: function
+      description: "提交订单按钮点击处理函数"
+    - name: onBack
+      type: function
+      description: "上一步按钮点击处理函数"
+    - name: isSubmitting
+      type: boolean
+      description: "是否正在提交"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 页面右下方有"上一步"和"提交订单"按钮
+    - "上一步"按钮为白色背景、黑色文字
+    - "提交订单"按钮为橙色背景、白色文字
+    - 按钮上方显示提示："提交订单表示阅读并同意《中国集团铁路旅客运输规程》《服务条款》"
+    - 点击"上一步"返回车次列表页
+    - 点击"提交订单"提交订单并显示信息核对弹窗
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，订单提交与温馨提示区域组件。"
+
+- type: Frontend
+  id: UI-WarmTipsSection
+  description: 温馨提示区域组件
+  properties:
+    - name: onTermsClick
+      type: function
+      description: "服务条款链接点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 整体是背景为黄色的文本框
+    - 标题为黑体文字"温馨提示"
+    - 提示内容以编号列表形式显示（7条）
+    - 内容文字为灰黑色，字号较小
+    - 支持点击《退改说明》等链接
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，温馨提示区域组件。"
+
+- type: Frontend
+  id: UI-OrderConfirmationModal
+  description: 信息核对弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: orderId
+      type: string
+      description: "订单ID"
+    - name: onConfirm
+      type: function
+      description: "确认按钮点击处理函数"
+    - name: onBack
+      type: function
+      description: "返回修改按钮点击处理函数"
+  state:
+    - orderInfo  # 订单信息
+    - isLoading
+    - error
+    - showProcessingModal  # 是否显示处理中弹窗
+    - showSuccessModal  # 是否显示成功弹窗
+  dependencies:
+    - API-GET-OrderConfirmation
+    - API-POST-ConfirmOrder
+    - UI-ConfirmModal
+  acceptanceCriteria:
+    - 标题区域为蓝色背景，内容为"请核对以下信息"
+    - 主体区域为白色背景，包含三个部分：
+      - 车次与出行信息区（列车信息、出发站、到达站、时间）
+      - 乘客信息区（表格展示：序号、席别、票种、姓名、证件类型、证件号码）
+      - 余票信息与操作按钮区（余票状态、返回修改、确认按钮）
+    - 乘客姓名右侧显示绿色背景的"积分*n"标签
+    - 表格下方显示提示："系统将随机为您申请席位，暂不支持自选席位"
+    - 显示余票状态，例如："本次列车，二等座余票 x 张"
+    - "返回修改"按钮为白色背景、灰色文字
+    - "确认"按钮为橙色背景、白色文字
+    - 点击"返回修改"回到订单填写页
+    - 点击"确认"提交订单并显示处理中提示
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，信息核对弹窗组件。"
+
+- type: Frontend
+  id: UI-TrainInfoDisplay
+  description: 车次信息展示组件（用于信息核对弹窗）
+  properties:
+    - name: trainInfo
+      type: object
+      description: "车次信息"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示出行日期、车次号、出发站、出发时间、到达站、到达时间
+    - 格式示例："2025-11-20（周四） G1476次 上海虹桥站（09:51开）— 南京南站（11:29到）"
+    - 日期、车次号、出发时间使用黑色粗体
+    - 其他信息使用黑色普通字体
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，车次信息展示组件。"
+
+- type: Frontend
+  id: UI-PassengerInfoTable
+  description: 乘客信息表格组件（用于信息核对弹窗）
+  properties:
+    - name: passengers
+      type: array
+      description: "乘客信息列表（含积分）"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 以表格形式展示乘客信息
+    - 列包含：序号、席别、票种、姓名、证件类型、证件号码
+    - 乘客姓名右侧显示绿色背景的"积分*n"标签
+    - 表格下方显示提示："系统将随机为您申请席位，暂不支持自选席位"
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘客信息表格组件。"
+
+- type: Frontend
+  id: UI-SeatAvailabilityDisplay
+  description: 余票状态显示组件
+  properties:
+    - name: availableSeats
+      type: object
+      description: "余票信息"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 以灰色字体显示当前列车余票状态
+    - 格式示例："本次列车，二等座余票 x 张"
+    - 余票数量用红色字体高亮显示
+    - 支持的席别类型：商务座、一等座、二等座、硬卧、软卧
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，余票状态显示组件。"
+
+- type: Frontend
+  id: UI-ProcessingModal
+  description: 订单处理中弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: message
+      type: string
+      description: "提示消息"
+  state:
+    - none
+  dependencies:
+    - UI-LoadingSpinner
+  acceptanceCriteria:
+    - 显示提示："订单已经提交，系统正在处理中，请稍等"
+    - 显示加载动画
+    - 不可手动关闭
+    - 处理完成后自动关闭并显示成功提示
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，订单处理中弹窗组件。"
+
+- type: Frontend
+  id: UI-OrderSuccessModal
+  description: 购买成功提示弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: orderId
+      type: string
+      description: "订单ID"
+    - name: onClose
+      type: function
+      description: "关闭弹窗的回调函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示提示："购买成功"
+    - 显示订单号
+    - 包含"确认"按钮
+    - 点击"确认"关闭弹窗并跳转到订单详情页或个人中心
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，购买成功提示弹窗组件。"
+
+- type: Frontend
+  id: UI-PassengerSearchBox
+  description: 乘客搜索框组件
+  properties:
+    - name: onSearch
+      type: function
+      description: "搜索触发时的回调函数"
+    - name: placeholder
+      type: string
+      description: "占位符文本"
+  state:
+    - searchKeyword
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示搜索输入框
+    - 支持输入乘客姓名进行搜索
+    - 实时触发搜索回调
+    - 显示搜索图标
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘客搜索框组件。"

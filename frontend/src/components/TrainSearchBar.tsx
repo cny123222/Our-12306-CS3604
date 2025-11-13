@@ -57,7 +57,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         arrivalStation,
         departureDate
       );
-
+      
       if (!result.success) {
         throw new Error(result.error || '查询失败');
       }

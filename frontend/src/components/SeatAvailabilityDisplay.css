@@ -1,0 +1,18 @@
+/* 余票状态显示样式（信息核对弹窗） */
+.seat-availability-display {
+  padding: 15px 0;
+  margin-top: 15px;
+}
+
+.availability-text {
+  font-size: 14px;
+  color: #666666;
+  margin: 0;
+}
+
+.availability-text .red-text {
+  color: #d32f2f;
+  font-weight: bold;
+  margin: 0 3px;
+}
+

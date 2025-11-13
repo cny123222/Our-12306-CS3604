@@ -1,0 +1,51 @@
+/* 乘客搜索框样式 */
+.passenger-search-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 200px;
+  padding: 6px 32px 6px 12px;
+  border: 1px solid #ffffff;
+  border-radius: 3px;
+  font-size: 13px;
+  background-color: #ffffff;
+  transition: all 0.3s;
+}
+
+.search-input::placeholder {
+  color: #999999;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #5ba3f0;
+  box-shadow: 0 0 0 2px rgba(91, 163, 240, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  font-size: 14px;
+  color: #666666;
+  pointer-events: none;
+}
+
+.clear-button {
+  position: absolute;
+  right: 32px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666666;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.3s;
+}
+
+.clear-button:hover {
+  color: #333333;
+}
+

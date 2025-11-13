@@ -1,0 +1,123 @@
+/* 列车信息区域样式 */
+.train-info-section {
+  background-color: #ffffff;
+  border: 3px solid #4a90e2;
+  border-radius: 0;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.train-info-header {
+  background: linear-gradient(180deg, #6da8e8 0%, #4a90e2 100%);
+  padding: 12px 20px;
+  margin: 0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+}
+
+.train-info-content {
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.train-basic-info {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #333333;
+  line-height: 24px;
+}
+
+.train-date {
+  font-weight: bold;
+  color: #000000;
+  margin-right: 8px;
+}
+
+.train-no {
+  font-weight: bold;
+  color: #000000;
+  margin: 0 8px;
+}
+
+.train-station {
+  font-weight: 500;
+  color: #000000;
+  margin: 0 4px;
+}
+
+.train-time {
+  color: #333333;
+  margin: 0 4px;
+}
+
+.train-separator {
+  margin: 0 8px;
+  color: #666666;
+}
+
+.train-fare-info {
+  margin-bottom: 15px;
+  padding: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.fare-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.seat-type-label {
+  font-size: 14px;
+  color: #666666;
+}
+
+.seat-price {
+  font-size: 14px;
+  color: #666666;
+}
+
+.seat-available {
+  font-size: 14px;
+  color: #ff6600;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.seat-discount {
+  font-size: 14px;
+  color: #666666;
+  margin-left: 4px;
+}
+
+.seat-status {
+  font-size: 14px;
+  color: #999999;
+  margin-left: 4px;
+}
+
+.fare-separator {
+  margin: 0 8px;
+  color: #cccccc;
+}
+
+.train-info-notice {
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.notice-text {
+  font-size: 12px;
+  color: #666666;
+  margin: 0;
+  line-height: 18px;
+}
+

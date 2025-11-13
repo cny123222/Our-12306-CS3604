@@ -9,8 +9,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './SelectDropdown.css';
 
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
 interface SelectDropdownProps {
-  options: string[];
+  options: string[] | SelectOption[];
   value: string;
   placeholder: string;
   onChange: (value: string) => void;
@@ -28,6 +33,17 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // 标准化选项格式
+  const normalizedOptions: SelectOption[] = options.map(opt => 
+    typeof opt === 'string' ? { value: opt, label: opt } : opt
+  );
+
+  // 获取当前选中项的显示文本
+  const getDisplayValue = () => {
+    const selected = normalizedOptions.find(opt => opt.value === value);
+    return selected ? selected.label : placeholder;
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -60,9 +76,9 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
     }
   };
 
-  const handleSelect = (option: string) => {
+  const handleSelect = (optionValue: string) => {
     if (!disabled) {
-      onChange(option);
+      onChange(optionValue);
       setIsExpanded(false);
     }
   };
@@ -83,7 +99,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
       tabIndex={disabled ? -1 : 0}
     >
       <div className="selected-value-display">
-        {value || placeholder}
+        {getDisplayValue()}
       </div>
       <input
         type="hidden"
@@ -96,18 +112,18 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
       >
         ▼
       </span>
-      {isExpanded && !disabled && options.length > 0 && (
+      {isExpanded && !disabled && normalizedOptions.length > 0 && (
         <div className="options-list">
-          {options.map((option, index) => (
+          {normalizedOptions.map((option, index) => (
             <div
               key={index}
-              className={`option ${option === value ? 'selected' : ''}`}
+              className={`option ${option.value === value ? 'selected' : ''}`}
               onClick={(e) => {
                 e.stopPropagation();
-                handleSelect(option);
+                handleSelect(option.value);
               }}
             >
-              {option}
+              {option.label}
             </div>
           ))}
         </div>

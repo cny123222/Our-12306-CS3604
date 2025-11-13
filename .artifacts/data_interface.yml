@@ -1,5 +1,5 @@
 # 数据库操作接口定义
-# 基于登录页、注册页、首页查询页和车次列表页需求文档生成
+# 基于登录页、注册页、首页查询页、车次列表页和订单填写页需求文档生成
 
 - type: Database
   id: DB-FindUserByUsername
@@ -388,3 +388,219 @@
   changeLog:
     - date: "2025-11-12"
       description: "初始创建，支持订单预订功能。"
+
+# === 订单填写页相关数据库接口 ===
+
+- type: Database
+  id: DB-GetUserPassengers
+  description: 获取用户的所有乘客列表
+  dependencies:
+    - DB-CheckUserLoginStatus
+  acceptanceCriteria:
+    - 根据用户ID返回该用户在个人中心预存的所有乘客信息
+    - 包含乘客姓名、证件类型、证件号码、积分等信息
+    - 按添加时间或姓名排序
+    - 用于订单填写页的乘客选择
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单填写页乘客列表查询。"
+
+- type: Database
+  id: DB-GetPassengerDetails
+  description: 获取指定乘客的详细信息
+  dependencies:
+    - DB-GetUserPassengers
+  acceptanceCriteria:
+    - 根据乘客ID返回乘客的完整信息
+    - 包含姓名、证件类型、证件号码、票种优惠类型、积分等
+    - 验证乘客属于当前登录用户
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持乘客详细信息查询。"
+
+- type: Database
+  id: DB-SearchPassengers
+  description: 根据姓名搜索用户的乘客列表
+  dependencies:
+    - DB-GetUserPassengers
+  acceptanceCriteria:
+    - 根据用户ID和姓名关键词搜索乘客
+    - 支持模糊匹配和精确匹配
+    - 返回匹配的乘客列表
+    - 用于订单填写页的乘客搜索功能
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持乘客搜索功能。"
+
+- type: Database
+  id: DB-GetPassengerPoints
+  description: 获取乘客的积分信息
+  dependencies:
+    - DB-GetPassengerDetails
+  acceptanceCriteria:
+    - 返回指定乘客的当前积分
+    - 包含积分累计、使用记录等
+    - 用于信息核对弹窗显示积分
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持乘客积分查询。"
+
+- type: Database
+  id: DB-CreatePassenger
+  description: 为用户创建新的乘客信息
+  dependencies:
+    - DB-CheckUserLoginStatus
+  acceptanceCriteria:
+    - 创建新的乘客记录并关联到用户
+    - 包含姓名、证件类型、证件号码、票种优惠类型等
+    - 验证证件号码的唯一性（一个证件号码只能被一个用户添加一次）
+    - 初始化积分为0
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持在个人中心添加乘客。"
+
+- type: Database
+  id: DB-UpdatePassenger
+  description: 更新乘客信息
+  dependencies:
+    - DB-GetPassengerDetails
+  acceptanceCriteria:
+    - 修改指定乘客的信息
+    - 支持更新姓名、证件信息、票种优惠类型等
+    - 验证乘客属于当前用户
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持乘客信息修改。"
+
+- type: Database
+  id: DB-DeletePassenger
+  description: 删除乘客信息
+  dependencies:
+    - DB-GetPassengerDetails
+  acceptanceCriteria:
+    - 删除指定乘客记录
+    - 检查该乘客是否有未完成的订单
+    - 验证乘客属于当前用户
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持乘客信息删除。"
+
+- type: Database
+  id: DB-CreateOrder
+  description: 创建完整的订单记录（包含多个乘客）
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetTrainDetails
+    - DB-CalculateAvailableSeats
+    - DB-CalculateFare
+    - DB-GetUserPassengers
+  acceptanceCriteria:
+    - 创建新的订单记录，支持多个乘客
+    - 包含订单号、用户ID、车次信息、出发到达站、出发日期等
+    - 为每个乘客创建订单明细（票种、席别、姓名、证件等）
+    - 计算订单总价
+    - 初始订单状态为"待支付"
+    - 与座位锁定在同一事务中执行
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单填写页创建订单。"
+
+- type: Database
+  id: DB-GetOrderDetails
+  description: 获取订单详细信息
+  dependencies:
+    - DB-CreateOrder
+  acceptanceCriteria:
+    - 根据订单号返回订单的完整信息
+    - 包含订单基本信息、车次信息、乘客列表、票价等
+    - 验证订单属于当前用户
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单详情查询。"
+
+- type: Database
+  id: DB-UpdateOrderStatus
+  description: 更新订单状态
+  dependencies:
+    - DB-GetOrderDetails
+  acceptanceCriteria:
+    - 修改订单状态（待支付、已支付、已取消、已完成等）
+    - 记录状态变更时间
+    - 支持事务操作
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单状态管理。"
+
+- type: Database
+  id: DB-LockSeats
+  description: 临时锁定座位（提交订单时）
+  dependencies:
+    - DB-GetSeatStatus
+    - DB-CalculateAvailableSeats
+  acceptanceCriteria:
+    - 为订单中的每个乘客临时锁定座位
+    - 锁定时间通常为15-30分钟
+    - 随机分配符合席别要求的空闲座位
+    - 确保同一订单的座位尽量相邻（可选）
+    - 锁定失败时回滚所有座位锁定
+    - 与创建订单在同一事务中执行
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单提交时的座位临时锁定。"
+
+- type: Database
+  id: DB-ReleaseSeatLocks
+  description: 释放座位锁定
+  dependencies:
+    - DB-LockSeats
+  acceptanceCriteria:
+    - 释放指定订单的所有座位锁定
+    - 将座位状态从锁定恢复为空闲
+    - 用于订单取消或超时未支付
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持座位锁定释放。"
+
+- type: Database
+  id: DB-ConfirmSeatAllocation
+  description: 确认座位分配（支付成功后）
+  dependencies:
+    - DB-LockSeats
+    - DB-UpdateSeatStatus
+  acceptanceCriteria:
+    - 将锁定的座位转换为已预订状态
+    - 记录座位分配信息到订单
+    - 更新订单状态为已支付
+    - 与支付操作在同一事务中执行
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持支付后确认座位分配。"
+
+- type: Database
+  id: DB-GetDefaultSeatType
+  description: 获取车次的默认席别
+  dependencies:
+    - DB-GetTrainDetails
+  acceptanceCriteria:
+    - 根据车次类型返回默认席别
+    - G/C字头车次默认二等座
+    - D字头车次默认二等座
+    - 返回默认席别的票价
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单填写页默认席别设置。"
+
+- type: Database
+  id: DB-GetAvailableSeatTypesForOrder
+  description: 获取当前有票的席别列表
+  dependencies:
+    - DB-CalculateAvailableSeats
+    - DB-GetSeatTypes
+  acceptanceCriteria:
+    - 返回指定车次当前有余票的席别列表
+    - 包含席别名称和票价
+    - 已售罄的席别不包含在列表中
+    - 用于订单填写页席别下拉菜单
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持有票席别查询。"
