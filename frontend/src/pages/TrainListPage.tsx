@@ -16,7 +16,7 @@ const TrainListPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const [searchParams] = useState<any>({
+  const [searchParams, setSearchParams] = useState<any>({
     departureStation: location.state?.departureStation || '',
     arrivalStation: location.state?.arrivalStation || '',
     departureDate: location.state?.departureDate || new Date().toISOString().split('T')[0],
@@ -32,7 +32,7 @@ const TrainListPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [queryTimestamp, setQueryTimestamp] = useState<Date>(new Date());
-  const [isLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // 检查登录状态
   useEffect(() => {
