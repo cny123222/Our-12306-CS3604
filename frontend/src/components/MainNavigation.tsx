@@ -34,23 +34,6 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
         <a href="#" className="nav-item">商旅服务 <span className="nav-arrow">▼</span></a>
         <a href="#" className="nav-item">出行指南 <span className="nav-arrow">▼</span></a>
         <a href="#" className="nav-item">信息查询 <span className="nav-arrow">▼</span></a>
-        
-        <div className="nav-right">
-          {!isLoggedIn ? (
-            <>
-              <button className="nav-auth-button login-button" onClick={onLoginClick}>
-                登录
-              </button>
-              <button className="nav-auth-button register-button" onClick={onRegisterClick}>
-                注册
-              </button>
-            </>
-          ) : (
-            <button className="nav-auth-button personal-center-button" onClick={onPersonalCenterClick}>
-              个人中心
-            </button>
-          )}
-        </div>
       </div>
     </nav>
   );
