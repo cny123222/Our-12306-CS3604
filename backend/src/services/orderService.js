@@ -579,31 +579,7 @@ async function confirmOrder(orderId, userId) {
               const ticketInfo = [];
               
               for (const detail of details) {
-                // 获取该席别的可用座位
-                const availableSeats = await new Promise((resolve, reject) => {
-                  db.all(
-                    `SELECT DISTINCT seat_no 
-                     FROM seat_status 
-                     WHERE train_no = ? 
-                     AND seat_type = ? 
-                     AND status = 'available'
-                     LIMIT 1`,
-                    [order.train_number, detail.seat_type],
-                    (err, seats) => {
-                      if (err) return reject(err);
-                      resolve(seats);
-                    }
-                  );
-                });
-                
-                if (!availableSeats || availableSeats.length === 0) {
-                  db.close();
-                  return reject({ status: 400, message: `${detail.seat_type}座位已售罄` });
-                }
-                
-                const seatNo = availableSeats[0].seat_no;
-                
-                // 获取出发站和到达站之间的所有区间
+                // 首先获取出发站和到达站之间的所有区间
                 const stops = await new Promise((resolve, reject) => {
                   db.all(
                     `SELECT station FROM train_stops 
@@ -620,13 +596,75 @@ async function confirmOrder(orderId, userId) {
                   );
                 });
                 
-                // 构建所有区间的更新条件
+                // 构建所有区间
                 const segments = [];
                 for (let i = 0; i < stops.length - 1; i++) {
                   segments.push({
                     from: stops[i].station,
                     to: stops[i + 1].station
                   });
+                }
+                
+                // 获取该席别的所有座位，然后找到在所有区间都是available的座位
+                const allSeats = await new Promise((resolve, reject) => {
+                  db.all(
+                    `SELECT DISTINCT seat_no 
+                     FROM seat_status 
+                     WHERE train_no = ? 
+                     AND seat_type = ?`,
+                    [order.train_number, detail.seat_type],
+                    (err, seats) => {
+                      if (err) return reject(err);
+                      resolve(seats);
+                    }
+                  );
+                });
+                
+                if (!allSeats || allSeats.length === 0) {
+                  db.close();
+                  return reject({ status: 400, message: `${detail.seat_type}座位不存在` });
+                }
+                
+                // 找到第一个在所有区间都是available的座位
+                let selectedSeatNo = null;
+                
+                for (const seat of allSeats) {
+                  // 检查该座位在所有区间是否都是available
+                  const segmentConditions = segments.map(() => 
+                    '(from_station = ? AND to_station = ?)'
+                  ).join(' OR ');
+                  
+                  const segmentParams = segments.flatMap(s => [s.from, s.to]);
+                  
+                  const seatStatuses = await new Promise((resolve, reject) => {
+                    db.all(
+                      `SELECT status 
+                       FROM seat_status 
+                       WHERE train_no = ? 
+                       AND seat_type = ? 
+                       AND seat_no = ? 
+                       AND (${segmentConditions})`,
+                      [order.train_number, detail.seat_type, seat.seat_no, ...segmentParams],
+                      (err, statuses) => {
+                        if (err) return reject(err);
+                        resolve(statuses);
+                      }
+                    );
+                  });
+                  
+                  // 检查是否所有区间都是available
+                  if (seatStatuses.length === segments.length) {
+                    const allAvailable = seatStatuses.every(s => s.status === 'available');
+                    if (allAvailable) {
+                      selectedSeatNo = seat.seat_no;
+                      break;
+                    }
+                  }
+                }
+                
+                if (!selectedSeatNo) {
+                  db.close();
+                  return reject({ status: 400, message: `${detail.seat_type}座位已售罄` });
                 }
                 
                 // 更新所有区间的座位状态为已预定
@@ -640,7 +678,7 @@ async function confirmOrder(orderId, userId) {
                        AND seat_no = ? 
                        AND from_station = ? 
                        AND to_station = ?`,
-                      [userId, order.train_number, detail.seat_type, seatNo, segment.from, segment.to],
+                      [userId, order.train_number, detail.seat_type, selectedSeatNo, segment.from, segment.to],
                       (err) => {
                         if (err) return reject(err);
                         resolve(true);
@@ -652,8 +690,8 @@ async function confirmOrder(orderId, userId) {
                 // 更新订单明细中的座位号
                 await new Promise((resolve, reject) => {
                   db.run(
-                    'UPDATE order_details SET seat_no = ? WHERE id = ?',
-                    [seatNo, detail.id],
+                    'UPDATE order_details SET seat_number = ? WHERE id = ?',
+                    [selectedSeatNo, detail.id],
                     (err) => {
                       if (err) return reject(err);
                       resolve(true);
@@ -664,7 +702,7 @@ async function confirmOrder(orderId, userId) {
                 ticketInfo.push({
                   passengerName: detail.passenger_name,
                   seatType: detail.seat_type,
-                  seatNo: seatNo,
+                  seatNo: selectedSeatNo,
                   ticketType: detail.ticket_type
                 });
               }
