@@ -74,16 +74,20 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   const [confirmResult, setConfirmResult] = React.useState<any>(null);
   
   const handleConfirm = async () => {
+    console.log('🔵 handleConfirm 开始执行');
     setShowProcessingModal(true);
     setError('');
     
     try {
       const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
       if (!token) {
+        console.error('❌ Token 不存在');
         setError('请先登录');
         setShowProcessingModal(false);
         return;
       }
+      
+      console.log('🔵 调用确认订单API:', `/api/orders/${orderId}/confirm`);
       
       // 调用确认订单API
       const response = await fetch(`/api/orders/${orderId}/confirm`, {
@@ -94,33 +98,54 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
         },
       });
       
+      console.log('🔵 API 响应状态:', response.status);
+      
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('❌ API 错误:', errorData);
         throw new Error(errorData.error || '确认订单失败');
       }
       
       const result = await response.json();
+      console.log('✅ API 返回数据:', result);
+      console.log('✅ 包含 trainInfo:', !!result.trainInfo);
+      console.log('✅ 包含 tickets:', !!result.tickets);
+      
       setConfirmResult(result);
       
       // 关闭处理中弹窗，显示成功弹窗
+      console.log('🟢 关闭处理中弹窗，准备显示成功弹窗');
       setShowProcessingModal(false);
       setShowSuccessModal(true);
+      console.log('✅ 已调用 setShowSuccessModal(true)');
       
-      // 调用父组件的onConfirm回调（如果有）
-      if (onConfirm) {
-        await onConfirm();
-      }
+      // 不要立即调用 onConfirm，等用户在成功弹窗点击"确认"时才调用 onSuccess
     } catch (error: any) {
+      console.error('❌ handleConfirm 错误:', error);
       setShowProcessingModal(false);
       setError(error.message || '订单确认失败，请稍后重试');
     }
   };
   
+  // 调试日志
+  console.log('OrderConfirmationModal 渲染状态:', {
+    isVisible,
+    showProcessingModal,
+    showSuccessModal,
+    hasConfirmResult: !!confirmResult
+  });
+  
   if (!isVisible) return null;
   
   return (
     <div className="order-confirmation-modal">
-      <div className="modal-overlay" onClick={onBack}></div>
+      <div className="modal-overlay" onClick={(e) => {
+        // 只有点击遮罩层本身时才关闭弹窗
+        if (e.target === e.currentTarget) {
+          console.log('🔙 点击遮罩层，关闭弹窗');
+          onBack();
+        }
+      }}></div>
       <div className="modal-content">
         <div className="modal-header blue-background">
           <h2 className="modal-title">请核对以下信息</h2>
@@ -189,10 +214,29 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
         </div>
         
         <div className="modal-footer">
-          <button className="back-modal-button white-background gray-text" onClick={onBack}>
+          <button 
+            type="button"
+            className="back-modal-button white-background gray-text" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('🔙 点击"返回修改"按钮');
+              onBack();
+            }}
+          >
             返回修改
           </button>
-          <button className="confirm-modal-button orange-background white-text" onClick={handleConfirm} disabled={isLoading}>
+          <button 
+            type="button"
+            className="confirm-modal-button orange-background white-text" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('🟠 点击"确认"按钮，准备调用 handleConfirm');
+              handleConfirm();
+            }}
+            disabled={isLoading}
+          >
             确认
           </button>
         </div>
