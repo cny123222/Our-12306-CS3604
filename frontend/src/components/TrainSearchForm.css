@@ -1,44 +1,141 @@
 /* 车票查询表单样式 */
 .train-search-form {
   width: 100%;
-  max-width: 420px;
+  max-width: 480px;
+  display: flex;
+  gap: 0;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* 左侧三栏 - 横向显示 */
+.form-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: #3B99FC;
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.sidebar-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 3px solid transparent;
+  border-radius: 0;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 20px 10px 20px 12px;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.sidebar-tab:last-child {
+  border-bottom: none;
+}
+
+.sidebar-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-tab.active {
+  background: #ffffff;
+  color: #3B99FC;
+  border-left: 3px solid #3B99FC;
+  border-radius: 0;
+}
+
+.sidebar-tab svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-tab span {
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
+  font-weight: normal;
 }
 
 .search-form-container {
+  flex: 1;
   background: #ffffff;
-  padding: 30px 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 表单标题区域 */
-.form-title {
+/* 车票内四个选项卡 - 方框样式，只有下边框 */
+.form-tabs {
+  display: flex;
+  background: #ffffff;
+  border-bottom: 2px solid #e0e0e0;
+  padding: 8px 0 0 0;
+  gap: 0;
+}
+
+.form-tab-button {
+  flex: 1;
+  padding: 10px 10px 12px 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: #666666;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #e0e0e0;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: -2px;
 }
 
-.form-title-icon {
-  font-size: 24px;
-  color: #2196f3;
+.form-tab-button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
-.form-title-text {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333333;
+.form-tab-button:hover {
+  color: #3B99FC;
+  background: #f9f9f9;
+  border-radius: 0;
+}
+
+.form-tab-button.active {
+  color: #3B99FC;
+  background: transparent;
+  font-weight: normal;
+  border-bottom: 2px solid #3B99FC;
+  border-radius: 0;
 }
 
 /* 表单行 */
 .form-row {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  padding: 0 20px;
+}
+
+.form-row:first-of-type {
+  margin-top: 18px;
 }
 
 .form-row:last-child {
   margin-bottom: 0;
+  padding-bottom: 20px;
 }
 
 /* 站点输入框样式 */
@@ -48,16 +145,16 @@
 
 /* 交换按钮样式 */
 .swap-button {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   padding: 0;
   margin: -8px auto;
   background-color: #ff7700;
   color: white;
-  border: 3px solid #ffffff;
+  border: 2px solid #ffffff;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -70,12 +167,12 @@
 
 .swap-button:hover {
   background-color: #ff8822;
-  transform: scale(1.1);
+  transform: scale(1.08);
   box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
 }
 
 .swap-button:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 /* 日期选择器行 */
@@ -89,16 +186,37 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  padding: 10px 0;
-  font-size: 15px;
+  padding: 8px 0;
+  font-size: 14px;
   color: #333333;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  accent-color: #2196f3;
+  accent-color: #3B99FC;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px solid #d0d0d0;
+  position: relative;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background-color: #3B99FC;
+  border-color: #3B99FC;
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .checkbox-label span {
@@ -108,23 +226,23 @@
 /* 查询按钮样式 */
 .search-button {
   width: 100%;
-  padding: 14px;
+  padding: 13px;
   background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   transition: all 0.3s ease;
-  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.3);
-  letter-spacing: 2px;
+  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
+  letter-spacing: 3px;
 }
 
 .search-button:hover {
   background: linear-gradient(to bottom, #ffaa44 0%, #ff8822 100%);
-  box-shadow: 0 4px 10px rgba(255, 119, 0, 0.4);
-  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
+  transform: translateY(-1px);
 }
 
 .search-button:active {
@@ -142,12 +260,14 @@
 /* 错误消息样式 */
 .error-message {
   color: #d32f2f;
-  font-size: 14px;
-  margin-top: 12px;
-  padding: 10px;
+  font-size: 13px;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 8px 10px;
   background-color: #ffebee;
-  border-radius: 4px;
-  border-left: 4px solid #d32f2f;
+  border-radius: 0;
+  border-left: 3px solid #d32f2f;
   animation: slideIn 0.3s ease;
 }
 
@@ -168,28 +288,96 @@
     max-width: 100%;
   }
 
-  .search-form-container {
-    padding: 20px 18px;
+  .form-sidebar {
+    width: 65px;
   }
 
-  .form-title-text {
-    font-size: 16px;
+  .sidebar-tab {
+    padding: 16px 8px;
+    font-size: 12px;
+  }
+
+  .sidebar-tab svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .form-tab-button {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  .form-tab-title {
+    font-size: 15px;
+  }
+
+  .form-tab-button {
+    font-size: 13px;
+    padding: 7px 10px;
+  }
+
+  .form-row {
+    padding: 0 18px;
+  }
+
+  .form-row:last-child {
+    padding-bottom: 20px;
   }
 
   .search-button {
     padding: 12px;
     font-size: 16px;
   }
+
+  .error-message {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
 }
 
 @media (max-width: 480px) {
-  .search-form-container {
-    padding: 18px 15px;
+  .form-sidebar {
+    width: 60px;
+  }
+
+  .sidebar-tab {
+    padding: 14px 6px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .sidebar-tab svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .form-tab-button {
+    font-size: 11px;
+    padding: 10px 8px;
+    gap: 4px;
+  }
+
+  .form-tab-button svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .form-row {
+    padding: 0 15px;
+  }
+
+  .form-row:last-child {
+    padding-bottom: 18px;
   }
 
   .swap-button {
     width: 36px;
     height: 36px;
     font-size: 18px;
+  }
+
+  .error-message {
+    margin-left: 15px;
+    margin-right: 15px;
   }
 }

@@ -22,14 +22,21 @@
   cursor: pointer;
 }
 
-/* Logo图片 */
+/* Logo区域 */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .logo-image {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
 }
 
-/* Logo文字区域 */
 .logo-text {
   display: flex;
   flex-direction: column;
@@ -37,16 +44,18 @@
 }
 
 .logo-chinese {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   color: #333333;
-  letter-spacing: 1px;
+  letter-spacing: 1.3px;
+  line-height: 1.2;
 }
 
 .logo-english {
-  font-size: 12px;
+  font-size: 15px;
   color: #999999;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.1px;
+  line-height: 1.2;
 }
 
 /* 欢迎登录文字 */
