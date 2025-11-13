@@ -1,23 +1,32 @@
 /* 乘客信息区域样式 */
 .passenger-info-section {
   background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
+  border: 3px solid #4a90e2;
+  border-radius: 0;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: visible;  /* 改为visible以允许下拉框显示 */
 }
 
 .passenger-info-header {
+  background: linear-gradient(180deg, #6da8e8 0%, #4a90e2 100%);
+  padding: 12px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  margin: 0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
 }
 
 .passenger-info-content {
-  padding: 10px 0;
+  background-color: #ffffff;
+  padding: 20px;
+  overflow: visible;  /* 允许下拉框溢出显示 */
 }
 
 .passenger-list-container {
@@ -29,9 +38,17 @@
 }
 
 .subsection-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #333333;
   margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.passenger-list-container .subsection-title::before {
+  content: '👤';
+  font-size: 18px;
 }
 

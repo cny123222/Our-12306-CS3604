@@ -14,6 +14,7 @@ interface PassengerInfoSectionProps {
   purchaseInfo: any[];
   onSeatTypeChange: (index: number, seatType: string) => void;
   onTicketTypeChange: (index: number, ticketType: string) => void;
+  fareInfo?: any;
 }
 
 /**
@@ -29,6 +30,7 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
   purchaseInfo,
   onSeatTypeChange,
   onTicketTypeChange,
+  fareInfo,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   
@@ -45,16 +47,16 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
   return (
     <div className="passenger-info-section">
       <div className="passenger-info-header">
-        <h2 className="section-title">乘客信息</h2>
+        <h2 className="section-title">乘客信息（填写说明）</h2>
         <PassengerSearchBox
           onSearch={handleSearch}
-          placeholder="搜索乘客姓名"
+          placeholder="输入乘客姓名"
         />
       </div>
       
       <div className="passenger-info-content">
         <div className="passenger-list-container">
-          <h3 className="subsection-title">乘车人列表</h3>
+          <h3 className="subsection-title">乘车人</h3>
           <PassengerList
             passengers={filteredPassengers}
             selectedPassengerIds={selectedPassengers}
@@ -64,12 +66,12 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
         </div>
         
         <div className="purchase-info-container">
-          <h3 className="subsection-title">购票信息</h3>
           <PurchaseInfoTable
             purchaseInfo={purchaseInfo}
             availableSeatTypes={availableSeatTypes}
             onSeatTypeChange={onSeatTypeChange}
             onTicketTypeChange={onTicketTypeChange}
+            fareInfo={fareInfo}
           />
         </div>
       </div>

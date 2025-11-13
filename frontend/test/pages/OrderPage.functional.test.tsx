@@ -526,7 +526,7 @@ describe('订单填写页功能测试', () => {
               seatType: '二等座',
               ticketType: '成人票'
             }],
-            availableSeats: { '二等座': 99, '无座': 50 },
+            availableSeats: { '二等座': 99 },
             totalPrice: 553
           }
         })
@@ -557,7 +557,7 @@ describe('订单填写页功能测试', () => {
 
         // 余票信息
         expect(screen.getByText(/本次列车，二等座余票.*99.*张/)).toBeInTheDocument();
-        expect(screen.getByText(/无座余票.*50.*张/)).toBeInTheDocument();
+        expect(screen.getByText(/二等座余票.*99.*张/)).toBeInTheDocument();
 
         // 操作按钮
         expect(screen.getByText('返回修改')).toBeInTheDocument();

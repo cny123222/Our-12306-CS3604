@@ -98,6 +98,7 @@ async function searchTrains(departureStation, arrivalStation, departureDate, tra
                   departureTime: depStop.depart_time,
                   arrivalTime: arrStop.arrive_time,
                   duration: calculateDuration(depStop.depart_time, arrStop.arrive_time),
+                  departureDate: departureDate, // 添加出发日期
                   availableSeats: availableSeats
                 });
               }

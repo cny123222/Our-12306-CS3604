@@ -15,31 +15,54 @@ const TrainInfoSection: React.FC<TrainInfoSectionProps> = ({
   fareInfo,
   availableSeats,
 }) => {
-  // TODO: 实现列车信息展示
+  // 格式化日期，显示星期
+  const formatDate = (date: string) => {
+    const d = new Date(date);
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const weekDay = weekDays[d.getDay()];
+    return `${date}（${weekDay}）`;
+  };
   
   return (
     <div className="train-info-section">
       <div className="train-info-header">
-        <h2 className="section-title">列车信息</h2>
+        <h2 className="section-title">列车信息（以下余票信息仅供参考）</h2>
       </div>
       
       <div className="train-info-content">
         {trainInfo && (
           <div className="train-basic-info">
-            {/* TODO: 显示日期、车次、出发站、到达站、发车与到达时间 */}
-            <p>车次信息加载中...</p>
+            <span className="train-date">{formatDate(trainInfo.departureDate)}</span>
+            <span className="train-no">{trainInfo.trainNo}次</span>
+            <span className="train-station">{trainInfo.departureStation}站</span>
+            <span className="train-time">（{trainInfo.departureTime}开）</span>
+            <span className="train-separator">—</span>
+            <span className="train-station">{trainInfo.arrivalStation}站</span>
+            <span className="train-time">（{trainInfo.arrivalTime}到）</span>
           </div>
         )}
         
         {fareInfo && availableSeats && (
-          <div className="train-fare-seats">
-            {/* TODO: 显示不同席别的票价和余票状态 */}
-            <p>票价和余票信息加载中...</p>
+          <div className="train-fare-info">
+            {Object.keys(fareInfo).map((seatType, index) => {
+              const fare = fareInfo[seatType];
+              const available = availableSeats[seatType];
+              return (
+                <div key={seatType} className="fare-item">
+                  <span className="seat-type-label">{seatType}</span>
+                  <span className="seat-price">（¥{fare.price}.0元）</span>
+                  <span className="seat-available">{available !== undefined ? `${available}张票` : '无票'}</span>
+                  <span className="seat-discount">{fare.discount ? `${fare.discount}折` : ''}</span>
+                  {fare.status && <span className="seat-status">{fare.status}</span>}
+                  {index < Object.keys(fareInfo).length - 1 && <span className="fare-separator">—</span>}
+                </div>
+              );
+            })}
           </div>
         )}
         
         <div className="train-info-notice">
-          <p className="notice-text">票价仅为参考，最终以实际出票为准</p>
+          <p className="notice-text">*显示的价格均为实际活动折扣后票价，供您参考。查看公布票价。具体票价以您确认支付时实际购买的铺别票价为准。</p>
         </div>
       </div>
     </div>

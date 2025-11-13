@@ -386,6 +386,128 @@ async function verifyDatabaseConnection() {
   }
 }
 
+// 测试9: 验证订单相关API端点
+async function verifyOrdersAPIs() {
+  logSection('测试 9: 订单相关API端点验证');
+  
+  const endpoints = [
+    { path: '/api/orders/new?trainNo=G27&departureStation=' + encodeURIComponent('北京南站') + '&arrivalStation=' + encodeURIComponent('上海虹桥') + '&departureDate=2025-09-14', method: 'GET', name: '获取订单填写页信息API' },
+    { path: '/api/orders/available-seat-types?trainNo=G27&departureStation=' + encodeURIComponent('北京南站') + '&arrivalStation=' + encodeURIComponent('上海虹桥') + '&departureDate=2025-09-14', method: 'GET', name: '获取有票席别列表API' },
+    { path: '/api/orders/submit', method: 'POST', name: '提交订单API' },
+    { path: '/api/orders/order-123/confirmation', method: 'GET', name: '获取订单核对信息API' },
+    { path: '/api/orders/order-123/confirm', method: 'POST', name: '确认订单API' }
+  ];
+  
+  let successCount = 0;
+  
+  for (const endpoint of endpoints) {
+    try {
+      let body = undefined;
+      if (endpoint.method === 'POST' && endpoint.path === '/api/orders/submit') {
+        body = JSON.stringify({
+          trainNo: 'G27',
+          departureStation: '北京南站',
+          arrivalStation: '上海虹桥',
+          departureDate: '2025-09-14',
+          passengers: [
+            { passengerId: 'passenger-1', ticketType: '成人票', seatType: '二等座' }
+          ]
+        });
+      }
+      
+      const response = await makeRequest({
+        protocol: CONFIG.backend.protocol,
+        host: CONFIG.backend.host,
+        port: CONFIG.backend.port,
+        path: endpoint.path,
+        method: endpoint.method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer test-token'
+        },
+        body: body
+      });
+      
+      if (response.statusCode < 500) {
+        logSuccess(`${endpoint.name} 端点可访问 (${endpoint.method} ${endpoint.path.split('?')[0]})`);
+        successCount++;
+      } else {
+        logError(`${endpoint.name} 服务器错误: HTTP ${response.statusCode}`);
+      }
+    } catch (error) {
+      logError(`${endpoint.name} 无法访问: ${error.message}`);
+    }
+  }
+  
+  logInfo(`\nAPI端点验证: ${successCount}/${endpoints.length} 通过`);
+  return successCount === endpoints.length;
+}
+
+// 测试10: 验证乘客相关API端点
+async function verifyPassengersAPIs() {
+  logSection('测试 10: 乘客相关API端点验证');
+  
+  const endpoints = [
+    { path: '/api/passengers', method: 'GET', name: '获取用户乘客列表API' },
+    { path: '/api/passengers/search', method: 'POST', name: '搜索乘客API' },
+    { path: '/api/passengers', method: 'POST', name: '添加乘客API' },
+    { path: '/api/passengers/passenger-1', method: 'PUT', name: '更新乘客信息API' },
+    { path: '/api/passengers/passenger-1', method: 'DELETE', name: '删除乘客API' }
+  ];
+  
+  let successCount = 0;
+  
+  for (const endpoint of endpoints) {
+    try {
+      let body = undefined;
+      if (endpoint.method === 'POST') {
+        if (endpoint.path === '/api/passengers/search') {
+          body = JSON.stringify({ keyword: '刘蕊蕊' });
+        } else if (endpoint.path === '/api/passengers') {
+          body = JSON.stringify({
+            name: '测试乘客',
+            idCardType: '居民身份证',
+            idCardNumber: '110101199001011234',
+            discountType: '成人票'
+          });
+        }
+      } else if (endpoint.method === 'PUT') {
+        body = JSON.stringify({
+          name: '测试乘客-已更新',
+          idCardType: '居民身份证',
+          idCardNumber: '110101199001011234',
+          discountType: '成人票'
+        });
+      }
+      
+      const response = await makeRequest({
+        protocol: CONFIG.backend.protocol,
+        host: CONFIG.backend.host,
+        port: CONFIG.backend.port,
+        path: endpoint.path,
+        method: endpoint.method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer test-token'
+        },
+        body: body
+      });
+      
+      if (response.statusCode < 500) {
+        logSuccess(`${endpoint.name} 端点可访问 (${endpoint.method} ${endpoint.path})`);
+        successCount++;
+      } else {
+        logError(`${endpoint.name} 服务器错误: HTTP ${response.statusCode}`);
+      }
+    } catch (error) {
+      logError(`${endpoint.name} 无法访问: ${error.message}`);
+    }
+  }
+  
+  logInfo(`\nAPI端点验证: ${successCount}/${endpoints.length} 通过`);
+  return successCount === endpoints.length;
+}
+
 // 测试6: 验证完整注册流程
 async function verifyRegistrationFlow() {
   logSection('测试 6: 完整注册流程验证');
@@ -490,6 +612,8 @@ async function main() {
   await verifyRegistrationFlow();
   await verifyStationsAPIs();
   await verifyTrainsAPIs();
+  await verifyOrdersAPIs();
+  await verifyPassengersAPIs();
   
   // 生成报告
   const exitCode = generateReport();
