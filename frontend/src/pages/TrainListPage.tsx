@@ -34,6 +34,23 @@ const TrainListPage: React.FC = () => {
   const [queryTimestamp, setQueryTimestamp] = useState<Date>(new Date());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // 检查登录状态
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('authToken');
+      setIsLoggedIn(!!token);
+    };
+    
+    checkLoginStatus();
+    
+    // 监听storage事件，当其他标签页登录/登出时同步状态
+    window.addEventListener('storage', checkLoginStatus);
+    
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
+
   // 查询车次
   const fetchTrains = async (params: any) => {
     console.log('fetchTrains called with params:', params);
@@ -158,14 +175,21 @@ const TrainListPage: React.FC = () => {
 
   const handleNavigateToOrderPage = (trainNo: string) => {
     console.log('Navigate to order page for train:', trainNo);
-    // 跳转到订单填写页（当前订单填写页路由尚未实现，先跳转到 /order）
-    // TODO: 传递必要的参数（车次信息、乘客信息等）
+    
+    // 从车次列表中找到对应的车次信息
+    const train = trains.find(t => t.trainNo === trainNo);
+    if (!train) {
+      setError('找不到车次信息');
+      return;
+    }
+    
+    // 跳转到订单填写页，传递完整的车次信息
     navigate('/order', { 
       state: { 
-        trainNo,
-        departureStation: searchParams.departureStation,
-        arrivalStation: searchParams.arrivalStation,
-        departureDate: searchParams.departureDate
+        trainNo: train.trainNo,
+        departureStation: train.departureStation,
+        arrivalStation: train.arrivalStation,
+        departureDate: train.departureDate || searchParams.departureDate
       } 
     });
   };
@@ -228,6 +252,9 @@ const TrainListPage: React.FC = () => {
           initialDepartureDate={searchParams.departureDate || ''}
           onSearch={(params) => {
             console.log('TrainSearchBar onSearch called with:', params);
+            // 更新搜索参数状态
+            setSearchParams(params);
+            // 执行查询
             fetchTrains(params);
           }}
         />
@@ -240,13 +267,14 @@ const TrainListPage: React.FC = () => {
         {error && <div className="error-message">{error}</div>}
         {isLoading ? (
           <div className="loading">加载中...</div>
-        ) : (
-          <TrainList
-            trains={filteredTrains}
-            onReserve={handleNavigateToOrderPage}
-            isLoggedIn={isLoggedIn}
-          />
-        )}
+               ) : (
+                 <TrainList
+                   trains={filteredTrains}
+                   onReserve={handleNavigateToOrderPage}
+                   isLoggedIn={isLoggedIn}
+                   queryTimestamp={queryTimestamp.toISOString()}
+                 />
+               )}
       </div>
       <BottomNavigation onFriendLinkClick={() => {}} />
     </div>

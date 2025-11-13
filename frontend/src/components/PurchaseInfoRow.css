@@ -1,0 +1,41 @@
+/* 购票信息行样式 */
+.purchase-info-row {
+  display: grid;
+  grid-template-columns: 60px 100px 140px 100px 140px 1fr;
+  gap: 0;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e5e5e5;
+  align-items: center;
+}
+
+.purchase-info-row:last-child {
+  border-bottom: none;
+}
+
+.row-cell {
+  text-align: center;
+  font-size: 13px;
+  color: #333333;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;  /* 确保下拉框相对于此定位 */
+  z-index: 1;  /* 基础层级 */
+}
+
+.row-cell .readonly-input {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  text-align: center;
+  font-size: 13px;
+  color: #333333;
+  padding: 4px;
+  cursor: not-allowed;
+}
+
+.row-cell .readonly-input:focus {
+  outline: none;
+}
+
