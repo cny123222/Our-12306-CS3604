@@ -1480,3 +1480,643 @@
   changeLog:
     - date: "2025-11-13"
       description: "初始创建，乘客搜索框组件。"
+
+# === 个人信息页相关UI组件 ===
+
+- type: Frontend
+  id: UI-PersonalInfoPage
+  description: 用户基本信息页主容器组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+  state:
+    - userInfo  # 用户信息
+    - isLoading
+    - error
+  dependencies:
+    - API-GET-UserInfo
+    - UI-TopNavigation
+    - UI-SideMenu
+    - UI-PersonalInfoPanel
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 整体页面背景为白色，分为上中下三大部分
+    - 顶部导航栏区域（复用）
+    - 中部主要内容区域分为左右两部分：左侧功能菜单栏、右侧个人信息展示面板
+    - 底部导航区域（复用）
+    - 页面加载时自动获取用户信息
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，用户基本信息页主容器组件。"
+
+- type: Frontend
+  id: UI-SideMenu
+  description: 左侧功能菜单栏组件
+  properties:
+    - name: currentSection
+      type: string
+      description: "当前选中的菜单项"
+    - name: onMenuClick
+      type: function
+      description: "菜单项点击处理函数"
+  state:
+    - selectedItem  # 当前选中项
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 采用垂直列表形式展示功能分区
+    - 包含三个大分区：订单中心、个人信息、常用信息管理
+    - 订单中心包含小分区：火车票订单
+    - 个人信息包含小分区：查看个人信息、手机核验
+    - 常用信息管理包含小分区：乘车人
+    - 大分区字体为黑色，小分区字体为深灰色
+    - 选中项以浅蓝底色白色字体显示
+    - 小分区支持点击跳转到对应页面
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，左侧功能菜单栏组件。"
+
+- type: Frontend
+  id: UI-PersonalInfoPanel
+  description: 个人信息展示面板组件
+  properties:
+    - name: userInfo
+      type: object
+      description: "用户信息数据"
+    - name: onEditContact
+      type: function
+      description: "编辑联系方式按钮点击处理函数"
+    - name: onEditAdditional
+      type: function
+      description: "编辑附加信息按钮点击处理函数"
+  state:
+    - isEditingContact  # 是否处于编辑联系方式模式
+    - isEditingAdditional  # 是否处于编辑附加信息模式
+  dependencies:
+    - UI-BasicInfoSection
+    - UI-ContactInfoSection
+    - UI-AdditionalInfoSection
+  acceptanceCriteria:
+    - 页面背景为白色，分为三个信息模块
+    - 基本信息模块：显示用户名、姓名、国家/地区、证件类型、证件号码、核验状态
+    - 联系方式模块：显示手机号、邮箱，右上角有编辑按钮
+    - 附加信息模块：显示优惠(待)类型，右上角有编辑按钮
+    - 各模块以白色卡片样式展示，模块标题为加粗字体
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，个人信息展示面板组件。"
+
+- type: Frontend
+  id: UI-BasicInfoSection
+  description: 基本信息模块组件
+  properties:
+    - name: username
+      type: string
+      description: "用户名"
+    - name: name
+      type: string
+      description: "姓名"
+    - name: country
+      type: string
+      description: "国家/地区"
+    - name: idCardType
+      type: string
+      description: "证件类型"
+    - name: idCardNumber
+      type: string
+      description: "证件号码"
+    - name: verificationStatus
+      type: string
+      description: "核验状态"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 由上而下显示用户的主要身份信息
+    - 标签使用灰色字体，内容使用黑色字体
+    - 核验状态"已通过"使用橙色字体
+    - 包含：用户名、姓名、国家/地区、证件类型、证件号码、核验状态
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，基本信息模块组件。"
+
+- type: Frontend
+  id: UI-ContactInfoSection
+  description: 联系方式模块组件
+  properties:
+    - name: phone
+      type: string
+      description: "手机号（脱敏）"
+    - name: email
+      type: string
+      description: "邮箱"
+    - name: isEditing
+      type: boolean
+      description: "是否处于编辑模式"
+    - name: onEdit
+      type: function
+      description: "编辑按钮点击处理函数"
+    - name: onNavigateToPhoneVerification
+      type: function
+      description: "跳转到手机核验页的回调函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示手机号（中间四位用*隐去）
+    - 显示"已通过核验"（橙色字体）
+    - 显示邮箱信息（如果未设置则只显示"邮箱："）
+    - 右上角有"编辑"按钮
+    - 编辑模式下，"已通过核验"改为"去手机核验修改"（可点击跳转）
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，联系方式模块组件。"
+
+- type: Frontend
+  id: UI-AdditionalInfoSection
+  description: 附加信息模块组件
+  properties:
+    - name: discountType
+      type: string
+      description: "优惠(待)类型"
+    - name: onEdit
+      type: function
+      description: "编辑按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示优惠(待)类型
+    - 标签使用灰色字体，内容使用黑色字体
+    - 右上角有"编辑"按钮
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，附加信息模块组件。"
+
+- type: Frontend
+  id: UI-PhoneVerificationPage
+  description: 手机核验页主容器组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+    - name: onNavigateToPersonalInfo
+      type: function
+      description: "返回个人信息页的回调函数"
+  state:
+    - oldPhone  # 原手机号
+    - newPhone  # 新手机号
+    - password  # 登录密码
+    - error
+    - isLoading
+    - showVerificationModal  # 是否显示手机验证弹窗
+    - sessionId  # 会话ID
+  dependencies:
+    - API-POST-UpdatePhoneRequest
+    - UI-TopNavigation
+    - UI-SideMenu
+    - UI-PhoneVerificationPanel
+    - UI-BottomNavigation
+    - UI-PhoneVerificationModal
+  acceptanceCriteria:
+    - 整体布局与用户基本信息页相同
+    - 位置导航显示："当前位置：个人中心>个人信息>账号安全>手机核验"
+    - 中部右侧为手机核验信息展示面板
+    - 页面加载时自动获取原手机号
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，手机核验页主容器组件。"
+
+- type: Frontend
+  id: UI-PhoneVerificationPanel
+  description: 手机核验信息展示面板组件
+  properties:
+    - name: oldPhone
+      type: string
+      description: "原手机号（脱敏）"
+    - name: onSubmit
+      type: function
+      description: "确认按钮点击处理函数"
+    - name: onCancel
+      type: function
+      description: "取消按钮点击处理函数"
+  state:
+    - newPhone
+    - password
+    - errors
+  dependencies:
+    - API-POST-UpdatePhoneRequest
+    - UI-ValidationInput
+  acceptanceCriteria:
+    - 分为两个模块：手机核验模块、登录密码模块
+    - 手机核验模块显示原手机号和新手机号输入框
+    - 登录密码模块显示密码输入框和提示文字
+    - 底部有"取消"和"确认"按钮
+    - 新手机号输入支持实时验证（长度11位，只含数字）
+    - 登录密码不能为空
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，手机核验信息展示面板组件。"
+
+- type: Frontend
+  id: UI-PhoneVerificationModal
+  description: 手机验证弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: phone
+      type: string
+      description: "新手机号"
+    - name: sessionId
+      type: string
+      description: "会话ID"
+    - name: onSuccess
+      type: function
+      description: "验证成功回调函数"
+    - name: onCancel
+      type: function
+      description: "取消按钮点击处理函数"
+  state:
+    - verificationCode
+    - error
+    - isLoading
+  dependencies:
+    - API-POST-ConfirmPhoneUpdate
+  acceptanceCriteria:
+    - 显示"手机验证"标题
+    - 显示"验证码已发送至【手机号】"文字
+    - 包含验证码输入框（6位数字）
+    - "完成"按钮（橙色背景，白色文字）
+    - "返回修改"按钮
+    - 验证成功后显示成功提示并返回个人信息页
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，手机验证弹窗组件。"
+
+- type: Frontend
+  id: UI-PassengerManagementPage
+  description: 乘客管理页主容器组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+  state:
+    - passengers  # 乘客列表
+    - filteredPassengers  # 筛选后的乘客列表
+    - searchKeyword  # 搜索关键词
+    - isLoading
+    - error
+    - currentView  # 当前视图：list/add/edit
+    - editingPassenger  # 正在编辑的乘客
+  dependencies:
+    - API-GET-Passengers
+    - API-POST-SearchPassengers
+    - UI-TopNavigation
+    - UI-SideMenu
+    - UI-PassengerListPanel
+    - UI-AddPassengerPanel
+    - UI-EditPassengerPanel
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 整体布局与用户基本信息页相同
+    - 位置导航显示："当前位置：个人中心>常用信息管理>乘车人"
+    - 中部右侧为乘车人信息展示面板
+    - 支持列表、添加、编辑三种视图切换
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘客管理页主容器组件。"
+
+- type: Frontend
+  id: UI-PassengerListPanel
+  description: 乘车人列表展示面板组件
+  properties:
+    - name: passengers
+      type: array
+      description: "乘客列表数据"
+    - name: onAdd
+      type: function
+      description: "添加按钮点击处理函数"
+    - name: onEdit
+      type: function
+      description: "编辑按钮点击处理函数"
+    - name: onDelete
+      type: function
+      description: "删除按钮点击处理函数"
+    - name: onSearch
+      type: function
+      description: "搜索处理函数"
+  state:
+    - selectedPassengers  # 选中的乘客ID列表
+  dependencies:
+    - API-DELETE-Passenger
+    - UI-PassengerTable
+  acceptanceCriteria:
+    - 顶部为搜索与筛选区域（姓名输入框、查询按钮）
+    - 中部为乘车人列表表格
+    - 表格包含字段：序号、姓名、证件类型、证件号码、手机/电话、核验状态、操作
+    - 表头下方有"添加"和"批量删除"操作按钮
+    - 每行数据包含可勾选框、加密显示的信息、操作图标
+    - 操作图标包括：红色垃圾桶（删除）、蓝色铅笔（编辑）
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘车人列表展示面板组件。"
+
+- type: Frontend
+  id: UI-PassengerTable
+  description: 乘客信息表格组件
+  properties:
+    - name: passengers
+      type: array
+      description: "乘客列表数据"
+    - name: selectedIds
+      type: array
+      description: "选中的乘客ID列表"
+    - name: onSelect
+      type: function
+      description: "选择变化处理函数"
+    - name: onEdit
+      type: function
+      description: "编辑按钮点击处理函数"
+    - name: onDelete
+      type: function
+      description: "删除按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 采用浅灰色表头、白色数据行的标准表格样式
+    - 包含列：勾选框、序号、姓名、证件类型、证件号码、手机/电话、核验状态、操作
+    - 姓名部分打码显示
+    - 证件号码加密显示
+    - 手机号加密显示
+    - 核验状态显示绿色身份证图标表示"已通过核验"
+    - 支持单选和多选
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，乘客信息表格组件。"
+
+- type: Frontend
+  id: UI-AddPassengerPanel
+  description: 添加乘车人面板组件
+  properties:
+    - name: onSubmit
+      type: function
+      description: "保存按钮点击处理函数"
+    - name: onCancel
+      type: function
+      description: "取消按钮点击处理函数"
+  state:
+    - idCardType  # 证件类型
+    - name  # 姓名
+    - idCardNumber  # 证件号码
+    - phone  # 手机号码
+    - discountType  # 优惠(待)等级
+    - errors
+    - isLoading
+  dependencies:
+    - API-POST-AddPassenger
+    - API-POST-ValidatePassenger
+    - UI-SelectDropdown
+    - UI-ValidationInput
+  acceptanceCriteria:
+    - 包含证件类型选择框（默认"居民身份证"）
+    - 包含姓名输入框（验证长度3-30字符）
+    - 包含证件号码输入框（验证18位）
+    - 包含手机号码输入框（验证11位数字）
+    - 包含优惠(待)等级选择框（默认"成人"）
+    - 底部有"取消"和"保存"按钮
+    - 支持实时验证和错误提示
+    - 保存前检查乘客是否已存在
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，添加乘车人面板组件。"
+
+- type: Frontend
+  id: UI-EditPassengerPanel
+  description: 编辑乘车人面板组件
+  properties:
+    - name: passenger
+      type: object
+      description: "乘客信息"
+    - name: onSubmit
+      type: function
+      description: "保存按钮点击处理函数"
+    - name: onCancel
+      type: function
+      description: "取消按钮点击处理函数"
+  state:
+    - phone
+    - errors
+    - isLoading
+  dependencies:
+    - API-PUT-Passenger
+    - UI-ValidationInput
+  acceptanceCriteria:
+    - 显示基本信息模块和联系方式模块
+    - 基本信息模块显示用户名（去除）、姓名、国家/地区、证件类型、证件号码、核验状态、添加日期
+    - 联系方式模块允许编辑手机号
+    - 手机号输入框支持实时验证（11位数字）
+    - 底部有"取消"和"保存"按钮
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，编辑乘车人面板组件。"
+
+- type: Frontend
+  id: UI-OrderHistoryPage
+  description: 历史订单页主容器组件
+  properties:
+    - name: onNavigateToHome
+      type: function
+      description: "跳转到首页的回调函数"
+    - name: onNavigateToTrainList
+      type: function
+      description: "跳转到车次列表页的回调函数"
+  state:
+    - orders  # 订单列表
+    - filteredOrders  # 筛选后的订单列表
+    - startDate  # 开始日期
+    - endDate  # 结束日期
+    - keyword  # 搜索关键词
+    - isLoading
+    - error
+  dependencies:
+    - API-GET-UserOrders
+    - UI-TopNavigation
+    - UI-SideMenu
+    - UI-OrderListPanel
+    - UI-BottomNavigation
+  acceptanceCriteria:
+    - 整体布局与用户基本信息页相同
+    - 位置导航显示："当前位置：个人中心>火车票订单"
+    - 中部右侧为历史订单信息展示面板
+    - 支持按日期范围和关键词搜索订单
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，历史订单页主容器组件。"
+
+- type: Frontend
+  id: UI-OrderListPanel
+  description: 订单列表展示面板组件
+  properties:
+    - name: orders
+      type: array
+      description: "订单列表数据"
+    - name: onSearch
+      type: function
+      description: "查询按钮点击处理函数"
+    - name: onNavigateToTrainList
+      type: function
+      description: "跳转到车次列表页的回调函数"
+  state:
+    - startDate
+    - endDate
+    - keyword
+  dependencies:
+    - UI-OrderSearchFilter
+    - UI-OrderResultDisplay
+    - UI-WarmTipsSection
+  acceptanceCriteria:
+    - 上方为订单类型区域（显示"历史订单"）
+    - 筛选区域包含：乘车日期起始框、乘车日期结束框、订单号/车次/姓名输入框、查询按钮
+    - 订单结果展示区显示订单列表或空状态提示
+    - 底部为温馨提示区域（黄色背景，8条提示内容）
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，订单列表展示面板组件。"
+
+- type: Frontend
+  id: UI-OrderSearchFilter
+  description: 订单搜索筛选组件
+  properties:
+    - name: startDate
+      type: string
+      description: "开始日期"
+    - name: endDate
+      type: string
+      description: "结束日期"
+    - name: keyword
+      type: string
+      description: "搜索关键词"
+    - name: onSearch
+      type: function
+      description: "查询按钮点击处理函数"
+  state:
+    - localStartDate
+    - localEndDate
+    - localKeyword
+  dependencies:
+    - UI-DatePicker
+  acceptanceCriteria:
+    - 包含乘车日期起始框（可展开日历选择）
+    - 包含乘车日期结束框（可展开日历选择）
+    - 包含订单号/车次/姓名输入框
+    - 包含"查询"按钮（白底灰字）
+    - 日期选择器只能选择已放票且未过期的日期
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，订单搜索筛选组件。"
+
+- type: Frontend
+  id: UI-OrderResultDisplay
+  description: 订单结果展示组件
+  properties:
+    - name: orders
+      type: array
+      description: "订单列表"
+    - name: onNavigateToTrainList
+      type: function
+      description: "跳转到车次列表页的回调函数"
+  state:
+    - none
+  dependencies:
+    - UI-OrderItem
+  acceptanceCriteria:
+    - 当有订单时，以列表形式展示订单信息
+    - 当无订单时，显示空状态：
+      - 蓝色线条风格的文档搜索图标（居中）
+      - 提示文字："您没有对应的订单内容哦~您可以通过车票预订功能，来制定出行计划。"
+      - "预订"为蓝色字体，可点击跳转到车次列表页
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，订单结果展示组件。"
+
+- type: Frontend
+  id: UI-OrderItem
+  description: 订单项组件
+  properties:
+    - name: order
+      type: object
+      description: "订单数据"
+    - name: onViewDetails
+      type: function
+      description: "查看详情按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示订单号、车次号、出发地、到达地、乘车日期、订单状态
+    - 显示乘客信息和票价
+    - 支持点击查看详情
+    - 根据订单状态显示不同的操作按钮
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，订单项组件。"
+
+- type: Frontend
+  id: UI-BreadcrumbNavigation
+  description: 位置导航组件
+  properties:
+    - name: path
+      type: array
+      description: "导航路径数组"
+    - name: currentPage
+      type: string
+      description: "当前页面名称"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示在顶部导航栏下方
+    - 格式："当前位置：路径1>路径2>..."
+    - 路径使用灰色字体，当前页面使用蓝色字体
+    - 例如："当前位置：个人中心>查看个人信息"
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，位置导航组件。"
+
+- type: Frontend
+  id: UI-DeleteConfirmModal
+  description: 删除确认弹窗组件
+  properties:
+    - name: isVisible
+      type: boolean
+      description: "弹窗显示状态"
+    - name: message
+      type: string
+      description: "确认消息"
+    - name: onConfirm
+      type: function
+      description: "确认按钮点击处理函数"
+    - name: onCancel
+      type: function
+      description: "取消按钮点击处理函数"
+  state:
+    - none
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 显示确认消息："您确定要删除选中的乘车人吗？"
+    - 包含"确定"和"取消"按钮
+    - 点击"确定"执行删除操作并显示成功提示
+    - 点击"取消"关闭弹窗
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，删除确认弹窗组件。"
