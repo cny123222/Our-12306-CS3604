@@ -84,8 +84,8 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin: 40px 40px 40px 0;
-  width: 400px;
-  min-width: 400px;
+  width: 300px;
+  min-width: 200px;
   align-self: center;
 }
 
