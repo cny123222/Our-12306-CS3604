@@ -1,0 +1,37 @@
+/* 购票信息表格样式 */
+.purchase-info-table {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 80px 120px 150px 120px 120px 1fr;
+  gap: 10px;
+  padding: 12px 15px;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 13px;
+  color: #495057;
+}
+
+.table-header-cell {
+  text-align: center;
+}
+
+.table-body {
+  background-color: #ffffff;
+}
+
+.purchase-info-empty {
+  padding: 30px;
+  text-align: center;
+  color: #999999;
+  font-size: 14px;
+  border: 1px dashed #d0d0d0;
+  border-radius: 4px;
+}
+

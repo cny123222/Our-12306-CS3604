@@ -1,0 +1,47 @@
+/* 列车信息区域样式 */
+.train-info-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.train-info-header {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+  margin: 0;
+}
+
+.train-info-content {
+  padding: 10px 0;
+}
+
+.train-basic-info {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #333333;
+}
+
+.train-fare-seats {
+  margin-bottom: 15px;
+}
+
+.train-info-notice {
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.notice-text {
+  font-size: 12px;
+  color: #999999;
+  margin: 0;
+}
+

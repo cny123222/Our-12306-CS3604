@@ -1,0 +1,30 @@
+/* 车次信息展示样式 */
+.train-info-display {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.train-info-text {
+  font-size: 14px;
+  color: #333333;
+  line-height: 1.6;
+}
+
+.train-date,
+.train-no,
+.train-time {
+  font-weight: bold;
+  color: #000000;
+}
+
+.train-station {
+  color: #333333;
+}
+
+.train-arrow {
+  margin: 0 8px;
+  color: #999999;
+}
+

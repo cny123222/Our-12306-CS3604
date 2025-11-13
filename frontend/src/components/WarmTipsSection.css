@@ -1,0 +1,33 @@
+/* 温馨提示区域样式 */
+.warm-tips-section {
+  background-color: #fffbea;
+  border: 1px solid #ffd966;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.tips-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333333;
+  margin: 0 0 15px 0;
+}
+
+.tips-list {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.tip-item {
+  font-size: 13px;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
