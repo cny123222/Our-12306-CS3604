@@ -9,8 +9,8 @@
   flex: 1;
   display: flex;
   align-items: stretch;
-  min-height: 600px;
-  background-image: url('/images/登录页-登录表单区域-推广背景.png');
+  min-height: 500px;
+  background-image: url('/images/登录页-背景-新.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -27,22 +27,18 @@
 }
 
 .promotion-title {
-  font-size: 36px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  line-height: 1.2;
+  display: none;
 }
 
 .promotion-subtitle {
-  font-size: 24px;
-  margin-bottom: 40px;
-  color: #ffeb3b;
+  display: none;
 }
 
 .promotion-features {
   list-style: none;
   padding: 0;
   margin-bottom: 40px;
+  display: none;
 }
 
 .promotion-features li {
@@ -68,31 +64,19 @@
 }
 
 .app-download {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: none;
 }
 
 .qr-code-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
+  display: none;
 }
 
 .qr-code-section img {
-  width: 120px;
-  height: 120px;
-  background: white;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  display: none;
 }
 
 .qr-code-text {
-  font-size: 14px;
-  text-align: center;
-  line-height: 1.4;
+  display: none;
 }
 
 .login-form-container {
@@ -170,13 +154,7 @@
 }
 
 .app-download {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 8px;
-  border: 1px solid rgba(24, 144, 255, 0.2);
+  display: none;
 }
 
 .download-text {
