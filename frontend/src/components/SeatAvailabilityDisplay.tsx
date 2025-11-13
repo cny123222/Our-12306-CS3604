@@ -11,20 +11,16 @@ interface SeatAvailabilityDisplayProps {
 const SeatAvailabilityDisplay: React.FC<SeatAvailabilityDisplayProps> = ({ availableSeats }) => {
   if (!availableSeats) return null;
   
-  const formatSeats = () => {
-    const seats = [];
-    for (const [seatType, count] of Object.entries(availableSeats)) {
-      if (count !== null && count !== undefined) {
-        seats.push(`${seatType}余票 ${count} 张`);
-      }
-    }
-    return seats.join('，');
-  };
-  
   return (
     <div className="seat-availability-display">
-      <p className="availability-text">
-        本次列车，{formatSeats()}
+      <p className="availability-text gray-text">
+        本次列车，
+        {Object.entries(availableSeats).map(([seatType, count], index) => (
+          <span key={seatType}>
+            {index > 0 && '，'}
+            {seatType}余票 <span className="red-text">{count}</span> 张
+          </span>
+        ))}
       </p>
     </div>
   );

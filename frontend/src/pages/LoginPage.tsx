@@ -79,14 +79,22 @@ const LoginPage: React.FC = () => {
         verificationCode: data.code
       })
       
-      if (response.data.success) {
+      if (response.data.success || response.data.token) {
         console.log('SMS verification success:', response.data)
-        setSmsSuccess('登录成功！')
-        // 2秒后关闭弹窗并跳转
+        
+        // 保存token到localStorage
+        const token = response.data.token
+        if (token) {
+          localStorage.setItem('authToken', token)
+          localStorage.setItem('userId', response.data.userId || '')
+        }
+        
+        setSmsSuccess('登录成功！正在跳转...')
+        
+        // 2秒后关闭弹窗并跳转到首页
         setTimeout(() => {
           setShowSmsModal(false)
-          // TODO: 跳转到首页或用户中心
-          // navigate('/')
+          navigate('/')
         }, 2000)
       }
     } catch (error: any) {

@@ -7,6 +7,7 @@ interface PurchaseInfoTableProps {
   availableSeatTypes: any[];
   onSeatTypeChange: (index: number, seatType: string) => void;
   onTicketTypeChange: (index: number, ticketType: string) => void;
+  fareInfo?: any;
 }
 
 /**
@@ -17,6 +18,7 @@ const PurchaseInfoTable: React.FC<PurchaseInfoTableProps> = ({
   availableSeatTypes,
   onSeatTypeChange,
   onTicketTypeChange,
+  fareInfo,
 }) => {
   if (purchaseInfo.length === 0) {
     return (
@@ -48,6 +50,7 @@ const PurchaseInfoTable: React.FC<PurchaseInfoTableProps> = ({
             availableSeatTypes={availableSeatTypes}
             onSeatTypeChange={(seatType) => onSeatTypeChange(index, seatType)}
             onTicketTypeChange={(ticketType) => onTicketTypeChange(index, ticketType)}
+            fareInfo={fareInfo}
           />
         ))}
       </div>

@@ -1,30 +1,43 @@
-/* 车次信息展示样式 */
+/* 车次信息展示样式（信息核对弹窗） */
 .train-info-display {
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  padding: 15px 0;
   margin-bottom: 20px;
 }
 
 .train-info-text {
-  font-size: 14px;
+  font-size: 16px;
   color: #333333;
-  line-height: 1.6;
+  line-height: 24px;
 }
 
-.train-date,
-.train-no,
-.train-time {
+.train-info-text .train-date {
   font-weight: bold;
   color: #000000;
 }
 
-.train-station {
-  color: #333333;
+.train-info-text .train-no {
+  font-weight: bold;
+  color: #000000;
+  margin: 0 4px;
 }
 
-.train-arrow {
-  margin: 0 8px;
-  color: #999999;
+.train-info-text .train-station {
+  font-weight: 500;
+  color: #000000;
 }
+
+.train-info-text .train-time {
+  color: #333333;
+  margin: 0 4px;
+}
+
+.train-info-text .train-time.bold {
+  font-weight: 600;
+}
+
+.train-info-text .train-arrow {
+  margin: 0 8px;
+  color: #666666;
+}
+
 

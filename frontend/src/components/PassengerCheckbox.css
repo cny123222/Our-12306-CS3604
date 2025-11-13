@@ -2,41 +2,41 @@
 .passenger-checkbox {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 15px;
+  gap: 8px;
+  padding: 6px 12px;
   border: 1px solid #d0d0d0;
-  border-radius: 4px;
+  border-radius: 3px;
   cursor: pointer;
   transition: all 0.3s;
   background-color: #ffffff;
 }
 
 .passenger-checkbox:hover {
-  border-color: #2196f3;
-  background-color: #f5f5f5;
+  border-color: #4a90e2;
+  background-color: #f8f9fa;
 }
 
 .passenger-checkbox.checked {
-  border-color: #2196f3;
-  background-color: #e3f2fd;
+  border-color: #4a90e2;
+  background-color: #e8f4fd;
 }
 
 .passenger-checkbox-input {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   cursor: pointer;
-  accent-color: #2196f3;
+  accent-color: #4a90e2;
 }
 
 .passenger-checkbox-label {
-  font-size: 14px;
+  font-size: 13px;
   color: #333333;
   cursor: pointer;
   user-select: none;
 }
 
 .passenger-id-type {
-  font-size: 12px;
+  font-size: 11px;
   color: #666666;
   margin-left: 4px;
 }

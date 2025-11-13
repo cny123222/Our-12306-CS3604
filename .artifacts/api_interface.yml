@@ -805,3 +805,332 @@
   changeLog:
     - date: "2025-11-12"
       description: "初始创建，支持站点验证和推荐。"
+
+# === 订单填写页相关API接口 ===
+
+- type: Backend
+  id: API-GET-OrderPage
+  route: GET /api/orders/new
+  description: 获取订单填写页面信息
+  input:
+    type: Query
+    params:
+      trainNo: string
+      departureStation: string
+      arrivalStation: string
+      departureDate: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        trainInfo: object  # 列车基本信息
+        fareInfo: object  # 票价信息
+        availableSeats: object  # 余票信息
+        passengers: array  # 用户乘客列表
+        defaultSeatType: string  # 默认席别
+    error:
+      - statusCode: 400
+        body: { error: "参数错误" }
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 404
+        body: { error: "车次不存在" }
+      - statusCode: 500
+        body: { error: "加载订单页失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetTrainDetails
+    - DB-CalculateFare
+    - DB-CalculateAvailableSeats
+    - DB-GetUserPassengers
+    - DB-GetDefaultSeatType
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 返回列车的日期、车次、出发站、到达站、发车与到达时间
+    - 返回不同席别的票价和余票状态
+    - 返回用户的乘客列表
+    - 根据车次类型返回默认席别（G/C/D字头默认二等座）
+    - 在100毫秒内返回页面数据
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单填写页面数据加载。"
+
+- type: Backend
+  id: API-GET-Passengers
+  route: GET /api/passengers
+  description: 获取用户的乘客列表
+  input:
+    type: Header
+    params:
+      Authorization: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        passengers: array  # [{ id, name, idCardType, idCardNumber, discountType, points }]
+    error:
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 500
+        body: { error: "获取乘客列表失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetUserPassengers
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 返回用户在个人中心预存的所有乘客信息
+    - 包含姓名、证件类型、证件号码、积分等信息
+    - 证件号码部分脱敏显示（如：3301************028）
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持乘客列表查询。"
+
+- type: Backend
+  id: API-POST-SearchPassengers
+  route: POST /api/passengers/search
+  description: 搜索乘客
+  input:
+    type: JSON
+    body:
+      keyword: string  # 乘客姓名关键词
+  output:
+    success:
+      statusCode: 200
+      body:
+        passengers: array
+    error:
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 500
+        body: { error: "搜索失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-SearchPassengers
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 根据姓名关键词搜索匹配的乘客
+    - 支持模糊匹配
+    - 用于订单填写页的乘客搜索功能
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持乘客搜索。"
+
+- type: Backend
+  id: API-GET-AvailableSeatTypes
+  route: GET /api/orders/available-seat-types
+  description: 获取当前有票的席别列表
+  input:
+    type: Query
+    params:
+      trainNo: string
+      departureStation: string
+      arrivalStation: string
+      departureDate: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        seatTypes: array  # [{ type: string, price: number, available: number }]
+    error:
+      - statusCode: 400
+        body: { error: "参数错误" }
+      - statusCode: 404
+        body: { error: "车次不存在" }
+      - statusCode: 500
+        body: { error: "获取席别信息失败" }
+  dependencies:
+    - DB-GetAvailableSeatTypesForOrder
+    - DB-CalculateAvailableSeats
+    - DB-CalculateFare
+  acceptanceCriteria:
+    - 仅返回当前有余票的席别
+    - 包含席别名称、票价和余票数
+    - 已售罄的席别不包含在列表中
+    - 用于订单填写页席别下拉菜单
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持有票席别查询。"
+
+- type: Backend
+  id: API-POST-SubmitOrder
+  route: POST /api/orders/submit
+  description: 提交订单
+  input:
+    type: JSON
+    body:
+      trainNo: string
+      departureStation: string
+      arrivalStation: string
+      departureDate: string
+      passengers: array  # [{ passengerId, ticketType, seatType }]
+  output:
+    success:
+      statusCode: 200
+      body:
+        message: "订单提交成功"
+        orderId: string
+        orderDetails: object  # 订单详情用于信息核对
+    error:
+      - statusCode: 400
+        body: { error: "请选择乘车人！" }
+      - statusCode: 400
+        body: { error: "手慢了，该车次席别车票已售罄！" }
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 500
+        body: { error: "网络忙，请稍后再试" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetUserPassengers
+    - DB-CalculateAvailableSeats
+    - DB-CreateOrder
+    - DB-LockSeats
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 验证至少选择了一名乘车人
+    - 验证所选席别有足够余票
+    - 创建订单并临时锁定座位
+    - 在100毫秒内返回订单详情并跳出信息核对弹窗
+    - 订单一旦提交成功，不支持取消、退票、改签
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单提交。"
+
+- type: Backend
+  id: API-GET-OrderConfirmation
+  route: GET /api/orders/:orderId/confirmation
+  description: 获取订单核对信息
+  input:
+    type: Path
+    params:
+      orderId: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        trainInfo: object  # 车次与出行信息
+        passengers: array  # 乘客信息（含积分）
+        availableSeats: object  # 当前余票信息
+        totalPrice: number
+    error:
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 404
+        body: { error: "订单不存在" }
+      - statusCode: 500
+        body: { error: "获取订单信息失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetOrderDetails
+    - DB-GetPassengerPoints
+    - DB-CalculateAvailableSeats
+  acceptanceCriteria:
+    - 验证用户已登录且订单属于该用户
+    - 返回完整的订单核对信息
+    - 包含车次信息、乘客信息（含积分）、余票状态
+    - 用于信息核对弹窗展示
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单核对信息获取。"
+
+- type: Backend
+  id: API-POST-ConfirmOrder
+  route: POST /api/orders/:orderId/confirm
+  description: 确认订单
+  input:
+    type: Path
+    params:
+      orderId: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        message: "订单已经提交，系统正在处理中，请稍等"
+        orderId: string
+        status: "processing"
+    error:
+      - statusCode: 400
+        body: { error: "订单状态错误" }
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 404
+        body: { error: "订单不存在" }
+      - statusCode: 500
+        body: { error: "确认订单失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetOrderDetails
+    - DB-UpdateOrderStatus
+    - DB-ConfirmSeatAllocation
+  acceptanceCriteria:
+    - 验证用户已登录且订单属于该用户
+    - 确认座位分配
+    - 更新订单状态为处理中
+    - 后续显示"购买成功"提示
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持订单确认。"
+
+- type: Backend
+  id: API-POST-AddPassenger
+  route: POST /api/passengers
+  description: 添加乘客信息
+  input:
+    type: JSON
+    body:
+      name: string
+      idCardType: string
+      idCardNumber: string
+      discountType: string  # 固定为"成人票"，不支持学生票、儿童票
+  output:
+    success:
+      statusCode: 201
+      body:
+        message: "添加乘客成功"
+        passengerId: string
+    error:
+      - statusCode: 400
+        body: { error: "参数错误" }
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 409
+        body: { error: "该乘客已存在" }
+      - statusCode: 500
+        body: { error: "添加乘客失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-CreatePassenger
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 验证乘客信息的完整性和格式
+    - 验证证件号码的唯一性
+    - 创建新的乘客记录并关联到用户
+    - 用于个人中心添加乘客功能
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持添加乘客。"
+
+- type: Backend
+  id: API-GET-RailwayRegulations
+  route: GET /api/terms/railway-regulations
+  description: 获取《中国集团铁路旅客运输规程》内容
+  input:
+    type: Query
+    params: {}
+  output:
+    success:
+      statusCode: 200
+      body:
+        title: "中国集团铁路旅客运输规程"
+        content: string
+    error:
+      - statusCode: 500
+        body: { error: "获取内容失败" }
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 返回铁路旅客运输规程的完整内容
+    - 用于订单提交页面的提示链接
+  changeLog:
+    - date: "2025-11-13"
+      description: "初始创建，支持运输规程页面访问。"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import TopNavigation from '../components/TopNavigation';
@@ -12,8 +12,14 @@ import BottomNavigation from '../components/BottomNavigation';
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   
-  // TODO: 实现登录状态管理
-  const isLoggedIn = false;
+  // 从localStorage读取登录状态
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // 检查localStorage中是否有authToken
+    const token = localStorage.getItem('authToken');
+    setIsLoggedIn(!!token);
+  }, []);
 
   // 实现导航功能
   const handleNavigateToLogin = () => {

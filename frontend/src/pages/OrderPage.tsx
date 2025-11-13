@@ -9,6 +9,7 @@ import OrderSubmitSection from '../components/OrderSubmitSection';
 import WarmTipsSection from '../components/WarmTipsSection';
 import BottomNavigation from '../components/BottomNavigation';
 import OrderConfirmationModal from '../components/OrderConfirmationModal';
+import ConfirmModal from '../components/ConfirmModal';
 
 /**
  * 订单填写页主容器组件
@@ -19,6 +20,14 @@ const OrderPage: React.FC = () => {
   
   // 从路由参数获取车次信息
   const { trainNo, departureStation, arrivalStation, departureDate } = location.state || {};
+  
+  // 调试日志
+  console.log('OrderPage received params:', {
+    trainNo,
+    departureStation,
+    arrivalStation,
+    departureDate,
+  });
   
   const [trainInfo, setTrainInfo] = useState<any>(null);
   const [fareInfo, setFareInfo] = useState<any>(null);
@@ -32,27 +41,131 @@ const OrderPage: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [orderId, setOrderId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorModalMessage, setErrorModalMessage] = useState('');
   
-  // TODO: 实现页面加载时获取车次信息和乘客列表
+  // 检查登录状态
   useEffect(() => {
-    // TODO: 检查用户登录状态
-    // TODO: 调用API获取订单页面数据
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('authToken');
+      setIsLoggedIn(!!token);
+    };
+    
+    checkLoginStatus();
+    
+    // 监听storage事件，当其他标签页登录/登出时同步状态
+    window.addEventListener('storage', checkLoginStatus);
+    
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
   }, []);
   
-  // TODO: 实现乘客选择逻辑
+  // 页面加载时获取车次信息和乘客列表
+  useEffect(() => {
+    const fetchOrderPageData = async () => {
+      setIsLoading(true);
+      setError('');
+      
+      try {
+        // 获取用户登录token
+        const token = localStorage.getItem('authToken');
+        
+        // 调用API获取订单页面数据
+        const queryParams = new URLSearchParams({
+          trainNo: trainNo || '',
+          departureStation: departureStation || '',
+          arrivalStation: arrivalStation || '',
+          departureDate: departureDate || '',
+        });
+        
+        const response = await fetch(
+          `/api/orders/new?${queryParams.toString()}`,
+          {
+            headers: {
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            },
+          }
+        );
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          
+          // 如果是未登录错误，跳转到登录页
+          if (response.status === 401) {
+            setError('请先登录');
+            navigate('/login');
+            return;
+          }
+          
+          throw new Error(errorData.error || '加载订单页失败');
+        }
+        
+        const data = await response.json();
+        setTrainInfo(data.trainInfo);
+        setFareInfo(data.fareInfo);
+        setAvailableSeats(data.availableSeats);
+        setPassengers(data.passengers);
+        setDefaultSeatType(data.defaultSeatType);
+        
+        // 初始化购票信息表格，默认有一个空行
+        setPurchaseInfo([]);
+      } catch (error: any) {
+        setError(error.message || '加载订单页失败，请稍后重试');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (trainNo && departureStation && arrivalStation && departureDate) {
+      fetchOrderPageData();
+    } else {
+      setError('缺少必要的车次信息');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trainNo, departureStation, arrivalStation, departureDate]);
+  
+  // 实现乘客选择逻辑
   const handlePassengerSelect = (passengerId: string, selected: boolean) => {
-    // TODO: 更新已选乘客列表
-    // TODO: 更新购票信息表格
+    const passenger = passengers.find(p => p.id === passengerId);
+    if (!passenger) return;
+    
+    if (selected) {
+      // 勾选乘客 - 添加到已选列表和购票信息
+      setSelectedPassengers([...selectedPassengers, passengerId]);
+      
+      // 添加新的购票信息行
+      const newPurchaseInfo = {
+        passenger: passenger,
+        ticketType: '成人票',
+        seatType: defaultSeatType,
+      };
+      setPurchaseInfo([...purchaseInfo, newPurchaseInfo]);
+    } else {
+      // 取消勾选乘客 - 从已选列表和购票信息中移除
+      setSelectedPassengers(selectedPassengers.filter(id => id !== passengerId));
+      setPurchaseInfo(purchaseInfo.filter(info => info.passenger.id !== passengerId));
+    }
   };
   
-  // TODO: 实现席位变更逻辑
+  // 实现席位变更逻辑
   const handleSeatTypeChange = (index: number, seatType: string) => {
-    // TODO: 更新购票信息中的席别
+    const newPurchaseInfo = [...purchaseInfo];
+    newPurchaseInfo[index] = {
+      ...newPurchaseInfo[index],
+      seatType: seatType,
+    };
+    setPurchaseInfo(newPurchaseInfo);
   };
   
-  // TODO: 实现票种变更逻辑
+  // 实现票种变更逻辑
   const handleTicketTypeChange = (index: number, ticketType: string) => {
-    // TODO: 更新购票信息中的票种
+    const newPurchaseInfo = [...purchaseInfo];
+    newPurchaseInfo[index] = {
+      ...newPurchaseInfo[index],
+      ticketType: ticketType,
+    };
+    setPurchaseInfo(newPurchaseInfo);
   };
   
   // TODO: 实现返回车次列表页
@@ -60,18 +173,83 @@ const OrderPage: React.FC = () => {
     navigate('/trains', { state: { departureStation, arrivalStation, departureDate } });
   };
   
-  // TODO: 实现提交订单逻辑
+  // 实现提交订单逻辑
   const handleSubmit = async () => {
-    // TODO: 验证至少选择一名乘客
-    // TODO: 调用API提交订单
-    // TODO: 显示信息核对弹窗
+    // 验证至少选择一名乘客
+    if (selectedPassengers.length === 0) {
+      setErrorModalMessage('请选择乘车人！');
+      setShowErrorModal(true);
+      return;
+    }
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+      if (!token) {
+        setError('请先登录');
+        navigate('/login');
+        return;
+      }
+      
+      // 准备乘客数据
+      const passengersData = purchaseInfo.map(info => ({
+        passengerId: info.passenger.id,
+        ticketType: info.ticketType,
+        seatType: info.seatType,
+      }));
+      
+      // 调用API提交订单
+      const response = await fetch('/api/orders/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          trainNo,
+          departureStation,
+          arrivalStation,
+          departureDate,
+          passengers: passengersData,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        
+        // 特殊处理：如果是车票售罄，跳转回车次列表页
+        if (errorData.error === '手慢了，该车次席别车票已售罄！') {
+          setErrorModalMessage(errorData.error);
+          setShowErrorModal(true);
+          setTimeout(() => {
+            setShowErrorModal(false);
+            navigate('/trains');
+          }, 1500);
+          return;
+        }
+        
+        throw new Error(errorData.error || '提交订单失败');
+      }
+      
+      const data = await response.json();
+      setOrderId(data.orderId);
+      
+      // 显示信息核对弹窗
+      setShowConfirmModal(true);
+    } catch (error: any) {
+      setErrorModalMessage(error.message || '网络忙，请稍后再试。');
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
-  // TODO: 实现订单确认逻辑
+  // 实现订单确认逻辑（空函数，实际逻辑在OrderConfirmationModal内部）
   const handleConfirmOrder = async () => {
-    // TODO: 调用API确认订单
-    // TODO: 显示处理中提示
-    // TODO: 显示购买成功提示
+    // OrderConfirmationModal内部已经处理了确认订单的API调用和显示逻辑
+    // 这里只是一个占位符，保持接口一致性
   };
   
   const handleLogoClick = () => {
@@ -96,7 +274,7 @@ const OrderPage: React.FC = () => {
   
   return (
     <div className="order-page">
-      <TopNavigation onLogoClick={handleLogoClick} />
+      <TopNavigation onLogoClick={handleLogoClick} showWelcomeLogin={true} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
@@ -121,12 +299,13 @@ const OrderPage: React.FC = () => {
               passengers={passengers}
               onPassengerSelect={handlePassengerSelect}
               onSearchPassenger={() => {}}
-              availableSeatTypes={[]}
+              availableSeatTypes={fareInfo ? Object.keys(fareInfo).filter(key => fareInfo[key].available > 0) : []}
               defaultSeatType={defaultSeatType}
               selectedPassengers={selectedPassengers}
               purchaseInfo={purchaseInfo}
               onSeatTypeChange={handleSeatTypeChange}
               onTicketTypeChange={handleTicketTypeChange}
+              fareInfo={fareInfo}
             />
             
             <OrderSubmitSection
@@ -148,6 +327,22 @@ const OrderPage: React.FC = () => {
           orderId={orderId}
           onConfirm={handleConfirmOrder}
           onBack={() => setShowConfirmModal(false)}
+          onSuccess={() => {
+            // 购买成功后返回首页查询页
+            navigate('/');
+          }}
+        />
+      )}
+      
+      {showErrorModal && (
+        <ConfirmModal
+          isVisible={showErrorModal}
+          title="提示"
+          message={errorModalMessage}
+          confirmText="确认"
+          cancelText=""
+          onConfirm={() => setShowErrorModal(false)}
+          onCancel={() => setShowErrorModal(false)}
         />
       )}
     </div>
