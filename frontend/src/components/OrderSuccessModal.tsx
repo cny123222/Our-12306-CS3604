@@ -36,6 +36,14 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
   tickets,
   onClose 
 }) => {
+  console.log('🎉 OrderSuccessModal 渲染:', {
+    isVisible,
+    orderId,
+    hasTrainInfo: !!trainInfo,
+    hasTickets: !!tickets,
+    ticketsCount: tickets?.length || 0
+  });
+  
   if (!isVisible) return null;
   
   // 格式化日期，显示星期
