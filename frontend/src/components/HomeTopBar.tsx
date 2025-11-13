@@ -66,7 +66,7 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false }) => {
             onKeyPress={handleSearchKeyPress}
           />
           <button className="home-search-button" onClick={handleSearch}>
-            <img src="/images/search.png" alt="搜索" className="search-icon" />
+            <img src="/images/search.svg" alt="搜索" className="search-icon" />
           </button>
         </div>
 
