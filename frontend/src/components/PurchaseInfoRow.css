@@ -1,0 +1,27 @@
+/* 购票信息行样式 */
+.purchase-info-row {
+  display: grid;
+  grid-template-columns: 80px 120px 150px 120px 120px 1fr;
+  gap: 10px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #e9ecef;
+  align-items: center;
+}
+
+.purchase-info-row:last-child {
+  border-bottom: none;
+}
+
+.row-cell {
+  text-align: center;
+  font-size: 14px;
+  color: #333333;
+}
+
+.row-cell.readonly {
+  color: #666666;
+  background-color: #f8f9fa;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+

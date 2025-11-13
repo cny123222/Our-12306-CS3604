@@ -1,112 +1,157 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './OrderPage.css';
 import TopNavigation from '../components/TopNavigation';
 import MainNavigation from '../components/MainNavigation';
+import TrainInfoSection from '../components/TrainInfoSection';
+import PassengerInfoSection from '../components/PassengerInfoSection';
+import OrderSubmitSection from '../components/OrderSubmitSection';
+import WarmTipsSection from '../components/WarmTipsSection';
 import BottomNavigation from '../components/BottomNavigation';
+import OrderConfirmationModal from '../components/OrderConfirmationModal';
 
 /**
- * 订单填写页 - 占位符实现
- * TODO: 实现完整的订单填写功能（根据 04-订单填写页.md）
+ * 订单填写页主容器组件
  */
 const OrderPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // 从路由参数获取车次信息
   const { trainNo, departureStation, arrivalStation, departureDate } = location.state || {};
-
-  const handleNavigateToHome = () => {
+  
+  const [trainInfo, setTrainInfo] = useState<any>(null);
+  const [fareInfo, setFareInfo] = useState<any>(null);
+  const [availableSeats, setAvailableSeats] = useState<any>(null);
+  const [passengers, setPassengers] = useState<any[]>([]);
+  const [selectedPassengers, setSelectedPassengers] = useState<string[]>([]);
+  const [purchaseInfo, setPurchaseInfo] = useState<any[]>([]);
+  const [defaultSeatType, setDefaultSeatType] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [orderId, setOrderId] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // TODO: 实现页面加载时获取车次信息和乘客列表
+  useEffect(() => {
+    // TODO: 检查用户登录状态
+    // TODO: 调用API获取订单页面数据
+  }, []);
+  
+  // TODO: 实现乘客选择逻辑
+  const handlePassengerSelect = (passengerId: string, selected: boolean) => {
+    // TODO: 更新已选乘客列表
+    // TODO: 更新购票信息表格
+  };
+  
+  // TODO: 实现席位变更逻辑
+  const handleSeatTypeChange = (index: number, seatType: string) => {
+    // TODO: 更新购票信息中的席别
+  };
+  
+  // TODO: 实现票种变更逻辑
+  const handleTicketTypeChange = (index: number, ticketType: string) => {
+    // TODO: 更新购票信息中的票种
+  };
+  
+  // TODO: 实现返回车次列表页
+  const handleBack = () => {
+    navigate('/trains', { state: { departureStation, arrivalStation, departureDate } });
+  };
+  
+  // TODO: 实现提交订单逻辑
+  const handleSubmit = async () => {
+    // TODO: 验证至少选择一名乘客
+    // TODO: 调用API提交订单
+    // TODO: 显示信息核对弹窗
+  };
+  
+  // TODO: 实现订单确认逻辑
+  const handleConfirmOrder = async () => {
+    // TODO: 调用API确认订单
+    // TODO: 显示处理中提示
+    // TODO: 显示购买成功提示
+  };
+  
+  const handleLogoClick = () => {
     navigate('/');
   };
-
+  
   const handleNavigateToLogin = () => {
     navigate('/login');
   };
-
+  
   const handleNavigateToRegister = () => {
     navigate('/register');
   };
-
+  
+  const handleNavigateToPersonalCenter = () => {
+    if (isLoggedIn) {
+      // TODO: navigate('/profile');
+    } else {
+      navigate('/login');
+    }
+  };
+  
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <TopNavigation onLogoClick={handleNavigateToHome} />
+    <div className="order-page">
+      <TopNavigation onLogoClick={handleLogoClick} />
       <MainNavigation
-        isLoggedIn={false}
+        isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
         onRegisterClick={handleNavigateToRegister}
-        onPersonalCenterClick={handleNavigateToLogin}
+        onPersonalCenterClick={handleNavigateToPersonalCenter}
       />
       
-      <main style={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        padding: '40px 20px',
-        backgroundColor: '#f5f5f5'
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '40px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          maxWidth: '600px',
-          width: '100%',
-          textAlign: 'center'
-        }}>
-          <h1 style={{ fontSize: '24px', marginBottom: '20px', color: '#333' }}>
-            订单填写页
-          </h1>
-          
-          {trainNo ? (
-            <div style={{ textAlign: 'left', lineHeight: '2' }}>
-              <p><strong>车次号：</strong>{trainNo}</p>
-              <p><strong>出发站：</strong>{departureStation}</p>
-              <p><strong>到达站：</strong>{arrivalStation}</p>
-              <p><strong>出发日期：</strong>{departureDate}</p>
-              
-              <div style={{
-                marginTop: '30px',
-                padding: '20px',
-                backgroundColor: '#fffbe6',
-                borderRadius: '4px',
-                border: '1px solid #ffe58f'
-              }}>
-                <p style={{ margin: 0, color: '#ad6800' }}>
-                  💡 <strong>开发提示：</strong>订单填写页功能尚未实现
-                </p>
-                <p style={{ margin: '10px 0 0 0', color: '#ad6800', fontSize: '14px' }}>
-                  此页面需要根据需求文档 <code>04-订单填写页.md</code> 进行完整实现
-                </p>
-              </div>
-            </div>
-          ) : (
-            <p style={{ color: '#999' }}>
-              缺少必要的订单信息，请从车次列表页点击"预订"按钮进入
-            </p>
-          )}
-          
-          <button
-            onClick={() => navigate('/trains')}
-            style={{
-              marginTop: '30px',
-              padding: '12px 40px',
-              backgroundColor: '#1890ff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '16px'
-            }}
-          >
-            返回车次列表
-          </button>
-        </div>
+      <main className="order-main">
+        {isLoading ? (
+          <div className="loading">加载中...</div>
+        ) : error ? (
+          <div className="error-message">{error}</div>
+        ) : (
+          <>
+            <TrainInfoSection
+              trainInfo={trainInfo}
+              fareInfo={fareInfo}
+              availableSeats={availableSeats}
+            />
+            
+            <PassengerInfoSection
+              passengers={passengers}
+              onPassengerSelect={handlePassengerSelect}
+              onSearchPassenger={() => {}}
+              availableSeatTypes={[]}
+              defaultSeatType={defaultSeatType}
+              selectedPassengers={selectedPassengers}
+              purchaseInfo={purchaseInfo}
+              onSeatTypeChange={handleSeatTypeChange}
+              onTicketTypeChange={handleTicketTypeChange}
+            />
+            
+            <OrderSubmitSection
+              onSubmit={handleSubmit}
+              onBack={handleBack}
+              isSubmitting={isLoading}
+            />
+            
+            <WarmTipsSection onTermsClick={() => {}} />
+          </>
+        )}
       </main>
       
       <BottomNavigation onFriendLinkClick={() => {}} />
+      
+      {showConfirmModal && (
+        <OrderConfirmationModal
+          isVisible={showConfirmModal}
+          orderId={orderId}
+          onConfirm={handleConfirmOrder}
+          onBack={() => setShowConfirmModal(false)}
+        />
+      )}
     </div>
   );
 };
 
 export default OrderPage;
-
