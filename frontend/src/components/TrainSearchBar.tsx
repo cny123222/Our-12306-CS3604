@@ -137,12 +137,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           onClick={handleSwapStations}
           aria-label="交换出发地和到达地"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 10L3 6L7 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M3 6H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            <path d="M17 14L21 18L17 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M21 18H10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
+          <img src="/images/转换2.svg" alt="交换" className="swap-icon" />
         </button>
         
         {/* 到达地 */}
@@ -210,7 +205,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         
         {/* 查询按钮 */}
         <button className="search-submit-btn" onClick={handleSearch} disabled={isLoading}>
-          {isLoading ? '查询中...' : '查询'}
+          查询
         </button>
       </div>
       {errors.general && <div className="search-error-message">{errors.general}</div>}
