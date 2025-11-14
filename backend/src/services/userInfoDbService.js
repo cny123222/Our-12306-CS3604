@@ -1,0 +1,285 @@
+// 用户信息数据库服务
+// 用于个人信息页功能
+
+const db = require('../database');
+
+/**
+ * 手机号脱敏处理
+ * @param {string} phone - 原始手机号
+ * @returns {string} 脱敏后的手机号
+ */
+function maskPhone(phone) {
+  if (!phone) return '';
+  // 格式：(+86)158****9968
+  const phoneStr = phone.replace(/\D/g, ''); // 去除非数字字符
+  if (phoneStr.length === 11) {
+    return `(+86)${phoneStr.substring(0, 3)}****${phoneStr.substring(7)}`;
+  }
+  return phone;
+}
+
+/**
+ * 验证邮箱格式
+ * @param {string} email - 邮箱地址
+ * @returns {boolean} 是否合法
+ */
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+/**
+ * DB-GetUserInfo: 获取用户的完整个人信息
+ * @param {string} userId - 用户ID
+ * @returns {Promise<Object>} 用户信息对象
+ */
+async function getUserInfo(userId) {
+  try {
+    const sql = `
+      SELECT 
+        id,
+        username,
+        name,
+        '中国China' as country,
+        COALESCE(id_card_type, '居民身份证') as idCardType,
+        id_card_number as idCardNumber,
+        '已通过' as verificationStatus,
+        phone,
+        email,
+        COALESCE(discount_type, '成人') as discountType
+      FROM users
+      WHERE id = ?
+    `;
+    
+    const user = await db.queryOne(sql, [userId]);
+    
+    if (!user) {
+      return null;
+    }
+    
+    // 手机号脱敏处理
+    user.phone = maskPhone(user.phone);
+    
+    return {
+      username: user.username,
+      name: user.name,
+      country: user.country,
+      idCardType: user.idCardType,
+      idCardNumber: user.idCardNumber,
+      verificationStatus: user.verificationStatus,
+      phone: user.phone,
+      email: user.email || '',
+      discountType: user.discountType
+    };
+  } catch (error) {
+    console.error('获取用户信息失败:', error);
+    throw error;
+  }
+}
+
+/**
+ * DB-UpdateUserEmail: 更新用户的邮箱地址
+ * @param {string} userId - 用户ID
+ * @param {string} email - 新邮箱地址
+ * @returns {Promise<boolean>} 更新成功返回true
+ */
+async function updateUserEmail(userId, email) {
+  try {
+    // 验证邮箱格式
+    if (!isValidEmail(email)) {
+      throw new Error('请输入有效的电子邮件地址！');
+    }
+    
+    const sql = `
+      UPDATE users 
+      SET email = ?, 
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `;
+    
+    const result = await db.run(sql, [email, userId]);
+    return result.changes > 0;
+  } catch (error) {
+    console.error('更新用户邮箱失败:', error);
+    throw error;
+  }
+}
+
+/**
+ * DB-UpdateUserPhone: 更新用户的手机号
+ * @param {string} userId - 用户ID
+ * @param {string} phone - 新手机号
+ * @returns {Promise<boolean>} 更新成功返回true
+ */
+async function updateUserPhone(userId, phone) {
+  try {
+    // 检查新手机号是否已被其他用户使用
+    const checkSql = 'SELECT id FROM users WHERE phone = ? AND id != ?';
+    const existingUser = await db.queryOne(checkSql, [phone, userId]);
+    
+    if (existingUser) {
+      throw new Error('该手机号已被使用');
+    }
+    
+    const sql = `
+      UPDATE users 
+      SET phone = ?, 
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `;
+    
+    const result = await db.run(sql, [phone, userId]);
+    return result.changes > 0;
+  } catch (error) {
+    console.error('更新用户手机号失败:', error);
+    throw error;
+  }
+}
+
+/**
+ * DB-GetUserOrders: 获取用户的订单列表
+ * @param {string} userId - 用户ID
+ * @param {Object} options - 查询选项 { startDate, endDate }
+ * @returns {Promise<Array>} 订单列表
+ */
+async function getUserOrders(userId, options = {}) {
+  try {
+    const { startDate, endDate } = options;
+    
+    // 计算30日前的日期
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+    
+    let sql = `
+      SELECT 
+        id as orderId,
+        order_number as orderNumber,
+        train_no as trainNo,
+        departure_station as departureStation,
+        arrival_station as arrivalStation,
+        departure_date as departureDate,
+        status,
+        passengers,
+        total_price as totalPrice,
+        created_at as createdAt
+      FROM orders
+      WHERE user_id = ?
+        AND created_at >= ?
+    `;
+    
+    const params = [userId, thirtyDaysAgoStr];
+    
+    // 添加日期范围筛选
+    if (startDate) {
+      sql += ' AND departure_date >= ?';
+      params.push(startDate);
+    }
+    
+    if (endDate) {
+      sql += ' AND departure_date <= ?';
+      params.push(endDate);
+    }
+    
+    // 按创建时间倒序排列
+    sql += ' ORDER BY created_at DESC';
+    
+    const orders = await db.query(sql, params);
+    
+    // 解析passengers字段（如果是JSON字符串）
+    return orders.map(order => {
+      if (typeof order.passengers === 'string') {
+        try {
+          order.passengers = JSON.parse(order.passengers);
+        } catch (e) {
+          order.passengers = [];
+        }
+      }
+      return order;
+    });
+  } catch (error) {
+    console.error('获取用户订单列表失败:', error);
+    throw error;
+  }
+}
+
+/**
+ * DB-SearchOrders: 搜索用户的订单
+ * @param {string} userId - 用户ID
+ * @param {Object} searchCriteria - 搜索条件 { keyword, startDate, endDate }
+ * @returns {Promise<Array>} 匹配的订单列表
+ */
+async function searchOrders(userId, searchCriteria) {
+  try {
+    const { keyword, startDate, endDate } = searchCriteria;
+    
+    let sql = `
+      SELECT 
+        id as orderId,
+        order_number as orderNumber,
+        train_no as trainNo,
+        departure_station as departureStation,
+        arrival_station as arrivalStation,
+        departure_date as departureDate,
+        status,
+        passengers,
+        total_price as totalPrice,
+        created_at as createdAt
+      FROM orders
+      WHERE user_id = ?
+    `;
+    
+    const params = [userId];
+    
+    // 关键词搜索（订单号、车次号、乘客姓名）
+    if (keyword) {
+      sql += ` AND (
+        order_number LIKE ? 
+        OR train_no LIKE ? 
+        OR passengers LIKE ?
+      )`;
+      const keywordParam = `%${keyword}%`;
+      params.push(keywordParam, keywordParam, keywordParam);
+    }
+    
+    // 日期范围筛选
+    if (startDate) {
+      sql += ' AND departure_date >= ?';
+      params.push(startDate);
+    }
+    
+    if (endDate) {
+      sql += ' AND departure_date <= ?';
+      params.push(endDate);
+    }
+    
+    // 按创建时间倒序排列
+    sql += ' ORDER BY created_at DESC';
+    
+    const orders = await db.query(sql, params);
+    
+    // 解析passengers字段（如果是JSON字符串）
+    return orders.map(order => {
+      if (typeof order.passengers === 'string') {
+        try {
+          order.passengers = JSON.parse(order.passengers);
+        } catch (e) {
+          order.passengers = [];
+        }
+      }
+      return order;
+    });
+  } catch (error) {
+    console.error('搜索订单失败:', error);
+    throw error;
+  }
+}
+
+module.exports = {
+  getUserInfo,
+  updateUserEmail,
+  updateUserPhone,
+  getUserOrders,
+  searchOrders
+};
+

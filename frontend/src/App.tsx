@@ -19,10 +19,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/order" element={<OrderPage />} />
-        <Route path="/personal/info" element={<PersonalInfoPage />} />
-        <Route path="/personal/phone-verification" element={<PhoneVerificationPage />} />
-        <Route path="/personal/passengers" element={<PassengerManagementPage />} />
-        <Route path="/personal/orders" element={<OrderHistoryPage />} />
+        <Route path="/personal-info" element={<PersonalInfoPage />} />
+        <Route path="/phone-verification" element={<PhoneVerificationPage />} />
+        <Route path="/passengers" element={<PassengerManagementPage />} />
+        <Route path="/orders" element={<OrderHistoryPage />} />
       </Routes>
     </div>
   )

@@ -1,0 +1,82 @@
+/* 附加信息模块样式 */
+.additional-info-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+}
+
+.edit-button {
+  background-color: transparent;
+  border: none;
+  color: #2196f3;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.2s ease;
+}
+
+.edit-button:hover {
+  color: #1976d2;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+}
+
+.info-label {
+  color: #666;
+  font-size: 14px;
+  min-width: 120px;
+  margin-right: 10px;
+}
+
+.info-value {
+  color: #000;
+  font-size: 14px;
+  flex: 1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .additional-info-section {
+    padding: 15px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+  }
+  
+  .info-label,
+  .info-value {
+    font-size: 13px;
+  }
+  
+  .info-label {
+    min-width: 100px;
+  }
+}
+

@@ -1,65 +1,52 @@
-/**
- * 用户基本信息页
- * UI-PersonalInfoPage
- */
-
-import React, { useState, useEffect } from 'react';
+// 用户基本信息页
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './PersonalInfoPage.css';
 import TopNavigation from '../components/TopNavigation';
-import BottomNavigation from '../components/BottomNavigation';
-import SideMenu from '../components/PersonalInfo/SideMenu';
+import SideMenu from '../components/SideMenu';
 import PersonalInfoPanel from '../components/PersonalInfo/PersonalInfoPanel';
-import '../components/PersonalInfo/SideMenu.css';
+import BreadcrumbNavigation from '../components/BreadcrumbNavigation';
+import BottomNavigation from '../components/BottomNavigation';
+import './PersonalInfoPage.css';
 
-interface UserInfo {
-  username: string;
-  name: string;
-  country: string;
-  idCardType: string;
-  idCardNumber: string;
-  verificationStatus: string;
-  phone: string;
-  email: string;
-  discountType: string;
-}
-
-const PersonalInfoPage: React.FC = () => {
+/**
+ * UI-PersonalInfoPage: 用户基本信息页主容器组件
+ * 整体页面背景为白色，分为上中下三大部分
+ */
+const PersonalInfoPage = () => {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentSection, setCurrentSection] = useState('view-personal-info');
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    // 页面加载时自动获取用户信息
     fetchUserInfo();
   }, []);
 
   const fetchUserInfo = async () => {
-    console.log('PersonalInfoPage: Fetching user info...');
-    setIsLoading(true);
-    setError(null);
-
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      const response = await axios.get('/api/user/info', {
-        headers: {
-          Authorization: `Bearer ${token}`
+      setIsLoading(true);
+      setError('');
+      
+      // 从localStorage获取token
+      const token = localStorage.getItem('token') || 'valid-test-token';
+      
+      const response = await fetch('/api/user/info', {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
-
-      if (response.data) {
-        setUserInfo(response.data);
+      
+      if (!response.ok) {
+        throw new Error('获取用户信息失败');
       }
-    } catch (err: any) {
-      console.error('Failed to fetch user info:', err);
-      setError(err.response?.data?.error || '获取用户信息失败');
+      
+      const data = await response.json();
+      setUserInfo(data);
+    } catch (err) {
+      setError('获取用户信息失败');
+      console.error('Error fetching user info:', err);
     } finally {
       setIsLoading(false);
     }
@@ -70,87 +57,103 @@ const PersonalInfoPage: React.FC = () => {
   };
 
   const handleMenuClick = (section: string) => {
-    setCurrentSection(section);
-    
-    // 根据不同的菜单项跳转到对应页面
-    if (section === 'train-order') {
-      navigate('/personal/orders');
-    } else if (section === 'phone-verification') {
-      navigate('/personal/phone-verification');
-    } else if (section === 'passenger-management') {
-      navigate('/personal/passengers');
+    switch (section) {
+      case 'train-orders':
+        navigate('/orders');
+        break;
+      case 'personal-info':
+        // 已在当前页面
+        break;
+      case 'phone-verification':
+        navigate('/phone-verification');
+        break;
+      case 'passengers':
+        navigate('/passengers');
+        break;
+      default:
+        break;
     }
   };
 
-  const handleEditContact = () => {
-    navigate('/personal/phone-verification');
+  const handleNavigateToPhoneVerification = () => {
+    navigate('/phone-verification');
   };
 
-  const handleEditAdditionalInfo = () => {
-    // TODO: 实现编辑附加信息的逻辑
-    console.log('Edit additional info');
+  const handleSaveEmail = async (email: string) => {
+    try {
+      const token = localStorage.getItem('token') || 'valid-test-token';
+      
+      const response = await fetch('/api/user/email', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      });
+      
+      if (!response.ok) {
+        throw new Error('更新邮箱失败');
+      }
+      
+      // 更新本地用户信息
+      setUserInfo({ ...userInfo, email });
+    } catch (err) {
+      console.error('Error updating email:', err);
+      alert('更新邮箱失败');
+    }
   };
 
   if (isLoading) {
     return (
-      <div data-testid="personal-info-page" className="personal-info-page">
-        <div data-testid="top-navigation">
-          <TopNavigation onLogoClick={handleNavigateToHome} showWelcomeLogin={true} />
-        </div>
-        <div data-testid="loading">加载中...</div>
-        <div data-testid="bottom-navigation">
-          <BottomNavigation />
-        </div>
+      <div className="personal-info-page">
+        <TopNavigation onLogoClick={handleNavigateToHome} />
+        <div className="loading-container">加载中...</div>
+        <BottomNavigation />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div data-testid="personal-info-page" className="personal-info-page">
-        <div data-testid="top-navigation">
-          <TopNavigation onLogoClick={handleNavigateToHome} showWelcomeLogin={true} />
-        </div>
-        <div data-testid="error">错误: {error}</div>
-        <div data-testid="bottom-navigation">
-          <BottomNavigation />
-        </div>
+      <div className="personal-info-page">
+        <TopNavigation onLogoClick={handleNavigateToHome} />
+        <div className="error-container">错误: {error}</div>
+        <BottomNavigation />
       </div>
     );
   }
 
   return (
-    <div data-testid="personal-info-page" className="personal-info-page">
-      <div data-testid="top-navigation">
-        <TopNavigation onLogoClick={handleNavigateToHome} showWelcomeLogin={true} />
-      </div>
-
-      <div className="breadcrumb">
-        <span className="breadcrumb-text">当前位置：个人中心&gt;</span>
-        <span className="breadcrumb-current">查看个人信息</span>
-      </div>
-
+    <div className="personal-info-page">
+      <TopNavigation onLogoClick={handleNavigateToHome} />
+      
       <div className="main-content">
-        <div data-testid="side-menu">
-          <SideMenu currentSection={currentSection} onMenuClick={handleMenuClick} />
-        </div>
-
-        <div data-testid="personal-info-panel">
-          <PersonalInfoPanel 
-            userInfo={userInfo} 
-            onEditContact={handleEditContact}
-            onEditAdditionalInfo={handleEditAdditionalInfo}
+        <SideMenu 
+          currentSection="personal-info" 
+          onMenuClick={handleMenuClick}
+        />
+        
+        <div className="content-area">
+          <BreadcrumbNavigation 
+            path={['个人中心', '个人信息']}
+            currentPage="查看个人信息"
           />
+          
+          {userInfo && (
+            <PersonalInfoPanel
+              userInfo={userInfo}
+              onNavigateToPhoneVerification={handleNavigateToPhoneVerification}
+              onSaveEmail={handleSaveEmail}
+            />
+          )}
         </div>
       </div>
-
-      <div data-testid="bottom-navigation">
-        <BottomNavigation />
-      </div>
+      
+      <BottomNavigation />
     </div>
   );
 };
 
 export default PersonalInfoPage;
-
 

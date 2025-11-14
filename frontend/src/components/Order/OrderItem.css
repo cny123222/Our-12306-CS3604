@@ -1,0 +1,140 @@
+/* 订单项样式 */
+.order-item {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.order-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.order-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.order-value {
+  font-size: 13px;
+  color: #000;
+  font-weight: 500;
+}
+
+.order-status {
+  font-size: 14px;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.order-body {
+  padding: 20px;
+}
+
+.train-info {
+  margin-bottom: 15px;
+}
+
+.train-number {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.route-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.departure,
+.arrival {
+  font-size: 16px;
+  color: #000;
+}
+
+.arrow {
+  color: #999;
+}
+
+.date-info {
+  font-size: 14px;
+  color: #666;
+}
+
+.passenger-info,
+.price-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.passenger-label,
+.price-label {
+  font-size: 14px;
+  color: #666;
+  min-width: 60px;
+}
+
+.passenger-list {
+  font-size: 14px;
+  color: #000;
+}
+
+.price-value {
+  font-size: 16px;
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.order-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #e0e0e0;
+  text-align: right;
+}
+
+.view-details-button {
+  padding: 8px 24px;
+  background-color: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.view-details-button:hover {
+  background-color: #1976d2;
+}
+
+@media (max-width: 768px) {
+  .order-header,
+  .order-body,
+  .order-footer {
+    padding: 15px;
+  }
+  
+  .train-number {
+    font-size: 16px;
+  }
+  
+  .route-info {
+    flex-wrap: wrap;
+  }
+}
+

@@ -22,9 +22,7 @@ async function getAllStations() {
     const db = getDatabase();
     
     db.all('SELECT * FROM stations ORDER BY name', [], (err, rows) => {
-      db.close();
-      
-      if (err) {
+if (err) {
         console.error('获取站点列表失败:', err);
         reject(err);
       } else {
@@ -54,9 +52,7 @@ async function searchStations(keyword) {
        ORDER BY name`,
       [searchPattern, searchPattern, searchPattern],
       (err, rows) => {
-        db.close();
-        
-        if (err) {
+if (err) {
           console.error('搜索站点失败:', err);
           reject(err);
         } else {
@@ -82,15 +78,13 @@ async function validateStation(stationName) {
     // 先精确匹配
     db.get('SELECT * FROM stations WHERE name = ?', [stationName], (err, row) => {
       if (err) {
-        db.close();
-        console.error('验证站点失败:', err);
+console.error('验证站点失败:', err);
         return reject(err);
       }
       
       if (row) {
         // 站点有效
-        db.close();
-        return resolve({ valid: true, station: row });
+return resolve({ valid: true, station: row });
       }
       
       // 站点无效，查找相似站点
@@ -101,9 +95,7 @@ async function validateStation(stationName) {
          ORDER BY name LIMIT 10`,
         [searchPattern, searchPattern, searchPattern],
         (err, rows) => {
-          db.close();
-          
-          if (err) {
+if (err) {
             console.error('查找相似站点失败:', err);
             return reject(err);
           }
