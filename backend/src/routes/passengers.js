@@ -1,152 +1,161 @@
+/**
+ * 乘客管理相关API路由
+ * 为乘客管理页提供HTTP接口
+ */
+
 const express = require('express');
 const router = express.Router();
-const passengerService = require('../services/passengerService');
-const { authenticateUser } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
+const personalInfoDbService = require('../services/personalInfoDbService');
+const db = require('../database');
 
 /**
- * 获取用户乘客列表
- * GET /api/passengers
- */
-router.get('/', authenticateUser, async (req, res) => {
-  try {
-    
-    const userId = req.user.id;
-    const passengers = await passengerService.getUserPassengers(userId);
-    
-    res.status(200).json({ passengers });
-  } catch (error) {
-    console.error('获取乘客列表失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '获取乘客列表失败';
-    res.status(status).json({ error: message });
-  }
-});
-
-/**
- * 搜索乘客
- * POST /api/passengers/search
- */
-router.post('/search', authenticateUser, async (req, res) => {
-  try {
-    
-    const { keyword } = req.body;
-    
-    // 验证关键词
-    if (keyword === undefined || keyword === null) {
-      return res.status(400).json({ error: '请提供搜索关键词' });
-    }
-    
-    const userId = req.user.id;
-    const passengers = await passengerService.searchPassengers(userId, keyword);
-    
-    res.status(200).json({ passengers });
-  } catch (error) {
-    console.error('搜索乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '搜索失败';
-    res.status(status).json({ error: message });
-  }
-});
-
-/**
- * 添加乘客
- * POST /api/passengers
- */
-router.post('/', authenticateUser, async (req, res) => {
-  try {
-    
-    const { name, idCardType, idCardNumber, discountType } = req.body;
-    
-    // 验证必填字段
-    if (!name || !idCardType || !idCardNumber || !discountType) {
-      return res.status(400).json({ error: '参数错误' });
-    }
-    
-    const userId = req.user.id;
-    const result = await passengerService.createPassenger(userId, {
-      name,
-      idCardType,
-      idCardNumber,
-      discountType
-    });
-    
-    res.status(201).json(result);
-  } catch (error) {
-    console.error('添加乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '添加乘客失败';
-    res.status(status).json({ error: message });
-  }
-});
-
-/**
- * 更新乘客信息
+ * API-PUT-Passenger: 更新乘客信息
  * PUT /api/passengers/:passengerId
  */
-router.put('/:passengerId', authenticateUser, async (req, res) => {
+router.put('/:passengerId', authenticateToken, async (req, res) => {
   try {
-    
-    const { passengerId } = req.params;
-    const { name, idCardType, idCardNumber, discountType } = req.body;
-    
     const userId = req.user.id;
-    const result = await passengerService.updatePassenger(userId, passengerId, {
-      name,
-      idCardType,
-      idCardNumber,
-      discountType
-    });
+    const { passengerId } = req.params;
+    const { phone } = req.body;
     
-    res.status(200).json(result);
+    // 验证手机号格式
+    if (phone && !/^1[3-9]\d{9}$/.test(phone)) {
+      return res.status(400).json({ error: '您输入的手机号码不是有效的格式！' });
+    }
+    
+    // 获取乘客信息并验证所有权
+    const passenger = await db.queryOne(
+      'SELECT * FROM passengers WHERE id = ?',
+      [passengerId]
+    );
+    
+    if (!passenger) {
+      return res.status(404).json({ error: '乘客不存在' });
+    }
+    
+    if (passenger.user_id !== userId) {
+      return res.status(403).json({ error: '无权修改此乘客信息' });
+    }
+    
+    // 更新乘客手机号
+    await db.run(
+      "UPDATE passengers SET phone = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?",
+      [phone, passengerId, userId]
+    );
+    
+    res.status(200).json({ message: '修改成功' });
   } catch (error) {
-    console.error('更新乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '更新乘客失败';
-    res.status(status).json({ error: message });
+    console.error('更新乘客信息失败:', error);
+    res.status(500).json({ error: '更新乘客信息失败' });
   }
 });
 
 /**
- * 删除乘客
+ * API-DELETE-Passenger: 删除乘客信息
  * DELETE /api/passengers/:passengerId
  */
-router.delete('/:passengerId', authenticateUser, async (req, res) => {
+router.delete('/:passengerId', authenticateToken, async (req, res) => {
   try {
-    
-    const { passengerId } = req.params;
     const userId = req.user.id;
+    const { passengerId } = req.params;
     
-    const result = await passengerService.deletePassenger(userId, passengerId);
+    // 验证乘客属于当前用户
+    const passenger = await db.queryOne(
+      'SELECT * FROM passengers WHERE id = ?',
+      [passengerId]
+    );
     
-    res.status(200).json(result);
+    if (!passenger) {
+      return res.status(404).json({ error: '乘客不存在' });
+    }
+    
+    if (passenger.user_id !== userId) {
+      return res.status(403).json({ error: '无权删除此乘客' });
+    }
+    
+    // 检查是否有未完成的订单
+    const orders = await db.query(
+      `SELECT od.* FROM order_details od
+       JOIN orders o ON od.order_id = o.id
+       WHERE od.passenger_id = ? AND o.status IN ('pending', 'processing', 'confirmed')
+       LIMIT 1`,
+      [passengerId]
+    );
+    
+    if (orders.length > 0) {
+      return res.status(400).json({ error: '该乘客有未完成的订单，无法删除' });
+    }
+    
+    // 删除乘客
+    await db.run(
+      'DELETE FROM passengers WHERE id = ? AND user_id = ?',
+      [passengerId, userId]
+    );
+    
+    res.status(200).json({ message: '删除成功' });
   } catch (error) {
     console.error('删除乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '删除乘客失败';
-    res.status(status).json({ error: message });
+    res.status(500).json({ error: '删除乘客失败' });
   }
 });
 
 /**
- * 获取乘客详细信息
- * GET /api/passengers/:passengerId
+ * API-POST-ValidatePassenger: 验证乘客信息的合法性
+ * POST /api/passengers/validate
  */
-router.get('/:passengerId', authenticateUser, async (req, res) => {
+router.post('/validate', authenticateToken, async (req, res) => {
   try {
-    
-    const { passengerId } = req.params;
     const userId = req.user.id;
+    const { name, idCardType, idCardNumber, phone, discountType } = req.body;
     
-    const passenger = await passengerService.getPassengerDetails(userId, passengerId);
+    // 验证姓名长度（1个汉字算2个字符）
+    let nameLength = 0;
+    for (let i = 0; i < name.length; i++) {
+      const char = name.charAt(i);
+      if (char.match(/[\u4e00-\u9fa5]/)) {
+        nameLength += 2;
+      } else {
+        nameLength += 1;
+      }
+    }
     
-    res.status(200).json(passenger);
+    if (nameLength < 3 || nameLength > 30) {
+      return res.status(400).json({ error: '允许输入的字符串在3-30个字符之间！' });
+    }
+    
+    // 验证姓名只包含中英文字符、"."和单空格
+    if (!/^[\u4e00-\u9fa5a-zA-Z\.\s]+$/.test(name)) {
+      return res.status(400).json({ error: '请输入姓名！' });
+    }
+    
+    // 验证证件号码长度为18个字符
+    if (idCardNumber.length !== 18) {
+      return res.status(400).json({ error: '请正确输入18位证件号码！' });
+    }
+    
+    // 验证证件号码只包含数字和字母
+    if (!/^[0-9A-Za-z]+$/.test(idCardNumber)) {
+      return res.status(400).json({ error: '输入的证件编号中包含中文信息或特殊字符！' });
+    }
+    
+    // 验证手机号
+    if (!/^1[3-9]\d{9}$/.test(phone)) {
+      return res.status(400).json({ error: '您输入的手机号码不是有效的格式！' });
+    }
+    
+    // 验证乘客信息唯一性
+    const exists = await personalInfoDbService.checkPassengerExists(userId, name, idCardNumber);
+    
+    if (exists) {
+      return res.status(409).json({ error: '该联系人已存在，请使用不同的姓名和证件。' });
+    }
+    
+    res.status(200).json({ valid: true, message: '验证通过' });
   } catch (error) {
-    console.error('获取乘客详情失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '获取乘客详情失败';
-    res.status(status).json({ error: message });
+    console.error('验证失败:', error);
+    res.status(500).json({ error: '验证失败' });
   }
 });
 
 module.exports = router;
-

@@ -2,7 +2,9 @@ const passengerService = require('../../src/services/passengerService');
 
 // Mock database operations
 jest.mock('../../src/database', () => ({
-  query: jest.fn()
+  query: jest.fn(),
+  queryOne: jest.fn(),
+  run: jest.fn()
 }));
 
 const db = require('../../src/database');

@@ -1,0 +1,59 @@
+/* 左侧功能菜单栏样式 */
+
+.side-menu {
+  width: 200px;
+  background-color: white;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+/* 菜单分区 */
+.menu-section {
+  margin-bottom: 30px;
+}
+
+/* 分区标题 */
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+}
+
+/* 菜单项 */
+.menu-item {
+  font-size: 14px;
+  color: #555;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* 激活状态的菜单项 */
+.menu-item.active {
+  background-color: #0066cc;
+  color: white;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .side-menu {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .menu-section {
+    margin-bottom: 20px;
+  }
+}
+
+
+
+

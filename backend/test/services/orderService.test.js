@@ -3,6 +3,8 @@ const orderService = require('../../src/services/orderService');
 // Mock database operations
 jest.mock('../../src/database', () => ({
   query: jest.fn(),
+  queryOne: jest.fn(),
+  run: jest.fn(),
   beginTransaction: jest.fn(),
   commit: jest.fn(),
   rollback: jest.fn()

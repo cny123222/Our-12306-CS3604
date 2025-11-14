@@ -99,6 +99,55 @@ async function initTestDatabase(dbPath) {
         )
       `);
       
+      // 创建passengers表
+      db.run(`
+        CREATE TABLE IF NOT EXISTS passengers (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          name TEXT NOT NULL,
+          id_card_type TEXT DEFAULT '居民身份证',
+          id_card_number TEXT NOT NULL,
+          phone TEXT,
+          discount_type TEXT DEFAULT '成人',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(user_id, name, id_card_number)
+        )
+      `);
+      
+      // 创建orders表
+      db.run(`
+        CREATE TABLE IF NOT EXISTS orders (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          train_number TEXT NOT NULL,
+          departure_station TEXT NOT NULL,
+          arrival_station TEXT NOT NULL,
+          departure_date TEXT NOT NULL,
+          departure_time TEXT,
+          arrival_time TEXT,
+          status TEXT DEFAULT 'pending',
+          total_price REAL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      
+      // 创建order_details表
+      db.run(`
+        CREATE TABLE IF NOT EXISTS order_details (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          order_id INTEGER NOT NULL,
+          passenger_id INTEGER,
+          passenger_name TEXT,
+          seat_type TEXT,
+          seat_no TEXT,
+          price REAL,
+          FOREIGN KEY (order_id) REFERENCES orders(id),
+          FOREIGN KEY (passenger_id) REFERENCES passengers(id)
+        )
+      `);
+      
       // 插入测试站点数据
       const stations = [
         ['北京南', 'BJS', 'beijingnan', 'bjn'],
