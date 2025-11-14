@@ -84,7 +84,7 @@
 /* 列表表头 */
 .train-list-header {
   display: grid;
-  grid-template-columns: 80px 90px 80px 80px repeat(11, minmax(50px, 1fr)) 80px;
+  grid-template-columns: 80px 100px 80px 70px repeat(11, minmax(50px, 1fr)) 80px;
   gap: 0;
   padding: 0px 0px;
   background: linear-gradient(to bottom, #3699d6 0%, #187ac1 100%);

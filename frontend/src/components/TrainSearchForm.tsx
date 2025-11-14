@@ -14,7 +14,7 @@ interface TrainSearchFormProps {
 const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList }) => {
   const [departureStation, setDepartureStation] = useState('');
   const [arrivalStation, setArrivalStation] = useState('');
-  const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
+  const [departureDate, setDepartureDate] = useState('2025-11-15'); // 默认日期设置为11月15日
   const [isStudent, setIsStudent] = useState(false); // 【新增】学生票状态
   const [isHighSpeed, setIsHighSpeed] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});

@@ -8,7 +8,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
-const { pinyin } = require('pinyin');
+// const { pinyin } = require('pinyin'); // 暂时不使用pinyin功能
 
 const dbPath = path.join(__dirname, 'railway.db');
 const trainsJsonPath = path.join(__dirname, '../../requirements/03-车次列表页/车次信息.json');

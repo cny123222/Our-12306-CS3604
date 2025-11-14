@@ -22,6 +22,19 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
+  // 格式化日期为"X月X日 周X"
+  const formatDate = (dateStr: string | undefined) => {
+    if (!dateStr) return '11月15日 周五';
+    
+    const date = new Date(dateStr);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const weekday = weekdays[date.getDay()];
+    
+    return `${month}月${day}日 ${weekday}`;
+  };
+
   // 处理排序
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -67,7 +80,7 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
         <div className="train-list-info">
           <div className="train-list-summary">
             <span className="summary-route">{departureCity || '北京'} → {arrivalCity || '上海'} </span>
-            <span className="summary-date">({departureDate || '11月13日'} 周四)</span>
+            <span className="summary-date">({formatDate(departureDate)})</span>
             <span className="summary-count"> 共{sortedTrains.length}个车次</span>
             <span className="summary-transfer">您可使用<span className="transfer-highlight">中转换乘</span>功能，查询途中换乘一次的部分列车余票情况。</span>
           </div>
