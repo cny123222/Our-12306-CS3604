@@ -266,7 +266,7 @@ const OrderPage: React.FC = () => {
   
   const handleNavigateToPersonalCenter = () => {
     if (isLoggedIn) {
-      // TODO: navigate('/profile');
+      navigate('/personal-info');
     } else {
       navigate('/login');
     }
