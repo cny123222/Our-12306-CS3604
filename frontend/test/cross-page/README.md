@@ -4,6 +4,18 @@
 
 本目录包含 12306 铁路订票系统的跨页面流程测试和跨组件集成测试，确保核心业务链路的稳定性和用户体验的流畅性。
 
+---
+
+## 🆕 最新更新（2025-01-14）
+
+### 个人信息页跨页流程测试 ✨
+
+**新增测试文件：** 6个  
+**新增测试场景：** 46个  
+**测试代码量：** ~1500行 + 352行流程分析文档
+
+详见：[个人信息页跨页测试报告](./PERSONAL-INFO-CROSS-PAGE-TEST-REPORT.md)
+
 ## 🎯 测试范围
 
 ### 1. 登录页 → 注册页流程测试
@@ -88,7 +100,13 @@
 | TrainListToOrder.e2e.spec.tsx | 8 | ✅ 已创建 |
 | **完整业务流程** |||
 | CompleteBookingFlow.e2e.spec.tsx | 6 | ✅ 已创建 |
-| **总计** | **93** | **✅ 已创建** |
+| **个人信息页流程** 🆕 |||
+| PersonalInfoNavigation.cross.spec.tsx | 7 | ✅ 已创建 |
+| PhoneVerificationFlow.cross.spec.tsx | 8 | ✅ 已创建 |
+| PassengerManagementFlow.cross.spec.tsx | 10 | ✅ 已创建 |
+| OrderHistoryFlow.cross.spec.tsx | 9 | ✅ 已创建 |
+| PersonalInfoEditing.cross.spec.tsx | 12 | ✅ 已创建 |
+| **总计** | **139** | **✅ 已创建** |
 
 ---
 

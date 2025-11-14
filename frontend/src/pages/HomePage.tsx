@@ -31,9 +31,9 @@ const HomePage: React.FC = () => {
   };
 
   const handleNavigateToPersonalCenter = () => {
-    // TODO: 跳转到个人中心
+    // 跳转到个人中心
     if (isLoggedIn) {
-      // navigate('/profile');
+      navigate('/personal-info');
     } else {
       navigate('/login');
     }
