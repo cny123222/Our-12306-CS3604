@@ -21,7 +21,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
 }) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  const isTrainsPage = location.pathname === '/trains';
+  const isTrainsPage = location.pathname === '/trains' || location.pathname === '/order';
 
   return (
     <nav className="main-navigation">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './OrderPage.css';
-import TopNavigation from '../components/TopNavigation';
+import TrainListTopBar from '../components/TrainListTopBar';
 import MainNavigation from '../components/MainNavigation';
 import TrainInfoSection from '../components/TrainInfoSection';
 import PassengerInfoSection from '../components/PassengerInfoSection';
@@ -260,10 +260,6 @@ const OrderPage: React.FC = () => {
     // 这里只是一个占位符，保持接口一致性
   };
   
-  const handleLogoClick = () => {
-    navigate('/');
-  };
-  
   const handleNavigateToLogin = () => {
     navigate('/login');
   };
@@ -280,9 +276,12 @@ const OrderPage: React.FC = () => {
     }
   };
   
+  // 获取用户名
+  const username = isLoggedIn ? localStorage.getItem('username') || '用户' : '';
+  
   return (
     <div className="order-page">
-      <TopNavigation onLogoClick={handleLogoClick} showWelcomeLogin={true} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
