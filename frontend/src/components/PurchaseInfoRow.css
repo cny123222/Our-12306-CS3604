@@ -1,13 +1,13 @@
 /* 购票信息行样式 */
 .purchase-info-row {
   display: grid;
-  grid-template-columns: 50px 100px 170px 110px 130px 1fr 50px;
-  gap: 0;
-  padding: 10px 12px;
-  border-bottom: 1px dashed #dddddd;
+  grid-template-columns: 40px 110px 200px 140px 160px 1fr 40px;
+  gap: 8px;
+  padding: 12px 12px 12px 12px;
+  border-bottom: 1px solid #e0e0e0;
   align-items: center;
   min-height: 45px;
-  background-color: #ffffff;
+  background-color: #eef1fa;
 }
 
 .purchase-info-row:nth-child(even) {
@@ -23,32 +23,37 @@
 }
 
 .row-cell {
-  text-align: center;
+  text-align: left;
   font-size: 14px;
   color: #333333;
-  padding: 0 6px;
+  padding: 0 2px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   position: relative;
   z-index: 1;
 }
 
 .row-cell:first-child {
   font-weight: 400;
-  color: #333333;
+  color: #000000;
+  justify-content: center;
 }
 
 .row-cell .readonly-input {
   width: 100%;
-  border: 1px solid #dddddd;
-  background-color: #f9f9f9;
-  text-align: center;
+  border: 1px solid #cccccc;
+  background-color: #ffffff;
+  text-align: left;
   font-size: 14px;
   color: #333333;
-  padding: 6px 8px;
+  padding: 6px 10px;
   cursor: not-allowed;
-  border-radius: 0;
+  border-radius: 2px;
+}
+
+.row-cell .readonly-input::placeholder {
+  color: #999999;
 }
 
 .row-cell .readonly-input:focus {
@@ -59,17 +64,18 @@
 .row-cell-delete {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  padding: 0;
 }
 
 .delete-button {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: none;
-  background-color: #ff8833;
+  background-color: #ff6600;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
@@ -81,7 +87,7 @@
 }
 
 .delete-button:hover {
-  background-color: #ff6600;
+  background-color: #ff5500;
   transform: scale(1.1);
 }
 

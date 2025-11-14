@@ -2,9 +2,9 @@
 .passenger-checkbox {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 0;
-  margin: 8px 15px 8px 0;
+  margin: 5px 15px 5px 25px;
   border: none;
   cursor: pointer;
   background-color: transparent;
