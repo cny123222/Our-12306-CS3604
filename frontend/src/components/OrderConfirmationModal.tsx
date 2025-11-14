@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './OrderConfirmationModal.css';
 import TrainInfoDisplay from './TrainInfoDisplay';
-import PassengerInfoTable from './PassengerInfoTable';
 import SeatAvailabilityDisplay from './SeatAvailabilityDisplay';
 import ProcessingModal from './ProcessingModal';
 import OrderSuccessModal from './OrderSuccessModal';
@@ -22,7 +21,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   isVisible,
   orderId,
   orderInfo: externalOrderInfo,
-  onConfirm,
+  onConfirm: _onConfirm,
   onBack,
   onSuccess,
 }) => {

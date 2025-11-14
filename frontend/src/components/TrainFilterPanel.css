@@ -144,6 +144,27 @@
   cursor: pointer;
   margin: 0;
   accent-color: #8fc0e5;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #8fc0e5;
+  border-radius: 2px;
+  position: relative;
+  background-color: white;
+}
+
+.filter-checkbox input[type="checkbox"]:checked {
+  background-color: #8fc0e5;
+}
+
+.filter-checkbox input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .checkbox-label {
@@ -181,7 +202,7 @@
   border-radius: 3px;
   font-size: 13px;
   color: #000000;
-  background-color: ;
+  background-color: white;
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s;

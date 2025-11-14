@@ -25,7 +25,7 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
   onPassengerSelect,
   onSearchPassenger,
   availableSeatTypes,
-  defaultSeatType,
+  defaultSeatType: _defaultSeatType,
   selectedPassengers,
   purchaseInfo,
   onSeatTypeChange,

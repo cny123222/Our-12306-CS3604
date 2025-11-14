@@ -18,7 +18,7 @@ const SeatAvailabilityDisplay: React.FC<SeatAvailabilityDisplayProps> = ({ avail
         {Object.entries(availableSeats).map(([seatType, count], index) => (
           <span key={seatType}>
             {index > 0 && '，'}
-            {seatType}余票 <span className="red-text">{count}</span> 张
+            {seatType}余票 <span className="red-text">{String(count)}</span> 张
           </span>
         ))}
       </p>

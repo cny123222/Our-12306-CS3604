@@ -31,18 +31,18 @@
 }
 
 .summary-date {
-  color: #333333;
+  color: #000000;
 }
 
 .summary-count {
-  color: #333333;
-  font-weight: 400;
+  color: #000000;
+  font-weight: 600;
 }
 
 .summary-transfer {
   color: #333333;
   font-weight: 400;
-  margin-left: 12px;
+  margin-left: 20px;
 }
 
 .transfer-highlight {
@@ -62,7 +62,7 @@
   gap: 5px;
   cursor: pointer;
   font-size: 12px;
-  color: #666;
+  color: #333333;
   user-select: none;
 }
 
@@ -84,15 +84,15 @@
 /* 列表表头 */
 .train-list-header {
   display: grid;
-  grid-template-columns: 70px 100px 120px 70px repeat(11, minmax(50px, 1fr)) 80px;
+  grid-template-columns: 60px 90px 90px 80px repeat(11, minmax(62px, 1fr)) 70px;
   gap: 0;
-  padding: 8px 16px;
-  background: linear-gradient(to bottom, #4a90d9 0%, #3b76b8 100%);
+  padding: 6px 16px;
+  background: linear-gradient(to bottom, #3699d6 0%, #187ac1 100%);
   border-bottom: 2px solid #3466a0;
-  font-weight: 500;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 13px;
   color: white;
-  align-items: stretch;
+  align-items: center;
   line-height: 1.3;
 }
 
@@ -100,11 +100,15 @@
   text-align: center;
   white-space: normal;
   position: relative;
-  padding: 4px 6px;
-  border-right: 1px solid #333333;
+  padding: 4px 3px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  line-height: 1.5;
+  min-height: 32px;
+  gap: 2px;
+  border-right: 1px solid #2270a4;
 }
 
 .train-list-header-cell:last-child {
@@ -112,7 +116,7 @@
 }
 
 .train-list-header-cell.align-left {
-  text-align: left;
+  align-items: flex-start;
 }
 
 .train-list-header-cell.sortable {
@@ -120,7 +124,31 @@
   user-select: none;
   transition: background-color 0.2s;
   padding: 4px;
-  border-radius: 3px;
+  border-radius: 0px;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.header-line {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.sortable-line {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.sortable-line:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sortable-line:active {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .train-list-header-cell.sortable:hover {

@@ -21,8 +21,8 @@ interface ReserveButtonProps {
  */
 const ReserveButton: React.FC<ReserveButtonProps> = ({
   trainNo,
-  departureStation,
-  arrivalStation,
+  departureStation: _departureStation,
+  arrivalStation: _arrivalStation,
   departureDate,
   departureTime,
   hasSoldOut,
@@ -31,7 +31,6 @@ const ReserveButton: React.FC<ReserveButtonProps> = ({
   queryTimestamp,
 }) => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalConfig, setModalConfig] = useState<any>({});
@@ -96,9 +95,9 @@ const ReserveButton: React.FC<ReserveButtonProps> = ({
       <button
         className={`reserve-button ${hasSoldOut ? 'soldout' : ''}`}
         onClick={handleClick}
-        disabled={hasSoldOut || isLoading}
+        disabled={hasSoldOut}
       >
-        {isLoading ? '处理中...' : '预订'}
+        预订
       </button>
       
       {/* 登录提示弹窗 */}

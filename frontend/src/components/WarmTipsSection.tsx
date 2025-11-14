@@ -8,7 +8,7 @@ interface WarmTipsSectionProps {
 /**
  * 温馨提示区域组件
  */
-const WarmTipsSection: React.FC<WarmTipsSectionProps> = ({ onTermsClick }) => {
+const WarmTipsSection: React.FC<WarmTipsSectionProps> = ({ onTermsClick: _onTermsClick }) => {
   const tips = [
     '一张有效身份证件同一乘车日期同一车次只能购买一张车票，高铁动卧列车除外。',
     '购买铁路乘意险的注册用户年龄须在18周岁以上，使用非中国居民身份证注册的用户如购买铁路乘意险，须在我的12306——个人信息 如实填写"出生日期"。',

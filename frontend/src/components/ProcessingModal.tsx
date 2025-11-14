@@ -17,7 +17,7 @@ const ProcessingModal: React.FC<ProcessingModalProps> = ({ isVisible, message })
     <div className="processing-modal">
       <div className="processing-modal-overlay"></div>
       <div className="processing-modal-content">
-        <LoadingSpinner isVisible={true} size="large" />
+        <LoadingSpinner size="large" />
         <p className="processing-message">{message}</p>
       </div>
     </div>
