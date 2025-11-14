@@ -179,13 +179,27 @@ const TrainListPage: React.FC = () => {
       return;
     }
     
+    console.log('Found train data:', {
+      trainNo: train.trainNo,
+      departureStation: train.departureStation,
+      arrivalStation: train.arrivalStation,
+      departureDate: train.departureDate
+    });
+    
+    console.log('Original search params:', {
+      departureStation: searchParams.departureStation,
+      arrivalStation: searchParams.arrivalStation,
+      departureDate: searchParams.departureDate
+    });
+    
     // 跳转到订单填写页，传递完整的车次信息
+    // 使用原始搜索参数而不是车次数据中的站点信息
     navigate('/order', { 
       state: { 
         trainNo: train.trainNo,
-        departureStation: train.departureStation,
-        arrivalStation: train.arrivalStation,
-        departureDate: train.departureDate || searchParams.departureDate
+        departureStation: searchParams.departureStation,
+        arrivalStation: searchParams.arrivalStation,
+        departureDate: searchParams.departureDate
       } 
     });
   };
@@ -273,6 +287,9 @@ const TrainListPage: React.FC = () => {
                    onReserve={handleNavigateToOrderPage}
                    isLoggedIn={isLoggedIn}
                    queryTimestamp={queryTimestamp.toISOString()}
+                   departureCity={searchParams.departureStation}
+                   arrivalCity={searchParams.arrivalStation}
+                   departureDate={searchParams.departureDate}
                  />
                )}
       </div>
