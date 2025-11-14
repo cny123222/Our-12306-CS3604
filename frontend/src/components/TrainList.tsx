@@ -7,6 +7,9 @@ interface TrainListProps {
   onReserve: (trainNo: string) => void;
   isLoggedIn: boolean;
   queryTimestamp: string;
+  departureCity?: string;
+  arrivalCity?: string;
+  departureDate?: string;
 }
 
 type SortField = 'departureTime' | 'arrivalTime' | 'duration' | null;
@@ -15,9 +18,9 @@ type SortOrder = 'asc' | 'desc';
 /**
  * 车次列表组件
  */
-const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, queryTimestamp }) => {
+const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, queryTimestamp, departureCity, arrivalCity, departureDate }) => {
   const [sortField, setSortField] = useState<SortField>(null);
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
   // 处理排序
   const handleSort = (field: SortField) => {
@@ -47,10 +50,10 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
     return sortOrder === 'asc' ? comparison : -comparison;
   });
 
-  // 渲染排序图标
-  const renderSortIcon = (field: SortField) => {
+  // 渲染排序图标 - 到达时间默认向下
+  const renderSortIcon = (field: SortField, isArrival: boolean = false) => {
     if (sortField !== field) {
-      return <span className="sort-icon neutral">▲</span>;
+      return <span className="sort-icon neutral">{isArrival ? '▼' : '▲'}</span>;
     }
     return sortOrder === 'asc' ? 
       <span className="sort-icon asc">▲</span> : 
@@ -63,22 +66,23 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
       {sortedTrains.length > 0 && (
         <div className="train-list-info">
           <div className="train-list-summary">
-            <span className="summary-route">北京北 → 上海 </span>
-            <span className="summary-date">(11月13日 周四)</span>
+            <span className="summary-route">{departureCity || '北京'} → {arrivalCity || '上海'} </span>
+            <span className="summary-date">({departureDate || '11月13日'} 周四)</span>
             <span className="summary-count"> 共{sortedTrains.length}个车次</span>
+            <span className="summary-transfer">您可使用<span className="transfer-highlight">中转换乘</span>功能，查询途中换乘一次的部分列车余票情况。</span>
           </div>
           <div className="train-list-hints">
             <label className="hint-checkbox">
               <input type="checkbox" />
-              <span>显示已满和停止发售的车次</span>
+              <span>显示折扣车次</span>
             </label>
             <label className="hint-checkbox">
               <input type="checkbox" />
-              <span>显示分段余票</span>
+              <span>显示积分兑换车次</span>
             </label>
             <label className="hint-checkbox">
               <input type="checkbox" />
-              <span>显示全部预订车次</span>
+              <span>显示全部可预订车次</span>
             </label>
           </div>
         </div>
@@ -98,7 +102,7 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
           >
             出发时间 {renderSortIcon('departureTime')}
             <br />
-            到达时间 {renderSortIcon('arrivalTime')}
+            到达时间 {renderSortIcon('arrivalTime', true)}
           </div>
           <div 
             className="train-list-header-cell sortable"
@@ -111,6 +115,11 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
             <br />
             特等座
           </div>
+          <div className="train-list-header-cell">
+            优选
+            <br />
+            一等座
+          </div>
           <div className="train-list-header-cell">一等座</div>
           <div className="train-list-header-cell">
             二等座
@@ -118,16 +127,24 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
             二等包座
           </div>
           <div className="train-list-header-cell">
+            高级
+            <br />
+            软卧
+          </div>
+          <div className="train-list-header-cell">
             软卧/动卧
             <br />
             一等卧
           </div>
           <div className="train-list-header-cell">
-            硬卧/动卧
+            硬卧
             <br />
             二等卧
           </div>
+          <div className="train-list-header-cell">软座</div>
           <div className="train-list-header-cell">硬座</div>
+          <div className="train-list-header-cell">无座</div>
+          <div className="train-list-header-cell">其他</div>
           <div className="train-list-header-cell">备注</div>
         </div>
         {sortedTrains.length === 0 ? (
@@ -138,13 +155,14 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
           </div>
         ) : (
           <div className="train-list-body">
-            {sortedTrains.map((train) => (
+            {sortedTrains.map((train, index) => (
               <TrainItem
                 key={train.trainNo}
                 train={train}
                 onReserve={onReserve}
                 isLoggedIn={isLoggedIn}
                 queryTimestamp={queryTimestamp}
+                rowIndex={index}
               />
             ))}
           </div>

@@ -28,7 +28,8 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   const [departureDate, setDepartureDate] = useState(
     initialDepartureDate || new Date().toISOString().split('T')[0]
   );
-  const [returnDate, setReturnDate] = useState(''); // 返程日期（目前不实现功能）
+  // 返程日期默认为今天
+  const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -112,9 +113,12 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           </label>
         </div>
 
+        {/* 竖线分隔 */}
+        <div className="vertical-divider-blue"></div>
+
         {/* 出发地 */}
-        <div className="search-field">
-          <label className="search-field-label">出发地</label>
+        <div className="search-field-inline">
+          <label className="search-field-label-inline">出发地</label>
           <StationInput
             value={departureStation}
             placeholder="北京北"
@@ -142,8 +146,8 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         </button>
         
         {/* 到达地 */}
-        <div className="search-field">
-          <label className="search-field-label">目的地</label>
+        <div className="search-field-inline">
+          <label className="search-field-label-inline">目的地</label>
           <StationInput
             value={arrivalStation}
             placeholder="上海"
@@ -155,8 +159,8 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         </div>
         
         {/* 出发日期 */}
-        <div className="search-field">
-          <label className="search-field-label">出发日</label>
+        <div className="search-field-inline">
+          <label className="search-field-label-inline">出发日</label>
           <DatePicker
             value={departureDate}
             onChange={setDepartureDate}
@@ -166,8 +170,8 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         </div>
         
         {/* 返程日期 - 灰色禁用 */}
-        <div className="search-field">
-          <label className="search-field-label return-label">返程日</label>
+        <div className="search-field-inline">
+          <label className="search-field-label-inline return-label">返程日</label>
           <DatePicker
             value={returnDate}
             onChange={setReturnDate}
@@ -178,7 +182,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         </div>
 
         {/* 竖线分隔 */}
-        <div className="vertical-divider"></div>
+        <div className="vertical-divider-blue"></div>
         
         {/* 普通/学生选择 */}
         <div className="ticket-type-selector">

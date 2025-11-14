@@ -190,14 +190,13 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
     <div className="train-filter-panel">
       {/* 日期筛选标签行 */}
       <div className="date-filter-tabs">
-        {dateTabs.map((tab, index) => (
+        {dateTabs.map((tab) => (
           <button
             key={tab.date}
             className={`date-tab ${selectedDate === tab.date ? 'active' : ''}`}
             onClick={() => setSelectedDate(tab.date)}
           >
             <div className="date-tab-date">{tab.display}</div>
-            {index === 1 && <div className="date-tab-weekday">{tab.weekDay}</div>}
           </button>
         ))}
       </div>
@@ -301,19 +300,19 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
             ))}
           </div>
         </div>
-      </div>
 
-      {/* 筛选清除按钮 */}
-      <div className="filter-summary">
-        <button className="clear-filters-btn" onClick={() => {
-          setSelectedTrainTypes([]);
-          setSelectedDepartureStations([]);
-          setSelectedArrivalStations([]);
-          setSelectedSeatTypes([]);
-          triggerFilterChange({ trainTypes: [], departureStations: [], arrivalStations: [], seatTypes: [] });
-        }}>
-          <span className="clear-icon">↻</span> 筛选
-        </button>
+        {/* 筛选清除按钮 */}
+        <div className="filter-summary">
+          <button className="clear-filters-btn" onClick={() => {
+            setSelectedTrainTypes([]);
+            setSelectedDepartureStations([]);
+            setSelectedArrivalStations([]);
+            setSelectedSeatTypes([]);
+            triggerFilterChange({ trainTypes: [], departureStations: [], arrivalStations: [], seatTypes: [] });
+          }}>
+            <span className="clear-icon">↻</span> 筛选
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 /* 预订按钮样式 */
 .reserve-button {
   padding: 6px 18px;
-  background: linear-gradient(to bottom, #5ba3e0 0%, #4a90d9 100%);
+  background-color: #0080ff;
   color: white;
   border: none;
   border-radius: 3px;
@@ -9,19 +9,19 @@
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(74, 144, 217, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 128, 255, 0.3);
   white-space: nowrap;
 }
 
 .reserve-button:hover:not(:disabled) {
-  background: linear-gradient(to bottom, #6bb0e8 0%, #5ba3e0 100%);
-  box-shadow: 0 3px 6px rgba(74, 144, 217, 0.4);
+  background-color: #1a90ff;
+  box-shadow: 0 3px 6px rgba(0, 128, 255, 0.4);
   transform: translateY(-1px);
 }
 
 .reserve-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 1px 3px rgba(74, 144, 217, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 128, 255, 0.3);
 }
 
 .reserve-button:disabled,
