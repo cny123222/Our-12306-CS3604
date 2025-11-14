@@ -1,17 +1,23 @@
 /* 车次列表项样式 */
 .train-item {
   display: grid;
-  grid-template-columns: 90px 140px 140px 80px repeat(7, 1fr);
-  gap: 8px;
+  grid-template-columns: 70px 100px 120px 70px repeat(11, minmax(50px, 1fr)) 80px;
+  gap: 0;
   padding: 14px 16px;
   border-bottom: 1px solid #e9ecef;
   align-items: center;
   transition: all 0.2s ease;
+}
+
+.train-item-even {
+  background-color: #eff1f9;
+}
+
+.train-item-odd {
   background-color: #ffffff;
 }
 
 .train-item:hover {
-  background-color: #f9fafb;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
@@ -40,8 +46,10 @@
 
 .train-number {
   font-weight: 600;
-  color: #2196f3;
+  color: #333333;
   font-size: 16px;
+  text-decoration: underline;
+  text-decoration-color: #333333;
 }
 
 .train-dropdown-arrow {
@@ -79,6 +87,33 @@
   text-align: center;
 }
 
+.station-name-with-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+}
+
+.station-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+}
+
+.station-badge-start {
+  background-color: #ff9933;
+}
+
+.station-badge-end {
+  background-color: #52c41a;
+}
+
 .train-stations-vertical .station-name {
   font-size: 14px;
   font-weight: 500;
@@ -103,16 +138,14 @@
 
 .train-arrival-date {
   margin-top: 4px;
+  text-align: center;
 }
 
-.next-day-tag {
+.arrival-day-tag {
   display: inline-block;
   font-size: 11px;
-  color: #ff7700;
-  background-color: #fff5ed;
-  padding: 2px 6px;
-  border-radius: 2px;
-  font-weight: 500;
+  color: #666666;
+  font-weight: 400;
 }
 
 /* 历时 */

@@ -7,12 +7,13 @@ interface TrainItemProps {
   onReserve: (trainNo: string) => void;
   isLoggedIn: boolean;
   queryTimestamp: string;
+  rowIndex: number;
 }
 
 /**
  * 车次列表项组件
  */
-const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, queryTimestamp }) => {
+const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, queryTimestamp, rowIndex }) => {
   // 从 train.availableSeats 中提取座位信息，映射中文到英文
   const availableSeats = {
     business: train.availableSeats?.['商务座'] ?? null,
@@ -45,7 +46,7 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
   };
 
   return (
-    <div className="train-item">
+    <div className={`train-item ${rowIndex % 2 === 0 ? 'train-item-even' : 'train-item-odd'}`}>
       {/* 车次号 - 带下拉箭头 */}
       <div className="train-item-cell align-left">
         <div className="train-number-container">
@@ -64,8 +65,14 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
       {/* 出发站/到达站 */}
       <div className="train-item-cell">
         <div className="train-stations-vertical">
-          <div className="station-name">{train.departureStation || '--'}</div>
-          <div className="station-name">{train.arrivalStation || '--'}</div>
+          <div className="station-name-with-badge">
+            <span className="station-badge station-badge-start">始</span>
+            <span className="station-name">{train.departureStation || '--'}</span>
+          </div>
+          <div className="station-name-with-badge">
+            <span className="station-badge station-badge-end">终</span>
+            <span className="station-name">{train.arrivalStation || '--'}</span>
+          </div>
         </div>
       </div>
       
@@ -75,16 +82,25 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
           <div className="train-time">{train.departureTime || '--'}</div>
           <div className="train-time">{train.arrivalTime || '--'}</div>
         </div>
-        <div className="train-arrival-date">
-          {train.arrivalDate && train.departureDate && train.arrivalDate !== train.departureDate && (
-            <span className="next-day-tag">次日到达</span>
-          )}
-        </div>
       </div>
       
       {/* 历时 */}
       <div className="train-item-cell">
         <div className="train-duration">{formatDuration(train.duration)}</div>
+        <div className="train-arrival-date">
+          {(() => {
+            if (!train.departureTime || !train.arrivalTime) return <span className="arrival-day-tag">当日到达</span>;
+            const depTime = train.departureTime.split(':').map(Number);
+            const arrTime = train.arrivalTime.split(':').map(Number);
+            const depMinutes = depTime[0] * 60 + depTime[1];
+            const arrMinutes = arrTime[0] * 60 + arrTime[1];
+            return arrMinutes < depMinutes ? (
+              <span className="arrival-day-tag">次日到达</span>
+            ) : (
+              <span className="arrival-day-tag">当日到达</span>
+            );
+          })()}
+        </div>
       </div>
       
       {/* 商务座/特等座 */}
@@ -92,6 +108,11 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
         <div className={`seat-info ${getSeatClass(availableSeats.business)}`}>
           {formatSeatStatus(availableSeats.business)}
         </div>
+      </div>
+      
+      {/* 优选/一等座 */}
+      <div className="train-item-cell">
+        <div className="seat-info">--</div>
       </div>
       
       {/* 一等座 */}
@@ -108,6 +129,11 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
         </div>
       </div>
       
+      {/* 高级/软卧 */}
+      <div className="train-item-cell">
+        <div className="seat-info">--</div>
+      </div>
+      
       {/* 软卧/动卧/一等卧 */}
       <div className="train-item-cell">
         <div className={`seat-info ${getSeatClass(availableSeats.softSleeper)}`}>
@@ -115,14 +141,29 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
         </div>
       </div>
       
-      {/* 硬卧/动卧/二等卧 */}
+      {/* 硬卧/二等卧 */}
       <div className="train-item-cell">
         <div className={`seat-info ${getSeatClass(availableSeats.hardSleeper)}`}>
           {formatSeatStatus(availableSeats.hardSleeper)}
         </div>
       </div>
       
+      {/* 软座 */}
+      <div className="train-item-cell">
+        <div className="seat-info">--</div>
+      </div>
+      
       {/* 硬座 */}
+      <div className="train-item-cell">
+        <div className="seat-info">--</div>
+      </div>
+      
+      {/* 无座 */}
+      <div className="train-item-cell">
+        <div className="seat-info">--</div>
+      </div>
+      
+      {/* 其他 */}
       <div className="train-item-cell">
         <div className="seat-info">--</div>
       </div>

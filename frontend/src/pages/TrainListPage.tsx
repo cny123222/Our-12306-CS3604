@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './TrainListPage.css';
-import HomeTopBar from '../components/HomeTopBar';
+import TrainListTopBar from '../components/TrainListTopBar';
 import MainNavigation from '../components/MainNavigation';
 import TrainSearchBar from '../components/TrainSearchBar';
 import TrainFilterPanel from '../components/TrainFilterPanel';
@@ -232,9 +232,12 @@ const TrainListPage: React.FC = () => {
     setFilteredTrains(filtered);
   };
 
+  // 获取用户名
+  const username = isLoggedIn ? localStorage.getItem('username') || '用户' : '';
+
   return (
     <div className="train-list-page">
-      <HomeTopBar isLoggedIn={isLoggedIn} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}

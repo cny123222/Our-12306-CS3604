@@ -33,8 +33,9 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ onLogoClick, showWelcomeL
         </div>
         {!showWelcomeLogin && (
           <div className="welcome-section">
-            <span className="welcome-text">您好，请</span>
-            <Link to="/login" className="login-link">登录</Link>
+            <span className="welcome-text">
+              您好，请<Link to="/login" className="login-link">登录</Link>
+            </span>
             <Link to="/register" className="register-link">注册</Link>
           </div>
         )}
