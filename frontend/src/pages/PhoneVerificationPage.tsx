@@ -17,12 +17,20 @@ const PhoneVerificationPage = () => {
   const [newPhone, setNewPhone] = useState('');
 
   useEffect(() => {
+    // 检查登录状态
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log('未登录，跳转到登录页');
+      navigate('/login');
+      return;
+    }
+    
     fetchUserPhone();
-  }, []);
+  }, [navigate]);
 
   const fetchUserPhone = async () => {
     try {
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       const response = await fetch('/api/user/info', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -38,7 +46,7 @@ const PhoneVerificationPage = () => {
 
   const handleSubmit = async (phone: string, password: string) => {
     try {
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       const response = await fetch('/api/user/phone/update-request', {
         method: 'POST',
         headers: {
@@ -55,6 +63,7 @@ const PhoneVerificationPage = () => {
         setShowVerificationModal(true);
       } else {
         const error = await response.json();
+        // 显示具体的错误信息（包括密码错误）
         alert(error.error || '发送验证码失败');
       }
     } catch (err) {

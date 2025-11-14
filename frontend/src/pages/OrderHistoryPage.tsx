@@ -19,13 +19,21 @@ const OrderHistoryPage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // 检查登录状态
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log('未登录，跳转到登录页');
+      navigate('/login');
+      return;
+    }
+    
     fetchOrders();
-  }, []);
+  }, [navigate]);
 
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       const response = await fetch('/api/user/orders', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -53,7 +61,7 @@ const OrderHistoryPage = () => {
     }
 
     try {
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       const params = new URLSearchParams();
       if (start) params.append('startDate', start);
       if (end) params.append('endDate', end);

@@ -26,21 +26,27 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
   const [editingEmail, setEditingEmail] = useState(email);
   const [localIsEditing, setLocalIsEditing] = useState(false);
 
+  // 当email prop变化时，同步更新editingEmail
+  React.useEffect(() => {
+    setEditingEmail(email);
+  }, [email]);
+
   const handleEdit = () => {
+    setEditingEmail(email); // 确保编辑时从最新的email开始
     setLocalIsEditing(true);
     onEdit?.();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (onSaveEmail && editingEmail !== email) {
-      onSaveEmail(editingEmail);
+      await onSaveEmail(editingEmail);
     }
     setLocalIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditingEmail(email);
-    setLocalIsEditing(false);
+    setEditingEmail(email); // 恢复原值
+    setLocalIsEditing(false); // 退出编辑模式
   };
 
   const showEditing = isEditing || localIsEditing;

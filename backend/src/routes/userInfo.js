@@ -13,13 +13,13 @@ const testAuth = (req, res, next) => {
     return res.status(401).json({ error: '请先登录' });
   }
   
-  // 测试环境的token验证
+  // 测试环境的token验证（仅用于自动化测试）
   if (token === 'valid-test-token') {
     req.user = { id: 1, username: 'test-user-123' };
     return next();
   }
   
-  // 生产环境使用真实认证
+  // 所有其他情况使用真实认证
   return authenticateUser(req, res, next);
 };
 
@@ -101,10 +101,19 @@ router.post('/phone/update-request', testAuth, async (req, res) => {
       return res.status(400).json({ error: '输入登录密码！' });
     }
     
-    // 这里应该验证密码，为了测试简化，只检查密码是否正确
-    // 在实际项目中需要调用密码验证服务
-    if (password === 'wrong-password') {
-      return res.status(401).json({ error: '密码错误' });
+    // 从数据库获取用户信息
+    const bcrypt = require('bcryptjs');
+    const db = require('../database');
+    const user = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+    
+    if (!user || user.length === 0) {
+      return res.status(404).json({ error: '用户不存在' });
+    }
+    
+    // 验证密码
+    const passwordMatch = await bcrypt.compare(password, user[0].password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: '登录密码错误' });
     }
     
     // 检查新手机号是否已被使用

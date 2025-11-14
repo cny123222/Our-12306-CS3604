@@ -68,11 +68,11 @@ const AddPassengerPanel: React.FC<AddPassengerPanelProps> = ({
     setIsLoading(true);
     try {
       await onSubmit({
-        id_card_type: idCardType,
+        idCardType: idCardType,
         name,
-        id_card_number: idCardNumber,
+        idCardNumber: idCardNumber,
         phone,
-        discount_type: discountType
+        discountType: discountType
       });
     } finally {
       setIsLoading(false);
