@@ -480,10 +480,51 @@ function calculateDuration(departureTime, arrivalTime) {
   return duration;
 }
 
+/**
+ * 获取车次在特定站点的时间信息
+ */
+async function getTrainTimeDetails(trainNo, departureStation, arrivalStation) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    // 查询车次停靠站信息
+    db.all(
+      'SELECT * FROM train_stops WHERE train_no = ? ORDER BY seq',
+      [trainNo],
+      (err, stops) => {
+        db.close();
+        
+        if (err) {
+          console.error('查询车次停靠站失败:', err);
+          return reject(err);
+        }
+        
+        if (!stops || stops.length === 0) {
+          return resolve(null);
+        }
+        
+        // 找到出发站和到达站
+        const depStop = stops.find(s => s.station === departureStation);
+        const arrStop = stops.find(s => s.station === arrivalStation);
+        
+        if (!depStop || !arrStop) {
+          return resolve(null);
+        }
+        
+        resolve({
+          departureTime: depStop.depart_time,
+          arrivalTime: arrStop.arrive_time
+        });
+      }
+    );
+  });
+}
+
 module.exports = {
   searchTrains,
   getTrainDetails,
   calculateAvailableSeats,
   getFilterOptions,
-  getAvailableDates
+  getAvailableDates,
+  getTrainTimeDetails
 };

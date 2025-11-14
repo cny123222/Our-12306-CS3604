@@ -74,6 +74,11 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
             fareInfo={fareInfo}
           />
         </div>
+        
+        {/* 中国铁路保险横幅 */}
+        <div className="railway-insurance-banner">
+          <img src="/images/order.jpg" alt="乘意相伴 安心出行 - 中国铁路保险" />
+        </div>
       </div>
     </div>
   );

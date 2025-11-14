@@ -1,41 +1,45 @@
 /* 购票信息表格样式 */
 .purchase-info-table {
   width: 100%;
-  border: 1px solid #cccccc;
+  border: 1px solid #d0d0d0;
   border-radius: 0;
-  overflow: visible;  /* 改为visible以允许下拉框显示 */
+  overflow: visible;
   background-color: #ffffff;
 }
 
 .table-header {
   display: grid;
-  grid-template-columns: 60px 100px 140px 100px 140px 1fr;
+  grid-template-columns: 60px 100px 150px 120px 140px 1fr;
   gap: 0;
-  padding: 10px 8px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #cccccc;
-  font-weight: 500;
-  font-size: 14px;
+  padding: 10px 12px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #d0d0d0;
+  font-weight: 600;
+  font-size: 13px;
   color: #333333;
 }
 
 .table-header-cell {
   text-align: center;
-  padding: 0 8px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table-body {
   background-color: #ffffff;
-  overflow: visible;  /* 允许下拉框溢出显示 */
+  overflow: visible;
 }
 
 .purchase-info-empty {
   padding: 30px;
   text-align: center;
   color: #999999;
-  font-size: 14px;
+  font-size: 13px;
   border: 1px dashed #d0d0d0;
-  border-radius: 4px;
+  border-radius: 0;
   background-color: #fafafa;
+  margin: 10px 0;
 }
 

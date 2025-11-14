@@ -19,7 +19,9 @@ const OrderSubmitSection: React.FC<OrderSubmitSectionProps> = ({
     <div className="order-submit-section">
       <div className="submit-notice">
         <p className="notice-text">
-          提交订单表示阅读并同意《中国集团铁路旅客运输规程》《服务条款》
+          提交订单表示已阅读并同意
+          <a href="#" onClick={(e) => e.preventDefault()}>《国铁集团铁路旅客运输规程》</a>
+          <a href="#" onClick={(e) => e.preventDefault()}>《服务条款》</a>
         </p>
       </div>
       

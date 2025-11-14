@@ -34,6 +34,10 @@ router.get('/new', authenticateUser, async (req, res) => {
     // 获取默认席别
     const defaultSeat = await orderService.getDefaultSeatType(trainNo);
     
+    // 获取车次时间信息（使用 trainService）
+    const trainService = require('../services/trainService');
+    const trainDetails = await trainService.getTrainTimeDetails(trainNo, departureStation, arrivalStation);
+    
     // 构建票价和余票信息
     const fareInfo = {};
     const availableSeats = {};
@@ -50,7 +54,9 @@ router.get('/new', authenticateUser, async (req, res) => {
         trainNo,
         departureStation,
         arrivalStation,
-        departureDate
+        departureDate,
+        departureTime: trainDetails?.departureTime,
+        arrivalTime: trainDetails?.arrivalTime
       },
       fareInfo,
       availableSeats,
