@@ -14,6 +14,7 @@ interface PassengerInfoSectionProps {
   purchaseInfo: any[];
   onSeatTypeChange: (index: number, seatType: string) => void;
   onTicketTypeChange: (index: number, ticketType: string) => void;
+  onDeleteRow?: (index: number) => void;
   fareInfo?: any;
 }
 
@@ -30,6 +31,7 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
   purchaseInfo,
   onSeatTypeChange,
   onTicketTypeChange,
+  onDeleteRow,
   fareInfo,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -71,6 +73,7 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
             availableSeatTypes={availableSeatTypes}
             onSeatTypeChange={onSeatTypeChange}
             onTicketTypeChange={onTicketTypeChange}
+            onDeleteRow={onDeleteRow}
             fareInfo={fareInfo}
           />
         </div>

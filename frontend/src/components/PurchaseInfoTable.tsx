@@ -7,6 +7,7 @@ interface PurchaseInfoTableProps {
   availableSeatTypes: any[];
   onSeatTypeChange: (index: number, seatType: string) => void;
   onTicketTypeChange: (index: number, ticketType: string) => void;
+  onDeleteRow?: (index: number) => void;
   fareInfo?: any;
 }
 
@@ -18,15 +19,17 @@ const PurchaseInfoTable: React.FC<PurchaseInfoTableProps> = ({
   availableSeatTypes,
   onSeatTypeChange,
   onTicketTypeChange,
+  onDeleteRow,
   fareInfo,
 }) => {
-  if (purchaseInfo.length === 0) {
-    return (
-      <div className="purchase-info-empty">
-        请从上方乘客列表中选择乘车人
-      </div>
-    );
-  }
+  // 如果没有选择乘客，显示一个默认的空行
+  const displayInfo = purchaseInfo.length === 0 
+    ? [{
+        passenger: { name: '', idCardType: '居民身份证', idCardNumber: '' },
+        ticketType: '成人票',
+        seatType: availableSeatTypes.length > 0 ? availableSeatTypes[0] : ''
+      }]
+    : purchaseInfo;
   
   return (
     <div className="purchase-info-table">
@@ -37,10 +40,11 @@ const PurchaseInfoTable: React.FC<PurchaseInfoTableProps> = ({
         <div className="table-header-cell">姓名</div>
         <div className="table-header-cell">证件类型</div>
         <div className="table-header-cell">证件号码</div>
+        <div className="table-header-cell"></div>
       </div>
       
       <div className="table-body">
-        {purchaseInfo.map((info, index) => (
+        {displayInfo.map((info, index) => (
           <PurchaseInfoRow
             key={index}
             sequence={index + 1}
@@ -50,6 +54,7 @@ const PurchaseInfoTable: React.FC<PurchaseInfoTableProps> = ({
             availableSeatTypes={availableSeatTypes}
             onSeatTypeChange={(seatType) => onSeatTypeChange(index, seatType)}
             onTicketTypeChange={(ticketType) => onTicketTypeChange(index, ticketType)}
+            onDelete={onDeleteRow ? () => onDeleteRow(index) : undefined}
             fareInfo={fareInfo}
           />
         ))}

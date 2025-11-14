@@ -4,7 +4,7 @@
   border-radius: 0;
   padding: 0;
   margin: 20px auto;
-  max-width: 1400px;
+  max-width: 1100px;
 }
 
 .submit-notice {
@@ -12,12 +12,12 @@
   padding: 0;
   background-color: transparent;
   border: none;
-  text-align: center;
+  text-align: left;
 }
 
 .notice-text {
   font-size: 12px;
-  color: #666666;
+  color: #000000 !important;
   margin: 0;
 }
 
@@ -34,19 +34,20 @@
 .submit-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 50px;
 }
 
 .back-button,
 .submit-button {
-  padding: 10px 50px;
+  padding: 10px 10px;
   border: none;
   border-radius: 3px;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  min-width: 140px;
+  width: 180px;
+  height: 40px;
 }
 
 .back-button {
@@ -65,16 +66,12 @@
 }
 
 .submit-button {
-  background: linear-gradient(to bottom, #ff9944 0%, #ff7722 100%);
+  background: #fd8100;
   color: #ffffff;
-  border: 1px solid #ff7722;
-  box-shadow: 0 2px 6px rgba(255, 119, 34, 0.3);
 }
 
 .submit-button:hover:not(:disabled) {
-  background: linear-gradient(to bottom, #ffaa55 0%, #ff8833 100%);
-  box-shadow: 0 3px 8px rgba(255, 119, 34, 0.4);
-  transform: translateY(-1px);
+  background: #ff921d;
 }
 
 .submit-button:active:not(:disabled) {
