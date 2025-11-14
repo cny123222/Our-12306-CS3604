@@ -10,6 +10,7 @@ interface PurchaseInfoRowProps {
   availableSeatTypes: any[];
   onSeatTypeChange: (seatType: string) => void;
   onTicketTypeChange: (ticketType: string) => void;
+  onDelete?: () => void;
   fareInfo?: any;
 }
 
@@ -24,6 +25,7 @@ const PurchaseInfoRow: React.FC<PurchaseInfoRowProps> = ({
   availableSeatTypes,
   onSeatTypeChange,
   onTicketTypeChange,
+  onDelete,
   fareInfo,
 }) => {
   const ticketTypeOptions = [
@@ -72,6 +74,13 @@ const PurchaseInfoRow: React.FC<PurchaseInfoRowProps> = ({
       </div>
       <div className="row-cell">
         <input type="text" value={maskIdNumber(passenger.idCardNumber)} readOnly className="readonly-input" />
+      </div>
+      <div className="row-cell row-cell-delete">
+        {onDelete && (
+          <button className="delete-button" onClick={onDelete} title="删除">
+            ✕
+          </button>
+        )}
       </div>
     </div>
   );

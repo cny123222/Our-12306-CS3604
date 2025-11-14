@@ -176,6 +176,15 @@ const OrderPage: React.FC = () => {
     setPurchaseInfo(newPurchaseInfo);
   };
   
+  // 实现删除购票信息行的逻辑
+  const handleDeleteRow = (index: number) => {
+    const deletedInfo = purchaseInfo[index];
+    // 从购票信息中移除
+    setPurchaseInfo(purchaseInfo.filter((_, i) => i !== index));
+    // 从已选乘客列表中移除
+    setSelectedPassengers(selectedPassengers.filter(id => id !== deletedInfo.passenger.id));
+  };
+  
   // TODO: 实现返回车次列表页
   const handleBack = () => {
     navigate('/trains', { state: { departureStation, arrivalStation, departureDate } });
@@ -312,6 +321,7 @@ const OrderPage: React.FC = () => {
               purchaseInfo={purchaseInfo}
               onSeatTypeChange={handleSeatTypeChange}
               onTicketTypeChange={handleTicketTypeChange}
+              onDeleteRow={handleDeleteRow}
               fareInfo={fareInfo}
             />
             

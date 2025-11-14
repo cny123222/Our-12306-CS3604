@@ -29,31 +29,34 @@
 
 .passenger-info-content {
   background-color: #ffffff;
-  padding: 10px 20px 0 20px;
+  padding: 15px 20px 0 20px;
   overflow: visible;
 }
 
 .passenger-list-container {
-  margin-bottom: 0px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed #dddddd;
 }
 
 .purchase-info-container {
-  margin-bottom: 0px;
+  margin-bottom: 15px;
 }
 
 .subsection-title {
   font-size: 14px;
   font-weight: 600;
-  color: #333333;
-  margin: 0 0 12px 5px;
+  color: #0066cc;
+  margin: 0 0 10px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .passenger-list-container .subsection-title::before {
   content: '👤';
-  font-size: 20px;
+  font-size: 18px;
+  color: #0066cc;
 }
 
 /* 中国铁路保险横幅 */
