@@ -14,10 +14,10 @@ interface MainNavigationProps {
  * 12306 蓝色导航栏，包含主要功能入口
  */
 const MainNavigation: React.FC<MainNavigationProps> = ({
-  isLoggedIn,
-  onLoginClick,
-  onRegisterClick,
-  onPersonalCenterClick,
+  isLoggedIn: _isLoggedIn,
+  onLoginClick: _onLoginClick,
+  onRegisterClick: _onRegisterClick,
+  onPersonalCenterClick: _onPersonalCenterClick,
 }) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';

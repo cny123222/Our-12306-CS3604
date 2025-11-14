@@ -319,7 +319,7 @@ const OrderPage: React.FC = () => {
         )}
       </main>
       
-      <BottomNavigation onFriendLinkClick={() => {}} />
+      <BottomNavigation />
       
       {showConfirmModal && (
         <OrderConfirmationModal

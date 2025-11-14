@@ -16,7 +16,7 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
   onFilterChange,
   departureStations,
   arrivalStations,
-  seatTypes,
+  seatTypes: _seatTypes,
   departureDate,
 }) => {
   const [selectedDate, setSelectedDate] = useState<string>('');

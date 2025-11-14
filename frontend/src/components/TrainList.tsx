@@ -90,25 +90,31 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
       
       <div className="train-list-container">
         <div className="train-list-header">
-          <div className="train-list-header-cell align-left">车次</div>
+          <div className="train-list-header-cell">车次</div>
           <div className="train-list-header-cell">
             出发站
             <br />
             到达站
           </div>
-          <div 
-            className="train-list-header-cell sortable"
-            onClick={() => handleSort('departureTime')}
-          >
-            出发时间 {renderSortIcon('departureTime')}
-            <br />
-            到达时间 {renderSortIcon('arrivalTime', true)}
+          <div className="train-list-header-cell">
+            <span 
+              className="header-line sortable-line"
+              onClick={() => handleSort('departureTime')}
+            >
+              出发时间 {renderSortIcon('departureTime')}
+            </span>
+            <span 
+              className="header-line sortable-line"
+              onClick={() => handleSort('arrivalTime')}
+            >
+              到达时间 {renderSortIcon('arrivalTime', true)}
+            </span>
           </div>
           <div 
             className="train-list-header-cell sortable"
             onClick={() => handleSort('duration')}
           >
-            历时 {renderSortIcon('duration')}
+            <span className="header-line">历时 {renderSortIcon('duration')}</span>
           </div>
           <div className="train-list-header-cell">
             商务座

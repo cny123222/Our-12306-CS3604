@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './StationInput.css';
 import { getAllStations, searchStations } from '../services/stationService';
 
@@ -17,7 +17,7 @@ interface StationInputProps {
 const StationInput: React.FC<StationInputProps> = ({
   value,
   placeholder,
-  type,
+  type: _type,
   onChange,
   onSelect,
 }) => {
@@ -34,7 +34,7 @@ const StationInput: React.FC<StationInputProps> = ({
 
     try {
       const stations = await getAllStations();
-      const stationNames = stations.map(station => station.name);
+      const stationNames = stations.map((station: any) => station.name);
       setSuggestions(stationNames);
       setIsLoading(false);
     } catch (err) {
@@ -55,7 +55,7 @@ const StationInput: React.FC<StationInputProps> = ({
       setIsLoading(true);
       try {
         const stations = await getAllStations();
-        const stationNames = stations.map(station => station.name);
+        const stationNames = stations.map((station: any) => station.name);
         setSuggestions(stationNames);
         setIsLoading(false);
       } catch (err) {
@@ -70,7 +70,7 @@ const StationInput: React.FC<StationInputProps> = ({
     setIsLoading(true);
     try {
       const stations = await searchStations(inputValue);
-      const stationNames = stations.map(station => station.name);
+      const stationNames = stations.map((station: any) => station.name);
       setSuggestions(stationNames);
       setIsLoading(false);
     } catch (err) {
