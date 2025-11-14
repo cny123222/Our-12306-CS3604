@@ -182,9 +182,9 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                             <td>{passenger.ticketType || '成人票'}</td>
                             <td>
                               {passenger.name}
-                              {passenger.points && (
-                                <span className="passenger-points">积分*{passenger.points}</span>
-                              )}
+                              {passenger.points > 0 ? (
+                                <span className="passenger-points-badge">积分*{passenger.points}</span>
+                              ) : null}
                             </td>
                             <td>{passenger.idCardType || '居民身份证'}</td>
                             <td>{passenger.idCardNumber}</td>

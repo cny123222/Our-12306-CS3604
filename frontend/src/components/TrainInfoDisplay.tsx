@@ -24,16 +24,18 @@ const TrainInfoDisplay: React.FC<TrainInfoDisplayProps> = ({ trainInfo }) => {
   
   return (
     <div className="train-info-display">
-      <div className="train-info-text">
-        <span className="train-date bold">{formatDate(trainInfo.departureDate, trainInfo.dayOfWeek)}</span>
-        {' '}
-        <span className="train-no bold">{trainInfo.trainNo}次</span>
-        {' '}
-        <span className="train-station">{trainInfo.departureStation}站</span>
-        <span className="train-time bold">（{trainInfo.departureTime}开）</span>
-        <span className="train-arrow">—</span>
-        <span className="train-station">{trainInfo.arrivalStation}站</span>
-        <span className="train-time">（{trainInfo.arrivalTime}到）</span>
+      <div className="train-info-line">
+        <span className="info-date">{formatDate(trainInfo.departureDate, trainInfo.dayOfWeek)}</span>
+        <span className="info-group">
+          <span className="info-train-no">{trainInfo.trainNo}</span>
+          <span className="info-text">次</span>
+        </span>
+        <span className="info-group">
+          <span className="info-station">{trainInfo.departureStation}</span>
+          <span className="info-text">站</span>
+          <span className="info-bold-group">（{trainInfo.departureTime}开）—{trainInfo.arrivalStation}</span>
+          <span className="info-text">站（{trainInfo.arrivalTime}到）</span>
+        </span>
       </div>
     </div>
   );
