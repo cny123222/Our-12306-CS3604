@@ -1,5 +1,5 @@
 # 后端API接口定义
-# 基于登录页、注册页、首页查询页和车次列表页需求文档生成
+# 基于登录页、注册页、首页查询页、车次列表页、订单填写页和个人信息页需求文档生成
 
 - type: Backend
   id: API-POST-Login
@@ -1134,3 +1134,243 @@
   changeLog:
     - date: "2025-11-13"
       description: "初始创建，支持运输规程页面访问。"
+
+# === 个人信息页相关API接口 ===
+
+- type: Backend
+  id: API-GET-UserProfile
+  route: GET /api/user/profile
+  description: 获取用户个人信息
+  input:
+    type: Header
+    params:
+      Authorization: string
+  output:
+    success:
+      statusCode: 200
+      body:
+        username: string
+        name: string
+        country: string
+        idCardType: string
+        idCardNumber: string
+        verificationStatus: string
+        phone: string
+        email: string
+        discountType: string
+    error:
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 500
+        body: { error: "获取用户信息失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetUserProfile
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 返回用户完整的个人信息
+    - 手机号中间四位用*隐去
+    - 用于个人信息页展示
+  changeLog:
+    - date: "2025-11-14"
+      description: "初始创建，支持个人信息页用户信息展示。"
+
+- type: Backend
+  id: API-PUT-UserContactInfo
+  route: PUT /api/user/contact-info
+  description: 更新用户联系方式（邮箱）
+  input:
+    type: JSON
+    body:
+      email: string
+  output:
+    success:
+      statusCode: 200
+      body: { message: "更新成功" }
+    error:
+      - statusCode: 400
+        body: { error: "参数错误" }
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 500
+        body: { error: "更新失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-UpdateUserEmail
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 验证邮箱格式
+    - 更新用户邮箱信息
+  changeLog:
+    - date: "2025-11-14"
+      description: "初始创建，支持联系方式模块更新邮箱功能。"
+
+- type: Backend
+  id: API-POST-VerifyPhoneChange
+  route: POST /api/user/verify-phone-change
+  description: 验证并更新用户手机号
+  input:
+    type: JSON
+    body:
+      newPhone: string
+      password: string
+      verificationCode: string
+  output:
+    success:
+      statusCode: 200
+      body: { message: "手机号更新成功" }
+    error:
+      - statusCode: 400
+        body: { error: "您输入的手机号码不是有效的格式！" }
+      - statusCode: 400
+        body: { error: "输入登录密码！" }
+      - statusCode: 401
+        body: { error: "密码错误" }
+      - statusCode: 400
+        body: { error: "验证码错误或已过期" }
+      - statusCode: 500
+        body: { error: "更新失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-VerifyPassword
+    - DB-VerifyCode
+    - DB-UpdateUserPhone
+    - DB-CreateVerificationCode
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 验证新手机号格式（11位数字）
+    - 验证登录密码正确
+    - 验证手机验证码正确且未过期
+    - 更新用户手机号
+    - 控制台显示向什么手机号发送了什么验证码
+  changeLog:
+    - date: "2025-11-14"
+      description: "初始创建，支持手机核验页更新手机号功能。"
+
+- type: Backend
+  id: API-GET-UserOrders
+  route: GET /api/user/orders
+  description: 获取用户历史订单列表
+  input:
+    type: Query
+    params:
+      startDate: string  # 乘车日期起始
+      endDate: string  # 乘车日期结束
+      keyword: string  # 订单号/车次/姓名关键词
+  output:
+    success:
+      statusCode: 200
+      body:
+        orders: array
+    error:
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 500
+        body: { error: "获取订单列表失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-GetUserOrders
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 根据日期范围和关键词筛选订单
+    - 订单信息保存期限为30日
+    - 如果没有订单，返回空列表
+  changeLog:
+    - date: "2025-11-14"
+      description: "初始创建，支持历史订单页订单列表查询。"
+
+- type: Backend
+  id: API-PUT-UpdatePassenger
+  route: PUT /api/passengers/:passengerId
+  description: 更新乘客信息
+  input:
+    type: Path
+    params:
+      passengerId: string
+    body:
+      phone: string
+      email: string
+  output:
+    success:
+      statusCode: 200
+      body: { message: "修改成功" }
+    error:
+      - statusCode: 400
+        body: { error: "您输入的手机号码不是有效的格式！" }
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 404
+        body: { error: "乘客不存在" }
+      - statusCode: 500
+        body: { error: "更新失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-UpdatePassenger
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 验证乘客属于当前用户
+    - 验证手机号格式（11位数字）
+    - 更新乘客联系方式信息
+  changeLog:
+    - date: "2025-11-14"
+      description: "初始创建，支持编辑乘客联系方式功能。"
+
+- type: Backend
+  id: API-DELETE-Passenger
+  route: DELETE /api/passengers/:passengerId
+  description: 删除乘客信息
+  input:
+    type: Path
+    params:
+      passengerId: string
+  output:
+    success:
+      statusCode: 200
+      body: { message: "删除成功" }
+    error:
+      - statusCode: 401
+        body: { error: "请先登录" }
+      - statusCode: 404
+        body: { error: "乘客不存在" }
+      - statusCode: 500
+        body: { error: "删除失败" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-DeletePassenger
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 验证乘客属于当前用户
+    - 删除乘客记录
+    - 显示确认提示：您确定要删除选中的乘车人吗？
+  changeLog:
+    - date: "2025-11-14"
+      description: "初始创建，支持删除乘客功能。"
+
+- type: Backend
+  id: API-POST-CheckPassengerDuplicate
+  route: POST /api/passengers/check-duplicate
+  description: 检查乘客是否已存在
+  input:
+    type: JSON
+    body:
+      name: string
+      idCardNumber: string
+  output:
+    success:
+      statusCode: 200
+      body: { exists: false }
+    error:
+      - statusCode: 409
+        body: { exists: true, error: "该联系人已存在，请使用不同的姓名和证件。" }
+      - statusCode: 401
+        body: { error: "请先登录" }
+  dependencies:
+    - DB-CheckUserLoginStatus
+    - DB-CheckPassengerDuplicate
+  acceptanceCriteria:
+    - 验证用户已登录
+    - 检查该用户是否已添加过该姓名和证件号码的乘客
+    - 用于添加乘客前的重复校验
+  changeLog:
+    - date: "2025-11-14"
+      description: "初始创建，支持添加乘客时的重复检查。"

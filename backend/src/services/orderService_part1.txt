@@ -1,0 +1,240 @@
+const crypto = require('crypto');
+const db = require('../database');
+
+// 生成UUID v4
+function uuidv4() {
+  return crypto.randomUUID();
+}
+
+/**
+ * 订单服务
+ */
+
+/**
+ * 计算跨区间票价
+ * 当用户选择的出发站和到达站不是相邻站点时，需要累加途经所有区间的票价
+ */
+async function calculateCrossIntervalFare(trainNo, departureStation, arrivalStation) {
+  console.log('calculateCrossIntervalFare called with:', { trainNo, departureStation, arrivalStation });
+  
+  try {
+    // 步骤1: 查询该车次的所有停靠站（按顺序）
+    const stops = await db.query(
+      'SELECT station, seq FROM train_stops WHERE train_no = ? ORDER BY seq',
+      [trainNo]
+    );
+    
+    if (!stops || stops.length === 0) {
+      throw { status: 404, message: '未找到该车次的停靠站信息' };
+    }
+    
+    // 步骤2: 找到出发站和到达站的序号
+    const depIndex = stops.findIndex(s => s.station === departureStation);
+    const arrIndex = stops.findIndex(s => s.station === arrivalStation);
+    
+    console.log('Found stops:', stops.map(s => s.station));
+    console.log('depIndex:', depIndex, 'arrIndex:', arrIndex);
+    
+    if (depIndex === -1 || arrIndex === -1) {
+      const errorMsg = depIndex === -1 
+        ? `出发站"${departureStation}"不在该车次的停靠站中` 
+        : `到达站"${arrivalStation}"不在该车次的停靠站中`;
+      console.error('Station not found:', errorMsg);
+      throw { status: 400, message: errorMsg };
+    }
+    
+    if (depIndex >= arrIndex) {
+      console.error('Departure index >= arrival index:', { depIndex, arrIndex });
+      throw { status: 400, message: '出发站必须在到达站之前' };
+    }
+    
+    // 步骤3: 提取途经的所有相邻区间
+    const intervals = [];
+    for (let i = depIndex; i < arrIndex; i++) {
+      intervals.push({
+        from: stops[i].station,
+        to: stops[i + 1].station
+      });
+    }
+    console.log('Intervals:', intervals);
+    
+    // 步骤4: 查询每个区间的票价并累加
+    let totalDistance = 0;
+    const fareTypes = {
+      second_class_price: 0,
+      first_class_price: 0,
+      business_price: 0,
+      hard_sleeper_price: 0,
+      soft_sleeper_price: 0
+    };
+    
+    for (const interval of intervals) {
+      const fareRow = await db.queryOne(
+        `SELECT distance_km, second_class_price, first_class_price, business_price,
+                hard_sleeper_price, soft_sleeper_price
+         FROM train_fares
+         WHERE train_no = ? AND from_station = ? AND to_station = ?`,
+        [trainNo, interval.from, interval.to]
+      );
+      
+      if (!fareRow) {
+        throw { 
+          status: 404, 
+          message: `未找到区间 ${interval.from}->${interval.to} 的票价信息` 
+        };
+      }
+      
+      // 累加各类型票价
+      totalDistance += fareRow.distance_km || 0;
+      Object.keys(fareTypes).forEach(key => {
+        if (fareRow[key]) {
+          fareTypes[key] += fareRow[key];
+        }
+      });
+    }
+    
+    return {
+      distance_km: totalDistance,
+      ...fareTypes
+    };
+  } catch (err) {
+    if (err.status) throw err;
+    console.error('calculateCrossIntervalFare error:', err);
+    throw { status: 500, message: '查询停靠站失败' };
+  }
+}
+
+/**
+ * 获取订单填写页面数据
+ */
+async function getOrderPageData(params) {
+  const { trainNo, departureStation, arrivalStation, departureDate, userId } = params;
+  
+  // 验证参数
+  if (!trainNo || !departureStation || !arrivalStation || !departureDate) {
+    throw { status: 400, message: '参数错误' };
+  }
+  
+  // TODO: 获取车次信息、票价、余票、乘客列表、默认席别
+  return {
+    trainInfo: {},
+    fareInfo: {},
+    availableSeats: {},
+    passengers: [],
+    defaultSeatType: '二等座'
+  };
+}
+
+/**
+ * 获取默认席别
+ * G/C/D字头车次默认二等座
+ */
+async function getDefaultSeatType(trainNo) {
+  try {
+    const firstChar = trainNo.charAt(0);
+    
+    // 查询车次信息
+    const trains = await db.query(
+      'SELECT * FROM trains WHERE train_no = ?',
+      [trainNo]
+    );
+    
+    if (!trains || trains.length === 0) {
+      throw new Error('车次不存在');
+    }
+    
+    const train = trains[0];
+    
+    // 根据车次类型确定默认席别
+    let defaultSeatType = '硬座';
+    if (firstChar === 'G' || firstChar === 'C' || firstChar === 'D') {
+      defaultSeatType = '二等座';
+    }
+    
+    // 查询默认席别的票价（取第一个区间的价格作为参考）
+    const fareRows = await db.query(
+      `SELECT * FROM train_fares WHERE train_no = ? LIMIT 1`,
+      [trainNo]
+    );
+    
+    let price = 0;
+    if (fareRows && fareRows.length > 0) {
+      const fareRow = fareRows[0];
+      if (defaultSeatType === '二等座') {
+        price = fareRow.second_class_price || 0;
+      } else if (defaultSeatType === '一等座') {
+        price = fareRow.first_class_price || 0;
+      } else if (defaultSeatType === '硬座') {
+        price = fareRow.hard_seat_price || 0;
+      }
+    }
+    
+    return {
+      seatType: defaultSeatType,
+      price
+    };
+  } catch (err) {
+    console.error('getDefaultSeatType error:', err);
+    if (err.message === '车次不存在') {
+      throw new Error('车次不存在');
+    }
+    throw err;
+  }
+}
+
+/**
+ * 获取有票席别列表
+ * 支持跨区间票价计算
+ */
+async function getAvailableSeatTypes(params) {
+  const { trainNo, departureStation, arrivalStation, departureDate } = params;
+  
+  return new Promise(async (resolve, reject) => {
+    try {
+      // 步骤1: 计算跨区间票价（自动累加途经区间）
+      const fareData = await calculateCrossIntervalFare(trainNo, departureStation, arrivalStation);
+      
+      // 步骤2: 使用 trainService 的 calculateAvailableSeats 获取正确的余票数量
+      // 这个函数会正确处理跨区间场景，检查所有中间站点
+      const trainService = require('./trainService');
+      const availableSeats = await trainService.calculateAvailableSeats(
+        trainNo,
+        departureStation,
+        arrivalStation
+      );
+      
+      // 步骤3: 构建席别列表（只返回有票的席别）
+      const seatTypeMap = {
+        '二等座': fareData.second_class_price,
+        '一等座': fareData.first_class_price,
+        '商务座': fareData.business_price,
+        '硬卧': fareData.hard_sleeper_price,
+        '软卧': fareData.soft_sleeper_price
+      };
+      
+      const availableSeatTypes = [];
+      
+      // 遍历所有席别类型
+      for (const [seatType, price] of Object.entries(seatTypeMap)) {
+        // 只添加有价格且有余票的席别
+        if (price !== null && price !== undefined && price > 0) {
+          const available = availableSeats[seatType] || 0;
+          if (available > 0) {
+            availableSeatTypes.push({
+              seat_type: seatType,
+              available: available,
+              price: price
+            });
+          }
+        }
+      }
+      
+      resolve(availableSeatTypes);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+/**
+ * 创建订单

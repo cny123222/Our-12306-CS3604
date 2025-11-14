@@ -1,0 +1,78 @@
+.user-info-panel {
+  flex: 1;
+  background-color: white;
+  padding: 20px;
+}
+
+.info-section {
+  background-color: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  margin: 0 0 15px 0;
+}
+
+.edit-btn {
+  padding: 4px 12px;
+  font-size: 14px;
+  color: #1890ff;
+  background-color: white;
+  border: 1px solid #1890ff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.edit-btn:hover {
+  background-color: #e6f7ff;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: #999;
+  font-size: 14px;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  color: #000;
+  font-size: 14px;
+  flex: 1;
+}
+
+.verification-status {
+  color: #fa8c16;
+  font-weight: 500;
+}
+
+.phone-verified {
+  color: #fa8c16;
+  font-size: 14px;
+  margin-left: 10px;
+}
+

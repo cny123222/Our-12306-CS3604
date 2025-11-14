@@ -1,0 +1,76 @@
+开始顺序运行后端测试...
+================================
+
+运行: test/routes/orders.test.js
+  结果: Tests:       25 passed, 25 total
+  ✅ 通过
+
+运行: test/routes/passengers.test.js
+  结果: Tests:       38 passed, 38 total
+  ✅ 通过
+
+运行: test/routes/auth.test.js
+  结果: Tests:       13 passed, 13 total
+  ✅ 通过
+
+运行: test/routes/register.test.js
+  结果: Tests:       37 passed, 37 total
+  ✅ 通过
+
+运行: test/routes/trains.test.js
+  结果: Tests:       27 passed, 27 total
+  ✅ 通过
+
+运行: test/routes/stations.test.js
+  结果: Tests:       16 passed, 16 total
+  ✅ 通过
+
+运行: test/routes/tickets.test.js
+  结果: Tests:       12 passed, 12 total
+  ✅ 通过
+
+运行: test/routes/userProfile.test.js
+  结果: Tests:       24 passed, 24 total
+  ✅ 通过
+
+运行: test/services/authService.test.js
+  结果: Tests:       10 skipped, 10 passed, 20 total
+  ✅ 通过
+
+运行: test/services/passengerService.test.js
+  结果: Tests:       8 failed, 30 passed, 38 total
+  ❌ 失败
+
+运行: test/services/orderService.test.js
+  结果: Tests:       25 failed, 1 passed, 26 total
+  ❌ 失败
+
+运行: test/services/registrationDbService.test.js
+  结果: Tests:       19 passed, 19 total
+  ✅ 通过
+
+运行: test/integration/login.integration.test.js
+  结果: Tests:       14 passed, 14 total
+  ✅ 通过
+
+================================
+测试总结:
+  总测试数: 299
+  通过: 266
+  失败: 33
+awk: syntax error at source line 1
+ context is
+	BEGIN >>>  printf <<<  "%.1f"
+awk: bailing out at source line 1
+awk: syntax error at source line 1
+ context is
+	BEGIN  >>>  ( <<< 
+awk: bailing out at source line 1
+  通过率: %   通过率: %
+
+失败的测试套件:
+
+  - test/services/passengerService.test.js (8 failed)
+  - test/services/orderService.test.js (25 failed)
+
+详细报告已保存到: backend/TEST_REPORT.md

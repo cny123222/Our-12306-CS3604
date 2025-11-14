@@ -48,9 +48,7 @@ async function getUserPassengers(userId) {
     return passengers;
   } catch (err) {
     console.error('获取乘客列表失败:', err);
-    const error = new Error('获取乘客列表失败');
-    error.status = 500;
-    throw error;
+    throw err;
   }
 }
 
@@ -229,7 +227,7 @@ async function createPassenger(userId, passengerData) {
     const passengerId = uuidv4();
     
     // 创建乘客记录
-    await db.run(
+    const result = await db.query(
       `INSERT INTO passengers (id, user_id, name, id_card_type, id_card_number, discount_type, points, created_at)
        VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
       [passengerId, userId, name, idCardType, idCardNumber, discountType || '成人票']
@@ -261,13 +259,13 @@ async function updatePassenger(userId, passengerId, updateData) {
   const { name, idCardType, idCardNumber, discountType } = updateData;
   
   // 验证数据格式
-  if (name && !validateNameLength(name)) {
+  if (name !== undefined && !validateNameLength(name)) {
     const error = new Error('姓名长度不符合要求');
     error.status = 400;
     throw error;
   }
   
-  if (idCardNumber && !validateIdCardNumber(idCardNumber, idCardType)) {
+  if (idCardNumber !== undefined && !validateIdCardNumber(idCardNumber, idCardType)) {
     const error = new Error('证件号码格式错误');
     error.status = 400;
     throw error;
@@ -312,6 +310,23 @@ async function updatePassenger(userId, passengerId, updateData) {
     const error = new Error('更新乘客失败');
     error.status = 500;
     throw error;
+  }
+}
+
+/**
+ * 检查乘客是否已存在
+ */
+async function checkPassengerExists(userId, name, idCardNumber) {
+  try {
+    const rows = await db.query(
+      'SELECT id FROM passengers WHERE user_id = ? AND name = ? AND id_card_number = ?',
+      [userId, name, idCardNumber]
+    );
+    
+    return rows.length > 0;
+  } catch (err) {
+    console.error('检查乘客存在性失败:', err);
+    throw err;
   }
 }
 
@@ -381,5 +396,6 @@ module.exports = {
   createPassenger,
   updatePassenger,
   deletePassenger,
+  checkPassengerExists,
   maskIdNumber
 };

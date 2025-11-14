@@ -1,152 +1,165 @@
 const express = require('express');
 const router = express.Router();
-const passengerService = require('../services/passengerService');
 const { authenticateUser } = require('../middleware/auth');
+const passengerService = require('../services/passengerService');
 
 /**
- * 获取用户乘客列表
- * GET /api/passengers
+ * API-GET-Passengers: 获取用户的乘客列表
+ * Route: GET /api/passengers
  */
 router.get('/', authenticateUser, async (req, res) => {
   try {
-    
     const userId = req.user.id;
     const passengers = await passengerService.getUserPassengers(userId);
-    
     res.status(200).json({ passengers });
   } catch (error) {
-    console.error('获取乘客列表失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '获取乘客列表失败';
-    res.status(status).json({ error: message });
+    res.status(500).json({ error: error.message || '获取乘客列表失败' });
   }
 });
 
 /**
- * 搜索乘客
- * POST /api/passengers/search
+ * API-POST-SearchPassengers: 搜索乘客
+ * Route: POST /api/passengers/search
  */
 router.post('/search', authenticateUser, async (req, res) => {
   try {
-    
+    const userId = req.user.id;
     const { keyword } = req.body;
     
-    // 验证关键词
-    if (keyword === undefined || keyword === null) {
-      return res.status(400).json({ error: '请提供搜索关键词' });
+    if (!keyword) {
+      return res.status(400).json({ error: '请输入搜索关键词' });
     }
     
-    const userId = req.user.id;
     const passengers = await passengerService.searchPassengers(userId, keyword);
-    
     res.status(200).json({ passengers });
   } catch (error) {
-    console.error('搜索乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '搜索失败';
-    res.status(status).json({ error: message });
+    res.status(500).json({ error: error.message || '搜索失败' });
   }
 });
 
 /**
- * 添加乘客
- * POST /api/passengers
+ * API-POST-AddPassenger: 添加乘客信息
+ * Route: POST /api/passengers
  */
 router.post('/', authenticateUser, async (req, res) => {
   try {
-    
-    const { name, idCardType, idCardNumber, discountType } = req.body;
+    const userId = req.user.id;
+    const { name, idCardType, idCardNumber, phone, discountType } = req.body;
     
     // 验证必填字段
-    if (!name || !idCardType || !idCardNumber || !discountType) {
+    if (!name || !idCardType || !idCardNumber) {
       return res.status(400).json({ error: '参数错误' });
     }
     
-    const userId = req.user.id;
     const result = await passengerService.createPassenger(userId, {
       name,
       idCardType,
       idCardNumber,
-      discountType
+      phone,
+      discountType: discountType || '成人票'
     });
     
     res.status(201).json(result);
   } catch (error) {
-    console.error('添加乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '添加乘客失败';
-    res.status(status).json({ error: message });
+    if (error.status === 409) {
+      res.status(409).json({ error: error.message });
+    } else if (error.status === 400) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message || '添加乘客失败' });
+    }
   }
 });
 
 /**
- * 更新乘客信息
- * PUT /api/passengers/:passengerId
+ * API-PUT-UpdatePassenger: 更新乘客信息
+ * Route: PUT /api/passengers/:passengerId
  */
 router.put('/:passengerId', authenticateUser, async (req, res) => {
   try {
-    
-    const { passengerId } = req.params;
-    const { name, idCardType, idCardNumber, discountType } = req.body;
-    
     const userId = req.user.id;
-    const result = await passengerService.updatePassenger(userId, passengerId, {
-      name,
-      idCardType,
-      idCardNumber,
-      discountType
-    });
+    const { passengerId } = req.params;
+    const updateData = req.body;
     
+    const result = await passengerService.updatePassenger(userId, passengerId, updateData);
     res.status(200).json(result);
   } catch (error) {
-    console.error('更新乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '更新乘客失败';
-    res.status(status).json({ error: message });
+    if (error.status === 404) {
+      res.status(404).json({ error: error.message });
+    } else if (error.status === 403) {
+      res.status(403).json({ error: error.message });
+    } else if (error.status === 400) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message || '更新失败' });
+    }
   }
 });
 
 /**
- * 删除乘客
- * DELETE /api/passengers/:passengerId
+ * API-DELETE-Passenger: 删除乘客信息
+ * Route: DELETE /api/passengers/:passengerId
  */
 router.delete('/:passengerId', authenticateUser, async (req, res) => {
   try {
-    
-    const { passengerId } = req.params;
     const userId = req.user.id;
+    const { passengerId } = req.params;
     
     const result = await passengerService.deletePassenger(userId, passengerId);
-    
     res.status(200).json(result);
   } catch (error) {
-    console.error('删除乘客失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '删除乘客失败';
-    res.status(status).json({ error: message });
+    if (error.status === 404) {
+      res.status(404).json({ error: error.message });
+    } else if (error.status === 403) {
+      res.status(403).json({ error: error.message });
+    } else if (error.status === 400) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message || '删除失败' });
+    }
   }
 });
 
 /**
- * 获取乘客详细信息
- * GET /api/passengers/:passengerId
+ * API-POST-CheckPassengerDuplicate: 检查乘客是否已存在
+ * Route: POST /api/passengers/check-duplicate
+ */
+router.post('/check-duplicate', authenticateUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, idCardNumber } = req.body;
+    
+    if (!name || !idCardNumber) {
+      return res.status(400).json({ error: '请提供姓名和证件号码' });
+    }
+    
+    const exists = await passengerService.checkPassengerExists(userId, name, idCardNumber);
+    res.status(200).json({ exists });
+  } catch (error) {
+    res.status(500).json({ error: error.message || '检查失败' });
+  }
+});
+
+/**
+ * API-GET-PassengerDetails: 获取乘客详细信息
+ * Route: GET /api/passengers/:passengerId
  */
 router.get('/:passengerId', authenticateUser, async (req, res) => {
   try {
-    
-    const { passengerId } = req.params;
     const userId = req.user.id;
+    const { passengerId } = req.params;
     
     const passenger = await passengerService.getPassengerDetails(userId, passengerId);
-    
     res.status(200).json(passenger);
   } catch (error) {
-    console.error('获取乘客详情失败:', error);
-    const status = error.status || 500;
-    const message = error.message || '获取乘客详情失败';
-    res.status(status).json({ error: message });
+    if (error.status === 404) {
+      res.status(404).json({ error: error.message });
+    } else if (error.status === 403) {
+      res.status(403).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message || '获取乘客信息失败' });
+    }
   }
 });
 
 module.exports = router;
-

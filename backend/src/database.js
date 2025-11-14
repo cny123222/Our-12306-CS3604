@@ -23,21 +23,39 @@ function getDatabase() {
 }
 
 /**
- * 执行查询（返回多行）
+ * 执行查询（返回多行）或执行更新操作
  * @param {string} sql - SQL语句
  * @param {Array} params - 参数
- * @returns {Promise<Array>} 查询结果
+ * @returns {Promise<Array|Object>} 查询结果或执行结果
  */
 function query(sql, params = []) {
   return new Promise((resolve, reject) => {
     const db = getDatabase();
-    db.all(sql, params, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows || []);
-      }
-    });
+    const sqlUpper = sql.trim().toUpperCase();
+    
+    // 判断SQL类型
+    if (sqlUpper.startsWith('INSERT') || sqlUpper.startsWith('UPDATE') || sqlUpper.startsWith('DELETE')) {
+      // 对于INSERT/UPDATE/DELETE，使用db.run
+      db.run(sql, params, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            insertId: this.lastID,
+            affectedRows: this.changes
+          });
+        }
+      });
+    } else {
+      // 对于SELECT等查询，使用db.all
+      db.all(sql, params, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows || []);
+        }
+      });
+    }
   });
 }
 

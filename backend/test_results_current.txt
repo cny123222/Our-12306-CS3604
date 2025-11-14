@@ -1,0 +1,213 @@
+  ● Console
+  ● PassengerService Tests › createPassenger() - 创建乘客 › 新创建的乘客积分应该初始化为0
+  ● PassengerService Tests › deletePassenger() - 删除乘客 › 应该成功删除乘客
+  ● PassengerService Tests › deletePassenger() - 删除乘客 › 乘客不属于当前用户时应该抛出错误
+  ● PassengerService Tests › deletePassenger() - 删除乘客 › 乘客有未完成的订单时应该抛出错误
+  ● PassengerService Tests › 边界情况和错误处理 › 应该正确处理数据库连接错误
+  ● PassengerService Tests › 边界情况和错误处理 › 应该正确处理特殊字符注入攻击
+  ● PassengerService Tests › 边界情况和错误处理 › 应该正确处理大量乘客列表
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Console
+  ● OrderService Tests › getDefaultSeatType() - 获取默认席别 › G字头车次应该返回"二等座"作为默认席别
+  ● OrderService Tests › getDefaultSeatType() - 获取默认席别 › C字头车次应该返回"二等座"作为默认席别
+  ● OrderService Tests › getDefaultSeatType() - 获取默认席别 › D字头车次应该返回"二等座"作为默认席别
+  ● OrderService Tests › getDefaultSeatType() - 获取默认席别 › 车次不存在时应该抛出错误
+  ● OrderService Tests › getAvailableSeatTypes() - 获取有票席别列表 › 应该只返回有余票的席别
+  ● OrderService Tests › getAvailableSeatTypes() - 获取有票席别列表 › 已售罄的席别不应该包含在列表中
+  ● OrderService Tests › getAvailableSeatTypes() - 获取有票席别列表 › 所有席别售罄时应该返回空数组
+  ● OrderService Tests › createOrder() - 创建订单 › 应该成功创建订单并返回订单详情
+  ● OrderService Tests › createOrder() - 创建订单 › 未选择乘车人时应该抛出错误
+  ● OrderService Tests › createOrder() - 创建订单 › 车票售罄时应该抛出错误
+  ● OrderService Tests › createOrder() - 创建订单 › 余票数小于订单需求数量时应该抛出错误
+  ● OrderService Tests › createOrder() - 创建订单 › 应该在同一事务中执行订单创建和座位锁定
+  ● OrderService Tests › createOrder() - 创建订单 › 订单创建失败时应该回滚事务
+  ● OrderService Tests › getOrderDetails() - 获取订单详细信息 › 应该返回完整的订单详情
+  ● OrderService Tests › getOrderDetails() - 获取订单详细信息 › 订单不存在时应该抛出错误
+  ● OrderService Tests › getOrderDetails() - 获取订单详细信息 › 订单不属于当前用户时应该抛出错误
+  ● OrderService Tests › updateOrderStatus() - 更新订单状态 › 应该成功更新订单状态
+  ● OrderService Tests › updateOrderStatus() - 更新订单状态 › 订单不存在时应该抛出错误
+  ● OrderService Tests › lockSeats() - 锁定座位 › 应该为订单中的每个乘客锁定座位
+  ● OrderService Tests › lockSeats() - 锁定座位 › 座位不足时应该抛出错误
+  ● OrderService Tests › releaseSeatLocks() - 释放座位锁定 › 应该释放指定订单的所有座位锁定
+  ● OrderService Tests › releaseSeatLocks() - 释放座位锁定 › 订单没有锁定的座位时不应该抛出错误
+  ● OrderService Tests › confirmSeatAllocation() - 确认座位分配 › 应该将锁定的座位转换为已预订状态
+  ● OrderService Tests › confirmSeatAllocation() - 确认座位分配 › 应该在同一事务中执行
+  ● OrderService Tests › calculateOrderTotalPrice() - 计算订单总价 › 应该正确计算多个乘客的订单总价
+  ● OrderService Tests › calculateOrderTotalPrice() - 计算订单总价 › 单个乘客的订单应该返回单张票价
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+  ● Test suite failed to run
+Tests:       33 failed, 31 passed, 64 total
+Snapshots:   0 total

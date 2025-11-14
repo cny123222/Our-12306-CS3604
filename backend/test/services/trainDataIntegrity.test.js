@@ -11,15 +11,19 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
+// 在describe外部读取数据
+const trainsJsonPath = path.join(__dirname, '../../../requirements/03-车次列表页/车次信息.json');
+let trainsJsonData = [];
+try {
+  trainsJsonData = JSON.parse(fs.readFileSync(trainsJsonPath, 'utf8'));
+} catch (err) {
+  console.error('无法读取车次信息JSON:', err);
+}
+
 describe('车次数据完整性测试', () => {
   let db;
-  let trainsJsonData;
 
   beforeAll(() => {
-    // 读取车次信息JSON
-    const trainsJsonPath = path.join(__dirname, '../../../requirements/03-车次列表页/车次信息.json');
-    trainsJsonData = JSON.parse(fs.readFileSync(trainsJsonPath, 'utf8'));
-
     // 连接数据库
     const dbPath = process.env.TEST_DB_PATH || path.join(__dirname, '../../database/railway.db');
     db = new sqlite3.Database(dbPath);

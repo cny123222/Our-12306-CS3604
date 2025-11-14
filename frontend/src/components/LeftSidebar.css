@@ -1,0 +1,43 @@
+.left-sidebar {
+  width: 200px;
+  background-color: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 10px 0;
+}
+
+.menu-section {
+  margin-bottom: 15px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  padding: 10px 15px;
+}
+
+.menu-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  padding: 10px 25px;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.menu-item.active {
+  background-color: #e6f7ff;
+  color: white;
+  font-weight: 500;
+}
+

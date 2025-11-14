@@ -1,0 +1,45 @@
+.user-profile-page {
+  background-color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.breadcrumb {
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+}
+
+.breadcrumb-path {
+  color: #999;
+}
+
+.breadcrumb-current {
+  color: #1890ff;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #f5222d;
+}
+
