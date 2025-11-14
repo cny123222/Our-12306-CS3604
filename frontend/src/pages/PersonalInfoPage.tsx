@@ -19,9 +19,17 @@ const PersonalInfoPage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // 检查登录状态
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log('未登录，跳转到登录页');
+      navigate('/login');
+      return;
+    }
+    
     // 页面加载时自动获取用户信息
     fetchUserInfo();
-  }, []);
+  }, [navigate]);
 
   const fetchUserInfo = async () => {
     try {
@@ -29,7 +37,7 @@ const PersonalInfoPage = () => {
       setError('');
       
       // 从localStorage获取token
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       
       const response = await fetch('/api/user/info', {
         headers: { 
@@ -39,6 +47,11 @@ const PersonalInfoPage = () => {
       });
       
       if (!response.ok) {
+        if (response.status === 401) {
+          // Token失效，跳转到登录页
+          navigate('/login');
+          return;
+        }
         throw new Error('获取用户信息失败');
       }
       
@@ -81,7 +94,7 @@ const PersonalInfoPage = () => {
 
   const handleSaveEmail = async (email: string) => {
     try {
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       
       const response = await fetch('/api/user/email', {
         method: 'PUT',
@@ -96,8 +109,9 @@ const PersonalInfoPage = () => {
         throw new Error('更新邮箱失败');
       }
       
-      // 更新本地用户信息
-      setUserInfo({ ...userInfo, email });
+      // 保存成功后重新获取用户信息（刷新页面数据）
+      await fetchUserInfo();
+      alert('邮箱更新成功！');
     } catch (err) {
       console.error('Error updating email:', err);
       alert('更新邮箱失败');

@@ -154,13 +154,13 @@ async function getUserOrders(userId, options = {}) {
     let sql = `
       SELECT 
         id as orderId,
-        order_number as orderNumber,
-        train_no as trainNo,
+        id as orderNumber,
+        train_number as trainNo,
         departure_station as departureStation,
         arrival_station as arrivalStation,
         departure_date as departureDate,
         status,
-        passengers,
+        '' as passengers,
         total_price as totalPrice,
         created_at as createdAt
       FROM orders
@@ -216,13 +216,13 @@ async function searchOrders(userId, searchCriteria) {
     let sql = `
       SELECT 
         id as orderId,
-        order_number as orderNumber,
-        train_no as trainNo,
+        id as orderNumber,
+        train_number as trainNo,
         departure_station as departureStation,
         arrival_station as arrivalStation,
         departure_date as departureDate,
         status,
-        passengers,
+        '' as passengers,
         total_price as totalPrice,
         created_at as createdAt
       FROM orders
@@ -234,12 +234,11 @@ async function searchOrders(userId, searchCriteria) {
     // 关键词搜索（订单号、车次号、乘客姓名）
     if (keyword) {
       sql += ` AND (
-        order_number LIKE ? 
-        OR train_no LIKE ? 
-        OR passengers LIKE ?
+        id LIKE ? 
+        OR train_number LIKE ?
       )`;
       const keywordParam = `%${keyword}%`;
-      params.push(keywordParam, keywordParam, keywordParam);
+      params.push(keywordParam, keywordParam);
     }
     
     // 日期范围筛选

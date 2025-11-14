@@ -21,8 +21,16 @@ const PassengerManagementPage = () => {
   const [editingPassenger, setEditingPassenger] = useState<any>(null);
 
   useEffect(() => {
+    // 检查登录状态
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log('未登录，跳转到登录页');
+      navigate('/login');
+      return;
+    }
+    
     fetchPassengers();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (searchKeyword) {
@@ -39,20 +47,49 @@ const PassengerManagementPage = () => {
   const fetchPassengers = async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      setError(''); // 清除之前的错误
+      const token = localStorage.getItem('authToken');
+      
+      console.log('=== 乘客列表加载开始 ===');
+      console.log('Token存在:', !!token);
+      
+      if (!token) {
+        console.log('Token不存在，跳转登录页');
+        navigate('/login');
+        return;
+      }
+      
       const response = await fetch('/api/passengers', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
+      console.log('API响应状态:', response.status);
+
+      if (response.status === 401) {
+        // Token失效，跳转到登录页
+        console.log('Token失效(401)，跳转登录页');
+        localStorage.removeItem('authToken');
+        navigate('/login');
+        return;
+      }
+
       if (response.ok) {
         const data = await response.json();
+        console.log('获取到乘客数据:', data);
         setPassengers(data.passengers || []);
         setFilteredPassengers(data.passengers || []);
+        console.log('乘客列表设置成功，数量:', (data.passengers || []).length);
+      } else {
+        const errorText = await response.text();
+        console.error('API错误响应:', errorText);
+        setError(`获取乘客列表失败: ${response.status}`);
       }
     } catch (err) {
+      console.error('获取乘客列表异常:', err);
       setError('获取乘客列表失败');
     } finally {
       setIsLoading(false);
+      console.log('=== 乘客列表加载结束 ===');
     }
   };
 
@@ -86,7 +123,7 @@ const PassengerManagementPage = () => {
     if (!confirm('确定要删除该乘客吗？')) return;
 
     try {
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/passengers/${passengerId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -104,7 +141,7 @@ const PassengerManagementPage = () => {
 
   const handleAddSubmit = async (passengerData: any) => {
     try {
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       const response = await fetch('/api/passengers', {
         method: 'POST',
         headers: {
@@ -128,7 +165,7 @@ const PassengerManagementPage = () => {
 
   const handleEditSubmit = async (passengerData: any) => {
     try {
-      const token = localStorage.getItem('token') || 'valid-test-token';
+      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/passengers/${editingPassenger.id}`, {
         method: 'PUT',
         headers: {
@@ -168,7 +205,19 @@ const PassengerManagementPage = () => {
             currentPage="乘车人"
           />
 
-          {currentView === 'list' && (
+          {isLoading && (
+            <div style={{ padding: '20px', textAlign: 'center' }}>
+              加载中...
+            </div>
+          )}
+
+          {error && !isLoading && (
+            <div style={{ padding: '20px', color: 'red', textAlign: 'center' }}>
+              {error}
+            </div>
+          )}
+
+          {!isLoading && !error && currentView === 'list' && (
             <PassengerListPanel
               passengers={filteredPassengers}
               onAdd={handleAdd}
