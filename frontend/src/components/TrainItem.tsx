@@ -37,12 +37,12 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
     return 'limited';
   };
 
-  // 格式化历时（分钟 -> "X小时Y分"）
+  // 格式化历时（分钟 -> "HH:MM"）
   const formatDuration = (minutes: number | undefined) => {
     if (!minutes) return '--';
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    return `${hours}小时${mins}分`;
+    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
   };
 
   return (
@@ -52,7 +52,7 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
         <div className="train-number-container">
           <span className="train-number">{train.trainNo || '--'}</span>
           <svg className="train-dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M2 4L6 8L10 4" stroke="#2196f3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M6 8L2 4H10L6 8Z" fill="#2196f3"/>
           </svg>
         </div>
         {/* 可以在这里添加车次类型标签 */}
@@ -79,8 +79,8 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
       {/* 出发/到达时间 */}
       <div className="train-item-cell">
         <div className="train-times-vertical">
-          <div className="train-time">{train.departureTime || '--'}</div>
-          <div className="train-time">{train.arrivalTime || '--'}</div>
+          <div className="train-time train-time-departure">{train.departureTime || '--'}</div>
+          <div className="train-time train-time-arrival">{train.arrivalTime || '--'}</div>
         </div>
       </div>
       

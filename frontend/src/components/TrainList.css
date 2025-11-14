@@ -10,7 +10,7 @@
 /* 查询结果提示信息 */
 .train-list-info {
   padding: 12px 16px;
-  background-color: #f9fafb;
+  background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   justify-content: space-between;
@@ -84,9 +84,9 @@
 /* 列表表头 */
 .train-list-header {
   display: grid;
-  grid-template-columns: 60px 90px 90px 80px repeat(11, minmax(62px, 1fr)) 70px;
+  grid-template-columns: 80px 90px 80px 80px repeat(11, minmax(50px, 1fr)) 80px;
   gap: 0;
-  padding: 6px 16px;
+  padding: 0px 0px;
   background: linear-gradient(to bottom, #3699d6 0%, #187ac1 100%);
   border-bottom: 2px solid #3466a0;
   font-weight: 600;
@@ -184,6 +184,7 @@
 /* 列表主体 */
 .train-list-body {
   background-color: #ffffff;
+  position: relative;
 }
 
 /* 空状态 */
