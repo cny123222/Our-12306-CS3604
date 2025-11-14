@@ -20,12 +20,15 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   initialDepartureDate,
   onSearch,
 }) => {
+  const [tripType, setTripType] = useState<'single' | 'round'>('single'); // 单程/往返
+  const [ticketType, setTicketType] = useState<'normal' | 'student'>('normal'); // 普通/学生
   const [departureStation, setDepartureStation] = useState(initialDepartureStation);
   const [arrivalStation, setArrivalStation] = useState(initialArrivalStation);
   // 如果没有提供初始日期，使用当前日期
   const [departureDate, setDepartureDate] = useState(
     initialDepartureDate || new Date().toISOString().split('T')[0]
   );
+  const [returnDate, setReturnDate] = useState(''); // 返程日期（目前不实现功能）
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,11 +88,36 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   return (
     <div className="train-search-bar">
       <div className="search-bar-container">
+        {/* 单程/往返选择 */}
+        <div className="trip-type-selector">
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="tripType"
+              value="single"
+              checked={tripType === 'single'}
+              onChange={() => setTripType('single')}
+            />
+            <span className="radio-label">单程</span>
+          </label>
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="tripType"
+              value="round"
+              checked={tripType === 'round'}
+              onChange={() => setTripType('round')}
+            />
+            <span className="radio-label">往返</span>
+          </label>
+        </div>
+
+        {/* 出发地 */}
         <div className="search-field">
           <label className="search-field-label">出发地</label>
           <StationInput
             value={departureStation}
-            placeholder="简拼/全拼/汉字"
+            placeholder="北京北"
             type="departure"
             onChange={setDepartureStation}
             onSelect={setDepartureStation}
@@ -99,19 +127,26 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           )}
         </div>
         
+        {/* 交换按钮 - 蓝色icon */}
         <button 
           className="swap-stations-btn" 
           onClick={handleSwapStations}
           aria-label="交换出发地和到达地"
         >
-          ⇅
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10L3 6L7 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M3 6H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M17 14L21 18L17 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M21 18H10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
         </button>
         
+        {/* 到达地 */}
         <div className="search-field">
-          <label className="search-field-label">到达地</label>
+          <label className="search-field-label">目的地</label>
           <StationInput
             value={arrivalStation}
-            placeholder="简拼/全拼/汉字"
+            placeholder="上海"
             type="arrival"
             onChange={setArrivalStation}
             onSelect={setArrivalStation}
@@ -119,8 +154,9 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           {errors.arrivalStation && <div className="field-error">{errors.arrivalStation}</div>}
         </div>
         
+        {/* 出发日期 */}
         <div className="search-field">
-          <label className="search-field-label">出发日期</label>
+          <label className="search-field-label">出发日</label>
           <DatePicker
             value={departureDate}
             onChange={setDepartureDate}
@@ -129,6 +165,46 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           />
         </div>
         
+        {/* 返程日期 - 灰色禁用 */}
+        <div className="search-field">
+          <label className="search-field-label return-label">返程日</label>
+          <DatePicker
+            value={returnDate}
+            onChange={setReturnDate}
+            minDate={new Date().toISOString().split('T')[0]}
+            maxDate=""
+            disabled={true}
+          />
+        </div>
+
+        {/* 竖线分隔 */}
+        <div className="vertical-divider"></div>
+        
+        {/* 普通/学生选择 */}
+        <div className="ticket-type-selector">
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="ticketType"
+              value="normal"
+              checked={ticketType === 'normal'}
+              onChange={() => setTicketType('normal')}
+            />
+            <span className="radio-label">普通</span>
+          </label>
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="ticketType"
+              value="student"
+              checked={ticketType === 'student'}
+              onChange={() => setTicketType('student')}
+            />
+            <span className="radio-label">学生</span>
+          </label>
+        </div>
+        
+        {/* 查询按钮 */}
         <button className="search-submit-btn" onClick={handleSearch} disabled={isLoading}>
           {isLoading ? '查询中...' : '查询'}
         </button>
