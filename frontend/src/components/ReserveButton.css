@@ -1,32 +1,32 @@
 /* 预订按钮样式 */
 .reserve-button {
-  padding: 8px 20px;
-  background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
+  padding: 6px 18px;
+  background: linear-gradient(to bottom, #5ba3e0 0%, #4a90d9 100%);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 3px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(74, 144, 217, 0.3);
   white-space: nowrap;
 }
 
 .reserve-button:hover:not(:disabled) {
-  background: linear-gradient(to bottom, #ffaa44 0%, #ff8822 100%);
-  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
-  transform: translateY(-2px);
+  background: linear-gradient(to bottom, #6bb0e8 0%, #5ba3e0 100%);
+  box-shadow: 0 3px 6px rgba(74, 144, 217, 0.4);
+  transform: translateY(-1px);
 }
 
 .reserve-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(74, 144, 217, 0.3);
 }
 
 .reserve-button:disabled,
 .reserve-button.soldout {
-  background: linear-gradient(to bottom, #cccccc 0%, #bbbbbb 100%);
+  background: linear-gradient(to bottom, #d9d9d9 0%, #cccccc 100%);
   cursor: not-allowed;
   box-shadow: none;
   transform: none;

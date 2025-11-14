@@ -1,9 +1,68 @@
 /* 车次列表区域样式 */
 .train-list {
   background-color: #ffffff;
-  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* 查询结果提示信息 */
+.train-list-info {
+  padding: 12px 16px;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.train-list-summary {
+  font-size: 13px;
+  color: #666;
+}
+
+.summary-route {
+  font-weight: 600;
+  color: #333;
+}
+
+.summary-date {
+  color: #999;
+  margin-left: 4px;
+}
+
+.summary-count {
+  color: #ff7700;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.train-list-hints {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.hint-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  user-select: none;
+}
+
+.hint-checkbox input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.hint-checkbox:hover {
+  color: #2196f3;
 }
 
 .train-list-container {
@@ -13,26 +72,64 @@
 /* 列表表头 */
 .train-list-header {
   display: grid;
-  grid-template-columns: 80px 180px 120px 120px 100px repeat(5, 1fr) 100px;
-  gap: 10px;
-  padding: 15px 20px;
-  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 2px solid #dee2e6;
-  font-weight: 600;
-  font-size: 13px;
-  color: #495057;
+  grid-template-columns: 90px 140px 140px 80px repeat(7, 1fr);
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(to bottom, #4a90d9 0%, #3b76b8 100%);
+  border-bottom: 2px solid #3466a0;
+  font-weight: 500;
+  font-size: 12px;
+  color: white;
   align-items: center;
+  line-height: 1.4;
 }
 
 .train-list-header-cell {
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  position: relative;
 }
 
 .train-list-header-cell.align-left {
   text-align: left;
+}
+
+.train-list-header-cell.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+  padding: 4px;
+  border-radius: 3px;
+}
+
+.train-list-header-cell.sortable:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.train-list-header-cell.sortable:active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 排序图标 */
+.sort-icon {
+  display: inline-block;
+  font-size: 10px;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+.sort-icon.neutral {
+  opacity: 0.4;
+}
+
+.sort-icon.asc {
+  opacity: 1;
+  color: #ffd700;
+}
+
+.sort-icon.desc {
+  opacity: 1;
+  color: #ffd700;
 }
 
 /* 列表主体 */

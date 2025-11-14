@@ -1,18 +1,18 @@
 /* 车次列表项样式 */
 .train-item {
   display: grid;
-  grid-template-columns: 80px 180px 120px 120px 100px repeat(5, 1fr) 100px;
-  gap: 10px;
-  padding: 18px 20px;
+  grid-template-columns: 90px 140px 140px 80px repeat(7, 1fr);
+  gap: 8px;
+  padding: 14px 16px;
   border-bottom: 1px solid #e9ecef;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   background-color: #ffffff;
 }
 
 .train-item:hover {
-  background-color: #f8f9fa;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: #f9fafb;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .train-item:last-child {
@@ -22,82 +22,122 @@
 /* 车次单元格 */
 .train-item-cell {
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   color: #495057;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .train-item-cell.align-left {
   text-align: left;
 }
 
-/* 车次号 */
+/* 车次号容器 */
+.train-number-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .train-number {
   font-weight: 600;
   color: #2196f3;
-  font-size: 15px;
+  font-size: 16px;
 }
 
-/* 站点信息 */
-.train-stations {
+.train-dropdown-arrow {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.train-dropdown-arrow:hover {
+  opacity: 1;
+}
+
+/* 车次标签 */
+.train-badges {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.train-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  background-color: #ff7700;
+  color: white;
+  font-size: 11px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+/* 站点信息 - 垂直布局 */
+.train-stations-vertical {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  text-align: left;
+  gap: 6px;
+  text-align: center;
 }
 
-.station-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.station-name {
+.train-stations-vertical .station-name {
   font-size: 14px;
   font-weight: 500;
   color: #333333;
+  line-height: 1.4;
 }
 
-.station-arrow {
-  color: #999999;
-  font-size: 12px;
+/* 时间信息 - 垂直布局 */
+.train-times-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
 }
 
-/* 时间信息 */
 .train-time {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #333333;
+  line-height: 1.4;
 }
 
-.train-date {
+.train-arrival-date {
+  margin-top: 4px;
+}
+
+.next-day-tag {
+  display: inline-block;
   font-size: 11px;
-  color: #999999;
-  margin-top: 2px;
+  color: #ff7700;
+  background-color: #fff5ed;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 500;
 }
 
 /* 历时 */
 .train-duration {
   font-size: 13px;
   color: #666666;
+  line-height: 1.4;
 }
 
 /* 座位信息 */
 .seat-info {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
+  padding: 2px 0;
 }
 
 /* 有票 - 绿色 */
 .seat-info.available {
-  color: #4caf50;
+  color: #52c41a;
 }
 
-/* 余票少（小于20张）- 黑色 */
+/* 余票少（小于20张）- 橙色显示具体数字 */
 .seat-info.limited {
-  color: #333333;
+  color: #ff7700;
+  font-weight: 600;
 }
 
 /* 无票 - 灰色 */
@@ -107,7 +147,7 @@
 
 /* 无此席别 - 灰色 */
 .seat-info.not-available {
-  color: #cccccc;
+  color: #d9d9d9;
 }
 
 /* 预订按钮单元格 */
@@ -115,39 +155,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.train-reserve-btn {
-  padding: 8px 20px;
-  background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
-  white-space: nowrap;
-}
-
-.train-reserve-btn:hover {
-  background: linear-gradient(to bottom, #ffaa44 0%, #ff8822 100%);
-  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
-  transform: translateY(-2px);
-}
-
-.train-reserve-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
-}
-
-.train-reserve-btn:disabled {
-  background: linear-gradient(to bottom, #cccccc 0%, #bbbbbb 100%);
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-  opacity: 0.6;
 }
 
 /* 响应式设计 - 平板 */

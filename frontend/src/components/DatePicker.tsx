@@ -6,13 +6,14 @@ interface DatePickerProps {
   onChange: (date: string) => void;
   minDate: string;
   maxDate: string;
+  disabled?: boolean;
 }
 
 /**
  * 日期选择器组件
  * 骨架实现：仅包含组件结构，不实现真实逻辑
  */
-const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, minDate, maxDate }) => {
+const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, minDate, maxDate, disabled = false }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
 
@@ -29,11 +30,12 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, minDate, maxDa
         type="text"
         value={value}
         readOnly
-        placeholder="出发日期"
-        onClick={() => setShowCalendar(!showCalendar)}
-        className="date-input"
+        disabled={disabled}
+        placeholder="返程日"
+        onClick={() => !disabled && setShowCalendar(!showCalendar)}
+        className={`date-input ${disabled ? 'disabled' : ''}`}
       />
-      {showCalendar && (
+      {showCalendar && !disabled && (
         <div className="calendar-dropdown">
           {/* TODO: 实现日历展示 */}
           <div className="calendar-placeholder">日历组件待实现</div>

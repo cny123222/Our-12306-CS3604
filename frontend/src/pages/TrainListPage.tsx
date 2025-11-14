@@ -259,6 +259,7 @@ const TrainListPage: React.FC = () => {
           departureStations={filterOptions.departureStations || []}
           arrivalStations={filterOptions.arrivalStations || []}
           seatTypes={filterOptions.seatTypes || []}
+          departureDate={searchParams.departureDate}
         />
         {error && <div className="error-message">{error}</div>}
         {isLoading ? (
