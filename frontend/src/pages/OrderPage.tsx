@@ -79,6 +79,14 @@ const OrderPage: React.FC = () => {
           departureDate: departureDate || '',
         });
         
+        console.log('Fetching order page data with params:', {
+          trainNo,
+          departureStation,
+          arrivalStation,
+          departureDate
+        });
+        console.log('Query string:', queryParams.toString());
+        
         const response = await fetch(
           `/api/orders/new?${queryParams.toString()}`,
           {
