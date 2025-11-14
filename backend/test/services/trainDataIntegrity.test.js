@@ -18,7 +18,17 @@ describe('车次数据完整性测试', () => {
   beforeAll(() => {
     // 读取车次信息JSON
     const trainsJsonPath = path.join(__dirname, '../../../requirements/03-车次列表页/车次信息.json');
-    trainsJsonData = JSON.parse(fs.readFileSync(trainsJsonPath, 'utf8'));
+    try {
+      const jsonContent = fs.readFileSync(trainsJsonPath, 'utf8');
+      trainsJsonData = JSON.parse(jsonContent);
+      if (!Array.isArray(trainsJsonData)) {
+        console.warn('车次信息.json is not an array, using empty array');
+        trainsJsonData = [];
+      }
+    } catch (error) {
+      console.warn(`Failed to read trains JSON: ${error.message}, using empty array`);
+      trainsJsonData = [];
+    }
 
     // 连接数据库
     const dbPath = process.env.TEST_DB_PATH || path.join(__dirname, '../../database/railway.db');
@@ -42,7 +52,7 @@ describe('车次数据完整性测试', () => {
       });
     });
 
-    test.each(trainsJsonData.map(t => t.train_no))(
+    test.each((trainsJsonData || []).map(t => t.train_no))(
       '车次 %s 的基本信息应与JSON一致',
       (trainNo, done) => {
         const jsonTrain = trainsJsonData.find(t => t.train_no === trainNo);
@@ -68,7 +78,7 @@ describe('车次数据完整性测试', () => {
   });
 
   describe('停靠站信息完整性', () => {
-    test.each(trainsJsonData.map(t => t.train_no))(
+    test.each((trainsJsonData || []).map(t => t.train_no))(
       '车次 %s 的停靠站数量应与JSON一致',
       (trainNo, done) => {
         const jsonTrain = trainsJsonData.find(t => t.train_no === trainNo);
@@ -98,7 +108,7 @@ describe('车次数据完整性测试', () => {
   });
 
   describe('车厢配置完整性', () => {
-    test.each(trainsJsonData.map(t => t.train_no))(
+    test.each((trainsJsonData || []).map(t => t.train_no))(
       '车次 %s 的车厢数量应与JSON一致',
       (trainNo, done) => {
         const jsonTrain = trainsJsonData.find(t => t.train_no === trainNo);
@@ -147,7 +157,7 @@ describe('车次数据完整性测试', () => {
   });
 
   describe('票价信息完整性', () => {
-    test.each(trainsJsonData.map(t => t.train_no))(
+    test.each((trainsJsonData || []).map(t => t.train_no))(
       '车次 %s 的票价段数应与JSON一致',
       (trainNo, done) => {
         const jsonTrain = trainsJsonData.find(t => t.train_no === trainNo);

@@ -10,6 +10,7 @@ const trainsRoutes = require('./routes/trains');
 const ticketsRoutes = require('./routes/tickets');
 const ordersRoutes = require('./routes/orders');
 const passengersRoutes = require('./routes/passengers');
+const personalInfoRoutes = require('./routes/personalInfo');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.use('/api/trains', trainsRoutes);
 app.use('/api/tickets', ticketsRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/passengers', passengersRoutes);
+app.use('/api/user', personalInfoRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

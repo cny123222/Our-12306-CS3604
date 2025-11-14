@@ -97,6 +97,7 @@ function optionalAuth(req, res, next) {
 
 module.exports = {
   authenticateUser,
+  authenticateToken: authenticateUser, // 别名，用于向后兼容
   optionalAuth
 };
 

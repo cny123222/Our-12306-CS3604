@@ -1,0 +1,129 @@
+/* 个人信息展示面板样式 */
+
+.personal-info-panel {
+  flex: 1;
+  background-color: #f5f5f5;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.personal-info-panel.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 16px;
+  color: #666;
+}
+
+/* 信息模块 */
+.info-section {
+  background-color: white;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 模块头部 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 20px 0;
+}
+
+.section-header .section-title {
+  margin-bottom: 0;
+}
+
+/* 编辑按钮 */
+.edit-button {
+  background: none;
+  border: none;
+  color: #0066cc;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.edit-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* 信息内容 */
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 信息行 */
+.info-row {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 信息标签 */
+.info-label {
+  color: #666;
+  min-width: 120px;
+  font-weight: normal;
+}
+
+/* 信息值 */
+.info-value {
+  color: #333;
+  font-weight: normal;
+  margin-right: 10px;
+}
+
+/* 已验证状态 */
+.info-value.verified,
+.info-status.verified {
+  color: #ff8000;
+  font-weight: normal;
+}
+
+.info-status {
+  font-size: 13px;
+  margin-left: 10px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .personal-info-panel {
+    padding: 15px;
+  }
+
+  .info-section {
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .info-row {
+    font-size: 13px;
+  }
+
+  .info-label {
+    min-width: 100px;
+  }
+}
+
+
+
+
