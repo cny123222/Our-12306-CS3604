@@ -1,0 +1,26 @@
+/* 订单列表面板样式 */
+.order-list-panel {
+  background-color: #fff;
+  margin: 20px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.order-type-section {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-type-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .order-list-panel {
+    margin: 10px;
+  }
+}
+

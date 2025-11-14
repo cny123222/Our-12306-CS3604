@@ -31,8 +31,7 @@ async function reserveTicket(trainNo, departureStation, arrivalStation, departur
       [trainNo, seatType],
       async (err, seats) => {
         if (err) {
-          db.close();
-          return reject(err);
+return reject(err);
         }
         
         // 获取途经站点
@@ -41,8 +40,7 @@ async function reserveTicket(trainNo, departureStation, arrivalStation, departur
           [trainNo, departureStation, arrivalStation],
           (err, stops) => {
             if (err || stops.length < 2) {
-              db.close();
-              return reject(new Error('站点信息错误'));
+return reject(new Error('站点信息错误'));
             }
             
             // 查找全程空闲的座位
@@ -70,8 +68,7 @@ async function reserveTicket(trainNo, departureStation, arrivalStation, departur
                   
                   if (checked === seats.length) {
                     if (!availableSeat) {
-                      db.close();
-                      return resolve({ success: false, error: '手慢了，该车次车票已售罄！' });
+return resolve({ success: false, error: '手慢了，该车次车票已售罄！' });
                     }
                     
                     // 创建订单
@@ -88,9 +85,7 @@ async function reserveTicket(trainNo, departureStation, arrivalStation, departur
                        AND to_station = ?`,
                       [userId || passengerId, trainNo, seatType, availableSeat, departureStation, arrivalStation],
                       (err) => {
-                        db.close();
-                        
-                        if (err) {
+if (err) {
                           return reject(err);
                         }
                         

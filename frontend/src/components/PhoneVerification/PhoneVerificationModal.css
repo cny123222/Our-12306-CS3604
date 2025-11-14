@@ -1,0 +1,170 @@
+/* 手机验证弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.phone-verification-modal {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.close-button:hover {
+  color: #666;
+}
+
+.modal-content {
+  padding: 30px 20px;
+}
+
+.verification-hint {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input-label {
+  min-width: 80px;
+  font-size: 14px;
+  color: #666;
+}
+
+.verification-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  letter-spacing: 2px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.verification-input:focus {
+  border-color: #2196f3;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 13px;
+  margin-top: 10px;
+  margin-left: 80px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.return-button,
+.complete-button {
+  padding: 10px 30px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.return-button {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.return-button:hover {
+  background-color: #e0e0e0;
+}
+
+.complete-button {
+  background-color: #ff9800;
+  color: #fff;
+}
+
+.complete-button:hover:not(:disabled) {
+  background-color: #f57c00;
+}
+
+.complete-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .phone-verification-modal {
+    width: 95%;
+  }
+  
+  .modal-content {
+    padding: 20px 15px;
+  }
+  
+  .input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .input-label {
+    margin-bottom: 5px;
+  }
+  
+  .error-message {
+    margin-left: 0;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+  }
+  
+  .return-button,
+  .complete-button {
+    width: 100%;
+  }
+}
+

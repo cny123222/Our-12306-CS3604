@@ -1,0 +1,59 @@
+/* 左侧功能菜单栏样式 */
+.side-menu {
+  width: 240px;
+  background-color: #fff;
+  padding: 20px 0;
+  border-right: 1px solid #e0e0e0;
+  min-height: calc(100vh - 200px);
+}
+
+.menu-section {
+  margin-bottom: 20px;
+}
+
+.menu-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  padding: 12px 20px;
+  margin-bottom: 5px;
+  user-select: none;
+}
+
+.menu-item {
+  font-size: 14px;
+  color: #666;
+  padding: 10px 20px 10px 40px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.menu-item:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.menu-item.selected {
+  background-color: #e3f2fd;
+  color: #2196f3;
+  font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .side-menu {
+    width: 200px;
+  }
+  
+  .menu-title {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+  
+  .menu-item {
+    font-size: 13px;
+    padding: 8px 15px 8px 30px;
+  }
+}
+

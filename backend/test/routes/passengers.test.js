@@ -1,336 +1,650 @@
-/**
- * 乘客管理API路由测试
- * 测试乘客管理相关的HTTP接口
- */
-
 const request = require('supertest');
 const express = require('express');
 const passengersRouter = require('../../src/routes/passengers');
 
-// Mock认证中间件
-jest.mock('../../src/middleware/auth', () => ({
-  authenticateToken: (req, res, next) => {
-    req.user = { id: 'user123' };
+// Mock services
+jest.mock('../../src/services/passengerService');
+const passengerService = require('../../src/services/passengerService');
+
+// Create Express app for testing
+const app = express();
+app.use(express.json());
+
+// Mock authentication middleware - must come before routes
+app.use((req, res, next) => {
+  req.user = { id: 'user-123', username: 'testuser' };
   next();
-  }
-}));
+});
 
-describe('Passengers API Routes - 乘客管理API路由', () => {
-  let app;
+app.use('/api/passengers', passengersRouter);
 
+describe('Passengers API Routes Tests', () => {
   beforeEach(() => {
-    app = express();
-    app.use(express.json());
-    app.use('/api/passengers', passengersRouter);
+    jest.clearAllMocks();
   });
 
-  describe('PUT /api/passengers/:passengerId - API-PUT-Passenger', () => {
-    test('应该成功更新乘客信息', async () => {
-      // Given: 乘客ID"pass123"和新手机号"13900001111"
-      const passengerId = 'pass123';
-      const updateData = {
-        phone: '13900001111'
-      };
-      
-      // When: PUT /api/passengers/:passengerId
+  describe('GET /api/passengers - 获取用户乘客列表', () => {
+    it('应该返回用户的所有乘客信息', async () => {
+      const mockPassengers = [
+        {
+          id: 'passenger-1',
+          name: '刘蕊蕊',
+          idCardType: '居民身份证',
+          idCardNumber: '3301************028',
+          discountType: '成人票',
+          points: 1200
+        },
+        {
+          id: 'passenger-2',
+          name: '王欣',
+          idCardType: '居民身份证',
+          idCardNumber: '1101************015',
+          discountType: '成人票',
+          points: 800
+        }
+      ];
+
+      passengerService.getUserPassengers = jest.fn().mockResolvedValue(mockPassengers);
+
       const response = await request(app)
-        .put(`/api/passengers/${passengerId}`)
-        .send(updateData)
-        .expect('Content-Type', /json/);
-      
-      // Then: 应该返回200状态码和"修改成功"消息
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+        .get('/api/passengers');
+
+      expect(response.status).toBe(200);
+      expect(response.body.passengers).toEqual(mockPassengers);
+      expect(response.body.passengers).toHaveLength(2);
+      expect(passengerService.getUserPassengers).toHaveBeenCalledWith('user-123');
     });
 
-    test('应该验证乘客属于当前用户', async () => {
-      // Given: 乘客ID属于其他用户
-      const otherUserPassengerId = 'pass999';
-      const updateData = {
-        phone: '13900001111'
-      };
-      
-      // When: PUT /api/passengers/:passengerId
+    it('应该返回证件号码部分脱敏的乘客信息', async () => {
+      const mockPassengers = [
+        {
+          id: 'passenger-1',
+          name: '刘蕊蕊',
+          idCardType: '居民身份证',
+          idCardNumber: '3301************028',
+          points: 1200
+        }
+      ];
+
+      passengerService.getUserPassengers = jest.fn().mockResolvedValue(mockPassengers);
+
       const response = await request(app)
-        .put(`/api/passengers/${otherUserPassengerId}`)
-        .send(updateData);
-      
-      // Then: 应该返回404状态码和"乘客不存在"错误
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+        .get('/api/passengers');
+
+      expect(response.status).toBe(200);
+      expect(response.body.passengers[0].idCardNumber).toMatch(/\*{12}/);
+      expect(response.body.passengers[0].idCardNumber).toBe('3301************028');
     });
 
-    test('应该验证手机号格式正确', async () => {
-      // Given: 无效手机号"12345"
-      const passengerId = 'pass123';
+    it('用户没有乘客时应该返回空数组', async () => {
+      passengerService.getUserPassengers = jest.fn().mockResolvedValue([]);
+
+      const response = await request(app)
+        .get('/api/passengers');
+
+      expect(response.status).toBe(200);
+      expect(response.body.passengers).toEqual([]);
+    });
+
+    it('未登录时应该返回401错误', async () => {
+      const unauthApp = express();
+      unauthApp.use(express.json());
+      unauthApp.use('/api/passengers', passengersRouter);
+
+      const response = await request(unauthApp)
+        .get('/api/passengers');
+
+      expect(response.status).toBe(401);
+    });
+
+    it('获取乘客列表失败时应该返回500错误', async () => {
+      passengerService.getUserPassengers = jest.fn().mockRejectedValue({
+        status: 500,
+        message: '获取乘客列表失败'
+      });
+
+      const response = await request(app)
+        .get('/api/passengers');
+
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBe('获取乘客列表失败');
+    });
+  });
+
+  describe('POST /api/passengers/search - 搜索乘客', () => {
+    it('应该根据姓名关键词搜索匹配的乘客', async () => {
+      const mockSearchResults = [
+        {
+          id: 'passenger-1',
+          name: '刘蕊蕊',
+          idCardType: '居民身份证',
+          idCardNumber: '3301************028',
+          points: 1200
+        }
+      ];
+
+      passengerService.searchPassengers = jest.fn().mockResolvedValue(mockSearchResults);
+
+      const response = await request(app)
+        .post('/api/passengers/search')
+        .send({ keyword: '刘蕊蕊' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.passengers).toEqual(mockSearchResults);
+      expect(passengerService.searchPassengers).toHaveBeenCalledWith('user-123', '刘蕊蕊');
+    });
+
+    it('应该支持模糊匹配', async () => {
+      const mockSearchResults = [
+        {
+          id: 'passenger-1',
+          name: '刘蕊蕊',
+          idCardType: '居民身份证',
+          idCardNumber: '3301************028'
+        }
+      ];
+
+      passengerService.searchPassengers = jest.fn().mockResolvedValue(mockSearchResults);
+
+      const response = await request(app)
+        .post('/api/passengers/search')
+        .send({ keyword: '刘' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.passengers).toHaveLength(1);
+      expect(response.body.passengers[0].name).toContain('刘');
+    });
+
+    it('搜索无结果时应该返回空数组', async () => {
+      passengerService.searchPassengers = jest.fn().mockResolvedValue([]);
+
+      const response = await request(app)
+        .post('/api/passengers/search')
+        .send({ keyword: '不存在的乘客' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.passengers).toEqual([]);
+    });
+
+    it('未提供关键词时应该返回400错误', async () => {
+      const response = await request(app)
+        .post('/api/passengers/search')
+        .send({});
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBeDefined();
+    });
+
+    it('未登录时应该返回401错误', async () => {
+      const unauthApp = express();
+      unauthApp.use(express.json());
+      unauthApp.use('/api/passengers', passengersRouter);
+
+      const response = await request(unauthApp)
+        .post('/api/passengers/search')
+        .send({ keyword: '刘蕊蕊' });
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe('POST /api/passengers - 添加乘客', () => {
+    const validPassengerData = {
+      name: '张三',
+      idCardType: '居民身份证',
+      idCardNumber: '110101199001011234',
+      discountType: '成人票'
+    };
+
+    it('应该成功添加乘客', async () => {
+      const mockResult = {
+        message: '添加乘客成功',
+        passengerId: 'passenger-new'
+      };
+
+      passengerService.createPassenger = jest.fn().mockResolvedValue(mockResult);
+
+      const response = await request(app)
+        .post('/api/passengers')
+        .send(validPassengerData);
+
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(mockResult);
+      expect(passengerService.createPassenger).toHaveBeenCalledWith('user-123', validPassengerData);
+    });
+
+    it('缺少必填字段时应该返回400错误', async () => {
+      const invalidData = {
+        name: '张三'
+        // 缺少其他必填字段
+      };
+
+      const response = await request(app)
+        .post('/api/passengers')
+        .send(invalidData);
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('参数错误');
+    });
+
+    it('证件号码格式错误时应该返回400错误', async () => {
+      const invalidData = {
+        ...validPassengerData,
+        idCardNumber: 'invalid'
+      };
+
+      passengerService.createPassenger = jest.fn().mockRejectedValue({
+        status: 400,
+        message: '证件号码格式错误'
+      });
+
+      const response = await request(app)
+        .post('/api/passengers')
+        .send(invalidData);
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('证件号码格式错误');
+    });
+
+    it('证件号码已存在时应该返回409错误', async () => {
+      passengerService.createPassenger = jest.fn().mockRejectedValue({
+        status: 409,
+        message: '该乘客已存在'
+      });
+
+      const response = await request(app)
+        .post('/api/passengers')
+        .send(validPassengerData);
+
+      expect(response.status).toBe(409);
+      expect(response.body.error).toBe('该乘客已存在');
+    });
+
+    it('应该验证乘客信息的完整性', async () => {
+      const response = await request(app)
+        .post('/api/passengers')
+        .send({
+          name: '',
+          idCardType: '',
+          idCardNumber: '',
+          discountType: ''
+        });
+
+      expect(response.status).toBe(400);
+    });
+
+    it('应该验证姓名长度在3-30个字符之间', async () => {
+      const shortName = {
+        ...validPassengerData,
+        name: '李'
+      };
+
+      passengerService.createPassenger = jest.fn().mockRejectedValue({
+        status: 400,
+        message: '姓名长度不符合要求'
+      });
+
+      const response = await request(app)
+        .post('/api/passengers')
+        .send(shortName);
+
+      expect(response.status).toBe(400);
+    });
+
+    it('未登录时应该返回401错误', async () => {
+      const unauthApp = express();
+      unauthApp.use(express.json());
+      unauthApp.use('/api/passengers', passengersRouter);
+
+      const response = await request(unauthApp)
+        .post('/api/passengers')
+        .send(validPassengerData);
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe('PUT /api/passengers/:passengerId - 更新乘客信息', () => {
     const updateData = {
-        phone: '12345'
+      name: '张三',
+      idCardType: '居民身份证',
+      idCardNumber: '110101199001011234',
+      discountType: '成人票'
+    };
+
+    it('应该成功更新乘客信息', async () => {
+      const mockResult = {
+        message: '更新乘客信息成功',
+        passengerId: 'passenger-1'
       };
-      
-      // When: PUT /api/passengers/:passengerId
+
+      passengerService.updatePassenger = jest.fn().mockResolvedValue(mockResult);
+
       const response = await request(app)
-        .put(`/api/passengers/${passengerId}`)
+        .put('/api/passengers/passenger-1')
         .send(updateData);
 
-      // Then: 应该返回400状态码和"您输入的手机号码不是有效的格式！"
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockResult);
+      expect(passengerService.updatePassenger).toHaveBeenCalledWith(
+        'user-123',
+        'passenger-1',
+        updateData
+      );
     });
 
-    test('应该验证手机号长度为11位', async () => {
-      // Given: 手机号长度不是11位
-      const passengerId = 'pass123';
-      const updateData = {
-        phone: '1390000111' // 只有10位
-      };
-      
-      // When: PUT /api/passengers/:passengerId
+    it('乘客不存在时应该返回404错误', async () => {
+      passengerService.updatePassenger = jest.fn().mockRejectedValue({
+        status: 404,
+        message: '乘客不存在'
+      });
+
       const response = await request(app)
-        .put(`/api/passengers/${passengerId}`)
+        .put('/api/passengers/invalid-passenger')
         .send(updateData);
 
-      // Then: 应该返回400状态码
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('乘客不存在');
     });
 
-    test('应该验证手机号只包含数字', async () => {
-      // Given: 手机号包含非数字字符
-      const passengerId = 'pass123';
-      const updateData = {
-        phone: '139000a1111'
-      };
-      
-      // When: PUT /api/passengers/:passengerId
+    it('乘客不属于当前用户时应该返回403错误', async () => {
+      passengerService.updatePassenger = jest.fn().mockRejectedValue({
+        status: 403,
+        message: '无权修改此乘客信息'
+      });
+
       const response = await request(app)
-        .put(`/api/passengers/${passengerId}`)
+        .put('/api/passengers/passenger-1')
         .send(updateData);
 
-      // Then: 应该返回400状态码
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+      expect(response.status).toBe(403);
+      expect(response.body.error).toBe('无权修改此乘客信息');
     });
 
-    test('应该在未登录时返回401错误', async () => {
-      // Given: 用户未登录
-      // When: PUT /api/passengers/:passengerId
-      // Then: 应该返回401状态码
-      
-      expect(true).toBe(true);
+    it('更新数据格式错误时应该返回400错误', async () => {
+      const invalidData = {
+        name: '',
+        idCardNumber: 'invalid'
+      };
+
+      passengerService.updatePassenger = jest.fn().mockRejectedValue({
+        status: 400,
+        message: '更新数据格式错误'
+      });
+
+      const response = await request(app)
+        .put('/api/passengers/passenger-1')
+        .send(invalidData);
+
+      expect(response.status).toBe(400);
+    });
+
+    it('未登录时应该返回401错误', async () => {
+      const unauthApp = express();
+      unauthApp.use(express.json());
+      unauthApp.use('/api/passengers', passengersRouter);
+
+      const response = await request(unauthApp)
+        .put('/api/passengers/passenger-1')
+        .send(updateData);
+
+      expect(response.status).toBe(401);
     });
   });
 
-  describe('DELETE /api/passengers/:passengerId - API-DELETE-Passenger', () => {
-    test('应该成功删除乘客', async () => {
-      // Given: 乘客ID"pass123"，无未完成订单
-      const passengerId = 'pass123';
-      
-      // When: DELETE /api/passengers/:passengerId
+  describe('DELETE /api/passengers/:passengerId - 删除乘客', () => {
+    it('应该成功删除乘客', async () => {
+      const mockResult = {
+        message: '删除乘客成功'
+      };
+
+      passengerService.deletePassenger = jest.fn().mockResolvedValue(mockResult);
+
       const response = await request(app)
-        .delete(`/api/passengers/${passengerId}`)
-        .expect('Content-Type', /json/);
-      
-      // Then: 应该返回200状态码和"删除成功"消息
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+        .delete('/api/passengers/passenger-1');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockResult);
+      expect(passengerService.deletePassenger).toHaveBeenCalledWith('user-123', 'passenger-1');
     });
 
-    test('应该验证乘客属于当前用户', async () => {
-      // Given: 乘客ID属于其他用户
-      const otherUserPassengerId = 'pass999';
-      
-      // When: DELETE /api/passengers/:passengerId
+    it('乘客不存在时应该返回404错误', async () => {
+      passengerService.deletePassenger = jest.fn().mockRejectedValue({
+        status: 404,
+        message: '乘客不存在'
+      });
+
       const response = await request(app)
-        .delete(`/api/passengers/${otherUserPassengerId}`);
-      
-      // Then: 应该返回404状态码和"乘客不存在"错误
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+        .delete('/api/passengers/invalid-passenger');
+
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('乘客不存在');
     });
 
-    test('应该检查乘客是否有未完成的订单', async () => {
-      // Given: 乘客ID"pass123"有未完成的订单
-      const passengerId = 'pass123';
-      
-      // When: DELETE /api/passengers/:passengerId
+    it('乘客不属于当前用户时应该返回403错误', async () => {
+      passengerService.deletePassenger = jest.fn().mockRejectedValue({
+        status: 403,
+        message: '无权删除此乘客'
+      });
+
       const response = await request(app)
-        .delete(`/api/passengers/${passengerId}`);
-      
-      // Then: 应该返回400状态码和"该乘客有未完成的订单，无法删除"
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+        .delete('/api/passengers/passenger-1');
+
+      expect(response.status).toBe(403);
+      expect(response.body.error).toBe('无权删除此乘客');
     });
 
-    test('应该在乘客不存在时返回404错误', async () => {
-      // Given: 不存在的乘客ID
-      const nonexistentPassengerId = 'pass999';
-      
-      // When: DELETE /api/passengers/:passengerId
+    it('乘客有未完成的订单时应该返回400错误', async () => {
+      passengerService.deletePassenger = jest.fn().mockRejectedValue({
+        status: 400,
+        message: '该乘客有未完成的订单，无法删除'
+      });
+
       const response = await request(app)
-        .delete(`/api/passengers/${nonexistentPassengerId}`);
-      
-      // Then: 应该返回404状态码
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
+        .delete('/api/passengers/passenger-1');
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('该乘客有未完成的订单，无法删除');
     });
 
-    test('应该在未登录时返回401错误', async () => {
-      // Given: 用户未登录
-      // When: DELETE /api/passengers/:passengerId
-      // Then: 应该返回401状态码
-      
-      expect(true).toBe(true);
+    it('未登录时应该返回401错误', async () => {
+      const unauthApp = express();
+      unauthApp.use(express.json());
+      unauthApp.use('/api/passengers', passengersRouter);
+
+      const response = await request(unauthApp)
+        .delete('/api/passengers/passenger-1');
+
+      expect(response.status).toBe(401);
     });
   });
 
-  describe('POST /api/passengers/validate - API-POST-ValidatePassenger', () => {
-    test('应该验证合法的乘客信息', async () => {
-      // Given: 合法的乘客信息
-      const passengerData = {
+  describe('GET /api/passengers/:passengerId - 获取乘客详细信息', () => {
+    it('应该返回指定乘客的详细信息', async () => {
+      const mockPassenger = {
+        id: 'passenger-1',
+        name: '刘蕊蕊',
+        idCardType: '居民身份证',
+        idCardNumber: '3301************028',
+        discountType: '成人票',
+        points: 1200
+      };
+
+      passengerService.getPassengerDetails = jest.fn().mockResolvedValue(mockPassenger);
+
+      const response = await request(app)
+        .get('/api/passengers/passenger-1');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockPassenger);
+      expect(passengerService.getPassengerDetails).toHaveBeenCalledWith('user-123', 'passenger-1');
+    });
+
+    it('乘客不存在时应该返回404错误', async () => {
+      passengerService.getPassengerDetails = jest.fn().mockRejectedValue({
+        status: 404,
+        message: '乘客不存在'
+      });
+
+      const response = await request(app)
+        .get('/api/passengers/invalid-passenger');
+
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('乘客不存在');
+    });
+
+    it('乘客不属于当前用户时应该返回403错误', async () => {
+      passengerService.getPassengerDetails = jest.fn().mockRejectedValue({
+        status: 403,
+        message: '无权访问此乘客信息'
+      });
+
+      const response = await request(app)
+        .get('/api/passengers/passenger-1');
+
+      expect(response.status).toBe(403);
+    });
+  });
+
+  describe('边界情况和错误处理', () => {
+    it('所有接口都应该验证用户登录状态', async () => {
+      const unauthApp = express();
+      unauthApp.use(express.json());
+      unauthApp.use('/api/passengers', passengersRouter);
+
+      const responses = await Promise.all([
+        request(unauthApp).get('/api/passengers'),
+        request(unauthApp).post('/api/passengers/search').send({ keyword: 'test' }),
+        request(unauthApp).post('/api/passengers').send({}),
+        request(unauthApp).put('/api/passengers/passenger-1').send({}),
+        request(unauthApp).delete('/api/passengers/passenger-1'),
+        request(unauthApp).get('/api/passengers/passenger-1')
+      ]);
+
+      responses.forEach(response => {
+        expect(response.status).toBe(401);
+      });
+    });
+
+    it('应该正确处理数据库连接错误', async () => {
+      passengerService.getUserPassengers = jest.fn().mockRejectedValue({
+        status: 500,
+        message: '数据库连接失败'
+      });
+
+      const response = await request(app)
+        .get('/api/passengers');
+
+      expect(response.status).toBe(500);
+    });
+
+    it('应该正确处理无效的乘客ID格式', async () => {
+      passengerService.getPassengerDetails = jest.fn().mockRejectedValue({
+        status: 400,
+        message: '无效的乘客ID格式'
+      });
+
+      const response = await request(app)
+        .get('/api/passengers/<script>alert("xss")</script>');
+
+      expect(response.status).toBeGreaterThanOrEqual(400);
+    });
+
+    it('应该正确处理特殊字符的姓名', async () => {
+      const specialNameData = {
+        name: "O'Brien·李",
+        idCardType: '居民身份证',
+        idCardNumber: '110101199001011234',
+        discountType: '成人票'
+      };
+
+      passengerService.createPassenger = jest.fn().mockResolvedValue({
+        message: '添加乘客成功',
+        passengerId: 'passenger-new'
+      });
+
+      const response = await request(app)
+        .post('/api/passengers')
+        .send(specialNameData);
+
+      expect([200, 201, 400]).toContain(response.status);
+    });
+
+    it('应该正确处理过长的搜索关键词', async () => {
+      const longKeyword = 'a'.repeat(1000);
+
+      passengerService.searchPassengers = jest.fn().mockResolvedValue([]);
+
+      const response = await request(app)
+        .post('/api/passengers/search')
+        .send({ keyword: longKeyword });
+
+      // 应该返回错误或正常处理
+      expect([200, 400]).toContain(response.status);
+    });
+
+    it('应该验证证件号码的唯一性（同一用户不能添加重复证件号）', async () => {
+      const duplicateIdData = {
+        name: '张三',
+        idCardType: '居民身份证',
+        idCardNumber: '3301************028', // 已存在的证件号
+        discountType: '成人票'
+      };
+
+      passengerService.createPassenger = jest.fn().mockRejectedValue({
+        status: 409,
+        message: '该乘客已存在'
+      });
+
+      const response = await request(app)
+        .post('/api/passengers')
+        .send(duplicateIdData);
+
+      expect(response.status).toBe(409);
+    });
+  });
+
+  describe('乘客积分功能', () => {
+    it('获取乘客详情时应该包含积分信息', async () => {
+      const mockPassenger = {
+        id: 'passenger-1',
+        name: '刘蕊蕊',
+        idCardType: '居民身份证',
+        idCardNumber: '3301************028',
+        discountType: '成人票',
+        points: 1200
+      };
+
+      passengerService.getPassengerDetails = jest.fn().mockResolvedValue(mockPassenger);
+
+      const response = await request(app)
+        .get('/api/passengers/passenger-1');
+
+      expect(response.status).toBe(200);
+      expect(response.body.points).toBe(1200);
+    });
+
+    it('新添加的乘客积分应该初始化为0', async () => {
+      const newPassengerData = {
         name: '张三',
         idCardType: '居民身份证',
         idCardNumber: '110101199001011234',
-        phone: '13900001111',
-        discountType: '成人'
+        discountType: '成人票'
       };
-      
-      // When: POST /api/passengers/validate
+
+      passengerService.createPassenger = jest.fn().mockResolvedValue({
+        message: '添加乘客成功',
+        passengerId: 'passenger-new',
+        points: 0
+      });
+
       const response = await request(app)
-        .post('/api/passengers/validate')
-        .send(passengerData)
-        .expect('Content-Type', /json/);
-      
-      // Then: 应该返回200状态码和{ valid: true }
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
-    });
+        .post('/api/passengers')
+        .send(newPassengerData);
 
-    test('应该验证姓名长度在3-30个字符之间', async () => {
-      // Given: 姓名过短（少于3个字符）
-      const passengerData = {
-        name: '张', // 2个字符
-        idCardType: '居民身份证',
-        idCardNumber: '110101199001011234',
-        phone: '13900001111',
-        discountType: '成人'
-      };
-      
-      // When: POST /api/passengers/validate
-      const response = await request(app)
-        .post('/api/passengers/validate')
-        .send(passengerData);
-      
-      // Then: 应该返回400状态码和"允许输入的字符串在3-30个字符之间！"
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
-    });
-
-    test('应该验证姓名只包含中英文字符、"."和单空格', async () => {
-      // Given: 姓名包含特殊字符
-      const passengerData = {
-        name: '张三@#$',
-        idCardType: '居民身份证',
-        idCardNumber: '110101199001011234',
-        phone: '13900001111',
-        discountType: '成人'
-      };
-      
-      // When: POST /api/passengers/validate
-      const response = await request(app)
-        .post('/api/passengers/validate')
-        .send(passengerData);
-      
-      // Then: 应该返回400状态码和"请输入姓名！"
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
-    });
-
-    test('应该验证证件号码长度为18个字符', async () => {
-      // Given: 证件号码长度不是18位
-      const passengerData = {
-        name: '张三',
-        idCardType: '居民身份证',
-        idCardNumber: '1101011990010112', // 16位
-        phone: '13900001111',
-        discountType: '成人'
-      };
-      
-      // When: POST /api/passengers/validate
-      const response = await request(app)
-        .post('/api/passengers/validate')
-        .send(passengerData);
-      
-      // Then: 应该返回400状态码和"请正确输入18位证件号码！"
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
-    });
-
-    test('应该验证证件号码只包含数字和字母', async () => {
-      // Given: 证件号码包含特殊字符
-      const passengerData = {
-        name: '张三',
-        idCardType: '居民身份证',
-        idCardNumber: '11010119900101123@',
-        phone: '13900001111',
-        discountType: '成人'
-      };
-      
-      // When: POST /api/passengers/validate
-      const response = await request(app)
-        .post('/api/passengers/validate')
-        .send(passengerData);
-      
-      // Then: 应该返回400状态码和"输入的证件编号中包含中文信息或特殊字符！"
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
-    });
-
-    test('应该验证手机号长度为11位且只包含数字', async () => {
-      // Given: 手机号格式错误
-      const passengerData = {
-        name: '张三',
-        idCardType: '居民身份证',
-        idCardNumber: '110101199001011234',
-        phone: '1390000111', // 只有10位
-        discountType: '成人'
-      };
-      
-      // When: POST /api/passengers/validate
-      const response = await request(app)
-        .post('/api/passengers/validate')
-        .send(passengerData);
-      
-      // Then: 应该返回400状态码和"您输入的手机号码不是有效的格式！"
-
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
-    });
-
-    test('应该验证乘客信息的唯一性', async () => {
-      // Given: 乘客信息已存在
-      const passengerData = {
-        name: '张三',
-        idCardType: '居民身份证',
-        idCardNumber: '110101199001011234', // 已存在
-        phone: '13900001111',
-        discountType: '成人'
-      };
-      
-      // When: POST /api/passengers/validate
-      const response = await request(app)
-        .post('/api/passengers/validate')
-        .send(passengerData);
-      
-      // Then: 应该返回409状态码和"该联系人已存在，请使用不同的姓名和证件。"
-      
-      expect([200, 400, 401, 404, 409, 500]).toContain(response.status);
-    });
-
-    test('应该在未登录时返回401错误', async () => {
-      // Given: 用户未登录
-      // When: POST /api/passengers/validate
-      // Then: 应该返回401状态码
-      
-      expect(true).toBe(true);
+      expect(response.status).toBe(201);
+      expect(response.body.points).toBe(0);
     });
   });
 });
+

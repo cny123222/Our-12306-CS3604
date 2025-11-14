@@ -1,0 +1,173 @@
+/* 编辑乘车人面板样式 */
+.edit-passenger-panel {
+  background-color: #fff;
+  padding: 30px;
+  margin: 20px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 30px 0;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.form-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 20px 0 15px 0;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.info-label,
+.form-label {
+  min-width: 120px;
+  font-size: 14px;
+  color: #666;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #000;
+}
+
+.verification {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.form-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.phone-input-group {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  max-width: 500px;
+}
+
+.country-code {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 80px;
+  cursor: pointer;
+}
+
+.form-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: #2196f3;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-left: 120px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cancel-button,
+.save-button {
+  padding: 10px 30px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-button {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+}
+
+.save-button {
+  background-color: #ff9800;
+  color: #fff;
+}
+
+.save-button:hover:not(:disabled) {
+  background-color: #f57c00;
+}
+
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .edit-passenger-panel {
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  .form-row,
+  .info-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .info-label,
+  .form-label {
+    min-width: auto;
+    margin-bottom: 5px;
+  }
+  
+  .phone-input-group {
+    max-width: 100%;
+  }
+  
+  .error-message {
+    margin-left: 0;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .cancel-button,
+  .save-button {
+    width: 100%;
+  }
+}
+

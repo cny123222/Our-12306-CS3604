@@ -1,0 +1,41 @@
+/* 订单结果展示样式 */
+.order-result-display {
+  padding: 20px;
+  min-height: 300px;
+}
+
+.order-result-display.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  margin-bottom: 20px;
+}
+
+.empty-message {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.link {
+  color: #2196f3;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link:hover {
+  color: #1976d2;
+}
+
+@media (max-width: 768px) {
+  .order-result-display {
+    padding: 15px;
+  }
+}
+

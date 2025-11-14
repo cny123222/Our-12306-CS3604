@@ -1,10 +1,14 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const bcrypt = require('bcryptjs');
 
 /**
  * 初始化测试数据库
  */
 async function initTestDatabase(dbPath) {
+  // 预先生成加密密码
+  const hashedPassword = await bcrypt.hash('password123', 10);
+  
   return new Promise((resolve, reject) => {
     const db = new sqlite3.Database(dbPath);
     
@@ -96,55 +100,6 @@ async function initTestDatabase(dbPath) {
           booked_by TEXT,
           booked_at DATETIME,
           FOREIGN KEY (train_no) REFERENCES trains(train_no)
-        )
-      `);
-      
-      // 创建passengers表
-      db.run(`
-        CREATE TABLE IF NOT EXISTS passengers (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id INTEGER NOT NULL,
-          name TEXT NOT NULL,
-          id_card_type TEXT DEFAULT '居民身份证',
-          id_card_number TEXT NOT NULL,
-          phone TEXT,
-          discount_type TEXT DEFAULT '成人',
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(user_id, name, id_card_number)
-        )
-      `);
-      
-      // 创建orders表
-      db.run(`
-        CREATE TABLE IF NOT EXISTS orders (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id INTEGER NOT NULL,
-          train_number TEXT NOT NULL,
-          departure_station TEXT NOT NULL,
-          arrival_station TEXT NOT NULL,
-          departure_date TEXT NOT NULL,
-          departure_time TEXT,
-          arrival_time TEXT,
-          status TEXT DEFAULT 'pending',
-          total_price REAL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
-      
-      // 创建order_details表
-      db.run(`
-        CREATE TABLE IF NOT EXISTS order_details (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          order_id INTEGER NOT NULL,
-          passenger_id INTEGER,
-          passenger_name TEXT,
-          seat_type TEXT,
-          seat_no TEXT,
-          price REAL,
-          FOREIGN KEY (order_id) REFERENCES orders(id),
-          FOREIGN KEY (passenger_id) REFERENCES passengers(id)
         )
       `);
       
@@ -268,7 +223,97 @@ async function initTestDatabase(dbPath) {
         }
       });
       
-      stmtSeat.finalize(() => {
+      stmtSeat.finalize();
+      
+      // 创建users表
+      db.run(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT UNIQUE NOT NULL,
+          password TEXT NOT NULL,
+          name TEXT,
+          email TEXT,
+          phone TEXT UNIQUE NOT NULL,
+          id_card_type TEXT,
+          id_card_number TEXT,
+          discount_type TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_login DATETIME
+        )
+      `);
+      
+      // 插入测试用户（使用加密密码）
+      db.run(`
+        INSERT OR REPLACE INTO users (
+          id, username, name, email, phone, id_card_type, id_card_number, discount_type, password
+        ) VALUES 
+          (1, 'test-user-123', '张三', 'test@example.com', '15888889968', '居民身份证', '310101199001011234', '成人', ?),
+          (2, 'user-no-orders', '李四', '', '13800138000', '居民身份证', '310101199002022345', '成人', ?)
+      `, [hashedPassword, hashedPassword]);
+      
+      // 创建passengers表
+      db.run(`
+        CREATE TABLE IF NOT EXISTS passengers (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          name TEXT NOT NULL,
+          id_card_type TEXT NOT NULL,
+          id_card_number TEXT NOT NULL,
+          phone TEXT,
+          discount_type TEXT DEFAULT '成人',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+      `);
+      
+      // 插入测试乘客
+      db.run(`
+        INSERT OR REPLACE INTO passengers (
+          id, user_id, name, id_card_type, id_card_number, phone, discount_type, created_at
+        ) VALUES 
+          (1, 1, '张三', '居民身份证', '310101199001011234', '13800138000', '成人', '2025-01-01'),
+          (2, 2, '王五', '居民身份证', '310101199005055678', '13900139000', '成人', '2025-01-01')
+      `);
+      
+      // 创建orders表
+      db.run(`
+        CREATE TABLE IF NOT EXISTS orders (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          order_number TEXT UNIQUE NOT NULL,
+          user_id INTEGER NOT NULL,
+          train_no TEXT NOT NULL,
+          departure_station TEXT NOT NULL,
+          arrival_station TEXT NOT NULL,
+          departure_date TEXT NOT NULL,
+          status TEXT DEFAULT 'pending',
+          passengers TEXT,
+          total_price REAL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+      `);
+      
+      // 插入测试订单（最近30天内的）
+      const today = new Date();
+      const recentDate = new Date(today);
+      recentDate.setDate(today.getDate() - 5); // 5天前
+      const recentDateStr = recentDate.toISOString().split('T')[0];
+      
+      const futureDate = new Date(today);
+      futureDate.setDate(today.getDate() + 10); // 10天后
+      const futureDateStr = futureDate.toISOString().split('T')[0];
+      
+      db.run(`
+        INSERT OR REPLACE INTO orders (
+          id, order_number, user_id, train_no, departure_station, arrival_station, 
+          departure_date, status, passengers, total_price, created_at
+        ) VALUES 
+          (1, 'ORDER-12345', 1, 'G1234', '北京南', '上海虹桥', '${futureDateStr}', 'confirmed', 
+           '[{"name":"张三"}]', 553.5, '${recentDateStr}'),
+          (2, 'ORDER-67890', 1, 'G5678', '上海虹桥', '北京南', '${futureDateStr}', 'confirmed', 
+           '[{"name":"张三"}]', 553.5, '${recentDateStr}')
+      `, () => {
         db.close();
         console.log('测试数据库初始化完成');
         resolve();

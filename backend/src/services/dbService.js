@@ -130,15 +130,22 @@ class DatabaseService {
 
   // 关闭数据库连接
   close() {
-    if (this.db) {
-      this.db.close((err) => {
-        if (err) {
-          console.error('Error closing database:', err);
-        } else {
-          console.log('Database connection closed');
-        }
-      });
-    }
+    return new Promise((resolve, reject) => {
+      if (this.db) {
+        this.db.close((err) => {
+          if (err) {
+            console.error('Error closing database:', err);
+            reject(err);
+          } else {
+            console.log('Database connection closed');
+            this.db = null; // 清空引用
+            resolve();
+          }
+        });
+      } else {
+        resolve();
+      }
+    });
   }
 }
 
