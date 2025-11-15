@@ -63,27 +63,27 @@
   background-color: transparent !important;
 }
 
-.order-header-cell.train-info-header {
+.order-header-cell.order-train-info-col {
   flex: 1.5;
   text-align: left;
 }
 
-.order-header-cell.passenger-info-header {
+.order-header-cell.order-passenger-info-col {
   flex: 1;
   text-align: center;
 }
 
-.order-header-cell.seat-info-header {
+.order-header-cell.order-seat-info-col {
   flex: 1;
   text-align: center;
 }
 
-.order-header-cell.price-header {
+.order-header-cell.order-price-col {
   flex: 1;
   text-align: center;
 }
 
-.order-header-cell.status-header {
+.order-header-cell.order-status-col {
   flex: 0.8;
   text-align: center;
 }
