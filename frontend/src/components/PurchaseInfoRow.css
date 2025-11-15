@@ -74,7 +74,7 @@
   border-radius: 50%;
   border: none;
   background-color: #ff6600;
-  color: #ffffff;
+  color: #ffffff !important;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;

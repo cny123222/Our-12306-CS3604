@@ -67,7 +67,7 @@ const OrderHistoryPage = () => {
       if (end) params.append('endDate', end);
       if (kw) params.append('keyword', kw);
 
-      const response = await fetch(`/api/user/orders/search?${params}`, {
+      const response = await fetch(`/api/user/orders?${params}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

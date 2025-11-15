@@ -11,6 +11,7 @@ const ticketsRoutes = require('./routes/tickets');
 const ordersRoutes = require('./routes/orders');
 const passengersRoutes = require('./routes/passengers');
 const userInfoRoutes = require('./routes/userInfo');
+const { startCleanupScheduler } = require('./services/pendingOrderCleanupService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,6 +52,9 @@ app.use('*', (req, res) => {
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    
+    // 启动pending订单超时清理服务
+    startCleanupScheduler();
   });
 }
 
