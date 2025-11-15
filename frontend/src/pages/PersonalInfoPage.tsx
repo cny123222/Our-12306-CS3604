@@ -1,7 +1,8 @@
 // 用户基本信息页
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopNavigation from '../components/TopNavigation';
+import TrainListTopBar from '../components/TrainListTopBar';
+import MainNavigation from '../components/MainNavigation';
 import SideMenu from '../components/SideMenu';
 import PersonalInfoPanel from '../components/PersonalInfo/PersonalInfoPanel';
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation';
@@ -17,18 +18,31 @@ const PersonalInfoPage = () => {
   const [userInfo, setUserInfo] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // 检查登录状态
   useEffect(() => {
-    // 检查登录状态
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      console.log('未登录，跳转到登录页');
-      navigate('/login');
-      return;
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('authToken');
+      setIsLoggedIn(!!token);
+      if (!token) {
+        console.log('未登录，跳转到登录页');
+        navigate('/login');
+        return false;
+      }
+      return true;
+    };
+    
+    if (checkLoginStatus()) {
+      fetchUserInfo();
     }
     
-    // 页面加载时自动获取用户信息
-    fetchUserInfo();
+    // 监听storage事件，当其他标签页登录/登出时同步状态
+    window.addEventListener('storage', checkLoginStatus);
+    
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
   }, [navigate]);
 
   const fetchUserInfo = async () => {
@@ -67,6 +81,22 @@ const PersonalInfoPage = () => {
 
   const handleNavigateToHome = () => {
     navigate('/');
+  };
+
+  const handleNavigateToLogin = () => {
+    navigate('/login');
+  };
+
+  const handleNavigateToRegister = () => {
+    navigate('/register');
+  };
+
+  const handleNavigateToPersonalCenter = () => {
+    if (isLoggedIn) {
+      navigate('/personal-info');
+    } else {
+      navigate('/login');
+    }
   };
 
   const handleMenuClick = (section: string) => {
@@ -118,10 +148,19 @@ const PersonalInfoPage = () => {
     }
   };
 
+  // 获取用户名
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
+
   if (isLoading) {
     return (
       <div className="personal-info-page">
-        <TopNavigation onLogoClick={handleNavigateToHome} />
+        <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+        <MainNavigation
+          isLoggedIn={isLoggedIn}
+          onLoginClick={handleNavigateToLogin}
+          onRegisterClick={handleNavigateToRegister}
+          onPersonalCenterClick={handleNavigateToPersonalCenter}
+        />
         <div className="loading-container">加载中...</div>
         <BottomNavigation />
       </div>
@@ -131,7 +170,13 @@ const PersonalInfoPage = () => {
   if (error) {
     return (
       <div className="personal-info-page">
-        <TopNavigation onLogoClick={handleNavigateToHome} />
+        <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+        <MainNavigation
+          isLoggedIn={isLoggedIn}
+          onLoginClick={handleNavigateToLogin}
+          onRegisterClick={handleNavigateToRegister}
+          onPersonalCenterClick={handleNavigateToPersonalCenter}
+        />
         <div className="error-container">错误: {error}</div>
         <BottomNavigation />
       </div>
@@ -140,7 +185,13 @@ const PersonalInfoPage = () => {
 
   return (
     <div className="personal-info-page">
-      <TopNavigation onLogoClick={handleNavigateToHome} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+      <MainNavigation
+        isLoggedIn={isLoggedIn}
+        onLoginClick={handleNavigateToLogin}
+        onRegisterClick={handleNavigateToRegister}
+        onPersonalCenterClick={handleNavigateToPersonalCenter}
+      />
       
       <div className="main-content">
         <SideMenu 
