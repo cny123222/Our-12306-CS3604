@@ -60,12 +60,12 @@ const EditPassengerPanel: React.FC<EditPassengerPanelProps> = ({
 
         <div className="info-row">
           <label className="info-label">证件类型：</label>
-          <span className="info-value">{passenger.id_card_type}</span>
+          <span className="info-value">{passenger.idCardType || passenger.id_card_type}</span>
         </div>
 
         <div className="info-row">
           <label className="info-label">证件号码：</label>
-          <span className="info-value">{passenger.id_card_number}</span>
+          <span className="info-value">{passenger.idCardNumber || passenger.id_card_number}</span>
         </div>
 
         <div className="info-row">

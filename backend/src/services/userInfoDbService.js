@@ -153,22 +153,22 @@ async function getUserOrders(userId, options = {}) {
     
     let sql = `
       SELECT 
-        id as orderId,
-        id as orderNumber,
-        train_number as trainNo,
-        departure_station as departureStation,
-        arrival_station as arrivalStation,
-        departure_date as departureDate,
+        id,
+        train_number,
+        departure_station,
+        arrival_station,
+        departure_date,
+        departure_time,
+        arrival_time,
         status,
-        '' as passengers,
-        total_price as totalPrice,
-        created_at as createdAt
+        total_price,
+        created_at
       FROM orders
       WHERE user_id = ?
         AND created_at >= ?
     `;
     
-    const params = [userId, thirtyDaysAgoStr];
+    const params = [String(userId), thirtyDaysAgoStr];
     
     // 添加日期范围筛选
     if (startDate) {
@@ -186,17 +186,45 @@ async function getUserOrders(userId, options = {}) {
     
     const orders = await db.query(sql, params);
     
-    // 解析passengers字段（如果是JSON字符串）
-    return orders.map(order => {
-      if (typeof order.passengers === 'string') {
-        try {
-          order.passengers = JSON.parse(order.passengers);
-        } catch (e) {
-          order.passengers = [];
+    // 为每个订单查询乘客信息和座位信息
+    const ordersWithPassengers = await Promise.all(orders.map(async (order) => {
+      // 查询该订单的乘客信息和座位信息
+      const passengersSql = `
+        SELECT passenger_name, seat_type, seat_number, car_number, ticket_type
+        FROM order_details
+        WHERE order_id = ?
+      `;
+      const passengerDetails = await db.query(passengersSql, [order.id]);
+      
+      // 提取乘客姓名列表和座位信息
+      const passengerNames = passengerDetails.map(p => p.passenger_name).join(', ');
+      const seatInfo = passengerDetails.map(p => {
+        if (p.seat_number) {
+          return `${p.seat_type} ${p.seat_number}`;
         }
-      }
-      return order;
-    });
+        return p.seat_type;
+      }).join(', ');
+      
+      // 返回下划线命名的字段（匹配前端期望）
+      return {
+        id: order.id,
+        order_id: order.id,
+        train_no: order.train_number,
+        departure_station: order.departure_station,
+        arrival_station: order.arrival_station,
+        departure_date: order.departure_date,
+        departure_time: order.departure_time || '',
+        arrival_time: order.arrival_time || '',
+        status: order.status,
+        total_price: order.total_price,
+        created_at: order.created_at,
+        passenger_name: passengerNames || '',
+        seat_info: seatInfo || '',
+        passengers: passengerDetails
+      };
+    }));
+    
+    return ordersWithPassengers;
   } catch (error) {
     console.error('获取用户订单列表失败:', error);
     throw error;
@@ -215,21 +243,21 @@ async function searchOrders(userId, searchCriteria) {
     
     let sql = `
       SELECT 
-        id as orderId,
-        id as orderNumber,
-        train_number as trainNo,
-        departure_station as departureStation,
-        arrival_station as arrivalStation,
-        departure_date as departureDate,
+        id,
+        train_number,
+        departure_station,
+        arrival_station,
+        departure_date,
+        departure_time,
+        arrival_time,
         status,
-        '' as passengers,
-        total_price as totalPrice,
-        created_at as createdAt
+        total_price,
+        created_at
       FROM orders
       WHERE user_id = ?
     `;
     
-    const params = [userId];
+    const params = [String(userId)];
     
     // 关键词搜索（订单号、车次号、乘客姓名）
     if (keyword) {
@@ -257,17 +285,45 @@ async function searchOrders(userId, searchCriteria) {
     
     const orders = await db.query(sql, params);
     
-    // 解析passengers字段（如果是JSON字符串）
-    return orders.map(order => {
-      if (typeof order.passengers === 'string') {
-        try {
-          order.passengers = JSON.parse(order.passengers);
-        } catch (e) {
-          order.passengers = [];
+    // 为每个订单查询乘客信息和座位信息
+    const ordersWithPassengers = await Promise.all(orders.map(async (order) => {
+      // 查询该订单的乘客信息和座位信息
+      const passengersSql = `
+        SELECT passenger_name, seat_type, seat_number, car_number, ticket_type
+        FROM order_details
+        WHERE order_id = ?
+      `;
+      const passengerDetails = await db.query(passengersSql, [order.id]);
+      
+      // 提取乘客姓名列表和座位信息
+      const passengerNames = passengerDetails.map(p => p.passenger_name).join(', ');
+      const seatInfo = passengerDetails.map(p => {
+        if (p.seat_number) {
+          return `${p.seat_type} ${p.seat_number}`;
         }
-      }
-      return order;
-    });
+        return p.seat_type;
+      }).join(', ');
+      
+      // 返回下划线命名的字段（匹配前端期望）
+      return {
+        id: order.id,
+        order_id: order.id,
+        train_no: order.train_number,
+        departure_station: order.departure_station,
+        arrival_station: order.arrival_station,
+        departure_date: order.departure_date,
+        departure_time: order.departure_time || '',
+        arrival_time: order.arrival_time || '',
+        status: order.status,
+        total_price: order.total_price,
+        created_at: order.created_at,
+        passenger_name: passengerNames || '',
+        seat_info: seatInfo || '',
+        passengers: passengerDetails
+      };
+    }));
+    
+    return ordersWithPassengers;
   } catch (error) {
     console.error('搜索订单失败:', error);
     throw error;

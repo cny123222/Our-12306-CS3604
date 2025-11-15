@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './OrderConfirmationModal.css';
 import TrainInfoDisplay from './TrainInfoDisplay';
 import PassengerInfoTable from './PassengerInfoTable';
@@ -113,11 +114,16 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
       
       setConfirmResult(result);
       
-      // 关闭处理中弹窗，显示成功弹窗
-      console.log('🟢 关闭处理中弹窗，准备显示成功弹窗');
+      // 关闭处理中弹窗
+      console.log('🟢 关闭处理中弹窗');
       setShowProcessingModal(false);
-      setShowSuccessModal(true);
-      console.log('✅ 已调用 setShowSuccessModal(true)');
+      
+      // 使用 setTimeout 确保 ProcessingModal 完全关闭后再显示 OrderSuccessModal
+      setTimeout(() => {
+        console.log('🟢 准备显示成功弹窗');
+        setShowSuccessModal(true);
+        console.log('✅ 已调用 setShowSuccessModal(true)');
+      }, 100);
       
       // 不要立即调用 onConfirm，等用户在成功弹窗点击"确认"时才调用 onSuccess
     } catch (error: any) {
@@ -137,119 +143,134 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   
   if (!isVisible) return null;
   
+  // 当显示处理中或成功弹窗时，隐藏主弹窗内容，避免遮挡
+  const shouldHideMainModal = showProcessingModal || showSuccessModal;
+  
+  // 添加更多调试日志
+  console.log('🔍 OrderConfirmationModal 渲染:', {
+    shouldHideMainModal,
+    showProcessingModal,
+    showSuccessModal
+  });
+  
   return (
-    <div className="order-confirmation-modal">
-      <div className="modal-overlay" onClick={(e) => {
-        // 只有点击遮罩层本身时才关闭弹窗
-        if (e.target === e.currentTarget) {
-          console.log('🔙 点击遮罩层，关闭弹窗');
-          onBack();
-        }
-      }}></div>
-      <div className="modal-content">
-        <div className="modal-header blue-background">
-          <h2 className="modal-title">请核对以下信息</h2>
-          <button className="modal-close" onClick={onBack}>×</button>
-        </div>
-        
-        <div className="modal-body white-background">
-          {isLoading ? (
-            <div className="loading">加载中...</div>
-          ) : error ? (
-            <div className="error-message">{error}</div>
-          ) : orderInfo ? (
-            <>
-              <TrainInfoDisplay trainInfo={orderInfo.trainInfo} />
-              
-              {orderInfo.passengers && orderInfo.passengers.length > 0 ? (
+    <>
+      {!shouldHideMainModal && (
+        <div className="order-confirmation-modal">
+          <div className="modal-overlay"></div>
+          <div className="modal-content">
+            <div className="modal-header blue-background">
+              <h2 className="modal-title">请核对以下信息</h2>
+              <button 
+                className="modal-close" 
+                onClick={(e) => {
+                  console.log('❌ 点击关闭按钮');
+                  onBack();
+                }}
+              >×</button>
+            </div>
+            
+            <div className="modal-body white-background">
+              {isLoading ? (
+                <div className="loading">加载中...</div>
+              ) : error ? (
+                <div className="error-message">{error}</div>
+              ) : orderInfo ? (
                 <>
-                  <div className="confirmation-table-container">
-                    <table className="confirmation-passenger-table">
-                      <thead>
-                        <tr>
-                          <th>序号</th>
-                          <th>席别</th>
-                          <th>票种</th>
-                          <th>姓名</th>
-                          <th>证件类型</th>
-                          <th>证件号码</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orderInfo.passengers.map((passenger: any, index: number) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{passenger.seatType || '二等座'}</td>
-                            <td>{passenger.ticketType || '成人票'}</td>
-                            <td>
-                              {passenger.name}
-                              {passenger.points && (
-                                <span className="passenger-points">积分*{passenger.points}</span>
-                              )}
-                            </td>
-                            <td>{passenger.idCardType || '居民身份证'}</td>
-                            <td>{passenger.idCardNumber}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="seat-allocation-notice">
-                    系统将随机为您申请席位，暂不支持自选席位。
-                  </div>
+                  <TrainInfoDisplay trainInfo={orderInfo.trainInfo} />
+                  
+                  {orderInfo.passengers && orderInfo.passengers.length > 0 ? (
+                    <>
+                      <div className="confirmation-table-container">
+                        <table className="confirmation-passenger-table">
+                          <thead>
+                            <tr>
+                              <th>序号</th>
+                              <th>席别</th>
+                              <th>票种</th>
+                              <th>姓名</th>
+                              <th>证件类型</th>
+                              <th>证件号码</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {orderInfo.passengers.map((passenger: any, index: number) => (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{passenger.seatType || '二等座'}</td>
+                                <td>{passenger.ticketType || '成人票'}</td>
+                                <td>
+                                  {passenger.name}
+                                  {passenger.points && (
+                                    <span className="passenger-points">积分*{passenger.points}</span>
+                                  )}
+                                </td>
+                                <td>{passenger.idCardType || '居民身份证'}</td>
+                                <td>{passenger.idCardNumber}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="seat-allocation-notice">
+                        系统将随机为您申请席位，暂不支持自选席位。
+                      </div>
+                    </>
+                  ) : (
+                    <div className="empty-passengers">暂无乘客信息</div>
+                  )}
+                  
+                  {orderInfo.availableSeats && Object.keys(orderInfo.availableSeats).length > 0 ? (
+                    <SeatAvailabilityDisplay availableSeats={orderInfo.availableSeats} />
+                  ) : (
+                    <div className="empty-seats">暂无余票信息</div>
+                  )}
                 </>
               ) : (
-                <div className="empty-passengers">暂无乘客信息</div>
+                <div className="loading">加载订单信息...</div>
               )}
-              
-              {orderInfo.availableSeats && Object.keys(orderInfo.availableSeats).length > 0 ? (
-                <SeatAvailabilityDisplay availableSeats={orderInfo.availableSeats} />
-              ) : (
-                <div className="empty-seats">暂无余票信息</div>
-              )}
-            </>
-          ) : (
-            <div className="loading">加载订单信息...</div>
-          )}
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                type="button"
+                className="back-modal-button white-background gray-text" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🔙 点击"返回修改"按钮');
+                  onBack();
+                }}
+              >
+                返回修改
+              </button>
+              <button 
+                type="button"
+                className="confirm-modal-button orange-background white-text" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🟠 点击"确认"按钮，准备调用 handleConfirm');
+                  handleConfirm();
+                }}
+                disabled={isLoading}
+              >
+                确认
+              </button>
+            </div>
+          </div>
         </div>
-        
-        <div className="modal-footer">
-          <button 
-            type="button"
-            className="back-modal-button white-background gray-text" 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log('🔙 点击"返回修改"按钮');
-              onBack();
-            }}
-          >
-            返回修改
-          </button>
-          <button 
-            type="button"
-            className="confirm-modal-button orange-background white-text" 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log('🟠 点击"确认"按钮，准备调用 handleConfirm');
-              handleConfirm();
-            }}
-            disabled={isLoading}
-          >
-            确认
-          </button>
-        </div>
-      </div>
+      )}
       
-      {showProcessingModal && (
+      {showProcessingModal && createPortal(
         <ProcessingModal
           isVisible={showProcessingModal}
           message="订单已经提交，系统正在处理中，请稍等"
-        />
+        />,
+        document.body
       )}
       
-      {showSuccessModal && (
+      {showSuccessModal && createPortal(
         <OrderSuccessModal
           isVisible={showSuccessModal}
           orderId={orderId}
@@ -264,9 +285,10 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               onBack();
             }
           }}
-        />
+        />,
+        document.body
       )}
-    </div>
+    </>
   );
 };
 

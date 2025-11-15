@@ -341,7 +341,7 @@ async function createOrder(orderData) {
                   `INSERT INTO orders (id, user_id, train_number, departure_station, arrival_station, 
                    departure_date, departure_time, arrival_time, total_price, status, created_at)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))`,
-                  [orderId, userId, trainNo, departureStation, arrivalStation, departureDate,
+                  [orderId, String(userId), trainNo, departureStation, arrivalStation, departureDate,
                    train.departure_time, train.arrival_time, totalPrice],
                   (err) => {
                     if (err) {
@@ -542,7 +542,7 @@ async function confirmOrder(orderId, userId) {
     // 查询订单基本信息
     db.get(
       'SELECT * FROM orders WHERE id = ? AND user_id = ?',
-      [orderId, userId],
+      [orderId, String(userId)],
       (err, order) => {
         if (err) {
           db.close();
@@ -678,7 +678,7 @@ async function confirmOrder(orderId, userId) {
                        AND seat_no = ? 
                        AND from_station = ? 
                        AND to_station = ?`,
-                      [userId, order.train_number, detail.seat_type, selectedSeatNo, segment.from, segment.to],
+                      [String(userId), order.train_number, detail.seat_type, selectedSeatNo, segment.from, segment.to],
                       (err) => {
                         if (err) return reject(err);
                         resolve(true);
