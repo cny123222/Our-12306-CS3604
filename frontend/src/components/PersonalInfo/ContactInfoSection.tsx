@@ -63,19 +63,12 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
       </div>
       <div className="info-content">
         <div className="info-row">
-          <span className="info-label">手机：</span>
+          <span className="info-label">
+            <span className="required-mark">* </span>手机号：
+          </span>
           <div className="info-value-group">
             <span className="info-value">{phone}</span>
-            {showEditing ? (
-              <span 
-                className="phone-link" 
-                onClick={onNavigateToPhoneVerification}
-              >
-                去手机核验修改
-              </span>
-            ) : (
-              <span className="verification-status">已通过核验</span>
-            )}
+            <span className="verification-status">已通过核验</span>
           </div>
         </div>
         <div className="info-row">
@@ -89,15 +82,9 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
                 onChange={(e) => setEditingEmail(e.target.value)}
                 placeholder="请输入邮箱"
               />
-              <button className="save-button" onClick={handleSave}>
-                保存
-              </button>
-              <button className="cancel-button" onClick={handleCancel}>
-                取消
-              </button>
             </div>
           ) : (
-            <span className="info-value">{email || '未设置'}</span>
+            <span className="info-value">{email || ''}</span>
           )}
         </div>
       </div>

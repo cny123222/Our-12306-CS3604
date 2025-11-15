@@ -193,6 +193,11 @@ const PersonalInfoPage = () => {
         onPersonalCenterClick={handleNavigateToPersonalCenter}
       />
       
+      <BreadcrumbNavigation 
+        path={['个人中心']}
+        currentPage="查看个人信息"
+      />
+      
       <div className="main-content">
         <SideMenu 
           currentSection="personal-info" 
@@ -200,11 +205,6 @@ const PersonalInfoPage = () => {
         />
         
         <div className="content-area">
-          <BreadcrumbNavigation 
-            path={['个人中心', '个人信息']}
-            currentPage="查看个人信息"
-          />
-          
           {userInfo && (
             <PersonalInfoPanel
               userInfo={userInfo}

@@ -1,48 +1,66 @@
 /* 基本信息模块样式 */
 .basic-info-section {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+  padding: 25px 60px;
+  border-radius: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  border: none;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: #000;
-  margin: 0 0 20px 0;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #f0f0f0;
+  color: #333 !important;
+  margin: 0 0 25px 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  text-align: left;
 }
 
 .info-content {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .info-row {
   display: flex;
   align-items: center;
+  line-height: 2;
+  justify-content: center;
 }
 
 .info-label {
-  color: #666;
+  color: #666 !important;
   font-size: 14px;
-  min-width: 120px;
-  margin-right: 10px;
+  text-align: right;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 150px;
+  flex-shrink: 0;
+}
+
+.required-mark {
+  color: #e60000 !important;
+  font-weight: 400;
 }
 
 .info-value {
-  color: #000;
+  color: #333 !important;
   font-size: 14px;
+  text-align: left;
+  padding-left: 10px;
   flex: 1;
 }
 
 .verification-status {
-  color: #ff9800;
-  font-weight: 500;
+  color: #ff9800 !important;
+  font-weight: 400;
 }
 
 /* 响应式设计 */
