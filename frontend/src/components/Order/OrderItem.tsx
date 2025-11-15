@@ -50,10 +50,19 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, onViewDetails }) => {
           </div>
         </div>
 
-        {order.seat_info && (
+        {/* 已完成订单：显示完整座位信息（包括座位号） */}
+        {order.status === 'completed' && order.seat_info && (
           <div className="seat-info-display">
             <div className="seat-label">席位：</div>
             <div className="seat-value">{order.seat_info}</div>
+          </div>
+        )}
+
+        {/* 未完成订单：只显示席位类型，不显示座位号 */}
+        {order.status === 'pending' && order.seat_type && (
+          <div className="seat-info-display">
+            <div className="seat-label">席位类型：</div>
+            <div className="seat-value">{order.seat_type}</div>
           </div>
         )}
 
