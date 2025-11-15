@@ -159,12 +159,41 @@
   font-size: 14px;
   color: #666666;
   margin-left: 8px;
-  margin-right: 4px;
+  margin-right: 0;
 }
 
-.train-list-welcome-user {
+.train-list-username {
+  font-size: 14px;
+  color: #ff6600;
+  font-weight: 500;
+  margin: 0 4px 0 0;
+}
+
+.train-list-divider {
   font-size: 14px;
   color: #333333;
+  margin: 0 4px;
+}
+
+.train-list-logout-button {
+  background: none;
+  border: none;
+  color: #3B99FC;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.train-list-logout-button:hover {
+  color: #2a88eb;
+  text-decoration: underline;
+}
+
+.train-list-logout-button:active {
+  color: #1976d2;
 }
 
 .train-list-auth-link {

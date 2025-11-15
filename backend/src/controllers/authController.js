@@ -265,6 +265,7 @@ class AuthController {
           user: {
             id: user.id,
             username: user.username,
+            name: user.name,
             email: user.email,
             phone: user.phone
           },

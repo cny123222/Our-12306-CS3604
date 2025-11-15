@@ -4,13 +4,15 @@ import './HomeTopBar.css';
 
 interface HomeTopBarProps {
   isLoggedIn?: boolean;
+  username?: string;
+  onLogout?: () => void;
 }
 
 /**
  * 主页专用顶部栏组件
  * 包含logo、搜索框、链接和登录/注册按钮
  */
-const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false }) => {
+const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false, username, onLogout }) => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = React.useState('');
 
@@ -36,6 +38,18 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false }) => {
   const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
+    }
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      // TODO: 调用退出登录API
+      console.log('退出登录');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('username');
+      window.location.reload(); // 刷新页面更新登录状态
     }
   };
 
@@ -81,7 +95,14 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false }) => {
               <button className="home-top-auth-link login" onClick={handleLogin}>登录</button>
               <button className="home-top-auth-link register" onClick={handleRegister}>注册</button>
             </>
-          ) : null}
+          ) : (
+            <>
+              <span className="home-welcome-text">您好，</span>
+              <span className="home-username">{username}</span>
+              <span className="home-divider">|</span>
+              <button className="home-logout-button" onClick={handleLogout}>退出</button>
+            </>
+          )}
         </div>
       </div>
     </div>

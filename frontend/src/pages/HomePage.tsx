@@ -44,9 +44,11 @@ const HomePage: React.FC = () => {
     navigate('/trains', { state: params });
   };
 
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
+  
   return (
     <div className="home-page">
-      <HomeTopBar isLoggedIn={isLoggedIn} />
+      <HomeTopBar isLoggedIn={isLoggedIn} username={username} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
