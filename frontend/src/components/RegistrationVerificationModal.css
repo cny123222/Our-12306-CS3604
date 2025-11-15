@@ -15,32 +15,32 @@
 
 .reg-verification-modal {
   background: white;
-  border-radius: 4px;
+  border-radius: 0px;
   width: 90%;
-  max-width: 800px;
+  max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* 标题栏 */
-.reg-verification-modal-header {
+.reg-verification-modal .reg-verification-modal-header {
   background: linear-gradient(to right, #2681d5, #5ca3e6);
   color: white;
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 4px 4px 0 0;
+  border-radius: 0px;
 }
 
-.reg-verification-modal-header h3 {
+.reg-verification-modal .reg-verification-modal-header h3 {
   margin: 0;
   font-size: 18px;
   font-weight: normal;
 }
 
-.close-button {
+.reg-verification-modal .close-button {
   background: none;
   border: none;
   color: white;
@@ -55,38 +55,42 @@
   line-height: 1;
 }
 
-.close-button:hover {
+.reg-verification-modal .close-button:hover {
   opacity: 0.8;
 }
 
 /* 内容区域 */
-.reg-verification-modal-content {
+.reg-verification-modal .reg-verification-modal-content {
   padding: 30px 40px;
 }
 
 /* 验证码发送提示 */
-.verification-message {
-  font-size: 14px;
+.reg-verification-modal .verification-message {
+  font-size: 15px;
   color: #333;
   margin: 0 0 30px 0;
   text-align: center;
   line-height: 1.6;
+  letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
 /* 验证码表单 */
-.verification-form {
+.reg-verification-modal .verification-form {
   max-width: 500px;
   margin: 0 auto;
 }
 
-.form-row {
+.reg-verification-modal .form-row {
   display: flex;
   align-items: center;
+  justify-content: flex-start !important;
   margin-bottom: 20px;
+  padding-left: 20px;
 }
 
-.form-label {
-  width: 80px;
+.reg-verification-modal .form-label {
+  width: 50px;
   text-align: right;
   margin-right: 10px;
   font-size: 14px;
@@ -94,78 +98,82 @@
   flex-shrink: 0;
 }
 
-.form-input {
+.reg-verification-modal .form-input {
   flex: 1;
-  max-width: 300px;
+  max-width: 200px;
   height: 32px;
   padding: 0 10px;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 0px;
   font-size: 13px;
   outline: none;
   transition: border-color 0.3s;
   background: white;
 }
 
-.form-input:focus {
+.reg-verification-modal .form-input:focus {
   border-color: #5ca3e6;
   box-shadow: 0 0 0 1px rgba(92, 163, 230, 0.2);
 }
 
-.error-message {
+.reg-verification-modal .error-message {
   color: #ff4d4f;
   font-size: 12px;
-  margin: -10px 0 15px 90px;
+  margin: -10px 0 15px 0;
+  text-align: left;
+  padding-left: 120px;
 }
 
 /* 按钮组 */
-.button-group {
+.reg-verification-modal .button-group {
   display: flex;
   justify-content: center;
   gap: 30px;
-  margin-top: 35px;
-  padding-top: 10px;
+  margin-top: 30px;
+  padding-top: 20px;
 }
 
-.complete-button,
-.back-button {
-  padding: 8px 35px;
+.reg-verification-modal .complete-button,
+.reg-verification-modal .back-button {
+  padding: 8px 20px;
   font-size: 14px;
-  border-radius: 3px;
+  border-radius: 0px;
   cursor: pointer;
   transition: all 0.3s;
   font-weight: normal;
-  min-width: 120px;
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
 }
 
-.complete-button {
+.reg-verification-modal .complete-button {
   background: #ff8533;
   color: white;
   border: none;
 }
 
-.complete-button:hover {
+.reg-verification-modal .complete-button:hover {
   background: #ff9547;
   box-shadow: 0 2px 4px rgba(255, 133, 51, 0.3);
 }
 
-.complete-button:active {
+.reg-verification-modal .complete-button:active {
   background: #e67529;
 }
 
-.back-button {
+.reg-verification-modal .back-button {
   background: white;
   color: #2681d5;
-  border: 1px solid #2681d5;
+  border: none;
 }
 
-.back-button:hover {
+.reg-verification-modal .back-button:hover {
   background: #f5f9ff;
   border-color: #5ca3e6;
   color: #5ca3e6;
 }
 
-.back-button:active {
+.reg-verification-modal .back-button:active {
   background: #e8f3ff;
 }
 
