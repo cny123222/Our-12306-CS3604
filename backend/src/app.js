@@ -12,6 +12,8 @@ const ordersRoutes = require('./routes/orders');
 const passengersRoutes = require('./routes/passengers');
 const userInfoRoutes = require('./routes/userInfo');
 const { startCleanupScheduler } = require('./services/pendingOrderCleanupService');
+const trainCleanupService = require('./services/trainCleanupService');
+const { generateDay15Trains } = require('../database/generate-daily-trains');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,12 +51,47 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
+/**
+ * 启动定时任务调度器
+ */
+function startScheduledTasks() {
+  // 启动pending订单超时清理服务
+  startCleanupScheduler();
+  
+  // 每天凌晨2点清理过期车次
+  const cron = require('node-cron');
+  cron.schedule('0 2 * * *', async () => {
+    console.log('\n执行定时任务：清理过期车次...');
+    try {
+      const result = await trainCleanupService.cleanupExpiredTrains();
+      console.log('清理结果:', result);
+    } catch (error) {
+      console.error('清理过期车次失败:', error);
+    }
+  });
+  
+  // 每天凌晨3点生成第15天的车次数据
+  cron.schedule('0 3 * * *', async () => {
+    console.log('\n执行定时任务：生成第15天车次数据...');
+    try {
+      const result = await generateDay15Trains(require('sqlite3').verbose().Database);
+      console.log('生成结果:', result);
+    } catch (error) {
+      console.error('生成车次数据失败:', error);
+    }
+  });
+  
+  console.log('定时任务已启动：');
+  console.log('  - 每天凌晨2点：清理过期车次');
+  console.log('  - 每天凌晨3点：生成第15天车次数据');
+}
+
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     
-    // 启动pending订单超时清理服务
-    startCleanupScheduler();
+    // 启动所有定时任务
+    startScheduledTasks();
   });
 }
 

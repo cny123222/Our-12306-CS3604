@@ -18,14 +18,14 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pinyin": "^4.0.0"
+    "node-cron": "^3.0.3",
+    "pinyin": "^4.0.0",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.0.2",
-    "sqlite3": "^5.1.7",
-    "supertest": "^6.3.4",
-    "uuid": "^13.0.0"
+    "supertest": "^6.3.4"
   },
   "jest": {
     "testEnvironment": "node",
