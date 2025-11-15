@@ -1,185 +1,340 @@
-/* 添加乘车人面板样式 */
+/* 添加乘车人面板样式 - 像素级还原12306设计 */
 .add-passenger-panel {
   background-color: #fff;
-  padding: 30px;
-  margin: 20px;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
-.panel-title {
-  font-size: 20px;
+.passenger-form-container {
+  width: 100%;
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 30px 30px;
+}
+
+/* 分节样式 */
+.passenger-section {
+  margin-bottom: 20px;
+}
+
+.passenger-section-title {
+  font-size: 18px;
   font-weight: 600;
-  color: #000;
-  margin: 0 0 30px 0;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #f0f0f0;
+  color: #333;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
 }
 
-.form-section {
-  margin-bottom: 30px;
+.passenger-section-subtitle {
+  color: #ff8000;
+  font-size: 14px;
+  font-weight: 400;
 }
 
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-  margin: 20px 0 15px 0;
-}
-
-.form-row {
+/* 表单行 */
+.passenger-form-row {
+  margin-bottom: 22px;
   display: flex;
   align-items: flex-start;
-  margin-bottom: 25px;
 }
 
-.form-label {
-  min-width: 140px;
-  font-size: 14px;
-  color: #666;
-  padding-top: 8px;
+/* 标签区域 */
+.passenger-label-wrapper {
+  width: 250px;
+  text-align: right;
+  padding-top: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.required {
-  color: #f44336;
-  margin-right: 3px;
+.passenger-label {
+  font-size: 15px;
+  color: #333;
+  line-height: 20px;
+  display: inline-block;
 }
 
-.input-wrapper {
+.passenger-required {
+  color: #ff4d4f;
+  margin-right: 4px;
+  font-weight: bold;
+}
+
+/* 输入区域 */
+.passenger-input-container {
   flex: 1;
-  max-width: 500px;
+  margin-left: 20px;
+  max-width: 700px;
 }
 
-.form-input {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.passenger-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* 输入框 */
+.passenger-input {
+  width: 300px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #c5c5c5;
+  border-radius: 0px;
   font-size: 14px;
+  color: #333;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  background: white;
+  flex-shrink: 0;
 }
 
-.form-input:focus {
-  border-color: #2196f3;
+.passenger-input::placeholder {
+  color: #999;
 }
 
-.phone-input-group {
+.passenger-input:hover {
+  border-color: #40a9ff;
+}
+
+.passenger-input:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1);
+}
+
+.passenger-input-error {
+  border-color: #ff4d4f;
+}
+
+.passenger-input-error:focus {
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
+}
+
+/* 下拉框统一宽度和样式 */
+.passenger-input-container > .select-dropdown {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+/* 下拉框显示框样式 - 在这里可以单独调整高度、边框等 */
+.passenger-input-container .select-dropdown .selected-value-display {
+  height: 36px;
+  line-height: 36px;
+  border: 1px solid #c5c5c5;
+  border-radius: 0px;
+  font-size: 14px;
+  padding: 0 28px 0 12px;
+  background-color: #fff;
+  width: 300px;
+}
+
+.passenger-input-container .select-dropdown:not(.disabled) .selected-value-display:hover {
+  border-color: #40a9ff;
+}
+
+.passenger-input-container .select-dropdown.expanded .selected-value-display {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1);
+}
+
+/* 提示信息 */
+.passenger-hint {
+  color: #ff8800;
+  font-size: 12px;
+  margin-left: 12px;
+  line-height: 36px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.passenger-hint-block {
+  width: 100%;
+  margin-left: 0;
+  margin-top: 8px;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+/* 错误消息 */
+.passenger-error-message {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: 6px;
+  line-height: 1.5;
+  min-height: 18px;
+  width: 100%;
+}
+
+/* 手机号码区域 */
+.passenger-phone-group {
   display: flex;
   gap: 10px;
-  max-width: 500px;
+  align-items: center;
+  width: 350px;
 }
 
-.country-code {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+/* 国家代码下拉框 - 可以调整这里的宽度 */
+.passenger-phone-group .select-dropdown {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  flex-shrink: 0;
+}
+
+/* 手机号区域的下拉框显示框样式 */
+.passenger-phone-group .select-dropdown .selected-value-display {
+  height: 36px;
+  line-height: 36px;
+  border: 1px solid #c5c5c5;
+  border-radius: 0px;
   font-size: 14px;
-  width: 80px;
-  cursor: pointer;
+  padding: 0 33px 0 12px;
+  background-color: #fff;
+  width: 100px;
+  text-align: center;
 }
 
-.phone-input-group .form-input {
-  flex: 1;
+.passenger-phone-group .select-dropdown:not(.disabled) .selected-value-display:hover {
+  border-color: #40a9ff;
 }
 
-.phone-error {
-  margin-left: 140px;
+/* 手机号输入框 - 可以调整这里的宽度 */
+.passenger-phone-input {
+  width: 240px;
+  flex-shrink: 0;
 }
 
-.error-message {
-  color: #f44336;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-.input-hint {
-  font-size: 13px;
-  color: #999;
-  margin-top: 5px;
-}
-
-.hint-orange {
-  color: #ff9800;
-}
-
-.button-group {
+/* 按钮组 */
+.passenger-button-group {
   display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 30px;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid #f0f0f0;
 }
 
-.cancel-button,
-.save-button {
-  padding: 10px 30px;
-  border: none;
-  border-radius: 4px;
+.passenger-button {
+  min-width: 100px;
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 5px;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-weight: 500;
 }
 
-.cancel-button {
-  background-color: #f5f5f5;
-  color: #666;
+.passenger-button-cancel {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #d0d0d0;
 }
 
-.cancel-button:hover {
-  background-color: #e0e0e0;
+.passenger-button-cancel:hover {
+  color: #ff8000;
+  border-color: #ff8000;
 }
 
-.save-button {
-  background-color: #ff9800;
-  color: #fff;
+.passenger-button-submit {
+  background: #ff8000;
+  color: white;
+  font-weight: bold;
 }
 
-.save-button:hover:not(:disabled) {
-  background-color: #f57c00;
+.passenger-button-submit:hover:not(:disabled) {
+  background: #ff6f00;
+  border: none;
 }
 
-.save-button:disabled {
-  opacity: 0.6;
+.passenger-button-submit:active {
+  background: linear-gradient(to bottom, #ff7700 0%, #ee6600 100%);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.passenger-button-submit:disabled {
+  background: #cccccc;
+  border-color: #bbbbbb;
   cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
 }
 
+/* 响应式适配 */
 @media (max-width: 768px) {
-  .add-passenger-panel {
+  .passenger-form-container {
     padding: 20px;
-    margin: 10px;
   }
-  
-  .form-row {
+
+  .passenger-form-row {
     flex-direction: column;
+    align-items: stretch;
   }
-  
-  .form-label {
-    min-width: auto;
-    padding-top: 0;
-    margin-bottom: 5px;
-  }
-  
-  .input-wrapper {
-    max-width: 100%;
-  }
-  
-  .phone-input-group {
-    max-width: 100%;
-  }
-  
-  .phone-error {
-    margin-left: 0;
-  }
-  
-  .button-group {
-    flex-direction: column;
-  }
-  
-  .cancel-button,
-  .save-button {
+
+  .passenger-label-wrapper {
     width: 100%;
+    text-align: left;
+    padding-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .passenger-input-container {
+    margin-left: 0;
+    max-width: 100%;
+  }
+
+  .passenger-input,
+  .passenger-input-container > .select-dropdown {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .passenger-phone-group {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .passenger-phone-group .select-dropdown {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .passenger-phone-input {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .passenger-hint {
+    margin-left: 0;
+    margin-top: 8px;
+    line-height: 1.6;
+    white-space: normal;
+  }
+
+  .passenger-button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .passenger-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .passenger-input {
+    font-size: 16px; /* 防止iOS自动缩放 */
+  }
+
+  .passenger-form-container {
+    padding: 15px;
   }
 }
 
