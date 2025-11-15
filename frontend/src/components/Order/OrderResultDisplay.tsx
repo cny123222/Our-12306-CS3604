@@ -44,11 +44,11 @@ const OrderResultDisplay: React.FC<OrderResultDisplayProps> = ({
       {/* 表格表头 */}
       <div className="order-table">
         <div className="order-table-header">
-          <div className="order-header-cell train-info-header">车次信息</div>
-          <div className="order-header-cell passenger-info-header">旅客信息</div>
-          <div className="order-header-cell seat-info-header">席位信息</div>
-          <div className="order-header-cell price-header">票价</div>
-          <div className="order-header-cell status-header">车票状态</div>
+          <div className="order-header-cell order-train-info-col">车次信息</div>
+          <div className="order-header-cell order-passenger-info-col">旅客信息</div>
+          <div className="order-header-cell order-seat-info-col">席位信息</div>
+          <div className="order-header-cell order-price-col">票价</div>
+          <div className="order-header-cell order-status-col">车票状态</div>
         </div>
 
         {/* 订单列表 */}
