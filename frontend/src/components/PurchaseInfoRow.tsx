@@ -10,6 +10,7 @@ interface PurchaseInfoRowProps {
   availableSeatTypes: any[];
   onSeatTypeChange: (seatType: string) => void;
   onTicketTypeChange: (ticketType: string) => void;
+  onDelete?: () => void;
   fareInfo?: any;
 }
 
@@ -24,6 +25,7 @@ const PurchaseInfoRow: React.FC<PurchaseInfoRowProps> = ({
   availableSeatTypes,
   onSeatTypeChange,
   onTicketTypeChange,
+  onDelete,
   fareInfo,
 }) => {
   const ticketTypeOptions = [
@@ -35,9 +37,17 @@ const PurchaseInfoRow: React.FC<PurchaseInfoRowProps> = ({
     const price = fareInfo && fareInfo[seatTypeName] ? fareInfo[seatTypeName].price : '';
     return {
       value: seatTypeName,
-      label: price ? `${seatTypeName}（¥${price}元）` : seatTypeName
+      label: price ? `${seatTypeName}（¥${price}.0元）` : seatTypeName
     };
   });
+  
+  // 证件类型选项
+  const idCardTypeOptions = [
+    { value: '居民身份证', label: '居民身份证' },
+    { value: '港澳居民来往内地通行证', label: '港澳居民来往内地通行证' },
+    { value: '台湾居民来往大陆通行证', label: '台湾居民来往大陆通行证' },
+    { value: '护照', label: '护照' }
+  ];
   
   // 证件号码脱敏显示
   const maskIdNumber = (idNumber: string) => {
@@ -68,10 +78,22 @@ const PurchaseInfoRow: React.FC<PurchaseInfoRowProps> = ({
         <input type="text" value={passenger.name} readOnly className="readonly-input" />
       </div>
       <div className="row-cell">
-        <input type="text" value={passenger.idCardType || '居民身份证'} readOnly className="readonly-input" />
+        <SelectDropdown
+          options={idCardTypeOptions}
+          value={passenger.idCardType || '居民身份证'}
+          onChange={() => {}}
+          placeholder="证件类型"
+        />
       </div>
       <div className="row-cell">
         <input type="text" value={maskIdNumber(passenger.idCardNumber)} readOnly className="readonly-input" />
+      </div>
+      <div className="row-cell row-cell-delete">
+        {onDelete && (
+          <button className="delete-button" onClick={onDelete} title="删除">
+            ✕
+          </button>
+        )}
       </div>
     </div>
   );

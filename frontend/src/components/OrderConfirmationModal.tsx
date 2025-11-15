@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './OrderConfirmationModal.css';
 import TrainInfoDisplay from './TrainInfoDisplay';
-import PassengerInfoTable from './PassengerInfoTable';
 import SeatAvailabilityDisplay from './SeatAvailabilityDisplay';
 import ProcessingModal from './ProcessingModal';
 import OrderSuccessModal from './OrderSuccessModal';
@@ -23,7 +22,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   isVisible,
   orderId,
   orderInfo: externalOrderInfo,
-  onConfirm,
+  onConfirm: _onConfirm,
   onBack,
   onSuccess,
 }) => {
@@ -178,7 +177,6 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               ) : orderInfo ? (
                 <>
                   <TrainInfoDisplay trainInfo={orderInfo.trainInfo} />
-                  
                   {orderInfo.passengers && orderInfo.passengers.length > 0 ? (
                     <>
                       <div className="confirmation-table-container">
@@ -201,9 +199,9 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                                 <td>{passenger.ticketType || '成人票'}</td>
                                 <td>
                                   {passenger.name}
-                                  {passenger.points && (
-                                    <span className="passenger-points">积分*{passenger.points}</span>
-                                  )}
+                                  {passenger.points > 0 ? (
+                                    <span className="passenger-points-badge">积分*{passenger.points}</span>
+                                  ) : null}
                                 </td>
                                 <td>{passenger.idCardType || '居民身份证'}</td>
                                 <td>{passenger.idCardNumber}</td>
@@ -219,7 +217,6 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                   ) : (
                     <div className="empty-passengers">暂无乘客信息</div>
                   )}
-                  
                   {orderInfo.availableSeats && Object.keys(orderInfo.availableSeats).length > 0 ? (
                     <SeatAvailabilityDisplay availableSeats={orderInfo.availableSeats} />
                   ) : (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './OrderPage.css';
-import TopNavigation from '../components/TopNavigation';
+import TrainListTopBar from '../components/TrainListTopBar';
 import MainNavigation from '../components/MainNavigation';
 import TrainInfoSection from '../components/TrainInfoSection';
 import PassengerInfoSection from '../components/PassengerInfoSection';
@@ -78,6 +78,14 @@ const OrderPage: React.FC = () => {
           arrivalStation: arrivalStation || '',
           departureDate: departureDate || '',
         });
+        
+        console.log('Fetching order page data with params:', {
+          trainNo,
+          departureStation,
+          arrivalStation,
+          departureDate
+        });
+        console.log('Query string:', queryParams.toString());
         
         const response = await fetch(
           `/api/orders/new?${queryParams.toString()}`,
@@ -168,6 +176,15 @@ const OrderPage: React.FC = () => {
     setPurchaseInfo(newPurchaseInfo);
   };
   
+  // 实现删除购票信息行的逻辑
+  const handleDeleteRow = (index: number) => {
+    const deletedInfo = purchaseInfo[index];
+    // 从购票信息中移除
+    setPurchaseInfo(purchaseInfo.filter((_, i) => i !== index));
+    // 从已选乘客列表中移除
+    setSelectedPassengers(selectedPassengers.filter(id => id !== deletedInfo.passenger.id));
+  };
+  
   // TODO: 实现返回车次列表页
   const handleBack = () => {
     navigate('/trains', { state: { departureStation, arrivalStation, departureDate } });
@@ -252,10 +269,6 @@ const OrderPage: React.FC = () => {
     // 这里只是一个占位符，保持接口一致性
   };
   
-  const handleLogoClick = () => {
-    navigate('/');
-  };
-  
   const handleNavigateToLogin = () => {
     navigate('/login');
   };
@@ -272,9 +285,12 @@ const OrderPage: React.FC = () => {
     }
   };
   
+  // 获取用户名
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
+  
   return (
     <div className="order-page">
-      <TopNavigation onLogoClick={handleLogoClick} showWelcomeLogin={true} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
@@ -305,6 +321,7 @@ const OrderPage: React.FC = () => {
               purchaseInfo={purchaseInfo}
               onSeatTypeChange={handleSeatTypeChange}
               onTicketTypeChange={handleTicketTypeChange}
+              onDeleteRow={handleDeleteRow}
               fareInfo={fareInfo}
             />
             
@@ -319,7 +336,7 @@ const OrderPage: React.FC = () => {
         )}
       </main>
       
-      <BottomNavigation onFriendLinkClick={() => {}} />
+      <BottomNavigation />
       
       {showConfirmModal && (
         <OrderConfirmationModal

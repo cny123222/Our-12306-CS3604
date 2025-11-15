@@ -1,116 +1,180 @@
 /* 车次搜索和查询区域样式 */
 .train-search-bar {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: #eff1f9;
+  border: 1px solid #bbd7ee;
+  border-radius: 4px;
+  padding: 16px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .search-bar-container {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
-/* 搜索输入框 */
-.search-field {
-  flex: 1;
-  min-width: 180px;
+/* 单程/往返选择器 */
+.trip-type-selector,
+.ticket-type-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.radio-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin: 0;
+  accent-color: #2196f3;
+}
+
+.radio-label {
+  font-size: 14px;
+  color: #000000;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 竖线分隔 - 蓝色 */
+.vertical-divider-blue {
+  width: 1px;
+  height: 40px;
+  background-color: #5ba3e0;
+  align-self: center;
+  margin: 0px 8px 0px 8px;
+}
+
+/* 搜索输入框 - 横向布局 */
+.search-field-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
   position: relative;
 }
 
-.search-field-label {
-  display: block;
-  font-size: 12px;
-  color: #666666;
-  margin-bottom: 6px;
-  font-weight: 500;
+.search-field-label-inline {
+  font-size: 13px;
+  color: #000000;
+  font-weight: 400;
+  white-space: nowrap;
 }
 
-.search-field input,
-.search-field select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #333333;
-  transition: all 0.3s;
-  background-color: #ffffff;
-}
-
-.search-field input:focus,
-.search-field select:focus {
-  outline: none;
-  border-color: #2196f3;
-  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
-}
-
-.search-field input::placeholder {
+.return-label {
   color: #999999;
 }
 
-.search-field input.error {
+.search-field-inline input,
+.search-field-inline select {
+  width: 120px;
+  padding: 6px 10px;
+  border: 1px solid #d0d5e8;
+  border-radius: 3px;
+  font-size: 13px;
+  color: #333333;
+  transition: border-color 0.2s;
+  background-color: #ffffff;
+  height: 30px;
+  box-sizing: border-box;
+}
+
+.search-field-inline input:focus,
+.search-field-inline select:focus {
+  outline: none;
+  border-color: #5ba3e0;
+  box-shadow: 0 0 0 2px rgba(91, 163, 224, 0.1);
+}
+
+.search-field-inline input::placeholder {
+  color: #bbb;
+  font-size: 12px;
+}
+
+.search-field-inline input.error {
   border-color: #d32f2f;
+}
+
+/* 字段错误信息 - 使用绝对定位，不影响flex布局 */
+.search-field-inline .field-error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #d32f2f;
+  white-space: nowrap;
+  z-index: 10;
 }
 
 /* 交换按钮 */
 .swap-stations-btn {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
   padding: 0;
-  margin-top: 20px;
-  background-color: #ff7700;
-  color: white;
+  background-color: #eff1f9;
+  color: #5ba3e0;
   border: none;
-  border-radius: 50%;
+  border-radius: 3px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
+  transition: all 0.2s ease;
 }
 
 .swap-stations-btn:hover {
-  background-color: #ff8822;
-  transform: scale(1.1);
-  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
+  background-color: #f0f7ff;
+  border-color: #1976d2;
+  box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
 }
 
 .swap-stations-btn:active {
   transform: scale(0.95);
+  background-color: #e3f2fd;
+}
+
+.swap-stations-btn .swap-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  filter: invert(47%) sepia(85%) saturate(1087%) hue-rotate(183deg) brightness(93%) contrast(88%);
 }
 
 /* 查询按钮 */
 .search-submit-btn {
-  margin-top: 20px;
-  padding: 10px 40px;
-  background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
+  padding: 6px 30px;
+  background: #ff8001;
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.3);
+  transition: all 0.2s ease;
   white-space: nowrap;
+  height: 30px;
+  margin-left: 6px;
 }
 
 .search-submit-btn:hover {
-  background: linear-gradient(to bottom, #ffaa44 0%, #ff8822 100%);
-  box-shadow: 0 4px 10px rgba(255, 119, 0, 0.4);
-  transform: translateY(-2px);
+  background: #f7920a;
 }
 
 .search-submit-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
+  transform: none;
 }
 
 .search-submit-btn:disabled {

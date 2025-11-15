@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
-import TopNavigation from '../components/TopNavigation';
+import HomeTopBar from '../components/HomeTopBar';
 import MainNavigation from '../components/MainNavigation';
 import TrainSearchForm from '../components/TrainSearchForm';
 import BottomNavigation from '../components/BottomNavigation';
@@ -44,13 +44,11 @@ const HomePage: React.FC = () => {
     navigate('/trains', { state: params });
   };
 
-  const handleLogoClick = () => {
-    navigate('/');
-  };
-
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
+  
   return (
     <div className="home-page">
-      <TopNavigation onLogoClick={handleLogoClick} />
+      <HomeTopBar isLoggedIn={isLoggedIn} username={username} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
@@ -64,52 +62,66 @@ const HomePage: React.FC = () => {
           </div>
         </div>
         
-        {/* 宣传栏区域 */}
-        <section className="promo-section">
-          <div className="promo-grid">
-            <div className="promo-card member-service">
-              <div className="promo-card-content">
-                <h3 className="promo-card-title">会员服务</h3>
-                <div className="promo-card-description">
-                  <p>铁路畅行 尊享体验</p>
-                  <p>12306铁路会员积分服务</p>
-                </div>
-              </div>
+        {/* 中部7个快捷按钮 */}
+        <section className="home-quick-buttons">
+          <div className="home-quick-buttons-container">
+            <img 
+              src="/images/首页中部.png" 
+              alt="快捷服务入口" 
+              className="home-quick-buttons-image"
+            />
+          </div>
+        </section>
+        
+        {/* 宣传栏区域 - 使用真实图片 */}
+        <section className="home-promo-section">
+          <div className="home-promo-grid">
+            <div className="home-promo-card">
+              <img 
+                src="/images/首页-会员服务-左上.jpg" 
+                alt="会员服务" 
+                className="home-promo-image"
+              />
             </div>
             
-            <div className="promo-card food-specialty">
-              <div className="promo-card-content">
-                <h3 className="promo-card-title">餐饮·特产</h3>
-                <div className="promo-card-description">
-                  <p>带有温度的旅途配餐</p>
-                  <p>享受星级的体验和家乡的味道</p>
-                </div>
-              </div>
+            <div className="home-promo-card">
+              <img 
+                src="/images/首页-餐饮特产-右上.jpg" 
+                alt="餐饮特产" 
+                className="home-promo-image"
+              />
             </div>
             
-            <div className="promo-card railway-insurance">
-              <div className="promo-card-content">
-                <h3 className="promo-card-title">铁路保险</h3>
-                <div className="promo-card-description">
-                  <p>用心呵护 放心出行</p>
-                  <p>12306铁路保障出行安全</p>
-                </div>
-              </div>
+            <div className="home-promo-card">
+              <img 
+                src="/images/首页-铁路保险-左下.jpg" 
+                alt="铁路保险" 
+                className="home-promo-image"
+              />
             </div>
             
-            <div className="promo-card time-ticket">
-              <div className="promo-card-content">
-                <h3 className="promo-card-title">计次·定期票</h3>
-                <div className="promo-card-description">
-                  <p>预约随心乘 出行更便捷</p>
-                  <p>为您提供全新的自助式出行体验</p>
-                </div>
-              </div>
+            <div className="home-promo-card">
+              <img 
+                src="/images/首页-计次定期票-右下.png" 
+                alt="计次定期票" 
+                className="home-promo-image"
+              />
             </div>
           </div>
         </section>
+        
+        {/* 底部发布区域 */}
+        <section className="home-info-section">
+          <div className="home-info-container">
+            <img 
+              src="/images/首页-底部发布.png" 
+              alt="最新发布、常见问题、信用信息" 
+              className="home-info-image"
+            />
+          </div>
+        </section>
       </main>
-      <BottomNavigation onFriendLinkClick={() => {}} />
+      <BottomNavigation />
     </div>
   );
 };

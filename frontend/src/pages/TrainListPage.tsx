@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './TrainListPage.css';
-import TopNavigation from '../components/TopNavigation';
+import TrainListTopBar from '../components/TrainListTopBar';
 import MainNavigation from '../components/MainNavigation';
 import TrainSearchBar from '../components/TrainSearchBar';
 import TrainFilterPanel from '../components/TrainFilterPanel';
@@ -153,10 +153,6 @@ const TrainListPage: React.FC = () => {
   }, [queryTimestamp, trains]);
 
   // 实现导航功能
-  const handleNavigateToHome = () => {
-    navigate('/');
-  };
-
   const handleNavigateToLogin = () => {
     navigate('/login');
   };
@@ -183,13 +179,27 @@ const TrainListPage: React.FC = () => {
       return;
     }
     
+    console.log('Found train data:', {
+      trainNo: train.trainNo,
+      departureStation: train.departureStation,
+      arrivalStation: train.arrivalStation,
+      departureDate: train.departureDate
+    });
+    
+    console.log('Original search params:', {
+      departureStation: searchParams.departureStation,
+      arrivalStation: searchParams.arrivalStation,
+      departureDate: searchParams.departureDate
+    });
+    
     // 跳转到订单填写页，传递完整的车次信息
+    // 使用原始搜索参数而不是车次数据中的站点信息
     navigate('/order', { 
       state: { 
         trainNo: train.trainNo,
-        departureStation: train.departureStation,
-        arrivalStation: train.arrivalStation,
-        departureDate: train.departureDate || searchParams.departureDate
+        departureStation: searchParams.departureStation,
+        arrivalStation: searchParams.arrivalStation,
+        departureDate: searchParams.departureDate
       } 
     });
   };
@@ -226,7 +236,7 @@ const TrainListPage: React.FC = () => {
     // 4. 按席别筛选（只显示有该席别的车次）
     if (filters.seatTypes && filters.seatTypes.length > 0) {
       filtered = filtered.filter(train => {
-        return filters.seatTypes.some(seatType => 
+        return filters.seatTypes.some((seatType: string) => 
           train.availableSeats && train.availableSeats[seatType] !== undefined
         );
       });
@@ -236,9 +246,12 @@ const TrainListPage: React.FC = () => {
     setFilteredTrains(filtered);
   };
 
+  // 获取用户名
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
+
   return (
     <div className="train-list-page">
-      <TopNavigation onLogoClick={handleNavigateToHome} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
@@ -263,6 +276,7 @@ const TrainListPage: React.FC = () => {
           departureStations={filterOptions.departureStations || []}
           arrivalStations={filterOptions.arrivalStations || []}
           seatTypes={filterOptions.seatTypes || []}
+          departureDate={searchParams.departureDate}
         />
         {error && <div className="error-message">{error}</div>}
         {isLoading ? (
@@ -273,10 +287,13 @@ const TrainListPage: React.FC = () => {
                    onReserve={handleNavigateToOrderPage}
                    isLoggedIn={isLoggedIn}
                    queryTimestamp={queryTimestamp.toISOString()}
+                   departureCity={searchParams.departureStation}
+                   arrivalCity={searchParams.arrivalStation}
+                   departureDate={searchParams.departureDate}
                  />
                )}
       </div>
-      <BottomNavigation onFriendLinkClick={() => {}} />
+      <BottomNavigation />
     </div>
   );
 };

@@ -109,9 +109,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
       <span 
         data-testid="dropdown-arrow"
         className={`arrow ${isExpanded ? 'rotated' : ''}`}
-      >
-        ▼
-      </span>
+      ></span>
       {isExpanded && !disabled && normalizedOptions.length > 0 && (
         <div className="options-list">
           {normalizedOptions.map((option, index) => (

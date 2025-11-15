@@ -14,6 +14,7 @@ interface PassengerInfoSectionProps {
   purchaseInfo: any[];
   onSeatTypeChange: (index: number, seatType: string) => void;
   onTicketTypeChange: (index: number, ticketType: string) => void;
+  onDeleteRow?: (index: number) => void;
   fareInfo?: any;
 }
 
@@ -25,11 +26,12 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
   onPassengerSelect,
   onSearchPassenger,
   availableSeatTypes,
-  defaultSeatType,
+  defaultSeatType: _defaultSeatType,
   selectedPassengers,
   purchaseInfo,
   onSeatTypeChange,
   onTicketTypeChange,
+  onDeleteRow,
   fareInfo,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -71,8 +73,14 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
             availableSeatTypes={availableSeatTypes}
             onSeatTypeChange={onSeatTypeChange}
             onTicketTypeChange={onTicketTypeChange}
+            onDeleteRow={onDeleteRow}
             fareInfo={fareInfo}
           />
+        </div>
+        
+        {/* 中国铁路保险横幅 */}
+        <div className="railway-insurance-banner">
+          <img src="/images/order.jpg" alt="乘意相伴 安心出行 - 中国铁路保险" />
         </div>
       </div>
     </div>

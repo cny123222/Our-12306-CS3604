@@ -13,14 +13,15 @@ const SeatAvailabilityDisplay: React.FC<SeatAvailabilityDisplayProps> = ({ avail
   
   return (
     <div className="seat-availability-display">
-      <p className="availability-text gray-text">
+      <p className="availability-text">
         本次列车，
         {Object.entries(availableSeats).map(([seatType, count], index) => (
           <span key={seatType}>
             {index > 0 && '，'}
-            {seatType}余票 <span className="red-text">{count}</span> 张
+            {seatType}余票 <span className="seat-count">{String(count)}</span> 张
           </span>
         ))}
+        。
       </p>
     </div>
   );

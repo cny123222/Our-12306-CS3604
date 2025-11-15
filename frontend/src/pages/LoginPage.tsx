@@ -86,7 +86,8 @@ const LoginPage: React.FC = () => {
         const token = response.data.token
         if (token) {
           localStorage.setItem('authToken', token)
-          localStorage.setItem('userId', response.data.userId || '')
+          localStorage.setItem('userId', response.data.user?.id || response.data.userId || '')
+          localStorage.setItem('username', response.data.user?.name || response.data.user?.username || '')
         }
         
         setSmsSuccess('登录成功！正在跳转...')

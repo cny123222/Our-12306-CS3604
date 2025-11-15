@@ -205,6 +205,7 @@ async function getTrainDetails(trainNo) {
  * 对于非相邻两站，只计算全程空闲的座位
  */
 async function calculateAvailableSeats(trainNo, departureStation, arrivalStation) {
+  console.log('calculateAvailableSeats called with:', { trainNo, departureStation, arrivalStation });
   return new Promise((resolve, reject) => {
     const db = getDatabase();
     
@@ -221,16 +222,21 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
         const depStop = stops.find(s => s.station === departureStation);
         const arrStop = stops.find(s => s.station === arrivalStation);
         
+        console.log('depStop:', depStop, 'arrStop:', arrStop);
+        
         if (!depStop || !arrStop || depStop.seq >= arrStop.seq) {
+          console.log('Invalid stops configuration');
           db.close();
           return resolve({});
         }
         
         // 获取所有途经站点
+        console.log('Fetching intermediate stops between seq', depStop.seq, 'and', arrStop.seq);
         db.all(
           'SELECT station FROM train_stops WHERE train_no = ? AND seq >= ? AND seq <= ? ORDER BY seq',
           [trainNo, depStop.seq, arrStop.seq],
           (err, intermediateStops) => {
+            console.log('intermediateStops:', intermediateStops);
             if (err) {
               db.close();
               return reject(err);
@@ -242,14 +248,18 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
               [trainNo, '餐车'],
               (err, seatTypes) => {
                 if (err) {
+                  console.error('Error fetching seat types:', err);
                   db.close();
                   return reject(err);
                 }
+                
+                console.log('Found seat types:', seatTypes.map(st => st.seat_type));
                 
                 const result = {};
                 let completed = 0;
                 
                 if (seatTypes.length === 0) {
+                  console.log('No seat types found');
                   db.close();
                   return resolve({});
                 }
@@ -261,20 +271,27 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
                   
                   if (intermediateStops.length <= 2) {
                     // 相邻两站，直接统计该区间内available的座位数
-                    db.get(
-                      `SELECT COUNT(DISTINCT seat_no) as count 
+                    const query = `SELECT COUNT(DISTINCT seat_no) as count 
                        FROM seat_status 
                        WHERE train_no = ? 
                        AND seat_type = ? 
                        AND from_station = ? 
                        AND to_station = ? 
-                       AND status = 'available'`,
+                       AND status = 'available'`;
+                    console.log('Query for adjacent stations:', { trainNo, seat_type, departureStation, arrivalStation });
+                    db.get(
+                      query,
                       [trainNo, seat_type, departureStation, arrivalStation],
                       (err, row) => {
+                        if (err) {
+                          console.error('Query error:', err);
+                        }
+                        console.log(`Seats for ${seat_type}:`, row ? row.count : 0);
                         result[seat_type] = row ? row.count : 0;
                         completed++;
                         
                         if (completed === seatTypes.length) {
+                          console.log('Final result:', result);
                           db.close();
                           resolve(result);
                         }
@@ -282,88 +299,58 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
                     );
                   } else {
                     // 非相邻两站，需要找出所有区间都是available的座位
-                    // 首先获取该席别的所有座位
-                    db.all(
-                      `SELECT DISTINCT seat_no 
-                       FROM seat_status 
-                       WHERE train_no = ? 
-                       AND seat_type = ?`,
-                      [trainNo, seat_type],
-                      (err, seats) => {
-                        if (err || !seats) {
+                    console.log(`Processing cross-interval for ${seat_type}, ${intermediateStops.length} stops`);
+                    
+                    // 优化后的查询：使用GROUP BY和HAVING一次性找出所有区间都available的座位
+                    const segments = [];
+                    for (let i = 0; i < intermediateStops.length - 1; i++) {
+                      segments.push({
+                        from: intermediateStops[i].station,
+                        to: intermediateStops[i + 1].station
+                      });
+                    }
+                    
+                    // 构建查询条件
+                    const segmentConditions = segments.map(() => 
+                      '(from_station = ? AND to_station = ?)'
+                    ).join(' OR ');
+                    
+                    const segmentParams = segments.flatMap(s => [s.from, s.to]);
+                    
+                    // 使用一个查询找出所有区间都available的座位
+                    // 策略：找出在所有区间段都有available记录的座位
+                    db.get(
+                      `SELECT COUNT(*) as count
+                       FROM (
+                         SELECT seat_no
+                         FROM seat_status
+                         WHERE train_no = ?
+                         AND seat_type = ?
+                         AND (${segmentConditions})
+                         AND status = 'available'
+                         GROUP BY seat_no
+                         HAVING COUNT(*) = ?
+                       )`,
+                      [
+                        trainNo, seat_type, ...segmentParams,
+                        segments.length
+                      ],
+                      (err, row) => {
+                        if (err) {
+                          console.error(`Query error for ${seat_type}:`, err);
                           result[seat_type] = 0;
-                          completed++;
-                          
-                          if (completed === seatTypes.length) {
-                            db.close();
-                            resolve(result);
-                          }
-                          return;
+                        } else {
+                          console.log(`Available seats for ${seat_type}:`, row ? row.count : 0);
+                          result[seat_type] = row ? row.count : 0;
                         }
                         
-                        let availableCount = 0;
-                        let seatChecked = 0;
+                        completed++;
                         
-                        if (seats.length === 0) {
-                          result[seat_type] = 0;
-                          completed++;
-                          
-                          if (completed === seatTypes.length) {
-                            db.close();
-                            resolve(result);
-                          }
-                          return;
+                        if (completed === seatTypes.length) {
+                          console.log('Final result:', result);
+                          db.close();
+                          resolve(result);
                         }
-                        
-                        // 对每个座位检查所有区间是否都available
-                        seats.forEach(({ seat_no }) => {
-                          // 构建区间查询条件
-                          const segments = [];
-                          for (let i = 0; i < intermediateStops.length - 1; i++) {
-                            segments.push({
-                              from: intermediateStops[i].station,
-                              to: intermediateStops[i + 1].station
-                            });
-                          }
-                          
-                          // 查询该座位在所有区间的状态
-                          const segmentConditions = segments.map(() => 
-                            '(from_station = ? AND to_station = ?)'
-                          ).join(' OR ');
-                          
-                          const segmentParams = segments.flatMap(s => [s.from, s.to]);
-                          
-                          db.all(
-                            `SELECT status 
-                             FROM seat_status 
-                             WHERE train_no = ? 
-                             AND seat_type = ? 
-                             AND seat_no = ? 
-                             AND (${segmentConditions})`,
-                            [trainNo, seat_type, seat_no, ...segmentParams],
-                            (err, statuses) => {
-                              // 检查是否所有区间都是available
-                              if (!err && statuses.length === segments.length) {
-                                const allAvailable = statuses.every(s => s.status === 'available');
-                                if (allAvailable) {
-                                  availableCount++;
-                                }
-                              }
-                              
-                              seatChecked++;
-                              
-                              if (seatChecked === seats.length) {
-                                result[seat_type] = availableCount;
-                                completed++;
-                                
-                                if (completed === seatTypes.length) {
-                                  db.close();
-                                  resolve(result);
-                                }
-                              }
-                            }
-                          );
-                        });
                       }
                     );
                   }
@@ -493,10 +480,51 @@ function calculateDuration(departureTime, arrivalTime) {
   return duration;
 }
 
+/**
+ * 获取车次在特定站点的时间信息
+ */
+async function getTrainTimeDetails(trainNo, departureStation, arrivalStation) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    // 查询车次停靠站信息
+    db.all(
+      'SELECT * FROM train_stops WHERE train_no = ? ORDER BY seq',
+      [trainNo],
+      (err, stops) => {
+        db.close();
+        
+        if (err) {
+          console.error('查询车次停靠站失败:', err);
+          return reject(err);
+        }
+        
+        if (!stops || stops.length === 0) {
+          return resolve(null);
+        }
+        
+        // 找到出发站和到达站
+        const depStop = stops.find(s => s.station === departureStation);
+        const arrStop = stops.find(s => s.station === arrivalStation);
+        
+        if (!depStop || !arrStop) {
+          return resolve(null);
+        }
+        
+        resolve({
+          departureTime: depStop.depart_time,
+          arrivalTime: arrStop.arrive_time
+        });
+      }
+    );
+  });
+}
+
 module.exports = {
   searchTrains,
   getTrainDetails,
   calculateAvailableSeats,
   getFilterOptions,
-  getAvailableDates
+  getAvailableDates,
+  getTrainTimeDetails
 };

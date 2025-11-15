@@ -25,6 +25,7 @@ function getDatabase() {
  * 当用户选择的出发站和到达站不是相邻站点时，需要累加途经所有区间的票价
  */
 async function calculateCrossIntervalFare(trainNo, departureStation, arrivalStation) {
+  console.log('calculateCrossIntervalFare called with:', { trainNo, departureStation, arrivalStation });
   return new Promise((resolve, reject) => {
     const db = getDatabase();
     
@@ -47,13 +48,19 @@ async function calculateCrossIntervalFare(trainNo, departureStation, arrivalStat
         const depIndex = stops.findIndex(s => s.station === departureStation);
         const arrIndex = stops.findIndex(s => s.station === arrivalStation);
         
+        console.log('Found stops:', stops.map(s => s.station));
+        console.log('depIndex:', depIndex, 'arrIndex:', arrIndex);
+        
         if (depIndex === -1 || arrIndex === -1) {
           db.close();
-          return reject({ status: 400, message: '出发站或到达站不在该车次的停靠站中' });
+          const errorMsg = depIndex === -1 ? `出发站"${departureStation}"不在该车次的停靠站中` : `到达站"${arrivalStation}"不在该车次的停靠站中`;
+          console.error('Station not found:', errorMsg);
+          return reject({ status: 400, message: errorMsg });
         }
         
         if (depIndex >= arrIndex) {
           db.close();
+          console.error('Departure index >= arrival index:', { depIndex, arrIndex });
           return reject({ status: 400, message: '出发站必须在到达站之前' });
         }
         
@@ -65,6 +72,7 @@ async function calculateCrossIntervalFare(trainNo, departureStation, arrivalStat
             to: stops[i + 1].station
           });
         }
+        console.log('Intervals:', intervals);
         
         // 步骤4: 查询每个区间的票价并累加
         let totalDistance = 0;
