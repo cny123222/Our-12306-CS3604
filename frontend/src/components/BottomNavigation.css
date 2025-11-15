@@ -21,7 +21,7 @@
   flex: 0 0 40%;
 }
 
-.section-title {
+.bottom-navigation .section-title {
   font-size: 14px !important;
   font-weight: 500 !important;
   color: #333333 !important;
@@ -77,9 +77,9 @@
   margin-bottom: 0;
 }
 
-.qr-label {
+.bottom-navigation .qr-label {
   font-size: 13px;
-  color: #333333;
+  color: #333333 !important;
   text-align: center;
   white-space: nowrap;
   width: 80px;
@@ -114,9 +114,9 @@
   margin-top: 20px;
 }
 
-.qr-code-footer p {
+.bottom-navigation .qr-code-footer p {
   font-size: 12px;
-  color: #333333;
+  color: #333333 !important;
   line-height: 1.8;
   margin: 0;
 }
@@ -157,7 +157,7 @@
     padding: 0 20px;
   }
 
-  .section-title {
+  .bottom-navigation .section-title {
     font-size: 15px;
   }
 
@@ -184,7 +184,7 @@
     padding: 0 15px;
   }
 
-  .section-title {
+  .bottom-navigation .section-title {
     font-size: 14px;
     margin-bottom: 15px;
     text-align: center;
