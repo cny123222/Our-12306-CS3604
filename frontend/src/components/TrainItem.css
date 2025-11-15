@@ -85,6 +85,7 @@
   font-size: 16px;
   text-decoration: underline;
   text-decoration-color: #333333;
+  margin-bottom: 0px !important;
 }
 
 .train-dropdown-arrow {
