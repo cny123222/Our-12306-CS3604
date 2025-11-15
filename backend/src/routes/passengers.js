@@ -55,7 +55,7 @@ router.post('/search', authenticateUser, async (req, res) => {
 router.post('/', authenticateUser, async (req, res) => {
   try {
     
-    const { name, idCardType, idCardNumber, discountType } = req.body;
+    const { name, idCardType, idCardNumber, discountType, phone } = req.body;
     
     // 验证必填字段
     if (!name || !idCardType || !idCardNumber || !discountType) {
@@ -67,7 +67,8 @@ router.post('/', authenticateUser, async (req, res) => {
       name,
       idCardType,
       idCardNumber,
-      discountType
+      discountType,
+      phone
     });
     
     res.status(201).json(result);
@@ -87,14 +88,15 @@ router.put('/:passengerId', authenticateUser, async (req, res) => {
   try {
     
     const { passengerId } = req.params;
-    const { name, idCardType, idCardNumber, discountType } = req.body;
+    const { name, idCardType, idCardNumber, discountType, phone } = req.body;
     
     const userId = req.user.id;
     const result = await passengerService.updatePassenger(userId, passengerId, {
       name,
       idCardType,
       idCardNumber,
-      discountType
+      discountType,
+      phone
     });
     
     res.status(200).json(result);
@@ -116,11 +118,17 @@ router.delete('/:passengerId', authenticateUser, async (req, res) => {
     const { passengerId } = req.params;
     const userId = req.user.id;
     
+    console.log('=== 删除乘客路由 ===');
+    console.log('req.user:', req.user);
+    console.log('passengerId:', passengerId);
+    console.log('userId 来自 req.user.id:', userId);
+    
     const result = await passengerService.deletePassenger(userId, passengerId);
     
     res.status(200).json(result);
   } catch (error) {
     console.error('删除乘客失败:', error);
+    console.error('错误堆栈:', error.stack);
     const status = error.status || 500;
     const message = error.message || '删除乘客失败';
     res.status(status).json({ error: message });

@@ -57,7 +57,10 @@ const PassengerTable: React.FC<PassengerTableProps> = ({
               <td className="id-type-cell">{passenger.idCardType || passenger.id_card_type}</td>
               <td className="id-number-cell">{maskIdCard(passenger.idCardNumber || passenger.id_card_number)}</td>
               <td className="phone-cell">
-                {passenger.phone ? maskPhone(passenger.phone) : (passenger.phoneNumber ? maskPhone(passenger.phoneNumber) : (passenger.phone_number ? maskPhone(passenger.phone_number) : '-'))}
+                {(() => {
+                  const phone = passenger.phone || passenger.phoneNumber || passenger.phone_number;
+                  return phone && phone.trim() !== '' ? maskPhone(phone) : '-';
+                })()}
               </td>
               <td className="verification-cell">
                 <span className="verification-badge">

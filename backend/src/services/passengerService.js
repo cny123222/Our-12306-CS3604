@@ -331,13 +331,32 @@ async function deletePassenger(userId, passengerId) {
     
     const passenger = passengerRows[0];
     
+    console.log('删除乘客 - 检查权限:', {
+      passengerId,
+      requestUserId: userId,
+      requestUserIdType: typeof userId,
+      passengerUserId: passenger?.user_id,
+      passengerUserIdType: typeof passenger?.user_id,
+      exists: !!passenger
+    });
+    
     if (!passenger) {
       const error = new Error('乘客不存在');
       error.status = 404;
       throw error;
     }
     
-    if (passenger.user_id !== userId) {
+    // 将两个值都转换为字符串进行比较，避免类型不匹配
+    const passengerUserIdStr = String(passenger.user_id);
+    const userIdStr = String(userId);
+    
+    console.log('删除乘客 - 字符串比较:', {
+      passengerUserIdStr,
+      userIdStr,
+      match: passengerUserIdStr === userIdStr
+    });
+    
+    if (passengerUserIdStr !== userIdStr) {
       const error = new Error('无权删除此乘客');
       error.status = 403;
       throw error;
@@ -362,9 +381,11 @@ async function deletePassenger(userId, passengerId) {
     
     // 删除乘客
     await db.run(
-      'DELETE FROM passengers WHERE id = ? AND user_id = ?',
-      [passengerId, userId]
+      'DELETE FROM passengers WHERE id = ?',
+      [passengerId]
     );
+    
+    console.log('删除乘客成功:', { passengerId, userId });
     
     return { message: '删除乘客成功' };
   } catch (err) {

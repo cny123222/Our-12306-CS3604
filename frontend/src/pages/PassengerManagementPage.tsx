@@ -9,6 +9,8 @@ import BottomNavigation from '../components/BottomNavigation';
 import PassengerListPanel from '../components/Passenger/PassengerListPanel';
 import AddPassengerPanel from '../components/Passenger/AddPassengerPanel';
 import EditPassengerPanel from '../components/Passenger/EditPassengerPanel';
+import ConfirmModal from '../components/ConfirmModal';
+import SuccessModal from '../components/SuccessModal';
 import './PassengerManagementPage.css';
 
 const PassengerManagementPage = () => {
@@ -21,6 +23,10 @@ const PassengerManagementPage = () => {
   const [currentView, setCurrentView] = useState<'list' | 'add' | 'edit'>('list');
   const [editingPassenger, setEditingPassenger] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   // 检查登录状态
   useEffect(() => {
@@ -134,24 +140,72 @@ const PassengerManagementPage = () => {
     setCurrentView('edit');
   };
 
-  const handleDelete = async (passengerId: string) => {
-    if (!confirm('确定要删除该乘客吗？')) return;
+  const handleDelete = (passengerId: string) => {
+    setPendingDeleteId(passengerId);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    // 先关闭确认对话框
+    setShowConfirmModal(false);
+    
+    if (!pendingDeleteId) return;
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`/api/passengers/${passengerId}`, {
+      
+      if (!token) {
+        console.log('Token不存在，跳转登录页');
+        navigate('/login');
+        return;
+      }
+
+      console.log('删除乘客，ID:', pendingDeleteId);
+      const response = await fetch(`/api/passengers/${pendingDeleteId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
+      console.log('删除响应状态:', response.status);
+
+      if (response.status === 401) {
+        // Token失效，跳转到登录页
+        console.log('Token失效(401)，跳转登录页');
+        localStorage.removeItem('authToken');
+        navigate('/login');
+        return;
+      }
+
       if (response.ok) {
         await fetchPassengers();
+        // 使用 setTimeout 确保确认对话框完全关闭后再显示成功提示
+        setTimeout(() => {
+          setSuccessMessage('删除成功');
+          setShowSuccessModal(true);
+        }, 100);
       } else {
-        alert('删除失败');
+        // 获取具体的错误信息
+        const errorData = await response.json().catch(() => ({ error: '删除失败' }));
+        const errorMessage = errorData.error || '删除失败';
+        console.error('删除失败:', errorMessage, errorData);
+        alert(errorMessage);
       }
     } catch (err) {
-      alert('删除失败');
+      console.error('删除乘客异常:', err);
+      alert('删除失败，请稍后重试');
+    } finally {
+      setPendingDeleteId(null);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmModal(false);
+    setPendingDeleteId(null);
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    setSuccessMessage('');
   };
 
   const handleAddSubmit = async (passengerData: any) => {
@@ -285,6 +339,22 @@ const PassengerManagementPage = () => {
       </div>
 
       <BottomNavigation />
+
+      <ConfirmModal
+        isVisible={showConfirmModal}
+        title="删除确认"
+        message="确定要删除该乘客吗？"
+        confirmText="确定"
+        cancelText="取消"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
+
+      <SuccessModal
+        isVisible={showSuccessModal}
+        message={successMessage}
+        onConfirm={handleSuccessConfirm}
+      />
     </div>
   );
 };
