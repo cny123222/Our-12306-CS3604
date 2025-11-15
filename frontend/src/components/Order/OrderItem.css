@@ -31,30 +31,34 @@
   color: #333;
 }
 
-/* 订单主体内容 */
+/* 订单主体内容 - 左侧车次+右侧乘客列表 */
 .order-main-content {
   display: flex;
-  padding: 20px 25px;
-  border-bottom: 1px solid #e8e8e8;
+  align-items: flex-start;
+  border-top: 1px solid #d0d0d0;
+  padding: 15px 25px;
+  gap: 0;
 }
 
-.order-cell {
+/* 车次信息列（左侧，只显示一次）*/
+.order-cell.train-cell {
+  flex: 0 0 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 15px;
-}
-
-/* 车次信息列 */
-.train-cell {
-  flex: 1.5;
-  padding-left: 0;
+  gap: 8px;
+  padding-right: 20px;
+  margin-right: 20px;
+  border-right: 1px solid #e8e8e8;
 }
 
 .train-route {
   font-size: 14px;
   color: #333;
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .train-from,
@@ -82,35 +86,84 @@
   margin-left: 10px;
 }
 
-/* 旅客信息列 */
-.passenger-cell {
+/* 右侧乘客信息区域（多行）*/
+.passengers-info-area {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 每个乘客一行 */
+.passenger-row {
+  display: flex;
   align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e8e8e8;
+}
+
+.passenger-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.passenger-row:first-child {
+  padding-top: 0;
+}
+
+/* 旅客信息列 */
+.order-cell.passenger-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  min-width: 120px;
+  padding: 0 10px;
+}
+
+.passenger-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
 }
 
 .passenger-id-type {
-  font-size: 14px;
-  color: #333;
+  font-size: 12px;
+  color: #666;
   text-align: center;
 }
 
 /* 席位信息列 */
-.seat-cell {
+.order-cell.seat-cell {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  text-align: center;
+  min-width: 100px;
+  padding: 0 10px;
 }
 
 .seat-detail {
-  font-size: 14px;
+  font-size: 13px;
   color: #333;
   text-align: center;
   line-height: 1.6;
 }
 
 /* 票价列 */
-.price-cell {
+.order-cell.price-cell {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  text-align: center;
+  min-width: 100px;
+  padding: 0 10px;
 }
 
 .price-detail {
@@ -118,40 +171,45 @@
 }
 
 .ticket-type {
-  font-size: 13px;
+  font-size: 12px;
   color: #666;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .price-amount {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .price-value {
-  font-size: 18px;
+  font-size: 16px;
   color: #ff6600;
   font-weight: 600;
 }
 
 .price-discount {
-  font-size: 12px;
+  font-size: 11px;
   color: #ff6600;
   background-color: #fff3e0;
-  padding: 2px 6px;
-  border-radius: 3px;
+  padding: 2px 5px;
+  border-radius: 2px;
 }
 
 /* 车票状态列 */
-.status-cell {
-  flex: 0.8;
+.order-cell.status-cell {
+  flex: 0 0 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  text-align: center;
+  padding: 0 10px;
 }
 
 .status-value {
-  font-size: 15px;
+  font-size: 14px;
   color: #333;
   text-align: center;
   font-weight: 500;
@@ -224,28 +282,31 @@
     padding: 15px;
   }
   
-  .order-cell {
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
+  .order-cell.train-cell {
+    border-right: none;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
   }
   
-  .order-cell:last-child {
-    border-bottom: none;
-  }
-  
-  .train-cell,
-  .passenger-cell,
-  .seat-cell,
-  .price-cell,
-  .status-cell {
+  .passenger-row {
+    flex-direction: column;
     align-items: flex-start;
+    padding: 10px 0;
   }
   
+  .order-cell {
+    align-items: flex-start !important;
+    text-align: left !important;
+    padding: 5px 0 !important;
+  }
+  
+  .passenger-name,
   .passenger-id-type,
   .seat-detail,
   .price-detail,
   .status-value {
-    text-align: left;
+    text-align: left !important;
   }
   
   .order-actions {
@@ -256,4 +317,3 @@
     width: 100%;
   }
 }
-
