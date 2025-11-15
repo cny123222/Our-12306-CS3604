@@ -23,6 +23,16 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   idCardNumber,
   verificationStatus
 }) => {
+  // 脱敏显示证件号码：显示前4位和后3位，中间用*替代
+  const maskIdCard = (idCard: string) => {
+    if (!idCard || idCard.length <= 7) return idCard;
+    const firstFour = idCard.substring(0, 4);
+    const lastThree = idCard.substring(idCard.length - 3);
+    const middleLength = idCard.length - 7;
+    const masked = '*'.repeat(middleLength);
+    return `${firstFour}${masked}${lastThree}`;
+  };
+
   return (
     <div className="basic-info-section">
       <h3 className="section-title">基本信息</h3>
@@ -53,7 +63,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           <span className="info-label">
             <span className="required-mark">* </span>证件号码：
           </span>
-          <span className="info-value">{idCardNumber}</span>
+          <span className="info-value">{maskIdCard(idCardNumber)}</span>
         </div>
         <div className="info-row">
           <span className="info-label">核验状态：</span>
