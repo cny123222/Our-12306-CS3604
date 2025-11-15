@@ -28,11 +28,15 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
       <h3 className="section-title">基本信息</h3>
       <div className="info-content">
         <div className="info-row">
-          <span className="info-label">用户名：</span>
+          <span className="info-label">
+            <span className="required-mark">* </span>用户名：
+          </span>
           <span className="info-value">{username}</span>
         </div>
         <div className="info-row">
-          <span className="info-label">姓名：</span>
+          <span className="info-label">
+            <span className="required-mark">* </span>姓名：
+          </span>
           <span className="info-value">{name}</span>
         </div>
         <div className="info-row">
@@ -40,11 +44,15 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           <span className="info-value">{country}</span>
         </div>
         <div className="info-row">
-          <span className="info-label">证件类型：</span>
+          <span className="info-label">
+            <span className="required-mark">* </span>证件类型：
+          </span>
           <span className="info-value">{idCardType}</span>
         </div>
         <div className="info-row">
-          <span className="info-label">证件号码：</span>
+          <span className="info-label">
+            <span className="required-mark">* </span>证件号码：
+          </span>
           <span className="info-value">{idCardNumber}</span>
         </div>
         <div className="info-row">

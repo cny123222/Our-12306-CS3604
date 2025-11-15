@@ -43,6 +43,11 @@ const PersonalInfoPanel: React.FC<PersonalInfoPanelProps> = ({
     onEditContact?.();
   };
 
+  const handleEditAdditional = () => {
+    // 附加信息编辑逻辑（暂未实现）
+    onEditAdditional?.();
+  };
+
   return (
     <div className="personal-info-panel">
       <BasicInfoSection
@@ -65,7 +70,7 @@ const PersonalInfoPanel: React.FC<PersonalInfoPanelProps> = ({
       
       <AdditionalInfoSection
         discountType={userInfo.discountType}
-        onEdit={onEditAdditional}
+        onEdit={handleEditAdditional}
       />
     </div>
   );
