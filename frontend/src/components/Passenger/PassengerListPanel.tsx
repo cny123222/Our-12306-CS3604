@@ -38,31 +38,58 @@ const PassengerListPanel: React.FC<PassengerListPanelProps> = ({
     setSelectedPassengers([]);
   };
 
+  const handleClear = () => {
+    setSearchKeyword('');
+    onSearch('');
+  };
+
   return (
     <div className="passenger-list-panel">
       <div className="search-section">
         <div className="search-group">
-          <label className="search-label">姓名：</label>
-          <input
-            type="text"
-            className="search-input"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            placeholder="请输入乘客姓名"
-          />
-          <button className="search-button" onClick={handleSearch}>
+          <div className="search-input-wrapper">
+            <input
+              type="text"
+              className="search-input"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              placeholder="请输入乘客姓名"
+            />
+            <button className="clear-input-button" onClick={handleClear}>
+              ✕
+            </button>
+          </div>
+          <button className="passenger-search-button" onClick={handleSearch}>
             查询
           </button>
         </div>
       </div>
 
       <div className="table-section">
+        <div className="table-header-row">
+          <table className="header-table">
+            <thead>
+              <tr>
+                <th className="checkbox-header"></th>
+                <th className="index-header">序号</th>
+                <th className="name-header">姓名</th>
+                <th className="id-type-header">证件类型</th>
+                <th className="id-number-header">证件号码</th>
+                <th className="phone-header">手机/电话</th>
+                <th className="verification-header">核验状态</th>
+                <th className="action-header">操作</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
         <div className="table-actions">
           <button className="add-button" onClick={onAdd}>
-            <span className="add-icon">+</span> 添加
+            <span className="add-icon-circle">●</span>
+            <span className="add-plus">+</span>
+            <span className="add-text">添加</span>
           </button>
           <button className="batch-delete-button" onClick={handleBatchDelete}>
-            批量删除
+            <span className="delete-icon">🗑</span> 批量删除
           </button>
         </div>
 

@@ -19,12 +19,14 @@
   border-bottom: 2px solid #8fcdec;
 }
 
-.section-title {
+.passenger-info-section .section-title {
   font-size: 16px !important;
   font-weight: 500;
-  color: #ffffff;
+  color: #ffffff !important;
   margin: 5px !important;
   letter-spacing: 0.5px;
+  border-bottom: none !important;
+  padding-bottom: 0px !important;
 }
 
 .passenger-info-content {

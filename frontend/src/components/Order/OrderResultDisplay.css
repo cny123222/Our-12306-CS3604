@@ -55,34 +55,35 @@
   padding: 12px 25px;
 }
 
-.header-cell {
+.order-header-cell {
   font-size: 13px;
   font-weight: 400;
-  color: #666;
+  color: #666 !important;
   text-align: center;
+  background-color: transparent !important;
 }
 
-.train-info-header {
+.order-header-cell.train-info-header {
   flex: 1.5;
   text-align: left;
 }
 
-.passenger-info-header {
+.order-header-cell.passenger-info-header {
   flex: 1;
   text-align: center;
 }
 
-.seat-info-header {
+.order-header-cell.seat-info-header {
   flex: 1;
   text-align: center;
 }
 
-.price-header {
+.order-header-cell.price-header {
   flex: 1;
   text-align: center;
 }
 
-.status-header {
+.order-header-cell.status-header {
   flex: 0.8;
   text-align: center;
 }
