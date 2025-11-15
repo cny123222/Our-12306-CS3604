@@ -85,9 +85,9 @@ const PassengerTable: React.FC<PassengerTableProps> = ({
               </td>
               <td>{index + 1}</td>
               <td>{maskName(passenger.name)}</td>
-              <td>{passenger.id_card_type}</td>
-              <td>{maskIdCard(passenger.id_card_number)}</td>
-              <td>{maskPhone(passenger.phone)}</td>
+              <td>{passenger.idCardType || passenger.id_card_type}</td>
+              <td>{maskIdCard(passenger.idCardNumber || passenger.id_card_number)}</td>
+              <td>{passenger.phone ? maskPhone(passenger.phone) : '-'}</td>
               <td>
                 <span className="verification-icon">✓</span>
                 <span className="verification-text">已通过核验</span>

@@ -19,6 +19,7 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
+  pointer-events: none;  /* 完全禁用遮罩层点击，确保不会拦截按钮点击 */
 }
 
 .modal-content {
@@ -32,7 +33,8 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  z-index: 2;
+  z-index: 100;  /* 大幅提高 z-index，确保在遮罩层之上 */
+  pointer-events: auto;  /* 确保内容可以接收点击事件 */
 }
 
 .modal-header {

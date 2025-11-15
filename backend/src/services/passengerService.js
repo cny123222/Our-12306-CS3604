@@ -42,6 +42,7 @@ async function getUserPassengers(userId) {
       idCardType: p.id_card_type,
       idCardNumber: maskIdNumber(p.id_card_number),
       discountType: p.discount_type,
+      phone: p.phone || '',
       points: p.points || 0
     }));
     
@@ -78,6 +79,7 @@ async function searchPassengers(userId, keyword) {
       idCardType: p.id_card_type,
       idCardNumber: maskIdNumber(p.id_card_number),
       discountType: p.discount_type,
+      phone: p.phone || '',
       points: p.points || 0
     }));
     
@@ -120,6 +122,7 @@ async function getPassengerDetails(userId, passengerId) {
       idCardType: row.id_card_type,
       idCardNumber: maskIdNumber(row.id_card_number),
       discountType: row.discount_type,
+      phone: row.phone || '',
       points: row.points || 0
     };
   } catch (err) {
@@ -197,7 +200,7 @@ function validateIdCardNumber(idCardNumber, idCardType) {
  * 创建乘客
  */
 async function createPassenger(userId, passengerData) {
-  const { name, idCardType, idCardNumber, discountType } = passengerData;
+  const { name, idCardType, idCardNumber, discountType, phone } = passengerData;
   
   // 验证姓名长度
   if (!validateNameLength(name)) {
@@ -230,9 +233,9 @@ async function createPassenger(userId, passengerData) {
     
     // 创建乘客记录
     await db.run(
-      `INSERT INTO passengers (id, user_id, name, id_card_type, id_card_number, discount_type, points, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
-      [passengerId, userId, name, idCardType, idCardNumber, discountType || '成人票']
+      `INSERT INTO passengers (id, user_id, name, id_card_type, id_card_number, discount_type, phone, points, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
+      [passengerId, userId, name, idCardType, idCardNumber, discountType || '成人票', phone || '']
     );
     
     return { 
@@ -258,7 +261,7 @@ async function createPassenger(userId, passengerData) {
  * 更新乘客信息
  */
 async function updatePassenger(userId, passengerId, updateData) {
-  const { name, idCardType, idCardNumber, discountType } = updateData;
+  const { name, idCardType, idCardNumber, discountType, phone } = updateData;
   
   // 验证数据格式
   if (name && !validateNameLength(name)) {
@@ -297,9 +300,9 @@ async function updatePassenger(userId, passengerId, updateData) {
     // 更新乘客信息
     await db.run(
       `UPDATE passengers 
-       SET name = ?, id_card_type = ?, id_card_number = ?, discount_type = ?, updated_at = datetime('now')
+       SET name = ?, id_card_type = ?, id_card_number = ?, discount_type = ?, phone = ?, updated_at = datetime('now')
        WHERE id = ? AND user_id = ?`,
-      [name, idCardType, idCardNumber, discountType, passengerId, userId]
+      [name, idCardType, idCardNumber, discountType, phone || '', passengerId, userId]
     );
     
     return { 
