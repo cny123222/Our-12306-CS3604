@@ -21,7 +21,13 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
 }) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  const isTrainsPage = location.pathname === '/trains' || location.pathname === '/order';
+  // 车票相关的页面：车次列表、订单填写、历史订单、个人信息、手机核验、乘客管理
+  const isTrainsPage = location.pathname === '/trains' 
+    || location.pathname === '/order' 
+    || location.pathname === '/orders' 
+    || location.pathname === '/personal-info' 
+    || location.pathname === '/phone-verification' 
+    || location.pathname === '/passengers';
 
   return (
     <nav className="main-navigation">
