@@ -18,9 +18,47 @@
   margin: 0;
 }
 
+/* 标签切换样式 */
+.order-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.order-tab {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  position: relative;
+  bottom: -2px;
+}
+
+.order-tab:hover {
+  color: #2196f3;
+  background-color: #f5f5f5;
+}
+
+.order-tab.active {
+  color: #2196f3;
+  border-bottom-color: #2196f3;
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   .order-list-panel {
     margin: 10px;
+  }
+  
+  .order-tab {
+    font-size: 14px;
+    padding: 10px 15px;
   }
 }
 
