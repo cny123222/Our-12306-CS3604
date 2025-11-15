@@ -286,7 +286,7 @@ const OrderPage: React.FC = () => {
   };
   
   // 获取用户名
-  const username = isLoggedIn ? localStorage.getItem('username') || '用户' : '';
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
   
   return (
     <div className="order-page">

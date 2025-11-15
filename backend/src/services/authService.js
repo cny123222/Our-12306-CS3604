@@ -202,6 +202,7 @@ class AuthService {
         user: {
           id: sessionData.userId,
           username: sessionData.username,
+          name: user?.name,
           email: user?.email,
           phone: user?.phone
         }

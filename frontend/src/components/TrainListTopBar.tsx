@@ -5,13 +5,14 @@ import './TrainListTopBar.css';
 interface TrainListTopBarProps {
   isLoggedIn: boolean;
   username?: string;
+  onLogout?: () => void;
 }
 
 /**
  * 车次列表页专用顶部栏组件
  * 基于HomeTopBar，保留所有功能，只修改登录/注册样式
  */
-const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username }) => {
+const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username, onLogout }) => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = React.useState('');
 
@@ -29,6 +30,18 @@ const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username 
   const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
+    }
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      // TODO: 调用退出登录API
+      console.log('退出登录');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('username');
+      navigate('/login');
     }
   };
 
@@ -78,8 +91,10 @@ const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username 
             </>
           ) : (
             <>
-              <span className="train-list-welcome-user">您好，{username}</span>
-              <Link to="/profile" className="train-list-auth-link">个人中心</Link>
+              <span className="train-list-welcome-text">您好，</span>
+              <span className="train-list-username">{username}</span>
+              <span className="train-list-divider">|</span>
+              <button className="train-list-logout-button" onClick={handleLogout}>退出</button>
             </>
           )}
         </div>
