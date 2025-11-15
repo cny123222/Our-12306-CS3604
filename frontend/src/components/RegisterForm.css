@@ -7,56 +7,56 @@
 }
 
 /* 表单行 */
-.form-row {
+.register-form .form-row {
   margin-bottom: 22px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 /* 标签区域 */
-.form-label-wrapper {
+.register-form .form-label-wrapper {
   width: 200px;
   text-align: right;
-  padding-top: 10px;
+  padding-top: 0;
   flex-shrink: 0;
   white-space: nowrap;
 }
 
-.form-label {
+.register-form .form-label {
   font-size: 14px;
   color: #333;
   line-height: 20px;
   display: inline-block;
 }
 
-.required-mark {
+.register-form .required-mark {
   color: #ff4d4f;
   margin-right: 4px;
   font-weight: bold;
 }
 
 /* 输入区域 */
-.form-input-container {
+.register-form .form-input-container {
   flex: 1;
   margin-left: 20px;
   max-width: 600px;
 }
 
-.form-input-wrapper {
+.register-form .form-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
 /* 输入框 */
-.form-input {
+.register-form .form-input {
   width: 350px;
   min-width: 350px;
   max-width: 350px;
   height: 36px;
   padding: 0 12px;
   border: 1px solid #b8b8b8;
-  border-radius: 2px;
+  border-radius: 0px;
   font-size: 14px;
   color: #333;
   outline: none;
@@ -67,40 +67,65 @@
 }
 
 /* 选择框统一宽度 */
-.form-input-container > .select-dropdown {
+.register-form .form-input-container > .select-dropdown {
   width: 350px;
   min-width: 350px;
   max-width: 350px;
   flex-shrink: 0;
 }
 
-.form-input::placeholder {
-  color: #999;
+/* 注册页面下拉框显示框样式 - 方角设计 */
+.register-form .form-input-container .select-dropdown .selected-value-display {
+  height: 36px;
+  line-height: 36px;
+  border: 1px solid #b8b8b8;
+  border-radius: 0px;
+  font-size: 14px;
+  padding: 0 28px 0 12px;
+  background-color: #e9e9ed;
 }
 
-.form-input:hover {
+.register-form .form-input-container .select-dropdown:not(.disabled) .selected-value-display:hover {
   border-color: #40a9ff;
 }
 
-.form-input:focus {
+.register-form .form-input-container .select-dropdown.expanded .selected-value-display {
   border-color: #40a9ff;
   box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1);
 }
 
-.form-input.error {
+/* 下拉菜单选项列表 - 方角设计 */
+.register-form .form-input-container .select-dropdown .options-list {
+  border-radius: 0px;
+}
+
+.register-form .form-input::placeholder {
+  color: #999;
+}
+
+.register-form .form-input:hover {
+  border-color: #40a9ff;
+}
+
+.register-form .form-input:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1);
+}
+
+.register-form .form-input.error {
   border-color: #ff4d4f;
 }
 
-.form-input.error:focus {
+.register-form .form-input.error:focus {
   box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
 }
 
-.form-input.valid {
+.register-form .form-input.valid {
   border-color: #52c41a;
 }
 
 /* 对号标记 */
-.input-checkmark {
+.register-form .input-checkmark {
   margin-left: 8px;
   color: #52c41a;
   font-size: 16px;
@@ -109,39 +134,39 @@
 }
 
 /* 密码强度条 */
-.password-strength {
+.register-form .password-strength {
   margin-left: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.strength-bars {
+.register-form .strength-bars {
   display: flex;
   gap: 4px;
 }
 
-.strength-bar {
+.register-form .strength-bar {
   width: 60px;
   height: 4px;
   background: #e0e0e0;
-  border-radius: 2px;
+  border-radius: 0px;
 }
 
-.strength-bar.weak {
+.register-form .strength-bar.weak {
   background: #ff4d4f;
 }
 
-.strength-bar.medium {
+.register-form .strength-bar.medium {
   background: #faad14;
 }
 
-.strength-bar.strong {
+.register-form .strength-bar.strong {
   background: #52c41a;
 }
 
 /* 错误消息 */
-.form-error-message {
+.register-form .form-error-message {
   color: #ff4d4f;
   font-size: 12px;
   margin-top: 6px;
@@ -150,7 +175,7 @@
 }
 
 /* 提示信息 */
-.form-hint-message {
+.register-form .form-hint-message {
   color: #ff8800;
   font-size: 12px;
   margin-left: 12px;
@@ -160,19 +185,39 @@
 }
 
 /* 手机号码区域 */
-.phone-input-wrapper {
+.register-form .phone-input-wrapper {
   display: flex;
   gap: 10px;
   align-items: center;
   width: 350px;
 }
 
-.phone-country-select {
+.register-form .phone-country-select {
   width: 110px;
   flex-shrink: 0;
 }
 
-.phone-input {
+/* 手机号码区域下拉框样式 - 方角设计 */
+.register-form .phone-country-select .select-dropdown .selected-value-display {
+  height: 36px;
+  line-height: 36px;
+  border: 1px solid #b8b8b8;
+  border-radius: 0px;
+  font-size: 14px;
+  padding: 0 28px 0 12px;
+  background-color: #e9e9ed;
+}
+
+.register-form .phone-country-select .select-dropdown:not(.disabled) .selected-value-display:hover {
+  border-color: #40a9ff;
+}
+
+/* 手机号下拉菜单选项列表 - 方角设计 */
+.register-form .phone-country-select .select-dropdown .options-list {
+  border-radius: 0px;
+}
+
+.register-form .phone-input {
   width: 230px;
   min-width: 230px;
   max-width: 230px;
@@ -180,17 +225,17 @@
 }
 
 /* 协议勾选区域 */
-.agreement-section {
+.register-form .agreement-section {
   margin: 30px 0 24px;
   padding-left: 220px;
 }
 
-.agreement-wrapper {
+.register-form .agreement-wrapper {
   display: flex;
   align-items: flex-start;
 }
 
-.agreement-checkbox {
+.register-form .agreement-checkbox {
   margin: 3px 8px 0 0;
   width: 14px;
   height: 14px;
@@ -198,35 +243,35 @@
   flex-shrink: 0;
 }
 
-.agreement-text {
+.register-form .agreement-text {
   font-size: 13px;
   color: #666;
   line-height: 1.6;
 }
 
-.agreement-link {
+.register-form .agreement-link {
   color: #0066cc;
   text-decoration: none;
-  cursor: pointer;
+  cursor: pointer; 
 }
 
-.agreement-link:hover {
+.register-form .agreement-link:hover {
   text-decoration: underline;
 }
 
 /* 提交按钮区域 */
-.submit-section {
+.register-form .submit-section {
   margin-top: 30px;
   display: flex;
   justify-content: center;
 }
 
-.submit-button {
+.register-form .submit-button {
   width: 200px;
   height: 38px;
   background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
   border: 1px solid #e66600;
-  border-radius: 3px;
+  border-radius: 0px;
   color: white;
   font-size: 16px;
   font-weight: bold;
@@ -235,17 +280,17 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.submit-button:hover {
+.register-form .submit-button:hover {
   background: linear-gradient(to bottom, #ffaa55 0%, #ff8822 100%);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.submit-button:active {
+.register-form .submit-button:active {
   background: linear-gradient(to bottom, #ff7700 0%, #ee6600 100%);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.submit-button:disabled {
+.register-form .submit-button:disabled {
   background: #cccccc;
   border-color: #bbbbbb;
   cursor: not-allowed;
@@ -253,7 +298,7 @@
 }
 
 /* 通用错误消息 */
-.general-error-message {
+.register-form .general-error-message {
   color: #ff4d4f;
   font-size: 14px;
   text-align: center;
@@ -261,12 +306,12 @@
   padding: 10px 15px;
   background: #fff2f0;
   border: 1px solid #ffccc7;
-  border-radius: 3px;
+  border-radius: 0px;
   line-height: 1.5;
 }
 
 /* 选择框样式覆盖（针对SelectDropdown） */
-.form-row .select-dropdown {
+.register-form .form-row .select-dropdown {
   width: 100%;
 }
 
