@@ -17,9 +17,9 @@
   line-height: 32px;
   padding: 0 28px 0 10px;
   border: 1px solid #cccccc;
-  border-radius: 2px;
+  border-radius: 4px;
   font-size: 13px;
-  background-color: #ffffff;
+  background-color: #e9e9ed;
   cursor: pointer;
   outline: none;
   transition: all 0.3s;
@@ -56,11 +56,14 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 12px;
-  color: #999;
   cursor: pointer;
   transition: transform 0.3s;
-  padding: 4px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #666;
+  pointer-events: none;
 }
 
 .arrow.rotated {

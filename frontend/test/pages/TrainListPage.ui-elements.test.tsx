@@ -312,7 +312,7 @@ describe('车次列表页 - UI元素系统化检查', () => {
       
       const searchButton = screen.getByRole('button', { name: /查询/i });
       
-      // TODO: 触发加载状态并验证按钮文字变化为"查询中..."
+      // TODO: 触发加载状态并验证按钮文字变化为"查询"
     });
   });
 });

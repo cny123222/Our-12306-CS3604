@@ -6,24 +6,37 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.logo-section {
+.top-navigation > .logo-section {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.logo-section > :first-child {
+  display: flex;
+  align-items: center;
+  gap: 15px;
   cursor: pointer;
 }
 
-/* Logo图片 */
+/* Logo区域 */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .logo-image {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
 }
 
-/* Logo文字区域 */
 .logo-text {
   display: flex;
   flex-direction: column;
@@ -31,24 +44,26 @@
 }
 
 .logo-chinese {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   color: #333333;
-  letter-spacing: 1px;
+  letter-spacing: 1.3px;
+  line-height: 1.2;
 }
 
 .logo-english {
-  font-size: 12px;
+  font-size: 15px;
   color: #999999;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.1px;
+  line-height: 1.2;
 }
 
 /* 欢迎登录文字 */
 .welcome-login-text {
   margin-left: 30px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
-  color: #666666;
+  color: #4f4f4f;
 }
 
 /* 欢迎信息区域（登录/注册页不显示） */
@@ -56,7 +71,7 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .welcome-text {
@@ -69,20 +84,19 @@
   font-size: 14px;
   color: #2196f3;
   text-decoration: none;
-  padding: 4px 12px;
-  border-radius: 3px;
+  padding: 0 4px;
   transition: all 0.3s;
 }
 
 .login-link:hover,
 .register-link:hover {
-  background-color: #e3f2fd;
   color: #1976d2;
+  text-decoration: underline;
 }
 
 .login-link:active,
 .register-link:active {
-  background-color: #bbdefb;
+  color: #0d47a1;
 }
 
 /* 响应式设计 */

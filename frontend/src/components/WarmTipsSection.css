@@ -1,32 +1,46 @@
 /* 温馨提示区域样式 */
 .warm-tips-section {
-  background-color: #fffbe6;
-  border: 1px solid #ffe58f;
-  border-radius: 0;
-  padding: 20px;
-  margin-bottom: 20px;
+  background-color: #fffbe5;
+  border: 1px solid #f5e6a8;
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin: 20px auto;
+  max-width: 1100px;
 }
 
 .tips-title {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 700;
   color: #333333;
-  margin: 0 0 15px 0;
+  margin: 0 0 5px 0;
 }
 
 .tips-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 15px;
   list-style-position: outside;
+  list-style-type: decimal;
 }
 
 .tip-item {
-  font-size: 13px;
-  color: #666666;
-  line-height: 20px;
-  margin-bottom: 10px;
+  font-size: 14px;
+  color: #404040;
+  line-height: 22px;
+  margin-bottom: 2px;
+  padding-left: 4px;
 }
 
 .tip-item:last-child {
   margin-bottom: 0;
+}
+
+/* 高亮链接 */
+.tip-item a {
+  color: #0073e7;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tip-item a:hover {
+  color: #0052a3;
 }

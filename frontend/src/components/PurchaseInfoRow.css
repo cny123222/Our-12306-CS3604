@@ -1,11 +1,21 @@
 /* 购票信息行样式 */
 .purchase-info-row {
   display: grid;
-  grid-template-columns: 60px 100px 140px 100px 140px 1fr;
-  gap: 0;
-  padding: 10px 8px;
-  border-bottom: 1px solid #e5e5e5;
+  grid-template-columns: 40px 110px 200px 140px 160px 1fr 40px;
+  gap: 8px;
+  padding: 12px 12px 12px 12px;
+  border-bottom: 1px solid #e0e0e0;
   align-items: center;
+  min-height: 45px;
+  background-color: #eef1fa;
+}
+
+.purchase-info-row:nth-child(even) {
+  background-color: #f0f7ff;
+}
+
+.purchase-info-row:hover {
+  background-color: #e8f2fd;
 }
 
 .purchase-info-row:last-child {
@@ -13,29 +23,75 @@
 }
 
 .row-cell {
-  text-align: center;
-  font-size: 13px;
+  text-align: left;
+  font-size: 14px;
   color: #333333;
-  padding: 0 8px;
+  padding: 0 2px;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.row-cell:first-child {
+  font-weight: 400;
+  color: #000000;
   justify-content: center;
-  position: relative;  /* 确保下拉框相对于此定位 */
-  z-index: 1;  /* 基础层级 */
 }
 
 .row-cell .readonly-input {
   width: 100%;
-  border: none;
-  background-color: transparent;
-  text-align: center;
-  font-size: 13px;
+  border: 1px solid #cccccc;
+  background-color: #ffffff;
+  text-align: left;
+  font-size: 14px;
   color: #333333;
-  padding: 4px;
+  padding: 6px 10px;
   cursor: not-allowed;
+  border-radius: 2px;
+}
+
+.row-cell .readonly-input::placeholder {
+  color: #999999;
 }
 
 .row-cell .readonly-input:focus {
   outline: none;
+}
+
+/* 删除按钮单元格 */
+.row-cell-delete {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+.delete-button {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background-color: #ff6600;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+  padding: 0;
+}
+
+.delete-button:hover {
+  background-color: #ff5500;
+  transform: scale(1.1);
+}
+
+.delete-button:active {
+  transform: scale(0.95);
 }
 

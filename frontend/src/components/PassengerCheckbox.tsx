@@ -25,9 +25,6 @@ const PassengerCheckbox: React.FC<PassengerCheckboxProps> = ({
       />
       <span className="passenger-checkbox-label">
         {passenger.name}
-        {passenger.idCardType && (
-          <span className="passenger-id-type">（{passenger.idCardType}）</span>
-        )}
       </span>
     </label>
   );
