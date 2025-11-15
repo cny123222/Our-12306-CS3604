@@ -38,7 +38,15 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('order-center')}>
           订单中心
-          <span className="menu-toggle">{expandedSections.includes('order-center') ? '▲' : '▼'}</span>
+          <span className="menu-toggle">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" stroke="#aaaaaa" strokeWidth="1.5" fill="white"/>
+              <path 
+                d={expandedSections.includes('order-center') ? "M5 6 L8 9 L11 6 Z" : "M5 10 L8 7 L11 10 Z"} 
+                fill="#aaaaaa"
+              />
+            </svg>
+          </span>
         </div>
         {expandedSections.includes('order-center') && (
           <div className="menu-items">
@@ -73,7 +81,15 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('personal-info')}>
           个人信息
-          <span className="menu-toggle">{expandedSections.includes('personal-info') ? '▲' : '▼'}</span>
+          <span className="menu-toggle">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" stroke="#aaaaaa" strokeWidth="1.5" fill="white"/>
+              <path 
+                d={expandedSections.includes('personal-info') ? "M5 6 L8 9 L11 6 Z" : "M5 10 L8 7 L11 10 Z"} 
+                fill="#aaaaaa"
+              />
+            </svg>
+          </span>
         </div>
         {expandedSections.includes('personal-info') && (
           <div className="menu-items">
@@ -99,7 +115,15 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('common-info')}>
           常用信息管理
-          <span className="menu-toggle">{expandedSections.includes('common-info') ? '▲' : '▼'}</span>
+          <span className="menu-toggle">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" stroke="#aaaaaa" strokeWidth="1.5" fill="white"/>
+              <path 
+                d={expandedSections.includes('common-info') ? "M5 6 L8 9 L11 6 Z" : "M5 10 L8 7 L11 10 Z"} 
+                fill="#aaaaaa"
+              />
+            </svg>
+          </span>
         </div>
         {expandedSections.includes('common-info') && (
           <div className="menu-items">
@@ -118,7 +142,15 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('warm-service')}>
           温馨服务
-          <span className="menu-toggle">{expandedSections.includes('warm-service') ? '▲' : '▼'}</span>
+          <span className="menu-toggle">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" stroke="#aaaaaa" strokeWidth="1.5" fill="white"/>
+              <path 
+                d={expandedSections.includes('warm-service') ? "M5 6 L8 9 L11 6 Z" : "M5 10 L8 7 L11 10 Z"} 
+                fill="#aaaaaa"
+              />
+            </svg>
+          </span>
         </div>
         {expandedSections.includes('warm-service') && (
           <div className="menu-items">
@@ -133,7 +165,15 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('feedback')}>
           投诉和建议
-          <span className="menu-toggle">{expandedSections.includes('feedback') ? '▲' : '▼'}</span>
+          <span className="menu-toggle">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" stroke="#aaaaaa" strokeWidth="1.5" fill="white"/>
+              <path 
+                d={expandedSections.includes('feedback') ? "M5 6 L8 9 L11 6 Z" : "M5 10 L8 7 L11 10 Z"} 
+                fill="#aaaaaa"
+              />
+            </svg>
+          </span>
         </div>
         {expandedSections.includes('feedback') && (
           <div className="menu-items">

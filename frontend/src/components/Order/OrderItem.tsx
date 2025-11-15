@@ -1,5 +1,5 @@
 // 订单项组件
-import React from 'react';
+import React, { useState } from 'react';
 import './OrderItem.css';
 
 interface OrderItemProps {
@@ -15,6 +15,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
   onCancelOrder,
   onPayOrder 
 }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
   // 格式化状态显示
   const formatStatus = (status: string) => {
     const statusMap: { [key: string]: string } = {
@@ -70,15 +71,22 @@ const OrderItem: React.FC<OrderItemProps> = ({
   return (
     <div className="order-item">
       {/* 订单日期 */}
-      <div className="order-date-row">
+      <div className="order-date-row" onClick={() => setIsExpanded(!isExpanded)}>
         <svg className="order-date-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="8" r="7" stroke="#2876c8" strokeWidth="1.5" fill="none"/>
+          <circle cx="8" cy="8" r="7" stroke="#2876c8" strokeWidth="1.5" fill="#f0f8ff"/>
+          <path 
+            d={isExpanded ? "M5 10 L8 7 L11 10 Z" : "M5 6 L8 9 L11 6 Z"} 
+            fill="#2876c8"
+          />
         </svg>
         <span className="order-date-label">订票日期：</span>
         <span className="order-date-value">{order.created_at ? order.created_at.split(' ')[0] : order.departure_date}</span>
+        <span className="order-number-label">订单号：</span>
+        <span className="order-number-value">{order.id}</span>
       </div>
 
       {/* 订单主体信息 - 表格行 */}
+      {isExpanded && (
       <div className="order-main-content">
         {/* 车次信息列（只显示一次）*/}
         <div className="order-cell train-cell">
@@ -134,9 +142,10 @@ const OrderItem: React.FC<OrderItemProps> = ({
           ))}
         </div>
       </div>
+      )}
 
       {/* 订单操作按钮 */}
-      {order.status === 'pending' && (
+      {isExpanded && order.status === 'pending' && (
         <div className="order-actions">
           <button className="action-button cancel-button" onClick={onCancelOrder}>
             取消订单
@@ -147,7 +156,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
         </div>
       )}
 
-      {onViewDetails && order.status !== 'pending' && (
+      {isExpanded && onViewDetails && order.status !== 'pending' && (
         <div className="order-footer">
           <button className="view-details-button" onClick={onViewDetails}>
             查看详情
