@@ -70,8 +70,7 @@ const PassengerListPanel: React.FC<PassengerListPanelProps> = ({
           <table className="header-table">
             <thead>
               <tr>
-                <th className="checkbox-header"></th>
-                <th className="index-header">序号</th>
+                <th className="checkbox-index-header">序号</th>
                 <th className="name-header">姓名</th>
                 <th className="id-type-header">证件类型</th>
                 <th className="id-number-header">证件号码</th>
@@ -84,12 +83,12 @@ const PassengerListPanel: React.FC<PassengerListPanelProps> = ({
         </div>
         <div className="table-actions">
           <button className="add-button" onClick={onAdd}>
-            <span className="add-icon-circle">●</span>
-            <span className="add-plus">+</span>
+            <img src="/images/plus-circle-fill.svg" alt="添加" className="add-icon" />
             <span className="add-text">添加</span>
           </button>
           <button className="batch-delete-button" onClick={handleBatchDelete}>
-            <span className="delete-icon">🗑</span> 批量删除
+            <img src="/images/删除.svg" alt="删除" className="delete-icon" />
+            <span className="delete-text">批量删除</span>
           </button>
         </div>
 
