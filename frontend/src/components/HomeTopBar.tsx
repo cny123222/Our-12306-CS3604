@@ -6,13 +6,14 @@ interface HomeTopBarProps {
   isLoggedIn?: boolean;
   username?: string;
   onLogout?: () => void;
+  onMy12306Click?: () => void;
 }
 
 /**
  * 主页专用顶部栏组件
  * 包含logo、搜索框、链接和登录/注册按钮
  */
-const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false, username, onLogout }) => {
+const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false, username, onLogout, onMy12306Click }) => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = React.useState('');
 
@@ -53,6 +54,13 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false, username, o
     }
   };
 
+  const handleMy12306Click = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (onMy12306Click) {
+      onMy12306Click();
+    }
+  };
+
   return (
     <div className="home-top-bar">
       <div className="home-top-bar-container">
@@ -89,7 +97,7 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false, username, o
           <a href="#" className="home-top-link">无障碍</a>
           <a href="#" className="home-top-link">敬老版</a>
           <a href="#" className="home-top-link">English</a>
-          <a href="#" className="home-top-link">我的12306</a>
+          <a href="#" className="home-top-link" onClick={handleMy12306Click}>我的12306</a>
           {!isLoggedIn ? (
             <>
               <button className="home-top-auth-link login" onClick={handleLogin}>登录</button>

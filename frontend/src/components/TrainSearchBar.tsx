@@ -160,7 +160,11 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
             value={departureDate}
             onChange={setDepartureDate}
             minDate={new Date().toISOString().split('T')[0]}
-            maxDate=""
+            maxDate={(() => {
+              const maxDate = new Date();
+              maxDate.setDate(maxDate.getDate() + 13);
+              return maxDate.toISOString().split('T')[0];
+            })()}
           />
         </div>
         
@@ -171,7 +175,11 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
             value={returnDate}
             onChange={setReturnDate}
             minDate={new Date().toISOString().split('T')[0]}
-            maxDate=""
+            maxDate={(() => {
+              const maxDate = new Date();
+              maxDate.setDate(maxDate.getDate() + 13);
+              return maxDate.toISOString().split('T')[0];
+            })()}
             disabled={true}
           />
         </div>

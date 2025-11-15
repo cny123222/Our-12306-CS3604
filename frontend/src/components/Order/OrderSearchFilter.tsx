@@ -16,15 +16,42 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
   const [endDate, setEndDate] = useState('');
   const [keyword, setKeyword] = useState('');
 
-  // 设置默认日期范围（近15天）
+  // 设置默认日期范围（根据订单类型）
   React.useEffect(() => {
     const today = new Date();
-    const fifteenDaysAgo = new Date(today);
-    fifteenDaysAgo.setDate(today.getDate() - 15);
+    
+    if (variant === 'history') {
+      // 历史订单：默认近15天
+      const fifteenDaysAgo = new Date(today);
+      fifteenDaysAgo.setDate(today.getDate() - 15);
+      setStartDate(fifteenDaysAgo.toISOString().split('T')[0]);
+      setEndDate(today.toISOString().split('T')[0]);
+    } else {
+      // 未出行订单：默认今天到未来7天
+      const sevenDaysLater = new Date(today);
+      sevenDaysLater.setDate(today.getDate() + 7);
+      setStartDate(today.toISOString().split('T')[0]);
+      setEndDate(sevenDaysLater.toISOString().split('T')[0]);
+    }
+  }, [variant]);
 
-    setStartDate(fifteenDaysAgo.toISOString().split('T')[0]);
-    setEndDate(today.toISOString().split('T')[0]);
-  }, []);
+  // 处理开始日期变化，确保开始日期不晚于结束日期
+  const handleStartDateChange = (date: string) => {
+    setStartDate(date);
+    // 如果开始日期晚于结束日期，自动调整结束日期
+    if (endDate && date > endDate) {
+      setEndDate(date);
+    }
+  };
+
+  // 处理结束日期变化，确保结束日期不早于开始日期
+  const handleEndDateChange = (date: string) => {
+    setEndDate(date);
+    // 如果结束日期早于开始日期，自动调整开始日期
+    if (startDate && date < startDate) {
+      setStartDate(date);
+    }
+  };
 
   const handleSearch = () => {
     onSearch(startDate, endDate, keyword);
@@ -34,21 +61,56 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
     setKeyword('');
   };
 
-  // 计算日期范围（过去30天到未来30天）
+  // 计算日期范围（根据订单类型返回不同范围）
   const getDateRange = () => {
     const today = new Date();
-    const minDate = new Date(today);
-    minDate.setDate(today.getDate() - 30);
-    const maxDate = new Date(today);
-    maxDate.setDate(today.getDate() + 30);
     
-    return {
-      minDate: minDate.toISOString().split('T')[0],
-      maxDate: maxDate.toISOString().split('T')[0]
-    };
+    if (variant === 'history') {
+      // 历史订单：过去30天到当前日期
+      const minDate = new Date(today);
+      minDate.setDate(today.getDate() - 30);
+      const maxDate = new Date(today);
+      
+      return {
+        minDate: minDate.toISOString().split('T')[0],
+        maxDate: maxDate.toISOString().split('T')[0]
+      };
+    } else {
+      // 未出行订单：今天到未来14天
+      const minDate = new Date(today);
+      const maxDate = new Date(today);
+      maxDate.setDate(today.getDate() + 13); // 14天内（包括今天）
+      
+      return {
+        minDate: minDate.toISOString().split('T')[0],
+        maxDate: maxDate.toISOString().split('T')[0]
+      };
+    }
   };
 
   const dateRange = getDateRange();
+
+  // 计算动态的日期范围限制
+  const getStartDateRange = () => {
+    // 开始日期：最小为基准最小日期，最大为当前结束日期或基准最大日期（取较小值）
+    const maxForStart = endDate && endDate < dateRange.maxDate ? endDate : dateRange.maxDate;
+    return {
+      minDate: dateRange.minDate,
+      maxDate: maxForStart
+    };
+  };
+
+  const getEndDateRange = () => {
+    // 结束日期：最小为当前开始日期或基准最小日期（取较大值），最大为基准最大日期
+    const minForEnd = startDate && startDate > dateRange.minDate ? startDate : dateRange.minDate;
+    return {
+      minDate: minForEnd,
+      maxDate: dateRange.maxDate
+    };
+  };
+
+  const startDateRange = getStartDateRange();
+  const endDateRange = getEndDateRange();
 
   // 历史订单：显示完整查询栏（一行显示）
   if (variant === 'history') {
@@ -59,16 +121,16 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
             <label className="filter-label">乘车日期</label>
             <DatePicker
               value={startDate}
-              onChange={setStartDate}
-              minDate={dateRange.minDate}
-              maxDate={dateRange.maxDate}
+              onChange={handleStartDateChange}
+              minDate={startDateRange.minDate}
+              maxDate={startDateRange.maxDate}
             />
             <span className="date-separator">-</span>
             <DatePicker
               value={endDate}
-              onChange={setEndDate}
-              minDate={dateRange.minDate}
-              maxDate={dateRange.maxDate}
+              onChange={handleEndDateChange}
+              minDate={endDateRange.minDate}
+              maxDate={endDateRange.maxDate}
             />
           </div>
 
@@ -109,16 +171,16 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
         <div className="filter-group date-group">
           <DatePicker
             value={startDate}
-            onChange={setStartDate}
-            minDate={dateRange.minDate}
-            maxDate={dateRange.maxDate}
+            onChange={handleStartDateChange}
+            minDate={startDateRange.minDate}
+            maxDate={startDateRange.maxDate}
           />
           <span className="date-separator">-</span>
           <DatePicker
             value={endDate}
-            onChange={setEndDate}
-            minDate={dateRange.minDate}
-            maxDate={dateRange.maxDate}
+            onChange={handleEndDateChange}
+            minDate={endDateRange.minDate}
+            maxDate={endDateRange.maxDate}
           />
         </div>
 

@@ -18,13 +18,32 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, minDate, maxDa
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const calendarRef = useRef<HTMLDivElement>(null);
 
-  // 计算可选日期范围（今天起14天）
+  // 计算可选日期范围（优先使用传入的 minDate 和 maxDate props）
   const getSelectableRange = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const maxDate = new Date(today);
-    maxDate.setDate(today.getDate() + 13); // 14天内（包括今天）
-    return { min: today, max: maxDate };
+    
+    // 处理最小日期：如果传入了 minDate，使用它；否则使用今天（向后兼容）
+    let min: Date;
+    if (minDate && minDate.trim() !== '') {
+      min = new Date(minDate);
+      min.setHours(0, 0, 0, 0);
+    } else {
+      min = today;
+    }
+    
+    // 处理最大日期：如果传入了 maxDate 且不为空，使用它；否则使用今天+13天（向后兼容，14天内）
+    let max: Date;
+    if (maxDate && maxDate.trim() !== '') {
+      max = new Date(maxDate);
+      max.setHours(0, 0, 0, 0);
+    } else {
+      // 默认：今天起14天
+      max = new Date(today);
+      max.setDate(today.getDate() + 13);
+    }
+    
+    return { min, max };
   };
 
   // 格式化日期为 YYYY-MM-DD 字符串（使用本地时区）

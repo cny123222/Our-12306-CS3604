@@ -39,6 +39,15 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const handleMy12306Click = () => {
+    // 点击"我的12306"跳转到个人中心
+    if (isLoggedIn) {
+      navigate('/personal-info');
+    } else {
+      navigate('/login');
+    }
+  };
+
   const handleNavigateToTrainList = (params: any) => {
     // 将查询参数传递到车次列表页
     navigate('/trains', { state: params });
@@ -48,7 +57,7 @@ const HomePage: React.FC = () => {
   
   return (
     <div className="home-page">
-      <HomeTopBar isLoggedIn={isLoggedIn} username={username} />
+      <HomeTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
