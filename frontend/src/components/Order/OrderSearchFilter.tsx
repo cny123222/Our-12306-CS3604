@@ -79,7 +79,7 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
               className="filter-input"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              placeholder=""
+              placeholder="请输入订单号/车次/姓名"
             />
             {keyword && (
               <button className="clear-button" onClick={handleClear}>
@@ -129,7 +129,7 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
             className="filter-input"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            placeholder=""
+            placeholder="请输入订单号/车次/姓名"
           />
           {keyword && (
             <button className="clear-button" onClick={handleClear}>
