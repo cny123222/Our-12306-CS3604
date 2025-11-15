@@ -18,14 +18,27 @@ function getDatabase() {
 /**
  * 搜索车次
  * 支持按车次类型筛选，只返回直达车次
+ * 添加日期过滤，只返回指定日期的车次，且过滤已过期的车次
  */
 async function searchTrains(departureStation, arrivalStation, departureDate, trainTypes = []) {
   return new Promise((resolve, reject) => {
     const db = getDatabase();
     
+    // 确保departureDate是有效的日期
+    if (!departureDate) {
+      departureDate = new Date().toISOString().split('T')[0];
+    }
+    
+    console.log('trainService.searchTrains 调用:', { 
+      departureStation, 
+      arrivalStation, 
+      departureDate, 
+      trainTypes 
+    });
+    
     let sql = `
       SELECT t.*, 
-        (SELECT arrive_time FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as dep_time,
+        (SELECT depart_time FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as dep_time,
         (SELECT arrive_time FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as arr_time,
         (SELECT seq FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as dep_seq,
         (SELECT seq FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as arr_seq
@@ -37,40 +50,58 @@ async function searchTrains(departureStation, arrivalStation, departureDate, tra
         SELECT 1 FROM train_stops WHERE train_no = t.train_no AND station = ?
       )
       AND is_direct = 1
+      AND t.departure_date = ?
+      AND t.departure_date >= DATE('now', 'localtime')
     `;
     
     const params = [
       departureStation, arrivalStation, 
       departureStation, arrivalStation,
-      departureStation, arrivalStation
+      departureStation, arrivalStation,
+      departureDate
     ];
     
     // 如果提供了车次类型筛选
     if (trainTypes && trainTypes.length > 0) {
       const typePlaceholders = trainTypes.map(() => '?').join(',');
-      sql += ` AND SUBSTR(train_no, 1, 1) IN (${typePlaceholders})`;
+      sql += ` AND SUBSTR(t.train_no, 1, 1) IN (${typePlaceholders})`;
       params.push(...trainTypes);
     }
     
-    sql += ' ORDER BY departure_time';
+    sql += ' ORDER BY t.departure_time';
+    
+    console.log('执行SQL查询:', { sql: sql.substring(0, 200) + '...', params });
     
     db.all(sql, params, async (err, rows) => {
       if (err) {
         db.close();
-        console.error('搜索车次失败:', err);
+        console.error('搜索车次SQL执行失败:', {
+          error: err.message,
+          sql: sql.substring(0, 200) + '...',
+          params
+        });
         return reject(err);
       }
       
+      console.log(`SQL查询返回 ${rows.length} 条原始记录`);
+      
       // 过滤出发站在到达站之前的车次
       const validTrains = rows.filter(train => {
-        return train.dep_seq && train.arr_seq && train.dep_seq < train.arr_seq;
+        const isValid = train.dep_seq && train.arr_seq && train.dep_seq < train.arr_seq;
+        if (!isValid) {
+          console.log(`过滤掉无效车次: ${train.train_no}, dep_seq: ${train.dep_seq}, arr_seq: ${train.arr_seq}`);
+        }
+        return isValid;
       });
+      
+      console.log(`过滤后有效车次数: ${validTrains.length}`);
       
       // 获取每个车次的详细停靠信息和余票信息
       const trainsWithDetails = [];
       let completed = 0;
       
       if (validTrains.length === 0) {
+        console.log('没有找到符合条件的车次');
         db.close();
         return resolve([]);
       }
@@ -87,7 +118,7 @@ async function searchTrains(departureStation, arrivalStation, departureDate, tra
               
               if (depStop && arrStop) {
                 // 计算余票
-                const availableSeats = await calculateAvailableSeats(train.train_no, departureStation, arrivalStation);
+                const availableSeats = await calculateAvailableSeats(train.train_no, departureStation, arrivalStation, departureDate);
                 
                 trainsWithDetails.push({
                   trainNo: train.train_no,
@@ -118,12 +149,18 @@ async function searchTrains(departureStation, arrivalStation, departureDate, tra
 
 /**
  * 获取车次详情
+ * 添加日期参数
  */
-async function getTrainDetails(trainNo) {
+async function getTrainDetails(trainNo, departureDate) {
   return new Promise((resolve, reject) => {
     const db = getDatabase();
     
-    db.get('SELECT * FROM trains WHERE train_no = ?', [trainNo], (err, train) => {
+    // 确保departureDate是有效的日期
+    if (!departureDate) {
+      departureDate = new Date().toISOString().split('T')[0];
+    }
+    
+    db.get('SELECT * FROM trains WHERE train_no = ? AND departure_date = ?', [trainNo, departureDate], (err, train) => {
       if (err) {
         db.close();
         console.error('获取车次详情失败:', err);
@@ -170,13 +207,15 @@ async function getTrainDetails(trainNo) {
                   const availableSeats = await calculateAvailableSeats(
                     trainNo, 
                     train.origin_station, 
-                    train.destination_station
+                    train.destination_station,
+                    departureDate
                   );
                   
                   resolve({
                     trainNo: train.train_no,
                     trainType: train.train_type,
                     model: train.model,
+                    departureDate: train.departure_date,
                     route: {
                       origin: train.origin_station,
                       destination: train.destination_station,
@@ -203,11 +242,17 @@ async function getTrainDetails(trainNo) {
 /**
  * 计算余票数
  * 对于非相邻两站，只计算全程空闲的座位
+ * 添加日期参数
  */
-async function calculateAvailableSeats(trainNo, departureStation, arrivalStation) {
-  console.log('calculateAvailableSeats called with:', { trainNo, departureStation, arrivalStation });
+async function calculateAvailableSeats(trainNo, departureStation, arrivalStation, departureDate) {
+  console.log('calculateAvailableSeats called with:', { trainNo, departureStation, arrivalStation, departureDate });
   return new Promise((resolve, reject) => {
     const db = getDatabase();
+    
+    // 确保departureDate是有效的日期
+    if (!departureDate) {
+      departureDate = new Date().toISOString().split('T')[0];
+    }
     
     // 获取出发站和到达站的序号
     db.all(
@@ -274,14 +319,15 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
                     const query = `SELECT COUNT(DISTINCT seat_no) as count 
                        FROM seat_status 
                        WHERE train_no = ? 
+                       AND departure_date = ?
                        AND seat_type = ? 
                        AND from_station = ? 
                        AND to_station = ? 
                        AND status = 'available'`;
-                    console.log('Query for adjacent stations:', { trainNo, seat_type, departureStation, arrivalStation });
+                    console.log('Query for adjacent stations:', { trainNo, departureDate, seat_type, departureStation, arrivalStation });
                     db.get(
                       query,
-                      [trainNo, seat_type, departureStation, arrivalStation],
+                      [trainNo, departureDate, seat_type, departureStation, arrivalStation],
                       (err, row) => {
                         if (err) {
                           console.error('Query error:', err);
@@ -325,6 +371,7 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
                          SELECT seat_no
                          FROM seat_status
                          WHERE train_no = ?
+                         AND departure_date = ?
                          AND seat_type = ?
                          AND (${segmentConditions})
                          AND status = 'available'
@@ -332,7 +379,7 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
                          HAVING COUNT(*) = ?
                        )`,
                       [
-                        trainNo, seat_type, ...segmentParams,
+                        trainNo, departureDate, seat_type, ...segmentParams,
                         segments.length
                       ],
                       (err, row) => {
@@ -446,17 +493,16 @@ async function getFilterOptions(departureStation, arrivalStation, departureDate)
 
 /**
  * 获取可选日期
+ * 返回从今天开始的14天日期（包括今天）
  */
 async function getAvailableDates() {
-  // 返回从后天开始的15天日期，避免时区问题
   const dates = [];
-  const dayAfterTomorrow = new Date();
-  dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
-  dayAfterTomorrow.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   
-  for (let i = 0; i < 15; i++) {
-    const date = new Date(dayAfterTomorrow);
-    date.setDate(dayAfterTomorrow.getDate() + i);
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
     dates.push(date.toISOString().split('T')[0]);
   }
   

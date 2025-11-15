@@ -20,15 +20,28 @@ const OrderListPanel: React.FC<OrderListPanelProps> = ({
 
   // 根据选中标签过滤订单
   const filteredOrders = useMemo(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    
     if (activeTab === 'pending') {
-      // 未完成订单：状态为 pending 且未支付
-      return orders.filter(order => order.status === 'pending' && !order.paid);
-    } else if (activeTab === 'unpaid') {
-      // 未出行订单：状态为 pending 但已创建订单
+      // 未完成订单：状态为 pending（未支付）
       return orders.filter(order => order.status === 'pending');
+    } else if (activeTab === 'unpaid') {
+      // 未出行订单：已完成（paid）且出发日期在今天或未来
+      return orders.filter(order => {
+        if (order.status !== 'completed') return false;
+        const depDate = new Date(order.departure_date);
+        depDate.setHours(0, 0, 0, 0);
+        return depDate >= now;
+      });
     } else if (activeTab === 'history') {
-      // 历史订单：状态为 completed 或 cancelled
-      return orders.filter(order => order.status === 'completed' || order.status === 'cancelled');
+      // 历史订单：已完成且出发日期已过
+      return orders.filter(order => {
+        if (order.status !== 'completed') return false;
+        const depDate = new Date(order.departure_date);
+        depDate.setHours(0, 0, 0, 0);
+        return depDate < now;
+      });
     }
     return [];
   }, [orders, activeTab]);
