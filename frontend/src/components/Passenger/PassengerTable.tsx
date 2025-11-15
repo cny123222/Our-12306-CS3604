@@ -55,44 +55,29 @@ const PassengerTable: React.FC<PassengerTableProps> = ({
   return (
     <div className="passenger-table-container">
       <table className="passenger-table">
-        <thead>
-          <tr>
-            <th>
-              <input
-                type="checkbox"
-                checked={passengers.length > 0 && selectedIds.length === passengers.length}
-                onChange={handleSelectAll}
-              />
-            </th>
-            <th>序号</th>
-            <th>姓名</th>
-            <th>证件类型</th>
-            <th>证件号码</th>
-            <th>手机/电话</th>
-            <th>核验状态</th>
-            <th>操作</th>
-          </tr>
-        </thead>
         <tbody>
           {passengers.map((passenger, index) => (
             <tr key={passenger.id}>
-              <td>
+              <td className="checkbox-cell">
                 <input
                   type="checkbox"
                   checked={selectedIds.includes(passenger.id)}
                   onChange={() => handleSelectOne(passenger.id)}
                 />
               </td>
-              <td>{index + 1}</td>
-              <td>{maskName(passenger.name)}</td>
-              <td>{passenger.idCardType || passenger.id_card_type}</td>
-              <td>{maskIdCard(passenger.idCardNumber || passenger.id_card_number)}</td>
-              <td>{passenger.phone ? maskPhone(passenger.phone) : '-'}</td>
-              <td>
-                <span className="verification-icon">✓</span>
-                <span className="verification-text">已通过核验</span>
+              <td className="index-cell">{index + 1}</td>
+              <td className="name-cell">{maskName(passenger.name)}</td>
+              <td className="id-type-cell">{passenger.idCardType || passenger.id_card_type}</td>
+              <td className="id-number-cell">{maskIdCard(passenger.idCardNumber || passenger.id_card_number)}</td>
+              <td className="phone-cell">
+                {passenger.phone ? maskPhone(passenger.phone) : (passenger.phoneNumber ? maskPhone(passenger.phoneNumber) : '-')}
               </td>
-              <td>
+              <td className="verification-cell">
+                <span className="verification-badge">
+                  <span className="verification-icon">✓</span>
+                </span>
+              </td>
+              <td className="action-cell">
                 <button
                   className="action-button edit-button"
                   onClick={() => onEdit(passenger)}

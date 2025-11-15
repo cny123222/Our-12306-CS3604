@@ -88,7 +88,7 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
             )}
           </div>
 
-          <button className="search-button" onClick={handleSearch}>
+          <button className="order-search-button" onClick={handleSearch}>
             查询
           </button>
         </div>
@@ -138,7 +138,7 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
           )}
         </div>
 
-        <button className="search-button" onClick={handleSearch}>
+        <button className="order-search-button" onClick={handleSearch}>
           查询
         </button>
       </div>

@@ -236,15 +236,15 @@ const PassengerManagementPage = () => {
         onPersonalCenterClick={handleNavigateToPersonalCenter}
       />
 
+      <BreadcrumbNavigation
+        path={['个人中心', '常用信息管理']}
+        currentPage="乘车人"
+      />
+
       <div className="main-content">
         <SideMenu currentSection="passengers" onMenuClick={handleMenuClick} />
 
         <div className="content-area">
-          <BreadcrumbNavigation
-            path={['个人中心', '常用信息管理']}
-            currentPage="乘车人"
-          />
-
           {isLoading && (
             <div style={{ padding: '20px', textAlign: 'center' }}>
               加载中...
