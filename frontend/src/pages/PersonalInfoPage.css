@@ -1,7 +1,7 @@
 /* 用户基本信息页样式 */
 .personal-info-page {
   min-height: 100vh;
-  background-color: #fff;
+  background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
 }
@@ -10,12 +10,16 @@
   display: flex;
   flex: 1;
   background-color: #f5f5f5;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .content-area {
   flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: #fff;
 }
 
 .loading-container,
@@ -26,6 +30,7 @@
   min-height: 400px;
   font-size: 16px;
   color: #666;
+  background-color: #fff;
 }
 
 .error-container {

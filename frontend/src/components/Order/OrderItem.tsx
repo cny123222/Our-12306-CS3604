@@ -5,9 +5,16 @@ import './OrderItem.css';
 interface OrderItemProps {
   order: any;
   onViewDetails?: () => void;
+  onCancelOrder?: () => void;
+  onPayOrder?: () => void;
 }
 
-const OrderItem: React.FC<OrderItemProps> = ({ order, onViewDetails }) => {
+const OrderItem: React.FC<OrderItemProps> = ({ 
+  order, 
+  onViewDetails, 
+  onCancelOrder,
+  onPayOrder 
+}) => {
   // 格式化状态显示
   const formatStatus = (status: string) => {
     const statusMap: { [key: string]: string } = {
@@ -20,59 +27,79 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, onViewDetails }) => {
 
   return (
     <div className="order-item">
-      <div className="order-header">
-        <div className="order-info">
-          <span className="order-label">订单号：</span>
-          <span className="order-value">{order.order_id}</span>
-        </div>
-        <div className="order-status">{formatStatus(order.status || 'completed')}</div>
+      {/* 订单日期 */}
+      <div className="order-date-row">
+        <svg className="order-date-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="#2876c8" strokeWidth="1.5" fill="none"/>
+        </svg>
+        <span className="order-date-label">订票日期：</span>
+        <span className="order-date-value">{order.order_date || order.departure_date || '2025-09-14'}</span>
       </div>
 
-      <div className="order-body">
-        <div className="train-info">
-          <div className="train-number">{order.train_no || '--'}</div>
-          <div className="route-info">
-            <span className="departure">{order.departure_station || '--'}</span>
-            <span className="arrow">→</span>
-            <span className="arrival">{order.arrival_station || '--'}</span>
+      {/* 订单主体信息 - 表格行 */}
+      <div className="order-main-content">
+        {/* 车次信息列 */}
+        <div className="order-cell train-cell">
+          <div className="train-route">
+            <span className="train-from">{order.departure_station || '北京'}</span>
+            <span className="train-arrow">→</span>
+            <span className="train-to">{order.arrival_station || '上海'}</span>
+            <span className="train-number">{order.train_no || 'D5'}</span>
           </div>
-          <div className="date-info">
-            {order.departure_date || '--'}
-            {order.departure_time && ` ${order.departure_time}`}
-            {order.arrival_time && ` - ${order.arrival_time}`}
-          </div>
-        </div>
-
-        <div className="passenger-info">
-          <div className="passenger-label">乘客：</div>
-          <div className="passenger-list">
-            {order.passenger_name || '未知'}
+          <div className="train-datetime">
+            {order.departure_date || '2025-09-14'}
+            <span className="train-time">{order.departure_time ? ` ${order.departure_time}开` : ' 21:21 开'}</span>
           </div>
         </div>
 
-        {/* 已完成订单：显示完整座位信息（包括座位号） */}
-        {order.status === 'completed' && order.seat_info && (
-          <div className="seat-info-display">
-            <div className="seat-label">席位：</div>
-            <div className="seat-value">{order.seat_info}</div>
-          </div>
-        )}
+        {/* 旅客信息列 */}
+        <div className="order-cell passenger-cell">
+          <div className="passenger-id-type">居民身份证</div>
+        </div>
 
-        {/* 未完成订单：只显示席位类型，不显示座位号 */}
-        {order.status === 'pending' && order.seat_type && (
-          <div className="seat-info-display">
-            <div className="seat-label">席位类型：</div>
-            <div className="seat-value">{order.seat_type}</div>
+        {/* 席位信息列 */}
+        <div className="order-cell seat-cell">
+          <div className="seat-detail">
+            {order.seat_info || order.seat_type || '一等座'}
+            <br />
+            {order.seat_number || '12车05号下铺'}
           </div>
-        )}
+        </div>
 
-        <div className="price-info">
-          <div className="price-label">票价：</div>
-          <div className="price-value">¥{order.total_price ? order.total_price.toFixed(2) : '0.00'}</div>
+        {/* 票价列 */}
+        <div className="order-cell price-cell">
+          <div className="price-detail">
+            <div className="ticket-type">成人票</div>
+            <div className="price-amount">
+              <span className="price-value">
+                {order.total_price ? `${order.total_price.toFixed(1)}元` : '777.0元'}
+              </span>
+              {order.discount && (
+                <span className="price-discount">{order.discount || '8折'}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 车票状态列 */}
+        <div className="order-cell status-cell">
+          <div className="status-value">{formatStatus(order.status || 'pending')}</div>
         </div>
       </div>
 
-      {onViewDetails && (
+      {/* 订单操作按钮 */}
+      {order.status === 'pending' && (
+        <div className="order-actions">
+          <button className="action-button cancel-button" onClick={onCancelOrder}>
+            取消订单
+          </button>
+          <button className="action-button pay-button" onClick={onPayOrder}>
+            去支付
+          </button>
+        </div>
+      )}
+
+      {onViewDetails && order.status !== 'pending' && (
         <div className="order-footer">
           <button className="view-details-button" onClick={onViewDetails}>
             查看详情

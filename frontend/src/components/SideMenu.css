@@ -1,23 +1,63 @@
 /* 左侧功能菜单栏样式 */
 .side-menu {
-  width: 240px;
+  width: 220px;
   background-color: #fff;
-  padding: 20px 0;
-  border-right: 1px solid #e0e0e0;
+  padding: 0;
+  border-right: 1px solid #d0d0d0;
   min-height: calc(100vh - 200px);
 }
 
+.menu-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  padding: 15px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
 .menu-section {
-  margin-bottom: 20px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .menu-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #000;
+  color: #333;
   padding: 12px 20px;
-  margin-bottom: 5px;
+  margin-bottom: 0;
   user-select: none;
+  background-color: #fafafa;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-title:hover {
+  background-color: #f0f0f0;
+}
+
+.menu-title-simple {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  padding: 12px 20px;
+  margin-bottom: 0;
+  user-select: none;
+  background-color: #fafafa;
+  cursor: default;
+}
+
+.menu-toggle {
+  font-size: 16px;
+  color: #999;
+  font-weight: 400;
+}
+
+.menu-items {
+  background-color: #fff;
 }
 
 .menu-item {
@@ -27,27 +67,41 @@
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  background-color: #fff;
+  border-left: 3px solid transparent;
 }
 
-.menu-item:hover {
-  background-color: #f5f5f5;
+.menu-item:hover:not(.disabled) {
+  background-color: #f5f9ff;
   color: #333;
 }
 
 .menu-item.selected {
-  background-color: #e3f2fd;
-  color: #2196f3;
-  font-weight: 500;
+  background-color: #2876c8;
+  color: #fff;
+  font-weight: 400;
+  border-left: 3px solid #2876c8;
+}
+
+.menu-item.disabled {
+  color: #999;
+  cursor: not-allowed;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .side-menu {
-    width: 200px;
+    width: 180px;
   }
   
-  .menu-title {
+  .menu-header {
     font-size: 14px;
+    padding: 12px 15px;
+  }
+  
+  .menu-title,
+  .menu-title-simple {
+    font-size: 13px;
     padding: 10px 15px;
   }
   

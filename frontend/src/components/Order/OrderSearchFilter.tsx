@@ -5,9 +5,13 @@ import './OrderSearchFilter.css';
 
 interface OrderSearchFilterProps {
   onSearch: (startDate: string, endDate: string, keyword: string) => void;
+  variant?: 'history' | 'unpaid';  // 区分历史订单和未出行订单
 }
 
-const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({ onSearch }) => {
+const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({ 
+  onSearch,
+  variant = 'history' 
+}) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [keyword, setKeyword] = useState('');
@@ -26,37 +30,118 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({ onSearch }) => {
     onSearch(startDate, endDate, keyword);
   };
 
+  const handleClear = () => {
+    setKeyword('');
+  };
+
+  // 计算日期范围（过去30天到未来30天）
+  const getDateRange = () => {
+    const today = new Date();
+    const minDate = new Date(today);
+    minDate.setDate(today.getDate() - 30);
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 30);
+    
+    return {
+      minDate: minDate.toISOString().split('T')[0],
+      maxDate: maxDate.toISOString().split('T')[0]
+    };
+  };
+
+  const dateRange = getDateRange();
+
+  // 历史订单：显示完整查询栏（一行显示）
+  if (variant === 'history') {
+    return (
+      <div className="order-search-filter history-filter">
+        <div className="filter-row single-row">
+          <div className="filter-group date-group">
+            <label className="filter-label">乘车日期</label>
+            <DatePicker
+              value={startDate}
+              onChange={setStartDate}
+              minDate={dateRange.minDate}
+              maxDate={dateRange.maxDate}
+            />
+            <span className="date-separator">-</span>
+            <DatePicker
+              value={endDate}
+              onChange={setEndDate}
+              minDate={dateRange.minDate}
+              maxDate={dateRange.maxDate}
+            />
+          </div>
+
+          <div className="filter-group keyword-group">
+            <label className="filter-label">订单号/车次/姓名</label>
+            <input
+              type="text"
+              className="filter-input"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder=""
+            />
+            {keyword && (
+              <button className="clear-button" onClick={handleClear}>
+                ✕
+              </button>
+            )}
+          </div>
+
+          <button className="search-button" onClick={handleSearch}>
+            查询
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 未出行订单：显示带下拉框的查询栏
   return (
-    <div className="order-search-filter">
-      <div className="filter-group">
-        <label className="filter-label">乘车日期：</label>
-        <DatePicker
-          value={startDate}
-          onChange={setStartDate}
-          placeholder="开始日期"
-        />
-        <span className="date-separator">-</span>
-        <DatePicker
-          value={endDate}
-          onChange={setEndDate}
-          placeholder="结束日期"
-        />
-      </div>
+    <div className="order-search-filter unpaid-filter">
+      <div className="filter-row single-row">
+        <div className="filter-group dropdown-group">
+          <select className="filter-dropdown">
+            <option value="order-date">按订票日期查询</option>
+          </select>
+        </div>
 
-      <div className="filter-group">
-        <label className="filter-label">订单号/车次/姓名：</label>
-        <input
-          type="text"
-          className="filter-input"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          placeholder="请输入订单号/车次/姓名"
-        />
-      </div>
+        <div className="filter-group date-group">
+          <DatePicker
+            value={startDate}
+            onChange={setStartDate}
+            minDate={dateRange.minDate}
+            maxDate={dateRange.maxDate}
+          />
+          <span className="date-separator">-</span>
+          <DatePicker
+            value={endDate}
+            onChange={setEndDate}
+            minDate={dateRange.minDate}
+            maxDate={dateRange.maxDate}
+          />
+        </div>
 
-      <button className="search-button" onClick={handleSearch}>
-        查询
-      </button>
+        <div className="filter-group keyword-group">
+          <label className="filter-label">订单号/车次/姓名</label>
+          <input
+            type="text"
+            className="filter-input"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder=""
+          />
+          {keyword && (
+            <button className="clear-button" onClick={handleClear}>
+              ✕
+            </button>
+          )}
+        </div>
+
+        <button className="search-button" onClick={handleSearch}>
+          查询
+        </button>
+      </div>
     </div>
   );
 };

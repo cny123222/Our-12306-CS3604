@@ -1,7 +1,8 @@
 /* 订单结果展示样式 */
 .order-result-display {
-  padding: 20px;
+  padding: 0;
   min-height: 300px;
+  background-color: #fff;
 }
 
 .order-result-display.empty {
@@ -9,33 +10,98 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
+  min-height: 400px;
 }
 
 .empty-icon {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+.empty-icon svg {
+  width: 120px;
+  height: 120px;
 }
 
 .empty-message {
   font-size: 14px;
   color: #666;
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
 .link {
-  color: #2196f3;
+  color: #2876c8;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
+  margin: 0 3px;
 }
 
 .link:hover {
-  color: #1976d2;
+  color: #1e5fa8;
+  text-decoration: underline;
+}
+
+/* 表格样式 */
+.order-table {
+  width: 100%;
+}
+
+.order-table-header {
+  display: flex;
+  background-color: #f5f5f5;
+  border-top: 1px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+  padding: 12px 25px;
+}
+
+.header-cell {
+  font-size: 13px;
+  font-weight: 400;
+  color: #666;
+  text-align: center;
+}
+
+.train-info-header {
+  flex: 1.5;
+  text-align: left;
+}
+
+.passenger-info-header {
+  flex: 1;
+  text-align: center;
+}
+
+.seat-info-header {
+  flex: 1;
+  text-align: center;
+}
+
+.price-header {
+  flex: 1;
+  text-align: center;
+}
+
+.status-header {
+  flex: 0.8;
+  text-align: center;
+}
+
+.order-table-body {
+  background-color: #fff;
 }
 
 @media (max-width: 768px) {
   .order-result-display {
-    padding: 15px;
+    padding: 0;
+  }
+  
+  .order-result-display.empty {
+    padding: 60px 20px;
+  }
+  
+  .order-table-header {
+    display: none;
   }
 }
 

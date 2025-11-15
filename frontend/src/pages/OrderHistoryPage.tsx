@@ -141,19 +141,19 @@ const OrderHistoryPage = () => {
         onPersonalCenterClick={handleNavigateToPersonalCenter}
       />
 
+      <BreadcrumbNavigation
+        path={['个人中心']}
+        currentPage="火车票订单"
+      />
+
       <div className="main-content">
         <SideMenu currentSection="train-orders" onMenuClick={handleMenuClick} />
 
         <div className="content-area">
-          <BreadcrumbNavigation
-            path={['个人中心']}
-            currentPage="火车票订单"
-          />
-
           <OrderListPanel
             orders={filteredOrders}
             onSearch={handleSearch}
-            onNavigateToTrainList={() => navigate('/trains')}
+            onNavigateToTrainList={() => navigate('/')}
           />
         </div>
       </div>

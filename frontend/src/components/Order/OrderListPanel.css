@@ -1,14 +1,16 @@
 /* 订单列表面板样式 */
 .order-list-panel {
   background-color: #fff;
-  margin: 20px;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .order-type-section {
-  padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 0;
+  border-bottom: none;
+  background-color: #fff;
+  position: relative;
 }
 
 .order-type-title {
@@ -22,43 +24,69 @@
 .order-tabs {
   display: flex;
   gap: 0;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: none;
+  background-color: #fff;
+  position: relative;
 }
 
 .order-tab {
-  flex: 1;
-  padding: 12px 20px;
-  border: none;
-  background-color: transparent;
-  font-size: 16px;
-  font-weight: 500;
+  min-width: 135px;
+  padding: 15px 30px;
+  border: 1px solid #d0d0d0;
+  border-right: none;
+  border-bottom: none;
+  background-color: #f5f5f5;
+  font-size: 14px;
+  font-weight: 400;
   color: #666;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
   position: relative;
-  bottom: -2px;
+  border-radius: 0;
+}
+
+.order-tab:first-child {
+  border-left: 1px solid #d0d0d0;
+}
+
+.order-tab:last-child {
+  border-right: none;
 }
 
 .order-tab:hover {
-  color: #2196f3;
-  background-color: #f5f5f5;
+  color: #333;
+  background-color: #ebebeb;
 }
 
 .order-tab.active {
-  color: #2196f3;
-  border-bottom-color: #2196f3;
-  font-weight: 600;
+  color: #2876c8;
+  background-color: #fff;
+  font-weight: 500;
+  border-bottom: none;
+  z-index: 1;
+}
+
+/* 标签区域底部边框 */
+.order-type-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #d0d0d0;
+  z-index: 0;
 }
 
 @media (max-width: 768px) {
   .order-list-panel {
-    margin: 10px;
+    margin: 0;
   }
   
   .order-tab {
-    font-size: 14px;
-    padding: 10px 15px;
+    min-width: 100px;
+    font-size: 13px;
+    padding: 12px 20px;
   }
 }
 
