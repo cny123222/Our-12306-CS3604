@@ -198,12 +198,23 @@ async function getUserOrders(userId, options = {}) {
       
       // 提取乘客姓名列表和座位信息
       const passengerNames = passengerDetails.map(p => p.passenger_name).join(', ');
-      const seatInfo = passengerDetails.map(p => {
-        if (p.seat_number) {
-          return `${p.seat_type} ${p.seat_number}`;
-        }
-        return p.seat_type;
-      }).join(', ');
+      
+      // 根据订单状态构建座位信息
+      let seatInfo = '';
+      let seatType = '';
+      
+      if (order.status === 'completed') {
+        // 已完成订单：返回完整的座位信息（包括座位号）
+        seatInfo = passengerDetails.map(p => {
+          if (p.seat_number) {
+            return `${p.seat_type} ${p.seat_number}`;
+          }
+          return p.seat_type;
+        }).join(', ');
+      } else if (order.status === 'pending') {
+        // 未完成订单：只返回席位类型，不包含座位号
+        seatType = passengerDetails.map(p => p.seat_type).join(', ');
+      }
       
       // 返回下划线命名的字段（匹配前端期望）
       return {
@@ -220,6 +231,7 @@ async function getUserOrders(userId, options = {}) {
         created_at: order.created_at,
         passenger_name: passengerNames || '',
         seat_info: seatInfo || '',
+        seat_type: seatType || '',
         passengers: passengerDetails
       };
     }));
@@ -297,12 +309,23 @@ async function searchOrders(userId, searchCriteria) {
       
       // 提取乘客姓名列表和座位信息
       const passengerNames = passengerDetails.map(p => p.passenger_name).join(', ');
-      const seatInfo = passengerDetails.map(p => {
-        if (p.seat_number) {
-          return `${p.seat_type} ${p.seat_number}`;
-        }
-        return p.seat_type;
-      }).join(', ');
+      
+      // 根据订单状态构建座位信息
+      let seatInfo = '';
+      let seatType = '';
+      
+      if (order.status === 'completed') {
+        // 已完成订单：返回完整的座位信息（包括座位号）
+        seatInfo = passengerDetails.map(p => {
+          if (p.seat_number) {
+            return `${p.seat_type} ${p.seat_number}`;
+          }
+          return p.seat_type;
+        }).join(', ');
+      } else if (order.status === 'pending') {
+        // 未完成订单：只返回席位类型，不包含座位号
+        seatType = passengerDetails.map(p => p.seat_type).join(', ');
+      }
       
       // 返回下划线命名的字段（匹配前端期望）
       return {
@@ -319,6 +342,7 @@ async function searchOrders(userId, searchCriteria) {
         created_at: order.created_at,
         passenger_name: passengerNames || '',
         seat_info: seatInfo || '',
+        seat_type: seatType || '',
         passengers: passengerDetails
       };
     }));
