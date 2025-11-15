@@ -1,15 +1,28 @@
 import React from 'react';
 import './WarmTipsSection.css';
 
+interface TipItem {
+  text: string;
+  link?: string | null;
+  linkUrl?: string | null;
+}
+
 interface WarmTipsSectionProps {
-  onTermsClick: () => void;
+  onTermsClick?: () => void;
+  tips?: string[];
+  variant?: 'default' | 'order-page';  // 新增variant prop来区分不同的使用场景
 }
 
 /**
  * 温馨提示区域组件
  */
-const WarmTipsSection: React.FC<WarmTipsSectionProps> = ({ onTermsClick: _onTermsClick }) => {
-  const tips = [
+const WarmTipsSection: React.FC<WarmTipsSectionProps> = ({ 
+  onTermsClick: _onTermsClick, 
+  tips,
+  variant = 'order-page'  // 默认使用订单填写页的原始样式
+}) => {
+  // 订单填写页的原始提示内容（复杂格式，带链接）
+  const orderPageTips: TipItem[] = [
     {
       text: '一张有效身份证件同一乘车日期同一车次只能购买一张车票，高铁动卧列车除外。改签或变更到站后车票的乘车日期在春运期间，如再办理退票将按票面价格20%核收退票费。请合理安排行程，更多改签规则请查看',
       link: '《退改说明》',
@@ -46,24 +59,44 @@ const WarmTipsSection: React.FC<WarmTipsSectionProps> = ({ onTermsClick: _onTerm
       linkUrl: null
     }
   ];
-  
-  return (
-    <div className="warm-tips-section">
-      <h3 className="tips-title">温馨提示：</h3>
-      <ol className="tips-list">
-        {tips.map((tip, index) => (
-          <li key={index} className="tip-item">
-            {tip.text}
-            {tip.link && tip.linkUrl && (
-              <a href={tip.linkUrl} onClick={(e) => e.preventDefault()}>{tip.link}</a>
-            )}
-            {index === 4 && ' 如实填写"出生日期"。'}
-            {index === 5 && ' 登记未成年子女的有效身份证件信息。'}
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
+
+  // 根据variant决定渲染方式
+  if (variant === 'order-page') {
+    // 订单填写页：使用原始的复杂格式
+    return (
+      <div className="warm-tips-section order-page-tips">
+        <h3 className="tips-title">温馨提示：</h3>
+        <ol className="tips-list">
+          {orderPageTips.map((tip, index) => (
+            <li key={index} className="tip-item">
+              {tip.text}
+              {tip.link && tip.linkUrl && (
+                <a href={tip.linkUrl} onClick={(e) => e.preventDefault()}>{tip.link}</a>
+              )}
+              {index === 4 && ' 如实填写"出生日期"。'}
+              {index === 5 && ' 登记未成年子女的有效身份证件信息。'}
+            </li>
+          ))}
+        </ol>
+      </div>
+    );
+  } else {
+    // 订单历史页等其他页面：使用简单格式
+    const displayTips = tips || [];
+    
+    return (
+      <div className="warm-tips-section history-page-tips">
+        <h3 className="tips-title">温馨提示</h3>
+        <ol className="tips-list">
+          {displayTips.map((tip, index) => (
+            <li key={index} className="tip-item">
+              {tip}
+            </li>
+          ))}
+        </ol>
+      </div>
+    );
+  }
 };
 
 export default WarmTipsSection;
