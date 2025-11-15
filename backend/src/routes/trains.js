@@ -96,6 +96,21 @@ router.post('/search', async (req, res) => {
       return res.status(400).json({ error: '请选择到达地' });
     }
     
+    // 验证出发日期格式（YYYY-MM-DD）
+    if (departureDate) {
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(departureDate)) {
+        console.error('日期格式错误:', { departureDate });
+        return res.status(400).json({ error: '日期格式错误，请使用YYYY-MM-DD格式' });
+      }
+      // 验证日期是否有效
+      const date = new Date(departureDate);
+      if (isNaN(date.getTime())) {
+        console.error('无效日期:', { departureDate });
+        return res.status(400).json({ error: '无效的日期' });
+      }
+    }
+    
     // 验证出发地在系统支持的站点列表中
     const depStationResult = await stationService.validateStation(departureStation);
     if (!depStationResult.valid) {
@@ -108,6 +123,9 @@ router.post('/search', async (req, res) => {
       return res.status(400).json({ error: '无法匹配该到达地' });
     }
     
+    // 记录查询参数
+    console.log('车次搜索请求:', { departureStation, arrivalStation, departureDate, trainTypes });
+    
     // 查询符合条件的车次
     const trains = await trainService.searchTrains(
       departureStation, 
@@ -116,12 +134,19 @@ router.post('/search', async (req, res) => {
       trainTypes
     );
     
+    console.log(`查询结果: 找到 ${trains.length} 个车次`);
+    
     res.status(200).json({
       trains: trains,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('查询车次失败:', error);
+    console.error('错误详情:', {
+      message: error.message,
+      stack: error.stack,
+      params: req.body
+    });
     res.status(500).json({ error: '查询失败，请稍后重试' });
   }
 });

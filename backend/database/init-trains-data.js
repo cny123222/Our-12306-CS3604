@@ -43,7 +43,8 @@ function createTables() {
       db.run(`
         CREATE TABLE IF NOT EXISTS trains (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          train_no TEXT NOT NULL UNIQUE,
+          train_no TEXT NOT NULL,
+          departure_date DATE NOT NULL,
           train_type TEXT NOT NULL,
           model TEXT,
           is_direct BOOLEAN DEFAULT 1,
@@ -54,10 +55,25 @@ function createTables() {
           planned_duration_min INTEGER,
           departure_time TEXT,
           arrival_time TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(train_no, departure_date)
         )
       `, (err) => {
         if (err) console.error('创建trains表失败:', err);
+      });
+
+      // 为trains表创建日期索引
+      db.run(`
+        CREATE INDEX IF NOT EXISTS idx_trains_date ON trains(departure_date)
+      `, (err) => {
+        if (err) console.error('创建trains日期索引失败:', err);
+      });
+
+      // 为trains表创建车次号索引
+      db.run(`
+        CREATE INDEX IF NOT EXISTS idx_trains_no ON trains(train_no)
+      `, (err) => {
+        if (err) console.error('创建trains车次号索引失败:', err);
       });
 
       // 车次停靠站表
@@ -113,6 +129,7 @@ function createTables() {
         CREATE TABLE IF NOT EXISTS seat_status (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           train_no TEXT NOT NULL,
+          departure_date DATE NOT NULL,
           car_no INTEGER NOT NULL,
           seat_no TEXT NOT NULL,
           seat_type TEXT NOT NULL,
@@ -121,10 +138,24 @@ function createTables() {
           status TEXT DEFAULT 'available',
           booked_by TEXT,
           booked_at DATETIME,
-          FOREIGN KEY (train_no) REFERENCES trains(train_no)
+          FOREIGN KEY (train_no, departure_date) REFERENCES trains(train_no, departure_date)
         )
       `, (err) => {
         if (err) console.error('创建seat_status表失败:', err);
+      });
+
+      // 为seat_status表创建复合索引
+      db.run(`
+        CREATE INDEX IF NOT EXISTS idx_seat_status_train_date ON seat_status(train_no, departure_date)
+      `, (err) => {
+        if (err) console.error('创建seat_status复合索引失败:', err);
+      });
+
+      // 为seat_status表创建日期索引
+      db.run(`
+        CREATE INDEX IF NOT EXISTS idx_seat_status_date ON seat_status(departure_date)
+      `, (err) => {
+        if (err) console.error('创建seat_status日期索引失败:', err);
         resolve();
       });
     });
@@ -214,38 +245,64 @@ function insertStations() {
 }
 
 /**
+ * 生成未来14天的日期列表（包括今天）
+ */
+function generateNext14Days() {
+  const dates = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    dates.push(date.toISOString().split('T')[0]);
+  }
+  
+  return dates;
+}
+
+/**
  * 插入车次基本信息
+ * 为每个车次创建未来14天的记录
  */
 function insertTrains() {
   return new Promise((resolve, reject) => {
     const stmt = db.prepare(`
       INSERT OR REPLACE INTO trains (
-        train_no, train_type, model, is_direct, has_air_conditioning,
+        train_no, departure_date, train_type, model, is_direct, has_air_conditioning,
         origin_station, destination_station, distance_km, planned_duration_min,
         departure_time, arrival_time
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     
+    const dates = generateNext14Days();
+    let totalInserted = 0;
+    
     trainsData.forEach(train => {
-      stmt.run(
-        train.train_no,
-        train.train_type,
-        train.model,
-        train.direct ? 1 : 0,
-        train.air_conditioning ? 1 : 0,
-        train.route.origin,
-        train.route.destination,
-        train.route.distance_km,
-        train.route.planned_duration_min,
-        train.route.departure_time,
-        train.route.arrival_time
-      );
+      // 为每个车次创建未来14天的记录
+      dates.forEach(date => {
+        stmt.run(
+          train.train_no,
+          date,
+          train.train_type,
+          train.model,
+          train.direct ? 1 : 0,
+          train.air_conditioning ? 1 : 0,
+          train.route.origin,
+          train.route.destination,
+          train.route.distance_km,
+          train.route.planned_duration_min,
+          train.route.departure_time,
+          train.route.arrival_time
+        );
+        totalInserted++;
+      });
     });
     
     stmt.finalize((err) => {
       if (err) reject(err);
       else {
-        console.log(`成功插入 ${trainsData.length} 个车次`);
+        console.log(`成功插入 ${totalInserted} 个车次记录 (${trainsData.length} 个车次 × 14 天)`);
         resolve();
       }
     });
@@ -364,46 +421,52 @@ function insertTrainFares() {
 /**
  * 初始化座位状态
  * 为每个车厢生成座位并设置初始状态为可用
+ * 为每个日期的车次创建独立的座位状态记录
  */
 function initializeSeatStatus() {
   return new Promise((resolve, reject) => {
     const stmt = db.prepare(`
-      INSERT INTO seat_status (train_no, car_no, seat_no, seat_type, from_station, to_station, status)
-      VALUES (?, ?, ?, ?, ?, ?, 'available')
+      INSERT INTO seat_status (train_no, departure_date, car_no, seat_no, seat_type, from_station, to_station, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'available')
     `);
     
     let totalSeats = 0;
+    const dates = generateNext14Days();
     
     trainsData.forEach(train => {
-      train.cars.forEach(car => {
-        if (car.type !== '餐车') {
-          // 为每个非餐车车厢生成座位
-          const seatCount = getSeatCountByType(car.type);
-          
-          for (let i = 1; i <= seatCount; i++) {
-            const seatNo = `${car.car_no}-${String(i).padStart(2, '0')}`;
+      // 为每个日期创建座位状态
+      dates.forEach(date => {
+        train.cars.forEach(car => {
+          if (car.type !== '餐车') {
+            // 为每个非餐车车厢生成座位
+            const seatCount = getSeatCountByType(car.type);
             
-            // 为车次的每个区间段初始化座位状态
-            for (let j = 0; j < train.stops.length - 1; j++) {
-              stmt.run(
-                train.train_no,
-                car.car_no,
-                seatNo,
-                car.type,
-                train.stops[j].station,
-                train.stops[j + 1].station
-              );
-              totalSeats++;
+            for (let i = 1; i <= seatCount; i++) {
+              const seatNo = `${car.car_no}-${String(i).padStart(2, '0')}`;
+              
+              // 为车次的每个区间段初始化座位状态
+              for (let j = 0; j < train.stops.length - 1; j++) {
+                stmt.run(
+                  train.train_no,
+                  date,
+                  car.car_no,
+                  seatNo,
+                  car.type,
+                  train.stops[j].station,
+                  train.stops[j + 1].station
+                );
+                totalSeats++;
+              }
             }
           }
-        }
+        });
       });
     });
     
     stmt.finalize((err) => {
       if (err) reject(err);
       else {
-        console.log(`成功初始化 ${totalSeats} 个座位状态记录`);
+        console.log(`成功初始化 ${totalSeats} 个座位状态记录 (14天)`);
         resolve();
       }
     });
