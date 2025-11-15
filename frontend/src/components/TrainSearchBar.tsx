@@ -24,12 +24,12 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   const [ticketType, setTicketType] = useState<'normal' | 'student'>('normal'); // 普通/学生
   const [departureStation, setDepartureStation] = useState(initialDepartureStation);
   const [arrivalStation, setArrivalStation] = useState(initialArrivalStation);
-  // 如果没有提供初始日期，使用默认日期11月15日
+  // 如果没有提供初始日期，使用今天作为默认日期
   const [departureDate, setDepartureDate] = useState(
-    initialDepartureDate || '2025-11-15'
+    initialDepartureDate || new Date().toISOString().split('T')[0]
   );
-  // 返程日期默认为11月15日
-  const [returnDate, setReturnDate] = useState('2025-11-15');
+  // 返程日期默认为今天
+  const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -159,7 +159,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           <DatePicker
             value={departureDate}
             onChange={setDepartureDate}
-            minDate={'2025-11-15'}
+            minDate={new Date().toISOString().split('T')[0]}
             maxDate=""
           />
         </div>
@@ -170,7 +170,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           <DatePicker
             value={returnDate}
             onChange={setReturnDate}
-            minDate={'2025-11-15'}
+            minDate={new Date().toISOString().split('T')[0]}
             maxDate=""
             disabled={true}
           />

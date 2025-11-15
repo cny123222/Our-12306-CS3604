@@ -33,13 +33,15 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({ onSearch }) => {
         <DatePicker
           value={startDate}
           onChange={setStartDate}
-          placeholder="开始日期"
+          minDate=""
+          maxDate=""
         />
         <span className="date-separator">-</span>
         <DatePicker
           value={endDate}
           onChange={setEndDate}
-          placeholder="结束日期"
+          minDate=""
+          maxDate=""
         />
       </div>
 

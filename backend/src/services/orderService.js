@@ -213,7 +213,8 @@ async function getAvailableSeatTypes(params) {
       const availableSeats = await trainService.calculateAvailableSeats(
         trainNo,
         departureStation,
-        arrivalStation
+        arrivalStation,
+        departureDate
       );
       
       // 步骤3: 构建席别列表（只返回有票的席别）
@@ -267,8 +268,8 @@ async function createOrder(orderData) {
     try {
       // 查询车次信息
       db.get(
-        'SELECT * FROM trains WHERE train_no = ?',
-        [trainNo],
+        'SELECT * FROM trains WHERE train_no = ? AND departure_date = ?',
+        [trainNo, departureDate],
         async (err, train) => {
           if (err) {
             db.close();
@@ -619,8 +620,9 @@ async function confirmOrder(orderId, userId) {
                     `SELECT DISTINCT seat_no 
                      FROM seat_status 
                      WHERE train_no = ? 
+                     AND departure_date = ?
                      AND seat_type = ?`,
-                    [order.train_number, detail.seat_type],
+                    [order.train_number, order.departure_date, detail.seat_type],
                     (err, seats) => {
                       if (err) return reject(err);
                       resolve(seats);
@@ -649,10 +651,11 @@ async function confirmOrder(orderId, userId) {
                       `SELECT status 
                        FROM seat_status 
                        WHERE train_no = ? 
+                       AND departure_date = ?
                        AND seat_type = ? 
                        AND seat_no = ? 
                        AND (${segmentConditions})`,
-                      [order.train_number, detail.seat_type, seat.seat_no, ...segmentParams],
+                      [order.train_number, order.departure_date, detail.seat_type, seat.seat_no, ...segmentParams],
                       (err, statuses) => {
                         if (err) return reject(err);
                         resolve(statuses);
@@ -682,11 +685,12 @@ async function confirmOrder(orderId, userId) {
                       `UPDATE seat_status 
                        SET status = 'booked', booked_by = ?, booked_at = datetime('now')
                        WHERE train_no = ? 
+                       AND departure_date = ?
                        AND seat_type = ? 
                        AND seat_no = ? 
                        AND from_station = ? 
                        AND to_station = ?`,
-                      [String(userId), order.train_number, detail.seat_type, selectedSeatNo, segment.from, segment.to],
+                      [String(userId), order.train_number, order.departure_date, detail.seat_type, selectedSeatNo, segment.from, segment.to],
                       (err) => {
                         if (err) return reject(err);
                         resolve(true);
