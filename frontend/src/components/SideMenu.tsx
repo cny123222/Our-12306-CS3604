@@ -38,7 +38,7 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('order-center')}>
           订单中心
-          <span className="menu-toggle">{expandedSections.includes('order-center') ? '−' : '+'}</span>
+          <span className="menu-toggle">{expandedSections.includes('order-center') ? '▲' : '▼'}</span>
         </div>
         {expandedSections.includes('order-center') && (
           <div className="menu-items">
@@ -73,7 +73,7 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('personal-info')}>
           个人信息
-          <span className="menu-toggle">{expandedSections.includes('personal-info') ? '−' : '+'}</span>
+          <span className="menu-toggle">{expandedSections.includes('personal-info') ? '▲' : '▼'}</span>
         </div>
         {expandedSections.includes('personal-info') && (
           <div className="menu-items">
@@ -99,7 +99,7 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('common-info')}>
           常用信息管理
-          <span className="menu-toggle">{expandedSections.includes('common-info') ? '−' : '+'}</span>
+          <span className="menu-toggle">{expandedSections.includes('common-info') ? '▲' : '▼'}</span>
         </div>
         {expandedSections.includes('common-info') && (
           <div className="menu-items">
@@ -118,7 +118,7 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('warm-service')}>
           温馨服务
-          <span className="menu-toggle">{expandedSections.includes('warm-service') ? '−' : '+'}</span>
+          <span className="menu-toggle">{expandedSections.includes('warm-service') ? '▲' : '▼'}</span>
         </div>
         {expandedSections.includes('warm-service') && (
           <div className="menu-items">
@@ -133,7 +133,7 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
       <div className="menu-section">
         <div className="menu-title" onClick={() => toggleSection('feedback')}>
           投诉和建议
-          <span className="menu-toggle">{expandedSections.includes('feedback') ? '−' : '+'}</span>
+          <span className="menu-toggle">{expandedSections.includes('feedback') ? '▲' : '▼'}</span>
         </div>
         {expandedSections.includes('feedback') && (
           <div className="menu-items">
