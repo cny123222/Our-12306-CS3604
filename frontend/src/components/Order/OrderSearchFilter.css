@@ -1,8 +1,12 @@
 /* 订单搜索筛选样式 */
 .order-search-filter {
-  padding: 20px 25px;
+  padding: 20px 10px;
   background-color: #fff;
-  border-bottom: 1px solid #e8e8e8;
+  border: 1px solid #d0d0d0;
+  border-top: none;
+  border-bottom: none;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* 历史订单和未出行订单：单行布局 */
@@ -11,6 +15,9 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .filter-group {
@@ -22,6 +29,9 @@
 .date-group {
   flex: 0 0 auto;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .dropdown-group {
@@ -29,10 +39,10 @@
 }
 
 .keyword-group {
-  flex: 1;
+  flex: 1 1 auto;
   position: relative;
-  min-width: 300px;
-  max-width: 500px;
+  min-width: 200px;
+  max-width: 250px;
 }
 
 .filter-label {
@@ -40,6 +50,7 @@
   color: #333;
   white-space: nowrap;
   margin-right: 5px;
+  flex-shrink: 0;
 }
 
 .filter-dropdown {
@@ -68,19 +79,53 @@
   border-color: #2876c8;
 }
 
-.date-separator {
+/* 订单筛选器中的日期分隔符 - 独立设置 */
+.order-search-filter .date-separator {
   color: #666;
-  padding: 0 8px;
+  padding: 0 4px;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+/* 订单筛选器中的DatePicker样式 - 独立设置 */
+.order-search-filter .date-picker {
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.order-search-filter .date-input {
+  width: 130px;
+  padding: 6px 28px 6px 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 0;
+  font-size: 13px;
+  color: #333;
+  background-color: #fff;
+  cursor: pointer;
+  height: 32px;
+  box-sizing: border-box;
+}
+
+.order-search-filter .date-input:focus {
+  outline: none;
+  border-color: #2876c8;
+  box-shadow: none;
+}
+
+.order-search-filter .calendar-icon {
+  color: #666;
 }
 
 .filter-input {
   padding: 7px 12px;
-  border: 1px solid #d0d0d0;
+  border: 1px solid #e0e0e0;
   border-radius: 0;
   font-size: 14px;
   background-color: #fff;
   width: 100%;
+  max-width: 100%;
   padding-right: 30px;
+  box-sizing: border-box;
 }
 
 .filter-input:focus {
@@ -110,22 +155,31 @@
   border-color: #999 !important;
 }
 
-.clear-button {
+/* 订单筛选器专用清空按钮 - 圆形灰底白叉 */
+.order-search-filter .clear-button {
   position: absolute;
-  right: 5px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  padding: 2px 8px;
-  background-color: transparent;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #ccc;
   border: none;
-  color: #999;
+  color: #fff;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
 }
 
-.clear-button:hover {
-  color: #666;
+.order-search-filter .clear-button:hover {
+  background-color: #999;
 }
 
 @media (max-width: 768px) {

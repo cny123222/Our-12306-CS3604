@@ -7,15 +7,20 @@
 
 .order-result-display.empty {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
   min-height: 400px;
+  border: 1px solid #d4e8f9;
+  background-color: #ffffff;
+  border-radius: 4px;
+  margin: 20px 0px;
 }
 
 .empty-icon {
-  margin-bottom: 25px;
+  margin-right: 30px;
+  flex-shrink: 0;
 }
 
 .empty-icon svg {
@@ -26,7 +31,7 @@
 .empty-message {
   font-size: 14px;
   color: #666;
-  text-align: center;
+  text-align: left;
   line-height: 1.8;
 }
 
@@ -49,10 +54,11 @@
 
 .order-table-header {
   display: flex;
-  background-color: #f5f5f5;
-  border-top: 1px solid #d0d0d0;
-  border-bottom: 1px solid #d0d0d0;
-  padding: 12px 25px;
+  background-color: #f8f8f8;
+  border-left: 1px solid #d0d0d0;
+  border-right: 1px solid #d0d0d0;
+  padding: 12px 0px;
+  margin-bottom: 10px;
 }
 
 .order-header-cell {
@@ -65,7 +71,7 @@
 
 .order-header-cell.order-train-info-col {
   flex: 1.5;
-  text-align: left;
+  text-align: center;
 }
 
 .order-header-cell.order-passenger-info-col {
@@ -84,7 +90,7 @@
 }
 
 .order-header-cell.order-status-col {
-  flex: 0.8;
+  flex: 1;
   text-align: center;
 }
 
