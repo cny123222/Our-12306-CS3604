@@ -50,7 +50,7 @@
   background: linear-gradient(to bottom, #3ba3e2 0%, #2a8bc7 100%);
   padding: 12px 20px;
   color: white;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: bold;
   border-bottom: 2px solid #2180b0;
 }
@@ -58,6 +58,7 @@
 /* 表单内容区域 */
 .register-content {
   padding: 30px 60px 40px;
+  border-top: 2px solid #3ba3e2;
 }
 
 /* 响应式适配 */
