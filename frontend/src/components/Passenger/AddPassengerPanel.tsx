@@ -81,108 +81,143 @@ const AddPassengerPanel: React.FC<AddPassengerPanelProps> = ({
 
   return (
     <div className="add-passenger-panel">
-      <h3 className="panel-title">添加乘车人</h3>
+      <div className="passenger-form-container">
+        {/* 基本信息 */}
+        <div className="passenger-section">
+          <h3 className="passenger-section-title">基本信息</h3>
 
-      <div className="form-section">
-        <h4 className="section-title">基本信息</h4>
-        
-        <div className="form-row">
-          <label className="form-label">
-            <span className="required">*</span> 证件类型：
-          </label>
-          <SelectDropdown
-            options={idCardTypes}
-            value={idCardType}
-            onChange={setIdCardType}
-            placeholder="请选择证件类型"
-          />
-        </div>
+          <div className="passenger-form-row">
+            <div className="passenger-label-wrapper">
+              <label className="passenger-label">
+                <span className="passenger-required">*</span> 证件类型：
+              </label>
+            </div>
+            <div className="passenger-input-container">
+              <SelectDropdown
+                options={idCardTypes}
+                value={idCardType}
+                onChange={setIdCardType}
+                placeholder="请选择证件类型"
+              />
+            </div>
+          </div>
 
-        <div className="form-row">
-          <label className="form-label">
-            <span className="required">*</span> 姓名：
-          </label>
-          <div className="input-wrapper">
-            <input
-              type="text"
-              className="form-input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="请输入姓名"
-            />
-            {errors.name && <div className="error-message">{errors.name}</div>}
-            <div className="input-hint">姓名填写规则（用于身份核验）</div>
+          <div className="passenger-form-row">
+            <div className="passenger-label-wrapper">
+              <label className="passenger-label">
+                <span className="passenger-required">*</span> 姓名：
+              </label>
+            </div>
+            <div className="passenger-input-container">
+              <div className="passenger-input-wrapper">
+                <input
+                  type="text"
+                  className={`passenger-input ${errors.name ? 'passenger-input-error' : ''}`}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="请输入姓名"
+                />
+                <span className="passenger-hint">姓名填写规则（用于身份核验）</span>
+              </div>
+              {errors.name && <div className="passenger-error-message">{errors.name}</div>}
+            </div>
+          </div>
+
+          <div className="passenger-form-row">
+            <div className="passenger-label-wrapper">
+              <label className="passenger-label">
+                <span className="passenger-required">*</span> 证件号码：
+              </label>
+            </div>
+            <div className="passenger-input-container">
+              <div className="passenger-input-wrapper">
+                <input
+                  type="text"
+                  className={`passenger-input ${errors.idCardNumber ? 'passenger-input-error' : ''}`}
+                  value={idCardNumber}
+                  onChange={(e) => setIdCardNumber(e.target.value)}
+                  placeholder="请填写证件号码"
+                />
+                <span className="passenger-hint">用于身份核验，请正确填写。</span>
+              </div>
+              {errors.idCardNumber && (
+                <div className="passenger-error-message">{errors.idCardNumber}</div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="form-row">
-          <label className="form-label">
-            <span className="required">*</span> 证件号码：
-          </label>
-          <div className="input-wrapper">
-            <input
-              type="text"
-              className="form-input"
-              value={idCardNumber}
-              onChange={(e) => setIdCardNumber(e.target.value)}
-              placeholder="请填写证件号码"
-            />
-            {errors.idCardNumber && (
-              <div className="error-message">{errors.idCardNumber}</div>
-            )}
-            <div className="input-hint">用于身份核验，请正确填写。</div>
+        {/* 联系方式 */}
+        <div className="passenger-section">
+          <h3 className="passenger-section-title">
+            联系方式<span className="passenger-section-subtitle">（请提供乘车人真实有效的联系方式）</span>
+          </h3>
+
+          <div className="passenger-form-row">
+            <div className="passenger-label-wrapper">
+              <label className="passenger-label">手机号码：</label>
+            </div>
+            <div className="passenger-input-container">
+              <div className="passenger-input-wrapper">
+                <div className="passenger-phone-group">
+                  <SelectDropdown
+                    options={['+86']}
+                    value="+86"
+                    onChange={() => {}}
+                    placeholder="+86"
+                  />
+                  <input
+                    type="text"
+                    className={`passenger-input passenger-phone-input ${errors.phone ? 'passenger-input-error' : ''}`}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="请填写手机号码"
+                    maxLength={11}
+                  />
+                </div>
+              </div>
+              {errors.phone && <div className="passenger-error-message">{errors.phone}</div>}
+              <div className="passenger-hint passenger-hint-block">
+                请您填写乘车人真实有效的联系方式，以便接收铁路部门推送的重要服务信息，以及在紧急特殊情况下的联系。
+              </div>
+            </div>
           </div>
         </div>
 
-        <h4 className="section-title">联系方式（请提供乘车人真实有效的联系方式）</h4>
+        {/* 附加信息 */}
+        <div className="passenger-section">
+          <h3 className="passenger-section-title">附加信息</h3>
 
-        <div className="form-row">
-          <label className="form-label">手机号码：</label>
-          <div className="phone-input-group">
-            <select className="country-code">
-              <option>+86</option>
-            </select>
-            <input
-              type="text"
-              className="form-input"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="请填写手机号码"
-              maxLength={11}
-            />
-          </div>
-          {errors.phone && <div className="error-message phone-error">{errors.phone}</div>}
-          <div className="input-hint hint-orange">
-            请您填写乘车人真实有效的联系方式，以便接收铁路部门推送的重要服务信息，以及在紧急特殊情况下的联系。
+          <div className="passenger-form-row">
+            <div className="passenger-label-wrapper">
+              <label className="passenger-label">
+                <span className="passenger-required">*</span> 优惠(待)类型：
+              </label>
+            </div>
+            <div className="passenger-input-container">
+              <SelectDropdown
+                options={discountTypes}
+                value={discountType}
+                onChange={setDiscountType}
+                placeholder="请选择优惠类型"
+              />
+            </div>
           </div>
         </div>
 
-        <h4 className="section-title">附加信息</h4>
-
-        <div className="form-row">
-          <label className="form-label">
-            <span className="required">*</span> 优惠(待)类型：
-          </label>
-          <SelectDropdown
-            options={discountTypes}
-            value={discountType}
-            onChange={setDiscountType}
-            placeholder="请选择优惠类型"
-          />
+        {/* 按钮组 */}
+        <div className="passenger-button-group">
+          <button className="passenger-button passenger-button-cancel" onClick={onCancel}>
+            取消
+          </button>
+          <button 
+            className="passenger-button passenger-button-submit" 
+            onClick={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? '保存中...' : '保存'}
+          </button>
         </div>
-      </div>
-
-      <div className="button-group">
-        <button className="cancel-button" onClick={onCancel}>
-          取消
-        </button>
-        <button 
-          className="save-button" 
-          onClick={handleSubmit}
-          disabled={isLoading}
-        >
-          {isLoading ? '保存中...' : '保存'}
-        </button>
       </div>
     </div>
   );
