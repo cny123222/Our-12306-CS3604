@@ -11,7 +11,14 @@
 }
 
 .passenger-table tbody tr {
+  border-top: 1px solid #e8e8e8;
   border-bottom: 1px solid #e8e8e8;
+  border-left: 1px solid #b1dbff;
+  border-right: 1px solid #b1dbff;
+}
+
+.passenger-table tbody tr:last-child {
+  border-bottom: 1px solid #b1dbff;
 }
 
 .passenger-table tbody tr:hover {
@@ -24,31 +31,40 @@
   font-size: 14px;
 }
 
-.checkbox-cell {
-  width: 40px;
+.passenger-table .checkbox-index-cell {
+  width: 100px;
   text-align: center;
-  padding-left: 25px !important;
+  border-right: 1px solid #e8e8e8;
+  padding: 15px 0px;
 }
 
-.index-cell {
-  width: 60px;
-  text-align: left;
+.checkbox-index-cell input[type="checkbox"] {
+  margin-right: 15px;
+  vertical-align: middle;
+}
+
+.index-number {
+  vertical-align: middle;
 }
 
 .name-cell {
   width: 120px;
+  text-align: center;
 }
 
 .id-type-cell {
   width: 150px;
+  text-align: center;
 }
 
 .id-number-cell {
   width: 200px;
+  text-align: center;
 }
 
 .phone-cell {
   width: 150px;
+  text-align: center;
 }
 
 .verification-cell {
@@ -79,31 +95,36 @@
   text-align: center;
 }
 
-.action-button {
+.passenger-table .action-button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  padding: 4px 6px;
+  padding: 0px 0px;
   margin: 0 4px;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.edit-button {
-  color: #1890ff;
+.action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-button .action-icon {
+  filter: invert(49%) sepia(98%) saturate(2976%) hue-rotate(192deg) brightness(101%) contrast(98%);
 }
 
 .edit-button:hover {
-  color: #40a9ff;
   transform: scale(1.15);
 }
 
-.delete-button {
-  color: #ff4d4f;
+.delete-button .action-icon {
+  filter: invert(35%) sepia(77%) saturate(6133%) hue-rotate(342deg) brightness(91%) contrast(84%);
 }
 
 .delete-button:hover {
-  color: #ff7875;
   transform: scale(1.15);
 }
 
