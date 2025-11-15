@@ -1,7 +1,8 @@
 // 手机核验页
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopNavigation from '../components/TopNavigation';
+import TrainListTopBar from '../components/TrainListTopBar';
+import MainNavigation from '../components/MainNavigation';
 import SideMenu from '../components/SideMenu';
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation';
 import BottomNavigation from '../components/BottomNavigation';
@@ -15,17 +16,31 @@ const PhoneVerificationPage = () => {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [sessionId, setSessionId] = useState('');
   const [newPhone, setNewPhone] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // 检查登录状态
   useEffect(() => {
-    // 检查登录状态
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      console.log('未登录，跳转到登录页');
-      navigate('/login');
-      return;
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('authToken');
+      setIsLoggedIn(!!token);
+      if (!token) {
+        console.log('未登录，跳转到登录页');
+        navigate('/login');
+        return false;
+      }
+      return true;
+    };
+    
+    if (checkLoginStatus()) {
+      fetchUserPhone();
     }
     
-    fetchUserPhone();
+    // 监听storage事件，当其他标签页登录/登出时同步状态
+    window.addEventListener('storage', checkLoginStatus);
+    
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
   }, [navigate]);
 
   const fetchUserPhone = async () => {
@@ -95,9 +110,34 @@ const PhoneVerificationPage = () => {
     }
   };
 
+  const handleNavigateToLogin = () => {
+    navigate('/login');
+  };
+
+  const handleNavigateToRegister = () => {
+    navigate('/register');
+  };
+
+  const handleNavigateToPersonalCenter = () => {
+    if (isLoggedIn) {
+      navigate('/personal-info');
+    } else {
+      navigate('/login');
+    }
+  };
+
+  // 获取用户名
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
+
   return (
     <div className="phone-verification-page">
-      <TopNavigation onLogoClick={() => navigate('/')} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+      <MainNavigation
+        isLoggedIn={isLoggedIn}
+        onLoginClick={handleNavigateToLogin}
+        onRegisterClick={handleNavigateToRegister}
+        onPersonalCenterClick={handleNavigateToPersonalCenter}
+      />
       
       <div className="main-content">
         <SideMenu 
