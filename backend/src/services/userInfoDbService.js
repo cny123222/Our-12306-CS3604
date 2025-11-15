@@ -276,9 +276,14 @@ async function searchOrders(userId, searchCriteria) {
       sql += ` AND (
         id LIKE ? 
         OR train_number LIKE ?
+        OR EXISTS (
+          SELECT 1 FROM order_details 
+          WHERE order_details.order_id = orders.id 
+          AND order_details.passenger_name LIKE ?
+        )
       )`;
       const keywordParam = `%${keyword}%`;
-      params.push(keywordParam, keywordParam);
+      params.push(keywordParam, keywordParam, keywordParam);
     }
     
     // 日期范围筛选
