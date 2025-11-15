@@ -26,6 +26,9 @@
   font-weight: 500 !important;
   color: #333333 !important;
   margin-bottom: 20px !important;
+  margin-top: 0 !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
 .friendship-links-grid {
