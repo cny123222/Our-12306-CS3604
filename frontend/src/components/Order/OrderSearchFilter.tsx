@@ -135,19 +135,16 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
           </div>
 
           <div className="filter-group keyword-group">
-            <label className="filter-label">订单号/车次/姓名</label>
             <input
               type="text"
               className="filter-input"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              placeholder="请输入订单号/车次/姓名"
+              placeholder="订单号/车次/姓名"
             />
-            {keyword && (
-              <button className="clear-button" onClick={handleClear}>
-                ✕
-              </button>
-            )}
+            <button className="clear-button" onClick={handleClear}>
+              ✕
+            </button>
           </div>
 
           <button className="order-search-button" onClick={handleSearch}>
@@ -185,19 +182,16 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
         </div>
 
         <div className="filter-group keyword-group">
-          <label className="filter-label">订单号/车次/姓名</label>
           <input
             type="text"
             className="filter-input"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            placeholder="请输入订单号/车次/姓名"
+            placeholder="订单号/车次/姓名"
           />
-          {keyword && (
-            <button className="clear-button" onClick={handleClear}>
-              ✕
-            </button>
-          )}
+          <button className="clear-button" onClick={handleClear}>
+            ✕
+          </button>
         </div>
 
         <button className="order-search-button" onClick={handleSearch}>
