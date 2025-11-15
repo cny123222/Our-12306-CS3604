@@ -8,7 +8,7 @@
   max-width: 1100px;
 }
 
-/* 订单填写页专用样式（原始的精心调整样式）*/
+/* 订单填写页专用样式 */
 .warm-tips-section.order-page-tips {
   background-color: #fffbe5;
   border: 1px solid #f5e6a8;
@@ -56,18 +56,18 @@
 
 /* 订单历史页等其他页面样式 */
 .warm-tips-section.history-page-tips {
-  background-color: #fffacd;
-  border: 1px solid #f0e68c;
+  background-color: #fffbf8;
+  border: 1px solid #ffdfbd;
   border-radius: 0;
-  padding: 20px 25px;
-  margin: 20px 25px;
+  padding: 20px 20px;
+  margin: 20px 0px;
   max-width: none;  /* 不限制宽度 */
 }
 
 .warm-tips-section.history-page-tips .tips-title {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #222;
   margin: 0 0 12px 0;
 }
 
@@ -80,9 +80,9 @@
 
 .warm-tips-section.history-page-tips .tip-item {
   font-size: 13px;
-  color: #333;
+  color: #222;
   line-height: 1.8;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   padding-left: 5px;
 }
 

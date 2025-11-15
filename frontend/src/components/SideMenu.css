@@ -52,17 +52,9 @@
 }
 
 .menu-toggle {
-  width: 15px;
-  height: 15px;
-  border: 1px solid #aaaaaa;
-  border-radius: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
-  color: #aaaaaa;
-  font-weight: 300;
-  background-color: #ffffff;
 }
 
 .menu-items {

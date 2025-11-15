@@ -1,7 +1,7 @@
 /* 订单项样式 */
 .order-item {
   background-color: #fff;
-  border: 1px solid #d0d0d0;
+  border: 1px solid #b1dbff;
   border-radius: 0;
   margin-bottom: 20px;
   overflow: hidden;
@@ -12,23 +12,42 @@
   display: flex;
   align-items: center;
   padding: 12px 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #e8e8e8;
+  background-color: #f0f8ff;
+  border-bottom: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.order-date-row:hover {
+  background-color: #e6f2ff;
 }
 
 .order-date-icon {
   margin-right: 8px;
+  cursor: pointer;
 }
 
 .order-date-label {
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: #444444;
   margin-right: 5px;
 }
 
 .order-date-value {
-  font-size: 13px;
-  color: #333;
+  font-size: 14px;
+  color: #222222;
+  margin-right: 20px;
+}
+
+.order-number-label {
+  font-size: 14px;
+  color: #444444;
+  margin-right: 5px;
+}
+
+.order-number-value {
+  font-size: 14px;
+  color: #222222;
 }
 
 /* 订单主体内容 - 左侧车次+右侧乘客列表 */
@@ -36,26 +55,25 @@
   display: flex;
   align-items: flex-start;
   border-top: 1px solid #d0d0d0;
-  padding: 15px 25px;
+  padding: 0;
   gap: 0;
 }
 
 /* 车次信息列（左侧，只显示一次）*/
 .order-cell.train-cell {
-  flex: 0 0 200px;
+  flex: 1.2;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
-  padding-right: 20px;
-  margin-right: 20px;
+  gap: 2px;
+  padding: 15px 20px 15px 20px;
   border-right: 1px solid #e8e8e8;
 }
 
 .train-route {
-  font-size: 14px;
+  font-size: 15px;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -63,32 +81,37 @@
 
 .train-from,
 .train-to {
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .train-arrow {
   margin: 0 5px;
   color: #666;
+  font-weight: 600;
 }
 
-.train-number {
+.order-item .train-number {
   margin-left: 10px;
   font-weight: 600;
   color: #333;
+  text-decoration: none;
 }
 
-.train-datetime {
-  font-size: 13px;
-  color: #666;
+.order-item .train-datetime {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
 }
 
-.train-time {
+.order-item .train-time {
   margin-left: 10px;
+  font-weight: 500;
 }
 
 /* 右侧乘客信息区域（多行）*/
 .passengers-info-area {
-  flex: 1;
+  flex: 4;
   display: flex;
   flex-direction: column;
 }
@@ -97,17 +120,18 @@
 .passenger-row {
   display: flex;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px dashed #e8e8e8;
+  padding: 0px 0;
+  border-bottom: 1px solid #e8e8e8;
+  border-left: 1px solid #e8e8e8;
 }
 
 .passenger-row:last-child {
   border-bottom: none;
-  padding-bottom: 0;
+  padding-bottom: 0px;
 }
 
 .passenger-row:first-child {
-  padding-top: 0;
+  padding-top: 0px;
 }
 
 /* 旅客信息列 */
@@ -121,17 +145,19 @@
   gap: 4px;
   min-width: 120px;
   padding: 0 10px;
+  border-right: 1px solid #e8e8e8;
+  padding: 18px 0px;
 }
 
 .passenger-name {
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: #222;
 }
 
 .passenger-id-type {
-  font-size: 12px;
-  color: #666;
+  font-size: 13px;
+  color: #222;
   text-align: center;
 }
 
@@ -145,11 +171,13 @@
   text-align: center;
   min-width: 100px;
   padding: 0 10px;
+  border-right: 1px solid #e8e8e8;
+  padding: 18px 0px;
 }
 
 .seat-detail {
   font-size: 13px;
-  color: #333;
+  color: #222;
   text-align: center;
   line-height: 1.6;
 }
@@ -164,6 +192,8 @@
   text-align: center;
   min-width: 100px;
   padding: 0 10px;
+  border-right: 1px solid #e8e8e8;
+  padding: 18px 0px;
 }
 
 .price-detail {
@@ -171,8 +201,8 @@
 }
 
 .ticket-type {
-  font-size: 12px;
-  color: #666;
+  font-size: 13px;
+  color: #222;
   margin-bottom: 4px;
 }
 
@@ -199,18 +229,18 @@
 
 /* 车票状态列 */
 .order-cell.status-cell {
-  flex: 0 0 80px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 0 10px;
+  padding: 18px 0px;
 }
 
 .status-value {
   font-size: 14px;
-  color: #333;
+  color: #222;
   text-align: center;
   font-weight: 500;
 }
