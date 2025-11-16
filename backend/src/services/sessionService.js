@@ -108,16 +108,19 @@ class SessionService {
 
   /**
    * 检查短信验证码发送频率
+   * @param {string} phone - 手机号
+   * @param {string} purpose - 验证码用途 ('login' 或 'registration')，默认 'login'
    */
-  async checkSmsSendFrequency(phone) {
+  async checkSmsSendFrequency(phone, purpose = 'login') {
     try {
-      // 检查最近1分钟内是否已发送
+      // 检查最近1分钟内是否已发送（同一用途）
       const recentCode = await dbService.get(
         `SELECT * FROM verification_codes 
          WHERE phone = ? 
+         AND purpose = ?
          AND datetime(sent_at) > datetime('now', '-1 minute')
          ORDER BY sent_at DESC LIMIT 1`,
-        [phone]
+        [phone, purpose]
       );
 
       return !recentCode; // 没有最近发送记录则返回true（可以发送）
