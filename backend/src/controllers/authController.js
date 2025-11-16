@@ -141,7 +141,7 @@ class AuthController {
         const sessionService = require('../services/sessionService');
         
         // 检查发送频率
-        const canSend = await sessionService.checkSmsSendFrequency(phoneNumber);
+        const canSend = await sessionService.checkSmsSendFrequency(phoneNumber, 'login');
         if (!canSend) {
           return res.status(429).json({
             success: false,
@@ -149,11 +149,8 @@ class AuthController {
           });
         }
 
-        // 生成6位验证码
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        
-        // 保存验证码
-        await registrationDbService.createSmsVerificationCode(phoneNumber, code);
+        // 生成并保存验证码
+        const code = await registrationDbService.createSmsVerificationCode(phoneNumber, 'login');
 
         // TODO: 实际发送短信
         console.log(`[SMS] 发送验证码 ${code} 到 ${phoneNumber}`);

@@ -54,7 +54,8 @@ class DatabaseService {
         expires_at DATETIME NOT NULL,
         used BOOLEAN DEFAULT 0,
         sent_status TEXT DEFAULT 'sent',
-        sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        purpose TEXT DEFAULT 'login'
       )
     `;
 
@@ -87,6 +88,36 @@ class DatabaseService {
     this.db.run(createVerificationCodesTable);
     this.db.run(createEmailVerificationCodesTable);
     this.db.run(createSessionsTable);
+    
+    // 数据库迁移：为现有 verification_codes 表添加 purpose 字段
+    this.migrateVerificationCodesTable();
+  }
+  
+  // 数据库迁移：添加 purpose 字段
+  migrateVerificationCodesTable() {
+    // 检查 purpose 列是否存在
+    this.db.all("PRAGMA table_info(verification_codes)", (err, columns) => {
+      if (err) {
+        console.error('Error checking table info:', err);
+        return;
+      }
+      
+      const hasPurposeColumn = columns.some(col => col.name === 'purpose');
+      
+      if (!hasPurposeColumn) {
+        // 添加 purpose 列
+        this.db.run(
+          "ALTER TABLE verification_codes ADD COLUMN purpose TEXT DEFAULT 'login'",
+          (err) => {
+            if (err) {
+              console.error('Error adding purpose column:', err);
+            } else {
+              console.log('Successfully added purpose column to verification_codes table');
+            }
+          }
+        );
+      }
+    });
   }
 
   // 通用查询方法 - 返回单行

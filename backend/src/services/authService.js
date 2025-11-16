@@ -137,13 +137,13 @@ class AuthService {
       const { sessionData } = validation;
 
       // 检查发送频率
-      const canSend = await sessionService.checkSmsSendFrequency(sessionData.phone);
+      const canSend = await sessionService.checkSmsSendFrequency(sessionData.phone, 'login');
       if (!canSend) {
         return { success: false, error: '请求验证码过于频繁，请稍后再试！', code: 429 };
       }
 
       // 生成并保存验证码
-      const code = await registrationDbService.createSmsVerificationCode(sessionData.phone);
+      const code = await registrationDbService.createSmsVerificationCode(sessionData.phone, 'login');
 
       // TODO: 实际发送短信（这里模拟）
       console.log(`[SMS] 发送验证码 ${code} 到 ${sessionData.phone}`);

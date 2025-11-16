@@ -7,6 +7,7 @@
 
 const registrationDbService = require('../services/registrationDbService');
 const sessionService = require('../services/sessionService');
+const passengerService = require('../services/passengerService');
 const { v4: uuidv4 } = require('uuid');
 
 class RegisterController {
@@ -404,7 +405,7 @@ class RegisterController {
       }
 
       if (phone) {
-        const canSendSms = await sessionService.checkSmsSendFrequency(phone);
+        const canSendSms = await sessionService.checkSmsSendFrequency(phone, 'registration');
         if (!canSendSms) {
           return res.status(429).json({
             error: '请求验证码过于频繁，请稍后再试！'
@@ -420,7 +421,7 @@ class RegisterController {
       // 发送短信验证码（如果提供了phone）
       let smsCode = null;
       if (phone) {
-        smsCode = await registrationDbService.createSmsVerificationCode(phone);
+        smsCode = await registrationDbService.createSmsVerificationCode(phone, 'registration');
         console.log(`\n=================================`);
         console.log(`📱 注册验证码已生成`);
         console.log(`手机号: ${phone}`);
@@ -492,6 +493,21 @@ class RegisterController {
       // 创建用户
       try {
         const userId = await registrationDbService.createUser(userData);
+        
+        // 自动添加注册人本人为乘车人
+        try {
+          await passengerService.createPassenger(userId, {
+            name: userData.name,
+            idCardType: userData.idCardType || userData.id_card_type,
+            idCardNumber: userData.idCardNumber || userData.id_card_number,
+            discountType: userData.discountType || userData.discount_type,
+            phone: userData.phone
+          });
+          console.log('✅ 注册时自动添加乘车人成功');
+        } catch (passengerError) {
+          // 如果创建乘车人失败（如证件号已存在），记录日志但不影响注册流程
+          console.warn('⚠️ 注册时自动添加乘车人失败:', passengerError.message);
+        }
         
         // 删除会话
         await sessionService.deleteSession(sessionId);

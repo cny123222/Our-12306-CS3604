@@ -206,17 +206,19 @@ class RegistrationDbService {
 
   /**
    * 创建短信验证码
+   * @param {string} phone - 手机号
+   * @param {string} purpose - 验证码用途 ('login' 或 'registration')，默认 'login'
    */
-  async createSmsVerificationCode(phone) {
+  async createSmsVerificationCode(phone, purpose = 'login') {
     try {
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const now = new Date();
       const expiresAt = new Date(now.getTime() + 5 * 60 * 1000); // 5分钟后过期
 
       await dbService.run(
-        `INSERT INTO verification_codes (phone, code, created_at, expires_at, sent_status, sent_at) 
-         VALUES (?, ?, ?, ?, 'sent', ?)`,
-        [phone, code, now.toISOString(), expiresAt.toISOString(), now.toISOString()]
+        `INSERT INTO verification_codes (phone, code, created_at, expires_at, sent_status, sent_at, purpose) 
+         VALUES (?, ?, ?, ?, 'sent', ?, ?)`,
+        [phone, code, now.toISOString(), expiresAt.toISOString(), now.toISOString(), purpose]
       );
 
       return code;
