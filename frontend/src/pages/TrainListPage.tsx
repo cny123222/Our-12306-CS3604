@@ -169,6 +169,14 @@ const TrainListPage: React.FC = () => {
     }
   };
 
+  const handleMy12306Click = () => {
+    if (isLoggedIn) {
+      navigate('/personal-info');
+    } else {
+      navigate('/login');
+    }
+  };
+
   const handleNavigateToOrderPage = (trainNo: string) => {
     console.log('Navigate to order page for train:', trainNo);
     
@@ -251,7 +259,7 @@ const TrainListPage: React.FC = () => {
 
   return (
     <div className="train-list-page">
-      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}

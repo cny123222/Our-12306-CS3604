@@ -99,6 +99,14 @@ const PersonalInfoPage = () => {
     }
   };
 
+  const handleMy12306Click = () => {
+    if (isLoggedIn) {
+      navigate('/personal-info');
+    } else {
+      navigate('/login');
+    }
+  };
+
   const handleMenuClick = (section: string) => {
     switch (section) {
       case 'train-orders':
@@ -154,7 +162,7 @@ const PersonalInfoPage = () => {
   if (isLoading) {
     return (
       <div className="personal-info-page">
-        <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+        <TrainListTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
         <MainNavigation
           isLoggedIn={isLoggedIn}
           onLoginClick={handleNavigateToLogin}
@@ -170,7 +178,7 @@ const PersonalInfoPage = () => {
   if (error) {
     return (
       <div className="personal-info-page">
-        <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+        <TrainListTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
         <MainNavigation
           isLoggedIn={isLoggedIn}
           onLoginClick={handleNavigateToLogin}
@@ -185,7 +193,7 @@ const PersonalInfoPage = () => {
 
   return (
     <div className="personal-info-page">
-      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}

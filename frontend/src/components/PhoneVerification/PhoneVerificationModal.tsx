@@ -33,12 +33,14 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
       setIsLoading(true);
       setError('');
 
+      const token = localStorage.getItem('authToken');
       const response = await fetch('/api/user/phone/confirm-update', {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ sessionId, verificationCode })
+        body: JSON.stringify({ newPhone: phone, verificationCode })
       });
 
       if (response.ok) {
