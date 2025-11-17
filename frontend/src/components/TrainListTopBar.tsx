@@ -6,13 +6,14 @@ interface TrainListTopBarProps {
   isLoggedIn: boolean;
   username?: string;
   onLogout?: () => void;
+  onMy12306Click?: () => void;
 }
 
 /**
  * 车次列表页专用顶部栏组件
  * 基于HomeTopBar，保留所有功能，只修改登录/注册样式
  */
-const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username, onLogout }) => {
+const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username, onLogout, onMy12306Click }) => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = React.useState('');
 
@@ -42,6 +43,13 @@ const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username,
       localStorage.removeItem('authToken');
       localStorage.removeItem('username');
       navigate('/login');
+    }
+  };
+
+  const handleMy12306Click = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (onMy12306Click) {
+      onMy12306Click();
     }
   };
 
@@ -81,7 +89,7 @@ const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username,
           <a href="#" className="train-list-top-link">无障碍</a>
           <a href="#" className="train-list-top-link">敬老版</a>
           <a href="#" className="train-list-top-link">English</a>
-          <a href="#" className="train-list-top-link">我的12306</a>
+          <a href="#" className="train-list-top-link" onClick={handleMy12306Click}>我的12306</a>
           {!isLoggedIn ? (
             <>
               <span className="train-list-welcome-text">

@@ -25,13 +25,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(to right, #42a5f5, #2196f3);
+  border-radius: 8px 8px 0 0;
 }
 
 .modal-title {
   font-size: 18px;
   font-weight: 600;
-  color: #000;
+  color: #fff;
   margin: 0;
 }
 
@@ -39,16 +40,17 @@
   background: none;
   border: none;
   font-size: 28px;
-  color: #999;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   line-height: 1;
   padding: 0;
   width: 30px;
   height: 30px;
+  transition: color 0.2s ease;
 }
 
 .close-button:hover {
-  color: #666;
+  color: #fff;
 }
 
 .modal-content {

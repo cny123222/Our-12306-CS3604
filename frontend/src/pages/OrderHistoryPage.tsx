@@ -128,12 +128,20 @@ const OrderHistoryPage = () => {
     }
   };
 
+  const handleMy12306Click = () => {
+    if (isLoggedIn) {
+      navigate('/personal-info');
+    } else {
+      navigate('/login');
+    }
+  };
+
   // 获取用户名
   const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
 
   return (
     <div className="order-history-page">
-      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}

@@ -3,7 +3,8 @@ const express = require('express');
 const router = express.Router();
 const userInfoDbService = require('../services/userInfoDbService');
 const { authenticateUser } = require('../middleware/auth');
-const { v4: uuidv4 } = require('uuid');
+const registrationDbService = require('../services/registrationDbService');
+const sessionService = require('../services/sessionService');
 
 // 简单的认证中间件（用于测试环境）
 const testAuth = (req, res, next) => {
@@ -75,9 +76,6 @@ router.put('/email', testAuth, async (req, res) => {
   }
 });
 
-// 临时存储验证码会话（生产环境应使用Redis）
-const phoneSessions = new Map();
-
 /**
  * API-POST-UpdatePhoneRequest: 请求更新用户手机号（发送验证码）
  * POST /api/user/phone/update-request
@@ -116,31 +114,44 @@ router.post('/phone/update-request', testAuth, async (req, res) => {
       return res.status(401).json({ error: '登录密码错误' });
     }
     
-    // 检查新手机号是否已被使用
-    // 简化实现，实际应查询数据库
-    if (newPhone === '13800138000') {
+    // 检查新手机号是否已被其他用户使用
+    const existingUser = await db.query('SELECT id FROM users WHERE phone = ? AND id != ?', [newPhone, userId]);
+    if (existingUser && existingUser.length > 0) {
       return res.status(409).json({ error: '该手机号已被使用' });
     }
     
-    // 生成验证码和会话ID
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const sessionId = uuidv4();
+    // 检查发送频率限制（1分钟内不能重复发送）
+    const canSend = await sessionService.checkSmsSendFrequency(newPhone, 'phone-update');
+    if (!canSend) {
+      return res.status(429).json({
+        error: '请求验证码过于频繁，请稍后再试！'
+      });
+    }
     
-    // 存储会话信息（5分钟有效）
-    phoneSessions.set(sessionId, {
-      userId,
-      newPhone,
-      verificationCode,
-      expiresAt: Date.now() + 5 * 60 * 1000
-    });
+    // 使用统一的验证码服务生成并保存验证码
+    const verificationCode = await registrationDbService.createSmsVerificationCode(newPhone, 'phone-update');
     
     // 输出验证码到控制台（模拟发送短信）
-    console.log(`[SMS] 向 ${newPhone} 发送验证码: ${verificationCode}`);
+    console.log(`\n=================================`);
+    console.log(`📱 手机号更新验证码已生成`);
+    console.log(`手机号: ${newPhone}`);
+    console.log(`验证码: ${verificationCode}`);
+    console.log(`有效期: 5分钟`);
+    console.log(`用途: phone-update`);
+    console.log(`=================================\n`);
     
-    res.status(200).json({
+    const responseData = {
       message: '验证码已发送',
-      sessionId
-    });
+      // 返回sessionId用于前端兼容，但验证时使用手机号
+      sessionId: 'phone-update-session',
+      // 开发环境下返回验证码和手机号（与登录页保持一致）
+      verificationCode: verificationCode,
+      phone: newPhone
+    };
+    
+    console.log('✅ 准备返回响应:', responseData);
+    res.status(200).json(responseData);
+    console.log('✅ 响应已发送');
   } catch (error) {
     console.error('发送验证码失败:', error);
     res.status(500).json({ error: '发送验证码失败' });
@@ -151,39 +162,44 @@ router.post('/phone/update-request', testAuth, async (req, res) => {
  * API-POST-ConfirmPhoneUpdate: 确认更新用户手机号（验证验证码）
  * POST /api/user/phone/confirm-update
  */
-router.post('/phone/confirm-update', async (req, res) => {
+router.post('/phone/confirm-update', testAuth, async (req, res) => {
   try {
-    const { sessionId, verificationCode } = req.body;
+    const userId = req.user.id;
+    const { newPhone, verificationCode } = req.body;
     
-    if (!sessionId) {
-      return res.status(401).json({ error: '会话无效或已过期' });
+    // 验证必需参数
+    if (!newPhone) {
+      return res.status(400).json({ error: '手机号不能为空' });
     }
     
-    const session = phoneSessions.get(sessionId);
-    
-    if (!session) {
-      return res.status(401).json({ error: '会话无效或已过期' });
+    if (!verificationCode) {
+      return res.status(400).json({ error: '验证码不能为空' });
     }
     
-    // 检查会话是否过期
-    if (Date.now() > session.expiresAt) {
-      phoneSessions.delete(sessionId);
-      return res.status(400).json({ error: '验证码错误或已过期' });
+    // 使用统一的验证码验证服务
+    const verifyResult = await registrationDbService.verifySmsCode(newPhone, verificationCode);
+    
+    if (!verifyResult.success) {
+      return res.status(400).json({ error: verifyResult.error || '验证码错误或已过期' });
     }
     
-    // 验证验证码
-    if (verificationCode !== session.verificationCode) {
-      return res.status(400).json({ error: '验证码错误或已过期' });
+    // 再次检查新手机号是否已被其他用户使用
+    const bcrypt = require('bcryptjs');
+    const db = require('../database');
+    const existingUser = await db.query('SELECT id FROM users WHERE phone = ? AND id != ?', [newPhone, userId]);
+    if (existingUser && existingUser.length > 0) {
+      return res.status(409).json({ error: '该手机号已被使用' });
     }
     
     // 更新用户手机号
-    const success = await userInfoDbService.updateUserPhone(session.userId, session.newPhone);
-    
-    // 删除会话
-    phoneSessions.delete(sessionId);
+    const success = await userInfoDbService.updateUserPhone(userId, newPhone);
     
     if (success) {
-      console.log(`[验证码] 用户 ${session.userId} 的手机号已更新为 ${session.newPhone}`);
+      console.log(`\n=================================`);
+      console.log(`✅ 手机号更新成功`);
+      console.log(`用户ID: ${userId}`);
+      console.log(`新手机号: ${newPhone}`);
+      console.log(`=================================\n`);
       res.status(200).json({ message: '手机号更新成功' });
     } else {
       res.status(500).json({ error: '更新手机号失败' });

@@ -60,6 +60,8 @@ const PhoneVerificationPage = () => {
   };
 
   const handleSubmit = async (phone: string, password: string) => {
+    console.log('🔍 开始发送验证码请求...', { phone, hasPassword: !!password });
+    
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch('/api/user/phone/update-request', {
@@ -71,18 +73,37 @@ const PhoneVerificationPage = () => {
         body: JSON.stringify({ newPhone: phone, password })
       });
 
+      console.log('📡 收到响应:', { status: response.status, ok: response.ok });
+
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ 响应数据:', data);
+        
+        // 从后端获取真实验证码（开发环境）
+        const realCode = data.verificationCode;
+        const phoneNumber = data.phone;
+        if (realCode) {
+          console.log(`\n=================================`);
+          console.log(`📱 手机号更新验证码`);
+          console.log(`手机号: ${phoneNumber || '未知'}`);
+          console.log(`验证码: ${realCode}`);
+          console.log(`有效期: 5分钟`);
+          console.log(`=================================\n`);
+        } else {
+          console.warn('⚠️ 响应中没有验证码字段');
+        }
+        
         setSessionId(data.sessionId);
         setNewPhone(phone);
         setShowVerificationModal(true);
       } else {
         const error = await response.json();
+        console.error('❌ 请求失败:', { status: response.status, error });
         // 显示具体的错误信息（包括密码错误）
         alert(error.error || '发送验证码失败');
       }
     } catch (err) {
-      console.error('Error requesting phone update:', err);
+      console.error('❌ 请求异常:', err);
       alert('发送验证码失败');
     }
   };
@@ -126,12 +147,20 @@ const PhoneVerificationPage = () => {
     }
   };
 
+  const handleMy12306Click = () => {
+    if (isLoggedIn) {
+      navigate('/personal-info');
+    } else {
+      navigate('/login');
+    }
+  };
+
   // 获取用户名
   const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
 
   return (
     <div className="phone-verification-page">
-      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
       <MainNavigation
         isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
