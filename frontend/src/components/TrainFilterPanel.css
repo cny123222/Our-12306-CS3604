@@ -99,16 +99,18 @@
 
 /* 全部按钮 */
 .filter-all-btn {
-  padding: 4px 8px;
+  padding: 0px 8px;
   background-color: #8ea7d4;
   color: white;
   border: none;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
   height: 25px;
+  border: 1px solid #8ea7d4;
+  text-align: center;
 }
 
 .filter-all-btn:hover {
@@ -117,6 +119,13 @@
 
 .filter-all-btn:active {
   transform: scale(0.95);
+}
+
+/* 全部按钮 - 部分选择状态 */
+.filter-all-btn.partial {
+  background-color: white;
+  color: #999999;
+  border: 1px solid #8ea7d4;
 }
 
 /* 筛选选项容器 */

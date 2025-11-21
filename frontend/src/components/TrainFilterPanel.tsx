@@ -7,6 +7,7 @@ interface TrainFilterPanelProps {
   arrivalStations: string[];
   seatTypes: string[];
   departureDate?: string; // 添加出发日期用于生成日期标签
+  onDateChange?: (date: string) => void; // 添加日期变化回调
 }
 
 /**
@@ -18,6 +19,7 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
   arrivalStations,
   seatTypes: _seatTypes,
   departureDate,
+  onDateChange,
 }) => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTrainTypes, setSelectedTrainTypes] = useState<string[]>([]);
@@ -26,14 +28,17 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
   const [selectedSeatTypes, setSelectedSeatTypes] = useState<string[]>([]);
   const [departureTimeRange, setDepartureTimeRange] = useState<string>('00:00--24:00');
   
-  // 生成日期标签（前后各7天）
+  // 生成日期标签（固定从今天开始的15天）
   const generateDateTabs = () => {
     const tabs = [];
-    const baseDate = departureDate ? new Date(departureDate) : new Date();
+    // 始终从今天开始生成日期标签
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
+    // 生成从昨天到后14天，共16个日期标签
     for (let i = -1; i <= 14; i++) {
-      const date = new Date(baseDate);
-      date.setDate(date.getDate() + i);
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
       const dateStr = date.toISOString().split('T')[0];
       const month = date.getMonth() + 1;
       const day = date.getDate();
@@ -50,6 +55,7 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
     return tabs;
   };
 
+  // 日期标签内容固定，不随 departureDate 变化
   const dateTabs = generateDateTabs();
 
   // 初始化选中的日期
@@ -186,6 +192,14 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
     });
   };
 
+  // 判断"全部"按钮的状态
+  const getSelectAllButtonClass = (selectedCount: number, totalCount: number) => {
+    if (selectedCount === 0 || selectedCount === totalCount) {
+      return 'filter-all-btn';
+    }
+    return 'filter-all-btn partial';
+  };
+
   return (
     <div className="train-filter-panel">
       {/* 日期筛选标签行 */}
@@ -194,7 +208,13 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
           <button
             key={tab.date}
             className={`date-tab ${selectedDate === tab.date ? 'active' : ''}`}
-            onClick={() => setSelectedDate(tab.date)}
+            onClick={() => {
+              setSelectedDate(tab.date);
+              // 触发日期变化回调，通知父组件重新搜索
+              if (onDateChange) {
+                onDateChange(tab.date);
+              }
+            }}
           >
             <div className="date-tab-date">{tab.display}</div>
           </button>
@@ -206,7 +226,13 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
         {/* 车次类型行 */}
         <div className="filter-row">
           <div className="filter-label">车次类型：</div>
-          <button className="filter-all-btn" onClick={handleTrainTypesSelectAll}>
+          <button 
+            className={getSelectAllButtonClass(
+              selectedTrainTypes.length, 
+              trainTypeOptions.flatMap(opt => opt.types).length
+            )} 
+            onClick={handleTrainTypesSelectAll}
+          >
             全部
           </button>
           <div className="filter-options">
@@ -241,7 +267,13 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
         {departureStations.length > 0 && (
           <div className="filter-row">
             <div className="filter-label">出发车站：</div>
-            <button className="filter-all-btn" onClick={handleDepartureStationsSelectAll}>
+            <button 
+              className={getSelectAllButtonClass(
+                selectedDepartureStations.length, 
+                departureStations.length
+              )} 
+              onClick={handleDepartureStationsSelectAll}
+            >
               全部
             </button>
             <div className="filter-options">
@@ -263,7 +295,13 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
         {arrivalStations.length > 0 && (
           <div className="filter-row">
             <div className="filter-label">到达车站：</div>
-            <button className="filter-all-btn" onClick={handleArrivalStationsSelectAll}>
+            <button 
+              className={getSelectAllButtonClass(
+                selectedArrivalStations.length, 
+                arrivalStations.length
+              )} 
+              onClick={handleArrivalStationsSelectAll}
+            >
               全部
             </button>
             <div className="filter-options">
@@ -284,7 +322,13 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
         {/* 车次席别行 */}
         <div className="filter-row">
           <div className="filter-label">车次席别：</div>
-          <button className="filter-all-btn" onClick={handleSeatTypesSelectAll}>
+          <button 
+            className={getSelectAllButtonClass(
+              selectedSeatTypes.length, 
+              seatTypeOptions.length
+            )} 
+            onClick={handleSeatTypesSelectAll}
+          >
             全部
           </button>
           <div className="filter-options">
