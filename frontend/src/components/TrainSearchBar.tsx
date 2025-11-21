@@ -3,6 +3,7 @@ import './TrainSearchBar.css';
 import CityInput from './CityInput';
 import DatePicker from './DatePicker';
 import { searchTrains } from '../services/trainService';
+import { getTodayString, getDateAfterDays } from '../utils/dateUtils';
 
 interface TrainSearchBarProps {
   initialDepartureStation: string;
@@ -24,12 +25,12 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   const [ticketType, setTicketType] = useState<'normal' | 'student'>('normal'); // 普通/学生
   const [departureStation, setDepartureStation] = useState(initialDepartureStation);
   const [arrivalStation, setArrivalStation] = useState(initialArrivalStation);
-  // 如果没有提供初始日期，使用今天作为默认日期
+  // 如果没有提供初始日期，使用今天作为默认日期（使用本地时间）
   const [departureDate, setDepartureDate] = useState(
-    initialDepartureDate || new Date().toISOString().split('T')[0]
+    initialDepartureDate || getTodayString()
   );
-  // 返程日期默认为今天
-  const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
+  // 返程日期默认为今天（使用本地时间）
+  const [returnDate, setReturnDate] = useState(getTodayString());
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,6 +54,19 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
       setArrivalStation(initialArrivalStation);
     }
   }, [initialArrivalStation]);
+
+  // 处理日期改变 - 立即触发搜索（双向同步）
+  const handleDepartureDateChange = (newDate: string) => {
+    setDepartureDate(newDate);
+    // 立即触发搜索，实现与标签的双向同步
+    if (departureStation && arrivalStation) {
+      onSearch({
+        departureStation,
+        arrivalStation,
+        departureDate: newDate,
+      });
+    }
+  };
 
   // 实现查询功能
   const handleSearch = async () => {
@@ -179,13 +193,9 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           <label className="search-field-label-inline">出发日</label>
           <DatePicker
             value={departureDate}
-            onChange={setDepartureDate}
-            minDate={new Date().toISOString().split('T')[0]}
-            maxDate={(() => {
-              const maxDate = new Date();
-              maxDate.setDate(maxDate.getDate() + 13);
-              return maxDate.toISOString().split('T')[0];
-            })()}
+            onChange={handleDepartureDateChange}
+            minDate={getTodayString()}
+            maxDate={getDateAfterDays(13)}
           />
         </div>
         
@@ -195,12 +205,8 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           <DatePicker
             value={returnDate}
             onChange={setReturnDate}
-            minDate={new Date().toISOString().split('T')[0]}
-            maxDate={(() => {
-              const maxDate = new Date();
-              maxDate.setDate(maxDate.getDate() + 13);
-              return maxDate.toISOString().split('T')[0];
-            })()}
+            minDate={getTodayString()}
+            maxDate={getDateAfterDays(13)}
             disabled={true}
           />
         </div>

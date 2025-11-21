@@ -9,6 +9,7 @@ import TrainList from '../components/TrainList';
 import BottomNavigation from '../components/BottomNavigation';
 import { searchTrains } from '../services/trainService';
 import { getStationsByCity } from '../services/stationService';
+import { getTodayString } from '../utils/dateUtils';
 
 /**
  * 车次列表页主容器组件
@@ -20,7 +21,7 @@ const TrainListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<any>({
     departureStation: location.state?.departureStation || '',
     arrivalStation: location.state?.arrivalStation || '',
-    departureDate: location.state?.departureDate || new Date().toISOString().split('T')[0],
+    departureDate: location.state?.departureDate || getTodayString(),
     isHighSpeed: location.state?.isHighSpeed || false
   });
   const [trains, setTrains] = useState<any[]>([]);
