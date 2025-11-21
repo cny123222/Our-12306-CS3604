@@ -313,6 +313,7 @@ const TrainListPage: React.FC = () => {
           seatTypes={filterOptions.seatTypes || []}
           departureDate={searchParams.departureDate}
           onDateChange={handleDateChange}
+          isHighSpeed={searchParams.isHighSpeed}
         />
         {error && <div className="train-list-error-message">{error}</div>}
         {isLoading ? (
