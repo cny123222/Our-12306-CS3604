@@ -103,17 +103,18 @@
 }
 
 .train-list-search-button:hover {
-  background: #4aa7fd;
+  background: #0082fc;
 }
 
 .train-list-search-button:active {
   background: #2a88eb;
 }
 
-.search-icon {
-  width: 20px;
-  height: 20px;
+.train-list-search-icon {
+  width: 30px;
+  height: 30px;
   object-fit: contain;
+  background-color: #3B99FC;
 }
 
 /* 右侧链接区域 */
@@ -164,7 +165,7 @@
 
 .train-list-username {
   font-size: 14px;
-  color: #ff6600;
+  color: #2196f3;
   font-weight: 500;
   margin: 0 4px 0 0;
 }

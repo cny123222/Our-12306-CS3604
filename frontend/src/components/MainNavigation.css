@@ -40,16 +40,14 @@
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.nav-item:active {
-  background: rgba(255, 255, 255, 0.2);
+  background: #2676E3;
+  color: #ffffff;
 }
 
 .nav-item.active {
   background: #2676E3;
   font-weight: normal;
+  color: #ffffff;
 }
 
 /* 导航箭头 */

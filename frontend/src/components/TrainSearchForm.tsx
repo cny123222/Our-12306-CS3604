@@ -131,7 +131,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
         {/* 站点选择区域 - 带灰色折线和转换按钮 */}
         <div className="stations-container">
           {/* 出发地 */}
-          <div className="form-row-horizontal">
+          <div className="train-search-row-horizontal">
             <label className="field-label-left">出发地</label>
             <div className="input-with-icon">
               <StationInput
@@ -158,7 +158,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
           </div>
 
           {/* 到达地 */}
-          <div className="form-row-horizontal">
+          <div className="train-search-row-horizontal">
             <label className="field-label-left">到达地</label>
             <div className="input-with-icon">
               <StationInput
@@ -176,7 +176,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
         </div>
 
         {/* 出发日期 */}
-        <div className="form-row-horizontal date-row">
+        <div className="train-search-row-horizontal date-row">
           <label className="field-label-left">出发日期</label>
           <div className="input-with-icon">
             <DatePicker
@@ -196,7 +196,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
         </div>
 
         {/* 两个勾选框居中 */}
-        <div className="form-row checkbox-row">
+        <div className="train-search-row checkbox-row">
           <label className="checkbox-label">
             <span>学生</span>
             <input
@@ -215,13 +215,15 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
           </label>
         </div>
 
+        {/* 错误消息 */}
+        {errors.general && <div className="train-search-error-message">{errors.general}</div>}
+
         {/* 查询按钮 */}
-        <div className="form-row">
+        <div className="train-search-row">
           <button className="search-button" onClick={handleSearch}>
             查    询
           </button>
         </div>
-        {errors.general && <div className="error-message">{errors.general}</div>}
       </div>
     </div>
   );
