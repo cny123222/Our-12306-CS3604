@@ -27,14 +27,14 @@ const OrderSubmitSection: React.FC<OrderSubmitSectionProps> = ({
       
       <div className="submit-buttons">
         <button
-          className="back-button"
+          className="order-back-button"
           onClick={onBack}
           disabled={isSubmitting}
         >
           上一步
         </button>
         <button
-          className="submit-button"
+          className="order-submit-button"
           onClick={onSubmit}
           disabled={isSubmitting}
         >

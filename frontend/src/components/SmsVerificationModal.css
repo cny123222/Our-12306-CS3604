@@ -79,7 +79,7 @@
 }
 
 /* ==================== 错误提示信息 ==================== */
-.sms-modal .error-message {
+.sms-modal .sms-verification-error-message {
   /* 【修改】颜色改亮一些的红色 */
   color: #ff4d4f !important; 
   font-size: 15px !important;

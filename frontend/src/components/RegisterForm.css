@@ -267,22 +267,23 @@
 }
 
 .register-form .submit-button {
-  width: 200px;
+  width: 170px;
   height: 38px;
-  background: linear-gradient(to bottom, #ff9933 0%, #ff7700 100%);
-  border: 1px solid #e66600;
-  border-radius: 0px;
+  background: #ff8001;
+  border-radius: 5px;
   color: white;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 0px;
 }
 
 .register-form .submit-button:hover {
-  background: linear-gradient(to bottom, #ffaa55 0%, #ff8822 100%);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  background: #ffaa55;
+  border: none;
 }
 
 .register-form .submit-button:active {
@@ -298,7 +299,7 @@
 }
 
 /* 通用错误消息 */
-.register-form .general-error-message {
+.register-form-container .general-error-message {
   color: #ff4d4f;
   font-size: 14px;
   text-align: center;
@@ -317,47 +318,47 @@
 
 /* 响应式适配 */
 @media (max-width: 768px) {
-  .form-row {
+  .register-form .form-row {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .form-label-wrapper {
+  .register-form .form-label-wrapper {
     width: 100%;
     text-align: left;
     padding-top: 0;
     margin-bottom: 8px;
   }
 
-  .form-input-container {
+  .register-form .form-input-container {
     margin-left: 0;
     max-width: 100%;
   }
 
-  .agreement-section,
-  .submit-section {
+  .register-form .agreement-section,
+  .register-form .submit-section {
     padding-left: 0;
   }
 
-  .submit-button {
+  .register-form .submit-button {
     width: 100%;
   }
 
-  .phone-input-wrapper {
+  .register-form .phone-input-wrapper {
     flex-direction: column;
   }
 
-  .phone-country-select {
+  .register-form .phone-country-select {
     width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .form-input {
+  .register-form .form-input {
     font-size: 16px; /* 防止iOS自动缩放 */
   }
 
-  .strength-bar {
+  .register-form .strength-bar {
     width: 40px;
   }
 }

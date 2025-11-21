@@ -90,7 +90,7 @@ const ValidationInput: React.FC<ValidationInputProps> = ({
         )}
       </div>
       {errorMessage && (
-        <div className="error-message">{errorMessage}</div>
+        <div className="validation-input-error-message">{errorMessage}</div>
       )}
     </div>
   );

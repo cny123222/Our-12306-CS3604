@@ -569,7 +569,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
               <input
                 className={`form-input ${emailValidation.errorMessage ? 'error' : ''}`}
                 type="email"
-                placeholder="请正确填写您的邮箱地址"
+                placeholder="请正确填写邮箱地址"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onBlur={() => validateEmail(email)}

@@ -286,7 +286,7 @@ const TrainListPage: React.FC = () => {
           seatTypes={filterOptions.seatTypes || []}
           departureDate={searchParams.departureDate}
         />
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="train-list-error-message">{error}</div>}
         {isLoading ? (
           <div className="loading">加载中...</div>
                ) : (

@@ -87,7 +87,7 @@ const PhoneVerificationPanel: React.FC<PhoneVerificationPanelProps> = ({
                 maxLength={11}
               />
             </div>
-            {errors.newPhone && <div className="error-message">{errors.newPhone}</div>}
+            {errors.newPhone && <div className="phone-panel-error-message">{errors.newPhone}</div>}
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@ const PhoneVerificationPanel: React.FC<PhoneVerificationPanelProps> = ({
               onChange={handlePasswordChange}
               placeholder="正确输入密码才能修改密码"
             />
-            {errors.password && <div className="error-message">{errors.password}</div>}
+            {errors.password && <div className="phone-panel-error-message">{errors.password}</div>}
           </div>
         </div>
       </div>

@@ -187,7 +187,7 @@ const SmsVerificationModal: React.FC<SmsVerificationModalProps> = ({
           </div>
           
           {(validationError || externalError) && (
-            <div className="error-message">{externalError || validationError}</div>
+            <div className="sms-verification-error-message">{externalError || validationError}</div>
           )}
           
           {externalSuccess && (
