@@ -159,6 +159,18 @@ async function searchTrains(departureCityOrStation, arrivalCityOrStation, depart
                 return resolveStation(null);
               }
               
+              // 如果是今天的车次，检查是否已过发车时间
+              const today = new Date().toISOString().split('T')[0];
+              if (departureDate === today) {
+                const now = new Date();
+                const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                
+                if (depStop.depart_time < currentTime) {
+                  console.log(`跳过车次 ${train.train_no}: 发车时间${depStop.depart_time}已过当前时间${currentTime}`);
+                  return resolveStation(null);
+                }
+              }
+              
               try {
                 // 计算余票
                 const availableSeats = await calculateAvailableSeats(

@@ -3,6 +3,7 @@ import './TrainSearchForm.css';
 import CityInput from './CityInput';
 import DatePicker from './DatePicker';
 import { validateCity } from '../services/stationService';
+import { getTodayString, getDateAfterDays } from '../utils/dateUtils';
 
 interface TrainSearchFormProps {
   onNavigateToTrainList: (params: any) => void;
@@ -14,8 +15,8 @@ interface TrainSearchFormProps {
 const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList }) => {
   const [departureStation, setDepartureStation] = useState('');
   const [arrivalStation, setArrivalStation] = useState('');
-  // 默认日期设置为今天
-  const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
+  // 默认日期设置为今天（使用本地时间）
+  const [departureDate, setDepartureDate] = useState(getTodayString());
   const [isStudent, setIsStudent] = useState(false); // 【新增】学生票状态
   const [isHighSpeed, setIsHighSpeed] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -182,12 +183,8 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
             <DatePicker
               value={departureDate}
               onChange={setDepartureDate}
-              minDate={new Date().toISOString().split('T')[0]}
-              maxDate={(() => {
-                const maxDate = new Date();
-                maxDate.setDate(maxDate.getDate() + 13);
-                return maxDate.toISOString().split('T')[0];
-              })()}
+              minDate={getTodayString()}
+              maxDate={getDateAfterDays(13)}
             />
             <svg className="calendar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="#cccccc"/>

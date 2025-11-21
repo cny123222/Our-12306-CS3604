@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TrainFilterPanel.css';
+import { getLocalDateString } from '../utils/dateUtils';
 
 interface TrainFilterPanelProps {
   onFilterChange: (filters: any) => void;
@@ -31,15 +32,15 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
   // 生成日期标签（固定从今天开始的15天）
   const generateDateTabs = () => {
     const tabs = [];
-    // 始终从今天开始生成日期标签
+    // 始终从今天开始生成日期标签（使用本地时间）
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    // 生成从昨天到后14天，共16个日期标签
-    for (let i = -1; i <= 14; i++) {
+    // 生成从今天开始的15天日期标签
+    for (let i = 0; i <= 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = getLocalDateString(date); // 使用本地时间生成日期字符串
       const month = date.getMonth() + 1;
       const day = date.getDate();
       const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
