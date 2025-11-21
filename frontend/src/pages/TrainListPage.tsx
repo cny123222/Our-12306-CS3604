@@ -252,6 +252,16 @@ const TrainListPage: React.FC = () => {
       });
     }
     
+    // 5. 按发车时间筛选
+    if (filters.departureTimeRange && filters.departureTimeRange !== '00:00--24:00') {
+      const [startTime, endTime] = filters.departureTimeRange.split('--');
+      filtered = filtered.filter(train => {
+        if (!train.departureTime) return false;
+        const trainTime = train.departureTime;
+        return trainTime >= startTime && trainTime < endTime;
+      });
+    }
+    
     console.log('Filtered trains:', filtered.length);
     setFilteredTrains(filtered);
   };

@@ -190,6 +190,7 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
       departureStations: updates.departureStations !== undefined ? updates.departureStations : selectedDepartureStations,
       arrivalStations: updates.arrivalStations !== undefined ? updates.arrivalStations : selectedArrivalStations,
       seatTypes: updates.seatTypes !== undefined ? updates.seatTypes : selectedSeatTypes,
+      departureTimeRange: updates.departureTimeRange !== undefined ? updates.departureTimeRange : departureTimeRange,
     });
   };
 
@@ -252,7 +253,11 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
             <span className="time-label">发车时间：</span>
             <select
               value={departureTimeRange}
-              onChange={(e) => setDepartureTimeRange(e.target.value)}
+              onChange={(e) => {
+                const newRange = e.target.value;
+                setDepartureTimeRange(newRange);
+                triggerFilterChange({ departureTimeRange: newRange });
+              }}
               className="time-dropdown"
             >
               <option value="00:00--24:00">00:00--24:00</option>
