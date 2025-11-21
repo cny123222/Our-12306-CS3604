@@ -75,11 +75,11 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
 
   return (
     <div className="train-list">
-      {/* 查询结果提示信息 */}
-      {sortedTrains.length > 0 && (
+      {/* 查询结果提示信息 - 始终显示 */}
+      {(departureCity && arrivalCity) && (
         <div className="train-list-info">
           <div className="train-list-summary">
-            <span className="summary-route">{departureCity || '--'} → {arrivalCity || '--'} </span>
+            <span className="summary-route">{departureCity} → {arrivalCity} </span>
             <span className="summary-date">({formatDate(departureDate)})</span>
             <span className="summary-count"> 共{sortedTrains.length}个车次</span>
             <span className="summary-transfer">您可使用<span className="transfer-highlight">中转换乘</span>功能，查询途中换乘一次的部分列车余票情况。</span>
