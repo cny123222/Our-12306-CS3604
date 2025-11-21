@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
-import TopNavigation from '../components/TopNavigation'
+import TrainListTopBar from '../components/TrainListTopBar'
 import MainNavigation from '../components/MainNavigation'
 import BottomNavigation from '../components/BottomNavigation'
 import RegisterForm from '../components/RegisterForm'
@@ -27,6 +27,13 @@ const RegisterPage: React.FC = () => {
   const [registrationData, setRegistrationData] = useState<RegistrationData | null>(null)
   const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false)
   const [verificationError, setVerificationError] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  
+  // 检查登录状态
+  useEffect(() => {
+    const token = localStorage.getItem('authToken')
+    setIsLoggedIn(!!token)
+  }, [])
 
   const handleSubmit = async (data: RegistrationData) => {
     console.log('Registration submitted:', data)
@@ -151,15 +158,25 @@ const RegisterPage: React.FC = () => {
   const handleNavigateToRegister = () => {
     navigate('/register')
   }
+  
+  const handleMy12306Click = () => {
+    if (isLoggedIn) {
+      navigate('/personal-info')
+    } else {
+      navigate('/login')
+    }
+  }
+  
+  const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : ''
 
   return (
     <div className="register-page">
-      <TopNavigation onLogoClick={handleNavigateToHome} />
+      <TrainListTopBar isLoggedIn={isLoggedIn} username={username} onMy12306Click={handleMy12306Click} />
       <MainNavigation
-        isLoggedIn={false}
+        isLoggedIn={isLoggedIn}
         onLoginClick={handleNavigateToLogin}
         onRegisterClick={handleNavigateToRegister}
-        onPersonalCenterClick={handleNavigateToLogin}
+        onPersonalCenterClick={isLoggedIn ? () => navigate('/personal-info') : handleNavigateToLogin}
       />
       <main className="register-main">
         {/* 面包屑导航 */}

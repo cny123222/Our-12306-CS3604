@@ -102,18 +102,17 @@
 }
 
 .home-search-button:hover {
-  background: #0082fc;
+  background: #4aa7fd;
 }
 
 .home-search-button:active {
   background: #2a88eb;
 }
 
-.home-search-icon {
-  width: 30px;
-  height: 30px;
+.search-icon {
+  width: 20px;
+  height: 20px;
   object-fit: contain;
-  background-color: #3B99FC;
 }
 
 /* 右侧链接区域 */
@@ -173,47 +172,6 @@
 .home-top-auth-link:hover {
   color: #666666;
   text-decoration: underline;
-}
-
-.home-welcome-text {
-  font-size: 14px;
-  color: #666666;
-  margin-left: 8px;
-  margin-right: 0;
-}
-
-.home-username {
-  font-size: 14px;
-  color: #2196f3;
-  font-weight: 500;
-  margin: 0 4px 0 0;
-}
-
-.home-divider {
-  font-size: 14px;
-  color: #333333;
-  margin: 0 4px;
-}
-
-.home-logout-button {
-  background: none;
-  border: none;
-  color: #3B99FC;
-  text-decoration: none;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.home-logout-button:hover {
-  color: #2a88eb;
-  text-decoration: underline;
-}
-
-.home-logout-button:active {
-  color: #1976d2;
 }
 
 .home-top-divider {

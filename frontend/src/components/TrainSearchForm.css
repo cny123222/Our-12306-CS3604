@@ -100,7 +100,7 @@
 .search-form-container {
   flex: 1;
   background: #ffffff;
-  padding: 0 24px 24px 24px;
+  padding: 0 24px 14px 24px;
   display: flex;
   flex-direction: column;
 }
@@ -140,9 +140,10 @@
 }
 
 .form-tab-button:hover {
-  color: #3B99FC;
-  background: #f9f9f9;
-  border-radius: 0;
+  color: #999999;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
 }
 
 .form-tab-button.active {
@@ -195,7 +196,7 @@
 }
 
 /* 水平布局的表单行 - 标签在左，输入框在右 */
-.form-row-horizontal {
+.train-search-row-horizontal {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -216,7 +217,7 @@
 .connector-wrapper {
   position: absolute;
   right: 25px;
-  top: 20px;
+  top: 18px;
   width: 40px;
   height: 90px;
   display: flex;
@@ -248,16 +249,9 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(255, 119, 0, 0.3);
   position: relative;
   z-index: 10;
   transform: translateX(4px) translateY(-3px);
-}
-
-.swap-button-center:hover {
-  background-color: #ff8822;
-  transform: scale(1.08);
-  box-shadow: 0 3px 8px rgba(255, 119, 0, 0.4);
 }
 
 .swap-button-center:active {
@@ -279,23 +273,14 @@
 }
 
 /* 表单行 */
-.form-row {
+.train-search-row {
   margin-bottom: 0;
-  padding: 0 15px;
+  padding: 15px 15px 15px 15px;
   position: relative;
 }
 
-.form-row:first-of-type {
-  margin-top: 20px;
-}
-
-.form-row:last-child {
-  margin-bottom: 0;
-  padding-bottom: 5px;
-}
-
 /* 出发日期行 - 与站点输入框对齐 */
-.form-row-horizontal.date-row {
+.train-search-row-horizontal.date-row {
   padding: 0 30px;
   margin-bottom: 5px;
 }
@@ -318,7 +303,7 @@
 }
 
 /* 站点输入框样式 */
-.form-row .station-input-container {
+.train-search-row .station-input-container {
   width: 100%;
 }
 
@@ -334,7 +319,6 @@
   justify-content: center;
   gap: 40px;
   padding: 5px 5px !important;
-  margin-bottom: 10px !important; 
 }
 
 /* 复选框样式 - 文字在左，勾选框在右 */
@@ -403,7 +387,7 @@
 }
 
 .search-button:hover {
-  background: linear-gradient(to bottom, #ffaa44 0%, #ff8822 100%) !important;
+  background: #fd6900 !important;
   box-shadow: none !important;
   transform: none !important;
   border: none !important;
@@ -422,17 +406,15 @@
 }
 
 /* 错误消息样式 */
-.error-message {
+.train-search-error-message {
   color: #d32f2f;
   font-size: 13px;
-  margin-top: 10px;
-  margin-left: 20px;
-  margin-right: 20px;
-  padding: 8px 10px;
+  margin: 5px 15px;
+  padding: 10px 0px;
   background-color: #ffebee;
   border-radius: 0;
-  border-left: 3px solid #d32f2f;
   animation: slideIn 0.3s ease;
+  text-align: center;
 }
 
 @keyframes slideIn {
@@ -471,15 +453,15 @@
     font-size: 12px;
   }
 
-  .form-row {
+  .train-search-row {
     padding: 0 18px;
   }
 
-  .form-row:last-child {
+  .train-search-row:last-child {
     padding-bottom: 20px;
   }
 
-  .form-row-horizontal {
+  .train-search-row-horizontal {
     gap: 8px;
   }
 
@@ -556,15 +538,15 @@
     height: 14px;
   }
 
-  .form-row {
+  .train-search-row {
     padding: 0 15px;
   }
 
-  .form-row:last-child {
+  .train-search-row:last-child {
     padding-bottom: 18px;
   }
 
-  .form-row-horizontal {
+  .train-search-row-horizontal {
     gap: 6px;
   }
 

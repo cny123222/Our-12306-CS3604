@@ -80,7 +80,7 @@ const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username,
             onKeyPress={handleSearchKeyPress}
           />
           <button className="train-list-search-button" onClick={handleSearch}>
-            <img src="/images/search.svg" alt="搜索" className="search-icon" />
+            <img src="/images/search.svg" alt="搜索" className="train-list-search-icon" />
           </button>
         </div>
 
