@@ -8,6 +8,7 @@ import TrainFilterPanel from '../components/TrainFilterPanel';
 import TrainList from '../components/TrainList';
 import BottomNavigation from '../components/BottomNavigation';
 import { searchTrains } from '../services/trainService';
+import { getStationsByCity } from '../services/stationService';
 
 /**
  * 车次列表页主容器组件
@@ -89,10 +90,10 @@ const TrainListPage: React.FC = () => {
       setFilteredTrains(result.trains);
       setQueryTimestamp(new Date());
 
-      // 从当前车次列表中提取筛选选项（根据需求文档）
-      console.log('Extracting filter options from current train list...');
-      const depStations = [...new Set(result.trains.map((t: any) => t.departureStation))];
-      const arrStations = [...new Set(result.trains.map((t: any) => t.arrivalStation))];
+      // 获取城市的所有车站（而不是仅从当前车次列表中提取）
+      console.log('Fetching all stations for cities...');
+      const depStations = await getStationsByCity(params.departureStation);
+      const arrStations = await getStationsByCity(params.arrivalStation);
       
       // 提取所有席别类型
       const seatTypesSet = new Set<string>();
@@ -254,6 +255,21 @@ const TrainListPage: React.FC = () => {
     setFilteredTrains(filtered);
   };
 
+  // 处理日期变化
+  const handleDateChange = (newDate: string) => {
+    console.log('Date changed to:', newDate);
+    
+    // 更新搜索参数
+    const newSearchParams = {
+      ...searchParams,
+      departureDate: newDate
+    };
+    setSearchParams(newSearchParams);
+    
+    // 重新查询车次
+    fetchTrains(newSearchParams);
+  };
+
   // 获取用户名
   const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
 
@@ -285,6 +301,7 @@ const TrainListPage: React.FC = () => {
           arrivalStations={filterOptions.arrivalStations || []}
           seatTypes={filterOptions.seatTypes || []}
           departureDate={searchParams.departureDate}
+          onDateChange={handleDateChange}
         />
         {error && <div className="train-list-error-message">{error}</div>}
         {isLoading ? (

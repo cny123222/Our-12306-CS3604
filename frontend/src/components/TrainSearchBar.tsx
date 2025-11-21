@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './TrainSearchBar.css';
-import StationInput from './StationInput';
+import CityInput from './CityInput';
 import DatePicker from './DatePicker';
 import { searchTrains } from '../services/trainService';
 
@@ -33,19 +33,40 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  // 同步外部传入的日期变化
+  useEffect(() => {
+    if (initialDepartureDate) {
+      setDepartureDate(initialDepartureDate);
+    }
+  }, [initialDepartureDate]);
+
+  // 同步外部传入的出发地变化
+  useEffect(() => {
+    if (initialDepartureStation) {
+      setDepartureStation(initialDepartureStation);
+    }
+  }, [initialDepartureStation]);
+
+  // 同步外部传入的到达地变化
+  useEffect(() => {
+    if (initialArrivalStation) {
+      setArrivalStation(initialArrivalStation);
+    }
+  }, [initialArrivalStation]);
+
   // 实现查询功能
   const handleSearch = async () => {
     const newErrors: { [key: string]: string } = {};
 
     // 验证输入
     if (!departureStation || departureStation.trim() === '') {
-      newErrors.departureStation = '请输入出发地';
+      newErrors.departureStation = '请输入出发城市';
       setErrors(newErrors);
       return;
     }
 
     if (!arrivalStation || arrivalStation.trim() === '') {
-      newErrors.arrivalStation = '请输入到达地';
+      newErrors.arrivalStation = '请输入到达城市';
       setErrors(newErrors);
       return;
     }
@@ -116,12 +137,12 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         {/* 竖线分隔 */}
         <div className="vertical-divider-blue"></div>
 
-        {/* 出发地 */}
+        {/* 出发城市 */}
         <div className="search-field-inline">
-          <label className="search-field-label-inline">出发地</label>
-          <StationInput
+          <label className="search-field-label-inline">出发城市</label>
+          <CityInput
             value={departureStation}
-            placeholder="北京北"
+            placeholder="请选择城市"
             type="departure"
             onChange={setDepartureStation}
             onSelect={setDepartureStation}
@@ -135,17 +156,17 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
         <button 
           className="swap-stations-btn" 
           onClick={handleSwapStations}
-          aria-label="交换出发地和到达地"
+          aria-label="交换出发城市和到达城市"
         >
           <img src="/images/转换2.svg" alt="交换" className="swap-icon" />
         </button>
         
-        {/* 到达地 */}
+        {/* 到达城市 */}
         <div className="search-field-inline">
-          <label className="search-field-label-inline">目的地</label>
-          <StationInput
+          <label className="search-field-label-inline">目的城市</label>
+          <CityInput
             value={arrivalStation}
-            placeholder="上海"
+            placeholder="请选择城市"
             type="arrival"
             onChange={setArrivalStation}
             onSelect={setArrivalStation}
