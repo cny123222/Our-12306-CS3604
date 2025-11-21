@@ -9,6 +9,7 @@ interface TrainFilterPanelProps {
   seatTypes: string[];
   departureDate?: string; // 添加出发日期用于生成日期标签
   onDateChange?: (date: string) => void; // 添加日期变化回调
+  isHighSpeed?: boolean; // 是否勾选了高铁/动车选项
 }
 
 /**
@@ -21,6 +22,7 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
   seatTypes: _seatTypes,
   departureDate,
   onDateChange,
+  isHighSpeed,
 }) => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTrainTypes, setSelectedTrainTypes] = useState<string[]>([]);
@@ -28,6 +30,7 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
   const [selectedArrivalStations, setSelectedArrivalStations] = useState<string[]>([]);
   const [selectedSeatTypes, setSelectedSeatTypes] = useState<string[]>([]);
   const [departureTimeRange, setDepartureTimeRange] = useState<string>('00:00--24:00');
+  const [isInitialized, setIsInitialized] = useState(false);
   
   // 生成日期标签（固定从今天开始的15天）
   const generateDateTabs = () => {
@@ -65,6 +68,16 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({
       setSelectedDate(departureDate);
     }
   }, [departureDate]);
+
+  // 初始化高铁/动车筛选 - 只设置UI状态，不触发筛选（因为后端已经过滤了）
+  useEffect(() => {
+    if (!isInitialized && isHighSpeed) {
+      // 自动勾选GC-高铁/城际和D-动车，显示用户从首页的选择
+      const initialTypes = ['G', 'C', 'D'];
+      setSelectedTrainTypes(initialTypes);
+      setIsInitialized(true);
+    }
+  }, [isHighSpeed, isInitialized]);
 
   // 定义所有车次类型
   const trainTypeOptions = [
