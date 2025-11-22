@@ -1,68 +1,81 @@
-.success-banner {
-  display: flex;
-  gap: 15px;
-  padding: 20px;
-  background-color: #e8f5e9;
-  border-radius: 4px;
-  margin: 20px 0;
+/* 购票成功横幅组件样式 - 使用高特异性选择器防止样式冲突 */
+.success-banner.success-banner {
+  display: flex !important;
+  gap: 20px !important;
+  padding: 20px 40px !important;
+  background-color: #eeffcc !important;
+  border-radius: 0 !important;
+  margin: 10px auto 20px auto !important;
+  max-width: 1100px !important;
+  border: 1px solid #3291d0 !important;
 }
 
-.success-icon {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  margin-top: 2px;
+.success-banner .success-icon {
+  flex-shrink: 0 !important;
+  width: 40px !important;
+  height: 40px !important;
+  margin-top: 2px !important;
 }
 
-.success-content {
-  flex: 1;
+.success-banner .success-icon img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: contain !important;
 }
 
-.success-title-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+.success-banner .success-content {
+  flex: 1 !important;
+  font-size: 20px !important;
 }
 
-.success-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #4caf50;
+.success-banner .success-title-row {
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+  flex-wrap: wrap !important;
 }
 
-.success-thanks {
-  font-size: 14px;
-  color: #333;
+.success-banner .success-title-row .success-title {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #27a306 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.success-order-info {
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 15px;
+.success-banner .success-title-row .success-thanks {
+  font-size: 14px !important;
+  color: #000000 !important;
 }
 
-.order-number {
-  font-size: 18px;
-  font-weight: bold;
-  color: #ff6600;
+.success-banner .success-title-row .success-order-info {
+  font-size: 14px !important;
+  color: #000000 !important;
 }
 
-.success-passenger-info {
-  margin-bottom: 15px;
+.success-banner .success-title-row .success-order-info .order-number {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  color: #ff6600 !important;
 }
 
-.passenger-name {
-  font-size: 14px;
-  color: #333;
-  line-height: 1.8;
-  margin-bottom: 8px;
+.success-banner .success-passenger-info {
+  margin-bottom: 10px !important;
 }
 
-.success-notification-info {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-  line-height: 1.6;
+.success-banner .success-passenger-info .passenger-name {
+  font-size: 14px !important;
+  color: #000000 !important;
+  line-height: 1.8 !important;
+  margin-bottom: 5px !important;
+}
+
+.success-banner .success-notification-info {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #000000 !important;
+  line-height: 1.6 !important;
 }
 
