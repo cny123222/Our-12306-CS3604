@@ -8,6 +8,13 @@
   align-items: center;
   min-height: 45px;
   background-color: #eef1fa;
+  position: relative; /* 添加定位上下文 */
+  z-index: 1; /* 默认层级 */
+}
+
+/* 当行内有展开的下拉框时，提升整行的z-index */
+.purchase-info-row:has(.select-dropdown.expanded) {
+  z-index: 10001;
 }
 
 .purchase-info-row:nth-child(even) {
@@ -31,7 +38,7 @@
   align-items: center;
   justify-content: flex-start;
   position: relative;
-  z-index: 1;
+  /* 移除固定z-index，让下拉框展开时动态提升 */
 }
 
 .row-cell:first-child {
