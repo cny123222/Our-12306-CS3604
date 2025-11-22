@@ -507,7 +507,8 @@ async function getOrderDetails(orderId, userId) {
                 trainService.calculateAvailableSeats(
                   order.train_number,
                   order.departure_station,
-                  order.arrival_station
+                  order.arrival_station,
+                  order.departure_date
                 ).then(availableSeats => {
                   resolve({
                     trainInfo: {
