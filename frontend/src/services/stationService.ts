@@ -190,3 +190,27 @@ export const validateCity = async (cityName: string): Promise<CityValidationResu
   }
 };
 
+/**
+ * 根据车站名获取所属城市
+ */
+export const getCityByStation = async (stationName: string): Promise<string | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/trains/stations/${encodeURIComponent(stationName)}/city`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.city || null;
+  } catch (error) {
+    console.error('获取车站所属城市失败:', error);
+    return null;
+  }
+};
+

@@ -10,6 +10,7 @@ import WarmTipsSection from '../components/WarmTipsSection';
 import BottomNavigation from '../components/BottomNavigation';
 import OrderConfirmationModal from '../components/OrderConfirmationModal';
 import ConfirmModal from '../components/ConfirmModal';
+import { getCityByStation } from '../services/stationService';
 
 /**
  * 订单填写页主容器组件
@@ -192,9 +193,19 @@ const OrderPage: React.FC = () => {
     setSelectedPassengers(selectedPassengers.filter(id => id !== deletedInfo.passenger.id));
   };
   
-  // TODO: 实现返回车次列表页
-  const handleBack = () => {
-    navigate('/trains', { state: { departureStation, arrivalStation, departureDate } });
+  // 实现返回车次列表页
+  const handleBack = async () => {
+    // 将车站名转换为城市名
+    const departureCity = await getCityByStation(departureStation) || departureStation;
+    const arrivalCity = await getCityByStation(arrivalStation) || arrivalStation;
+    
+    navigate('/trains', { 
+      state: { 
+        departureStation: departureCity, 
+        arrivalStation: arrivalCity, 
+        departureDate 
+      } 
+    });
   };
   
   // 实现提交订单逻辑
@@ -387,7 +398,7 @@ const OrderPage: React.FC = () => {
             <span>
               您还有未处理的订单，请您到
               <a
-                herf="#"
+                href="#"
                 style={{ margin: '0 6px' }}
                 onClick={(e) =>  {
                   e.preventDefault();
@@ -404,12 +415,16 @@ const OrderPage: React.FC = () => {
             </span>
           }
           confirmText="确认"
-          onConfirm={() => {
+          onConfirm={async () => {
             setShowUnpaidOrderModal(false);
+            // 将车站名转换为城市名
+            const departureCity = await getCityByStation(departureStation) || departureStation;
+            const arrivalCity = await getCityByStation(arrivalStation) || arrivalStation;
+            
             navigate('/trains', { 
               state: {
-                departureStation,
-                arrivalStation,
+                departureStation: departureCity,
+                arrivalStation: arrivalCity,
                 departureDate
               }
             });

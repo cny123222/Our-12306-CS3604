@@ -43,6 +43,29 @@ router.get('/cities/:cityName/stations', async (req, res) => {
 });
 
 /**
+ * 根据车站名获取所属城市
+ * GET /api/trains/stations/:stationName/city
+ */
+router.get('/stations/:stationName/city', async (req, res) => {
+  try {
+    const { stationName } = req.params;
+    const city = await stationService.getCityByStation(stationName);
+    
+    if (!city) {
+      return res.status(404).json({ error: '找不到该车站对应的城市' });
+    }
+    
+    res.status(200).json({
+      station: stationName,
+      city: city
+    });
+  } catch (error) {
+    console.error('获取车站所属城市失败:', error);
+    res.status(500).json({ error: '获取车站所属城市失败' });
+  }
+});
+
+/**
  * 计算指定车次在指定区间的余票数
  * POST /api/trains/available-seats
  */
