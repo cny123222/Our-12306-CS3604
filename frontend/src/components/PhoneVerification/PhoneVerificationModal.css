@@ -1,172 +1,172 @@
-/* 手机验证弹窗样式 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+/* 手机验证弹窗样式 - 增加特异性避免冲突 */
+.phone-verification-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
 }
 
 .phone-verification-modal {
-  background-color: #fff;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff !important;
+  border-radius: 8px !important;
+  width: 90% !important;
+  max-width: 500px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: linear-gradient(to right, #42a5f5, #2196f3);
-  border-radius: 8px 8px 0 0;
+.phone-verification-modal .modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 20px !important;
+  background: linear-gradient(to right, #42a5f5, #2196f3) !important;
+  border-radius: 8px 8px 0 0 !important;
 }
 
-.modal-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
+.phone-verification-modal .modal-title {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  margin: 0 !important;
 }
 
-.close-button {
-  background: none;
-  border: none;
-  font-size: 28px;
-  color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  transition: color 0.2s ease;
+.phone-verification-modal .close-button {
+  background: none !important;
+  border: none !important;
+  font-size: 28px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  width: 30px !important;
+  height: 30px !important;
+  transition: color 0.2s ease !important;
 }
 
-.close-button:hover {
-  color: #fff;
+.phone-verification-modal .close-button:hover {
+  color: #fff !important;
 }
 
-.modal-content {
-  padding: 30px 20px;
+.phone-verification-modal .modal-content {
+  padding: 30px 20px !important;
 }
 
-.verification-hint {
-  font-size: 14px;
-  color: #666;
-  margin: 0 0 20px 0;
+.phone-verification-modal .verification-hint {
+  font-size: 14px !important;
+  color: #666 !important;
+  margin: 0 0 20px 0 !important;
 }
 
-.input-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+.phone-verification-modal .input-group {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 10px !important;
 }
 
-.input-label {
-  min-width: 80px;
-  font-size: 14px;
-  color: #666;
+.phone-verification-modal .input-label {
+  min-width: 80px !important;
+  font-size: 14px !important;
+  color: #666 !important;
 }
 
-.verification-input {
-  flex: 1;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  letter-spacing: 2px;
-  outline: none;
-  transition: border-color 0.2s ease;
+.phone-verification-modal .verification-input {
+  flex: 1 !important;
+  padding: 10px 12px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  letter-spacing: 2px !important;
+  outline: none !important;
+  transition: border-color 0.2s ease !important;
 }
 
-.verification-input:focus {
-  border-color: #2196f3;
+.phone-verification-modal .verification-input:focus {
+  border-color: #2196f3 !important;
 }
 
-.phone-verification-error-message {
-  color: #f44336;
-  font-size: 13px;
-  margin-top: 10px;
-  margin-left: 80px;
+.phone-verification-modal .phone-verification-error-message {
+  color: #f44336 !important;
+  font-size: 13px !important;
+  margin-top: 10px !important;
+  margin-left: 80px !important;
 }
 
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  padding: 20px;
-  border-top: 1px solid #f0f0f0;
+.phone-verification-modal .modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 15px !important;
+  padding: 20px !important;
+  border-top: 1px solid #f0f0f0 !important;
 }
 
-.return-button,
-.complete-button {
-  padding: 10px 30px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.phone-verification-modal .return-button,
+.phone-verification-modal .complete-button {
+  padding: 10px 30px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
 }
 
-.return-button {
-  background-color: #f5f5f5;
-  color: #666;
+.phone-verification-modal .return-button {
+  background-color: #f5f5f5 !important;
+  color: #666 !important;
 }
 
-.return-button:hover {
-  background-color: #e0e0e0;
+.phone-verification-modal .return-button:hover {
+  background-color: #e0e0e0 !important;
 }
 
-.complete-button {
-  background-color: #ff9800;
-  color: #fff;
+.phone-verification-modal .complete-button {
+  background-color: #ff9800 !important;
+  color: #fff !important;
 }
 
-.complete-button:hover:not(:disabled) {
-  background-color: #f57c00;
+.phone-verification-modal .complete-button:hover:not(:disabled) {
+  background-color: #f57c00 !important;
 }
 
-.complete-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.phone-verification-modal .complete-button:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
 }
 
 @media (max-width: 768px) {
   .phone-verification-modal {
-    width: 95%;
+    width: 95% !important;
   }
   
-  .modal-content {
-    padding: 20px 15px;
+  .phone-verification-modal .modal-content {
+    padding: 20px 15px !important;
   }
   
-  .input-group {
-    flex-direction: column;
-    align-items: stretch;
+  .phone-verification-modal .input-group {
+    flex-direction: column !important;
+    align-items: stretch !important;
   }
   
-  .input-label {
-    margin-bottom: 5px;
+  .phone-verification-modal .input-label {
+    margin-bottom: 5px !important;
   }
   
-  .error-message {
-    margin-left: 0;
+  .phone-verification-modal .error-message {
+    margin-left: 0 !important;
   }
   
-  .modal-footer {
-    flex-direction: column;
+  .phone-verification-modal .modal-footer {
+    flex-direction: column !important;
   }
   
-  .return-button,
-  .complete-button {
-    width: 100%;
+  .phone-verification-modal .return-button,
+  .phone-verification-modal .complete-button {
+    width: 100% !important;
   }
 }
 

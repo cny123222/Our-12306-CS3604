@@ -211,6 +211,37 @@ router.post('/phone/confirm-update', testAuth, async (req, res) => {
 });
 
 /**
+ * API-PUT-UserDiscountType: 更新用户优惠类型
+ * PUT /api/user/discount-type
+ */
+router.put('/discount-type', testAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { discountType } = req.body;
+    
+    if (!discountType) {
+      return res.status(400).json({ error: '优惠类型不能为空' });
+    }
+    
+    const success = await userInfoDbService.updateUserDiscountType(userId, discountType);
+    
+    if (success) {
+      res.status(200).json({ message: '优惠类型更新成功' });
+    } else {
+      res.status(500).json({ error: '更新优惠类型失败' });
+    }
+  } catch (error) {
+    console.error('更新优惠类型失败:', error);
+    
+    if (error.message === '无效的优惠类型') {
+      return res.status(400).json({ error: error.message });
+    }
+    
+    res.status(500).json({ error: '更新优惠类型失败' });
+  }
+});
+
+/**
  * API-GET-UserOrders: 获取用户订单列表
  * GET /api/user/orders
  */
