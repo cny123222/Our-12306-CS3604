@@ -57,26 +57,26 @@
 }
 
 /* ==================== 二维码区域 ==================== */
-.qr-codes-section {
+.bottom-navigation .qr-codes-section {
   flex: 0 0 55%;
   display: flex;
   gap: 30px;
   align-items: flex-start;
 }
 
-.qr-codes-wrapper {
+.bottom-navigation .qr-codes-wrapper {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.qr-code-row {
+.bottom-navigation .qr-code-row {
   display: flex;
   gap: 35px;
   justify-content: flex-start;
 }
 
-.qr-code-row:first-child {
+.bottom-navigation .qr-code-row:first-child {
   margin-bottom: 0;
 }
 
@@ -88,13 +88,14 @@
   width: 80px;
 }
 
-.qr-code-item {
+/* 为底部导航的二维码项添加更具体的选择器，避免与其他页面冲突 */
+.bottom-navigation .qr-code-item {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.qr-code-item img {
+.bottom-navigation .qr-code-item img {
   width: 80px;
   height: 80px;
   border: none;
@@ -104,7 +105,7 @@
 }
 
 /* ==================== 最右侧提示语 ==================== */
-.qr-code-footer {
+.bottom-navigation .qr-code-footer {
   flex: 0 0 200px;
   display: flex;
   align-items: center;
@@ -132,7 +133,7 @@
     align-items: center;
   }
 
-  .friendship-links-section, .qr-codes-section {
+  .friendship-links-section, .bottom-navigation .qr-codes-section {
     width: 100%;
     flex-basis: auto !important; /* 在垂直布局时重置宽度占比 */
   }
@@ -141,12 +142,12 @@
     max-width: 500px;
   }
 
-  .qr-codes-section {
+  .bottom-navigation .qr-codes-section {
     flex-direction: column;
     align-items: center;
   }
   
-  .qr-code-footer {
+  .bottom-navigation .qr-code-footer {
       margin-top: 0; /* 在垂直布局时重置下移 */
   }
 }
@@ -168,12 +169,12 @@
     gap: 12px 15px;
   }
 
-  .qr-code-row {
+  .bottom-navigation .qr-code-row {
     gap: 20px;
     justify-content: center;
   }
 
-  .qr-codes-wrapper {
+  .bottom-navigation .qr-codes-wrapper {
     align-items: center;
   }
 }
@@ -198,12 +199,12 @@
     gap: 10px;
   }
 
-  .qr-code-row {
+  .bottom-navigation .qr-code-row {
     flex-wrap: wrap;
     gap: 15px;
   }
   
-  .qr-code-footer {
+  .bottom-navigation .qr-code-footer {
     padding: 15px;
     flex-basis: auto !important; /* 在手机端取消固定宽度 */
   }
