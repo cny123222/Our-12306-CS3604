@@ -82,7 +82,7 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
             />
           </div>
           
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className="phone-verification-error-message">{error}</div>}
         </div>
         
         <div className="modal-footer">

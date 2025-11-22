@@ -37,8 +37,8 @@
   gap: 50px;
 }
 
-.back-button,
-.submit-button {
+.order-back-button,
+.order-submit-button {
   padding: 10px 10px;
   border: none;
   border-radius: 3px;
@@ -50,37 +50,37 @@
   height: 40px;
 }
 
-.back-button {
+.order-back-button {
   background-color: #ffffff;
   color: #333333;
   border: 1px solid #c0c0c0;
 }
 
-.back-button:hover:not(:disabled) {
+.order-back-button:hover:not(:disabled) {
   background-color: #f5f5f5;
   border-color: #999999;
 }
 
-.back-button:active:not(:disabled) {
+.order-back-button:active:not(:disabled) {
   background-color: #e8e8e8;
 }
 
-.submit-button {
+.order-submit-button {
   background: #fd8100;
   color: #ffffff;
 }
 
-.submit-button:hover:not(:disabled) {
+.order-submit-button:hover:not(:disabled) {
   background: #ff921d;
 }
 
-.submit-button:active:not(:disabled) {
+.order-submit-button:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: 0 1px 4px rgba(255, 119, 34, 0.3);
 }
 
-.back-button:disabled,
-.submit-button:disabled {
+.order-back-button:disabled,
+.order-submit-button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }

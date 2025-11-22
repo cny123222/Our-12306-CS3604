@@ -99,7 +99,7 @@ const EditPassengerPanel: React.FC<EditPassengerPanelProps> = ({
               maxLength={11}
             />
           </div>
-          {errors.phone && <div className="error-message">{errors.phone}</div>}
+          {errors.phone && <div className="edit-passenger-error-message">{errors.phone}</div>}
         </div>
       </div>
 

@@ -93,7 +93,7 @@
   100% { transform: rotate(360deg); }
 }
 
-.error-message {
+.validation-input-error-message {
   color: #ff4d4f;
   font-size: 12px;
   margin-top: 4px;

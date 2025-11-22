@@ -4,6 +4,45 @@ const trainService = require('../services/trainService');
 const stationService = require('../services/stationService');
 
 /**
+ * 获取所有支持的城市列表
+ * GET /api/trains/cities
+ */
+router.get('/cities', async (req, res) => {
+  try {
+    const cities = await stationService.getAllCities();
+    res.status(200).json({
+      cities: cities
+    });
+  } catch (error) {
+    console.error('获取城市列表失败:', error);
+    res.status(500).json({ error: '获取城市列表失败' });
+  }
+});
+
+/**
+ * 根据城市获取车站列表
+ * GET /api/trains/cities/:cityName/stations
+ */
+router.get('/cities/:cityName/stations', async (req, res) => {
+  try {
+    const { cityName } = req.params;
+    const stations = await stationService.getStationsByCity(cityName);
+    
+    if (stations.length === 0) {
+      return res.status(404).json({ error: '该城市不存在或没有配置车站' });
+    }
+    
+    res.status(200).json({
+      city: cityName,
+      stations: stations
+    });
+  } catch (error) {
+    console.error('获取城市车站列表失败:', error);
+    res.status(500).json({ error: '获取城市车站列表失败' });
+  }
+});
+
+/**
  * 计算指定车次在指定区间的余票数
  * POST /api/trains/available-seats
  */
@@ -81,6 +120,7 @@ router.get('/available-dates', async (req, res) => {
 
 /**
  * 搜索符合条件的车次列表
+ * 支持按城市或车站搜索
  * POST /api/trains/search
  */
 router.post('/search', async (req, res) => {
@@ -89,11 +129,11 @@ router.post('/search', async (req, res) => {
     
     // 验证出发地和到达地不为空
     if (!departureStation) {
-      return res.status(400).json({ error: '请选择出发地' });
+      return res.status(400).json({ error: '请选择出发城市' });
     }
     
     if (!arrivalStation) {
-      return res.status(400).json({ error: '请选择到达地' });
+      return res.status(400).json({ error: '请选择到达城市' });
     }
     
     // 验证出发日期格式（YYYY-MM-DD）
@@ -111,20 +151,26 @@ router.post('/search', async (req, res) => {
       }
     }
     
-    // 验证出发地在系统支持的站点列表中
-    const depStationResult = await stationService.validateStation(departureStation);
-    if (!depStationResult.valid) {
-      return res.status(400).json({ error: '无法匹配该出发地' });
+    // 验证出发城市是否有效
+    const depCityResult = await stationService.validateCity(departureStation);
+    if (!depCityResult.valid) {
+      return res.status(400).json({ 
+        error: '无法匹配该出发城市',
+        suggestions: depCityResult.suggestions 
+      });
     }
     
-    // 验证到达地在系统支持的站点列表中
-    const arrStationResult = await stationService.validateStation(arrivalStation);
-    if (!arrStationResult.valid) {
-      return res.status(400).json({ error: '无法匹配该到达地' });
+    // 验证到达城市是否有效
+    const arrCityResult = await stationService.validateCity(arrivalStation);
+    if (!arrCityResult.valid) {
+      return res.status(400).json({ 
+        error: '无法匹配该到达城市',
+        suggestions: arrCityResult.suggestions 
+      });
     }
     
     // 记录查询参数
-    console.log('车次搜索请求:', { departureStation, arrivalStation, departureDate, trainTypes });
+    console.log('车次搜索请求（城市级）:', { departureStation, arrivalStation, departureDate, trainTypes });
     
     // 查询符合条件的车次
     const trains = await trainService.searchTrains(
