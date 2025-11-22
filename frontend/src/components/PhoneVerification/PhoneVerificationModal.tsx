@@ -59,7 +59,7 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
   };
 
   const modalContent = (
-    <div className="modal-overlay" onClick={onCancel}>
+    <div className="phone-verification-modal-overlay" onClick={onCancel}>
       <div className="phone-verification-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">手机验证</h3>
