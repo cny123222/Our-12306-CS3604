@@ -43,6 +43,7 @@ const OrderPage: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState('');
+  const [showUnpaidOrderModal, setShowUnpaidOrderModal] = useState(false);
   
   // 检查登录状态
   useEffect(() => {
@@ -103,6 +104,12 @@ const OrderPage: React.FC = () => {
           if (response.status === 401) {
             setError('请先登录');
             navigate('/login');
+            return;
+          }
+          
+          // 如果有未支付订单，显示提示弹窗
+          if (response.status === 403 && errorData.hasUnpaidOrder) {
+            setShowUnpaidOrderModal(true);
             return;
           }
           
@@ -368,6 +375,33 @@ const OrderPage: React.FC = () => {
           cancelText=""
           onConfirm={() => setShowErrorModal(false)}
           onCancel={() => setShowErrorModal(false)}
+        />
+      )}
+      
+      {/* 未支付订单提示弹窗 */}
+      {showUnpaidOrderModal && (
+        <ConfirmModal
+          isVisible={showUnpaidOrderModal}
+          title="提示"
+          message="您还有未处理的订单，请您到[未完成订单]进行处理！"
+          confirmText="确认"
+          cancelText="[未完成订单]"
+          onConfirm={() => {
+            setShowUnpaidOrderModal(false);
+            navigate('/train-list', { 
+              state: {
+                departureStation,
+                arrivalStation,
+                departureDate
+              }
+            });
+          }}
+          onCancel={() => {
+            setShowUnpaidOrderModal(false);
+            navigate('/personal-info', { 
+              state: { defaultTab: 'order', defaultSubTab: 'pending' } 
+            });
+          }}
         />
       )}
     </div>
