@@ -244,7 +244,7 @@ const OrderPage: React.FC = () => {
         const errorData = await response.json();
         
         // 特殊处理：如果是车票售罄，跳转回车次列表页
-        if (errorData.error === '手慢了，该车次席别车票已售罄！') {
+        if (errorData.error === '手慢了，该车次车票已售罄！') {
           setErrorModalMessage(errorData.error);
           setShowErrorModal(true);
           setTimeout(() => {
