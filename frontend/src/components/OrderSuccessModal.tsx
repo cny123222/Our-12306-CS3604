@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './OrderSuccessModal.css';
 
 interface TicketInfo {
@@ -54,7 +55,7 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
     return `${date}（${weekDay}）`;
   };
   
-  return (
+  const modalContent = (
     <div className="order-success-modal">
       <div className="success-modal-overlay"></div>
       <div className="success-modal-content">
@@ -116,6 +117,8 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default OrderSuccessModal;
