@@ -195,6 +195,7 @@ async function getUserOrders(userId, options = {}) {
       FROM orders
       WHERE user_id = ?
         AND created_at >= ?
+        AND status != 'pending'
     `;
     
     const params = [String(userId), thirtyDaysAgoStr];
@@ -296,6 +297,7 @@ async function searchOrders(userId, searchCriteria) {
         created_at
       FROM orders
       WHERE user_id = ?
+        AND status != 'pending'
     `;
     
     const params = [String(userId)];
