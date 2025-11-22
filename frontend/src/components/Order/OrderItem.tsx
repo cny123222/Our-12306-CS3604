@@ -77,50 +77,50 @@ const OrderItem: React.FC<OrderItemProps> = ({
   return (
     <div className="order-item">
       {/* 订单日期 */}
-      <div className="order-date-row" onClick={() => setIsExpanded(!isExpanded)}>
-        <svg className="order-date-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <div className="order-item-date-row" onClick={() => setIsExpanded(!isExpanded)}>
+        <svg className="order-item-date-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="7" stroke="#2876c8" strokeWidth="1.5" fill="#f0f8ff"/>
           <path 
             d={isExpanded ? "M5 10 L8 7 L11 10 Z" : "M5 6 L8 9 L11 6 Z"} 
             fill="#2876c8"
           />
         </svg>
-        <span className="order-date-label">订票日期：</span>
-        <span className="order-date-value">{order.created_at ? order.created_at.split(' ')[0] : order.departure_date}</span>
-        <span className="order-number-label">订单号：</span>
-        <span className="order-number-value">{order.id}</span>
+        <span className="order-item-date-label">订票日期：</span>
+        <span className="order-item-date-value">{order.created_at ? order.created_at.split(' ')[0] : order.departure_date}</span>
+        <span className="order-item-number-label">订单号：</span>
+        <span className="order-item-number-value">{order.id}</span>
       </div>
 
       {/* 订单主体信息 - 表格行 */}
       {isExpanded && (
-      <div className="order-main-content">
+      <div className="order-item-main-content">
         {/* 车次信息列（只显示一次）*/}
-        <div className="order-cell train-cell">
-          <div className="train-route">
-            <span className="train-from">{order.departure_station}</span>
-            <span className="train-arrow">→</span>
-            <span className="train-to">{order.arrival_station}</span>
-            <span className="train-number">{order.train_no}</span>
+        <div className="order-item-cell order-item-train-cell">
+          <div className="order-item-train-route">
+            <span className="order-item-train-from">{order.departure_station}</span>
+            <span className="order-item-train-arrow">→</span>
+            <span className="order-item-train-to">{order.arrival_station}</span>
+            <span className="order-item-train-number">{order.train_no}</span>
           </div>
-          <div className="train-datetime">
+          <div className="order-item-train-datetime">
             {order.departure_date}
-            <span className="train-time">{order.departure_time ? ` ${order.departure_time}开` : ' 开'}</span>
+            <span className="order-item-train-time">{order.departure_time ? ` ${order.departure_time}开` : ' 开'}</span>
           </div>
         </div>
 
         {/* 右侧乘客信息区域（分成多行）*/}
-        <div className="passengers-info-area">
+        <div className="order-item-passengers-info-area">
           {passengers.map((passenger: any, index: number) => (
-            <div key={index} className="passenger-row">
+            <div key={index} className="order-item-passenger-row">
               {/* 旅客信息列 */}
-              <div className="order-cell passenger-cell">
-                <div className="passenger-name">{passenger.passenger_name}</div>
-                <div className="passenger-id-type">{passenger.id_card_type || '居民身份证'}</div>
+              <div className="order-item-cell order-item-passenger-cell">
+                <div className="order-item-passenger-name">{passenger.passenger_name}</div>
+                <div className="order-item-passenger-id-type">{passenger.id_card_type || '居民身份证'}</div>
               </div>
 
               {/* 席位信息列 */}
-              <div className="order-cell seat-cell">
-                <div className="seat-detail">
+              <div className="order-item-cell order-item-seat-cell">
+                <div className="order-item-seat-detail">
                   {passenger.seat_type}
                   <br />
                   {formatSeatInfo(passenger, order.status)}
@@ -128,21 +128,21 @@ const OrderItem: React.FC<OrderItemProps> = ({
               </div>
 
               {/* 票价列 */}
-              <div className="order-cell price-cell">
-                <div className="price-detail">
-                  <div className="ticket-type">{passenger.ticket_type || '成人票'}</div>
-                  <div className="price-amount">
-                    <span className="price-value">{singlePrice.toFixed(1)}元</span>
+              <div className="order-item-cell order-item-price-cell">
+                <div className="order-item-price-detail">
+                  <div className="order-item-ticket-type">{passenger.ticket_type || '成人票'}</div>
+                  <div className="order-item-price-amount">
+                    <span className="order-item-price-value">{singlePrice.toFixed(1)}元</span>
                     {order.discount && (
-                      <span className="price-discount">{order.discount}</span>
+                      <span className="order-item-price-discount">{order.discount}</span>
                     )}
                   </div>
                 </div>
               </div>
 
               {/* 车票状态列 */}
-              <div className="order-cell status-cell">
-                <div className="status-value">{formatStatus(order.status)}</div>
+              <div className="order-item-cell order-item-status-cell">
+                <div className="order-item-status-value">{formatStatus(order.status)}</div>
               </div>
             </div>
           ))}
@@ -152,19 +152,19 @@ const OrderItem: React.FC<OrderItemProps> = ({
 
       {/* 订单操作按钮 */}
       {isExpanded && (order.status === 'pending' || order.status === 'confirmed_unpaid') && (
-        <div className="order-actions">
-          <button className="action-button cancel-button" onClick={onCancelOrder}>
+        <div className="order-item-actions">
+          <button className="order-item-action-button order-item-cancel-button" onClick={onCancelOrder}>
             取消订单
           </button>
-          <button className="action-button pay-button" onClick={onPayOrder}>
+          <button className="order-item-action-button order-item-pay-button" onClick={onPayOrder}>
             去支付
           </button>
         </div>
       )}
 
       {isExpanded && onViewDetails && order.status !== 'pending' && (
-        <div className="order-footer">
-          <button className="view-details-button" onClick={onViewDetails}>
+        <div className="order-item-footer">
+          <button className="order-item-view-details-button" onClick={onViewDetails}>
             查看详情
           </button>
         </div>
@@ -174,4 +174,3 @@ const OrderItem: React.FC<OrderItemProps> = ({
 };
 
 export default OrderItem;
-
