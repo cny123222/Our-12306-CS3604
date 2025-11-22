@@ -168,6 +168,11 @@ const PhoneVerificationPage = () => {
         onPersonalCenterClick={handleNavigateToPersonalCenter}
       />
       
+      <BreadcrumbNavigation 
+        path={['个人中心', '个人信息', '账号安全']}
+        currentPage="手机核验"
+      />
+      
       <div className="main-content">
         <SideMenu 
           currentSection="phone-verification" 
@@ -175,11 +180,6 @@ const PhoneVerificationPage = () => {
         />
         
         <div className="content-area">
-          <BreadcrumbNavigation 
-            path={['个人中心', '个人信息', '账号安全']}
-            currentPage="手机核验"
-          />
-          
           <PhoneVerificationPanel
             oldPhone={oldPhone}
             onSubmit={handleSubmit}
