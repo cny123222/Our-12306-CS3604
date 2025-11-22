@@ -22,27 +22,44 @@ const OrderListPanel: React.FC<OrderListPanelProps> = ({
 
   // 根据选中标签过滤订单
   const filteredOrders = useMemo(() => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    const now = new Date(); // 使用当前实时时间
+    
+    // 辅助函数：构造列车发车时间
+    const getDepartureDateTime = (order: any) => {
+      if (!order.departure_date) return null;
+      
+      // 如果有发车时间，构造完整的日期时间
+      if (order.departure_time) {
+        const [hours, minutes] = order.departure_time.split(':');
+        const departureDateTime = new Date(order.departure_date);
+        departureDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+        return departureDateTime;
+      }
+      
+      // 如果没有发车时间，只使用日期（设为当天23:59:59）
+      const departureDate = new Date(order.departure_date);
+      departureDate.setHours(23, 59, 59, 999);
+      return departureDate;
+    };
     
     if (activeTab === 'pending') {
       // 未完成订单：状态为 pending 或 confirmed_unpaid（未支付）
       return orders.filter(order => order.status === 'pending' || order.status === 'confirmed_unpaid');
     } else if (activeTab === 'unpaid') {
-      // 未出行订单：已支付（paid）或已完成（completed）且出发日期在今天或未来
+      // 未出行订单：已支付（paid）或已完成（completed）且列车尚未发车（当前时间 < 发车时间）
       return orders.filter(order => {
         if (order.status !== 'paid' && order.status !== 'completed') return false;
-        const depDate = new Date(order.departure_date);
-        depDate.setHours(0, 0, 0, 0);
-        return depDate >= now;
+        const departureDateTime = getDepartureDateTime(order);
+        if (!departureDateTime) return false;
+        return now < departureDateTime; // 当前时间早于发车时间
       });
     } else if (activeTab === 'history') {
-      // 历史订单：已完成且出发日期已过
+      // 历史订单：已完成且列车已发车（当前时间 >= 发车时间）
       return orders.filter(order => {
         if (order.status !== 'completed') return false;
-        const depDate = new Date(order.departure_date);
-        depDate.setHours(0, 0, 0, 0);
-        return depDate < now;
+        const departureDateTime = getDepartureDateTime(order);
+        if (!departureDateTime) return false;
+        return now >= departureDateTime; // 当前时间晚于或等于发车时间
       });
     }
     return [];
