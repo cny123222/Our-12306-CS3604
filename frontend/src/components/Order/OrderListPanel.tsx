@@ -24,12 +24,12 @@ const OrderListPanel: React.FC<OrderListPanelProps> = ({
     now.setHours(0, 0, 0, 0);
     
     if (activeTab === 'pending') {
-      // 未完成订单：状态为 pending（未支付）
-      return orders.filter(order => order.status === 'pending');
+      // 未完成订单：状态为 pending 或 confirmed_unpaid（未支付）
+      return orders.filter(order => order.status === 'pending' || order.status === 'confirmed_unpaid');
     } else if (activeTab === 'unpaid') {
-      // 未出行订单：已完成（paid）且出发日期在今天或未来
+      // 未出行订单：已支付（paid）或已完成（completed）且出发日期在今天或未来
       return orders.filter(order => {
-        if (order.status !== 'completed') return false;
+        if (order.status !== 'paid' && order.status !== 'completed') return false;
         const depDate = new Date(order.departure_date);
         depDate.setHours(0, 0, 0, 0);
         return depDate >= now;

@@ -719,10 +719,15 @@ async function confirmOrder(orderId, userId) {
                 });
               }
               
-              // 更新订单状态为已完成
+              // 计算支付过期时间（20分钟后）
+              const expiresAt = new Date();
+              expiresAt.setMinutes(expiresAt.getMinutes() + 20);
+              const expiresAtStr = expiresAt.toISOString().replace('T', ' ').substring(0, 19);
+              
+              // 更新订单状态为已确认未支付，并设置支付过期时间
               db.run(
-                "UPDATE orders SET status = 'completed', updated_at = datetime('now') WHERE id = ?",
-                [orderId],
+                "UPDATE orders SET status = 'confirmed_unpaid', payment_expires_at = ?, updated_at = datetime('now') WHERE id = ?",
+                [expiresAtStr, orderId],
                 (err) => {
                   db.close();
                   
@@ -731,9 +736,10 @@ async function confirmOrder(orderId, userId) {
                   }
                   
                   resolve({
-                    message: '购买成功',
+                    message: '订单已确认，请完成支付',
                     orderId,
-                    status: 'completed',
+                    status: 'confirmed_unpaid',
+                    paymentExpiresAt: expiresAtStr,
                     trainInfo: {
                       trainNo: order.train_number,
                       departureStation: order.departure_station,
@@ -792,13 +798,6 @@ async function lockSeats(orderId, passengers, trainNo, departureDate) {
   return Promise.resolve([]);
 }
 
-/**
- * 释放座位锁定
- */
-async function releaseSeatLocks(orderId) {
-  // TODO: 实现座位锁定释放逻辑
-  return Promise.resolve({ success: true });
-}
 
 /**
  * 确认座位分配
@@ -844,6 +843,421 @@ async function calculateOrderTotalPrice(passengers, trainNo, departureStation, a
   }
 }
 
+/**
+ * 获取支付页面数据
+ */
+async function getPaymentPageData(orderId, userId) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    // 查询订单基本信息
+    db.get(
+      'SELECT * FROM orders WHERE id = ? AND user_id = ?',
+      [orderId, String(userId)],
+      (err, order) => {
+        if (err) {
+          db.close();
+          return reject({ status: 500, message: '数据库查询失败' });
+        }
+        
+        if (!order) {
+          db.close();
+          return reject({ status: 404, message: '订单不存在' });
+        }
+        
+        if (order.status !== 'confirmed_unpaid') {
+          db.close();
+          return reject({ status: 400, message: '订单状态错误，无法支付' });
+        }
+        
+        // 检查订单是否已过期
+        if (order.payment_expires_at) {
+          const expiresAt = new Date(order.payment_expires_at);
+          const now = new Date();
+          if (now > expiresAt) {
+            db.close();
+            return reject({ status: 400, message: '订单已过期' });
+          }
+        }
+        
+        // 查询订单明细
+        db.all(
+          'SELECT * FROM order_details WHERE order_id = ? ORDER BY sequence_number',
+          [orderId],
+          (err, details) => {
+            db.close();
+            
+            if (err) {
+              return reject({ status: 500, message: '查询订单明细失败' });
+            }
+            
+            // 格式化订单明细
+            const passengers = details.map(d => ({
+              sequence: d.sequence_number,
+              name: d.passenger_name,
+              idCardType: d.id_card_type,
+              idCardNumber: d.id_card_number,
+              ticketType: d.ticket_type,
+              seatType: d.seat_type,
+              carNumber: d.car_number,
+              seatNumber: d.seat_number,
+              price: d.price
+            }));
+            
+            resolve({
+              orderId: order.id,
+              trainInfo: {
+                trainNo: order.train_number,
+                departureStation: order.departure_station,
+                arrivalStation: order.arrival_station,
+                departureDate: order.departure_date,
+                departureTime: order.departure_time,
+                arrivalTime: order.arrival_time
+              },
+              passengers,
+              totalPrice: order.total_price,
+              paymentExpiresAt: order.payment_expires_at,
+              createdAt: order.created_at
+            });
+          }
+        );
+      }
+    );
+  });
+}
+
+/**
+ * 确认支付
+ */
+async function confirmPayment(orderId, userId) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    // 查询订单基本信息
+    db.get(
+      'SELECT * FROM orders WHERE id = ? AND user_id = ?',
+      [orderId, String(userId)],
+      (err, order) => {
+        if (err) {
+          db.close();
+          return reject({ status: 500, message: '数据库查询失败' });
+        }
+        
+        if (!order) {
+          db.close();
+          return reject({ status: 404, message: '订单不存在' });
+        }
+        
+        if (order.status !== 'confirmed_unpaid') {
+          db.close();
+          return reject({ status: 400, message: '订单状态错误，无法支付' });
+        }
+        
+        // 检查订单是否已过期
+        if (order.payment_expires_at) {
+          const expiresAt = new Date(order.payment_expires_at);
+          const now = new Date();
+          if (now > expiresAt) {
+            db.close();
+            return reject({ status: 400, message: '订单已过期，请重新购票' });
+          }
+        }
+        
+        // 更新订单状态为已支付
+        db.run(
+          "UPDATE orders SET status = 'paid', updated_at = datetime('now') WHERE id = ?",
+          [orderId],
+          (err) => {
+            if (err) {
+              db.close();
+              return reject({ status: 500, message: '更新订单状态失败' });
+            }
+            
+            // 查询订单明细获取座位信息
+            db.all(
+              'SELECT * FROM order_details WHERE order_id = ? ORDER BY sequence_number',
+              [orderId],
+              (err, details) => {
+                db.close();
+                
+                if (err) {
+                  return reject({ status: 500, message: '查询订单明细失败' });
+                }
+                
+                // 生成订单号（EA + 8位数字）
+                const orderNumber = 'EA' + orderId.substring(0, 8).toUpperCase().replace(/-/g, '');
+                
+                resolve({
+                  message: '支付成功',
+                  orderId: order.id,
+                  orderNumber,
+                  status: 'paid',
+                  trainInfo: {
+                    trainNo: order.train_number,
+                    departureStation: order.departure_station,
+                    arrivalStation: order.arrival_station,
+                    departureDate: order.departure_date,
+                    departureTime: order.departure_time,
+                    arrivalTime: order.arrival_time
+                  },
+                  passengers: details.map(d => ({
+                    name: d.passenger_name,
+                    seatType: d.seat_type,
+                    carNumber: d.car_number,
+                    seatNumber: d.seat_number,
+                    ticketType: d.ticket_type,
+                    price: d.price
+                  })),
+                  totalPrice: order.total_price
+                });
+              }
+            );
+          }
+        );
+      }
+    );
+  });
+}
+
+/**
+ * 取消订单并记录取消次数
+ */
+async function cancelOrderWithTracking(orderId, userId) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    // 查询订单基本信息
+    db.get(
+      'SELECT * FROM orders WHERE id = ? AND user_id = ?',
+      [orderId, String(userId)],
+      async (err, order) => {
+        if (err) {
+          db.close();
+          return reject({ status: 500, message: '数据库查询失败' });
+        }
+        
+        if (!order) {
+          db.close();
+          return reject({ status: 404, message: '订单不存在' });
+        }
+        
+        if (order.status !== 'confirmed_unpaid') {
+          db.close();
+          return reject({ status: 400, message: '只能取消待支付订单' });
+        }
+        
+        try {
+          // 释放座位锁定
+          await releaseSeatLocks(orderId);
+          
+          // 记录取消次数
+          const today = new Date().toISOString().split('T')[0];
+          db.run(
+            `INSERT INTO order_cancellations (user_id, cancellation_date, count)
+             VALUES (?, ?, 1)
+             ON CONFLICT(user_id, cancellation_date) 
+             DO UPDATE SET count = count + 1`,
+            [String(userId), today],
+            (err) => {
+              if (err) {
+                console.error('记录取消次数失败:', err);
+                // 不阻止取消流程，继续执行
+              }
+            }
+          );
+          
+          // 删除订单明细
+          db.run(
+            'DELETE FROM order_details WHERE order_id = ?',
+            [orderId],
+            (err) => {
+              if (err) {
+                db.close();
+                return reject({ status: 500, message: '删除订单明细失败' });
+              }
+              
+              // 删除订单
+              db.run(
+                'DELETE FROM orders WHERE id = ?',
+                [orderId],
+                (err) => {
+                  db.close();
+                  
+                  if (err) {
+                    return reject({ status: 500, message: '删除订单失败' });
+                  }
+                  
+                  resolve({ success: true, message: '订单已取消' });
+                }
+              );
+            }
+          );
+        } catch (error) {
+          db.close();
+          return reject({ status: 500, message: error.message || '取消订单失败' });
+        }
+      }
+    );
+  });
+}
+
+/**
+ * 检查用户是否有未支付的订单
+ */
+async function hasUnpaidOrder(userId) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    
+    db.get(
+      `SELECT id FROM orders 
+       WHERE user_id = ? 
+       AND status = 'confirmed_unpaid' 
+       AND (payment_expires_at IS NULL OR payment_expires_at > ?)`,
+      [String(userId), now],
+      (err, order) => {
+        db.close();
+        
+        if (err) {
+          return reject({ status: 500, message: '查询失败' });
+        }
+        
+        resolve(!!order);
+      }
+    );
+  });
+}
+
+/**
+ * 获取订单剩余支付时间（秒）
+ */
+async function getOrderTimeRemaining(orderId) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    db.get(
+      'SELECT payment_expires_at FROM orders WHERE id = ?',
+      [orderId],
+      (err, order) => {
+        db.close();
+        
+        if (err) {
+          return reject({ status: 500, message: '查询失败' });
+        }
+        
+        if (!order || !order.payment_expires_at) {
+          return resolve(0);
+        }
+        
+        const expiresAt = new Date(order.payment_expires_at);
+        const now = new Date();
+        const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
+        
+        resolve(remaining);
+      }
+    );
+  });
+}
+
+/**
+ * 释放座位锁定
+ */
+async function releaseSeatLocks(orderId) {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    // 查询订单信息
+    db.get(
+      'SELECT * FROM orders WHERE id = ?',
+      [orderId],
+      (err, order) => {
+        if (err) {
+          db.close();
+          return reject({ status: 500, message: '查询订单失败' });
+        }
+        
+        if (!order) {
+          db.close();
+          return resolve({ success: true });
+        }
+        
+        // 查询订单明细获取座位信息
+        db.all(
+          'SELECT * FROM order_details WHERE order_id = ?',
+          [orderId],
+          async (err, details) => {
+            if (err) {
+              db.close();
+              return reject({ status: 500, message: '查询订单明细失败' });
+            }
+            
+            try {
+              // 获取出发站和到达站之间的所有区间
+              const stops = await new Promise((resolve, reject) => {
+                db.all(
+                  `SELECT station FROM train_stops 
+                   WHERE train_no = ? 
+                   AND seq >= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
+                   AND seq <= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
+                   ORDER BY seq`,
+                  [order.train_number, order.train_number, order.departure_station, 
+                   order.train_number, order.arrival_station],
+                  (err, stops) => {
+                    if (err) return reject(err);
+                    resolve(stops);
+                  }
+                );
+              });
+              
+              // 构建所有区间
+              const segments = [];
+              for (let i = 0; i < stops.length - 1; i++) {
+                segments.push({
+                  from: stops[i].station,
+                  to: stops[i + 1].station
+                });
+              }
+              
+              // 释放每个乘客的座位
+              for (const detail of details) {
+                if (!detail.seat_number) continue;
+                
+                for (const segment of segments) {
+                  await new Promise((resolve, reject) => {
+                    db.run(
+                      `UPDATE seat_status 
+                       SET status = 'available', booked_by = NULL, booked_at = NULL
+                       WHERE train_no = ? 
+                       AND departure_date = ?
+                       AND seat_type = ? 
+                       AND seat_no = ? 
+                       AND from_station = ? 
+                       AND to_station = ?`,
+                      [order.train_number, order.departure_date, detail.seat_type, 
+                       detail.seat_number, segment.from, segment.to],
+                      (err) => {
+                        if (err) return reject(err);
+                        resolve(true);
+                      }
+                    );
+                  });
+                }
+              }
+              
+              db.close();
+              resolve({ success: true });
+            } catch (error) {
+              db.close();
+              return reject({ status: 500, message: error.message || '释放座位失败' });
+            }
+          }
+        );
+      }
+    );
+  });
+}
+
 module.exports = {
   getOrderPageData,
   getDefaultSeatType,
@@ -855,5 +1269,10 @@ module.exports = {
   lockSeats,
   releaseSeatLocks,
   confirmSeatAllocation,
-  calculateOrderTotalPrice
+  calculateOrderTotalPrice,
+  getPaymentPageData,
+  confirmPayment,
+  cancelOrderWithTracking,
+  hasUnpaidOrder,
+  getOrderTimeRemaining
 };

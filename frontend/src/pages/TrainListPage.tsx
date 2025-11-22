@@ -7,6 +7,7 @@ import TrainSearchBar from '../components/TrainSearchBar';
 import TrainFilterPanel from '../components/TrainFilterPanel';
 import TrainList from '../components/TrainList';
 import BottomNavigation from '../components/BottomNavigation';
+import ConfirmModal from '../components/ConfirmModal';
 import { searchTrains } from '../services/trainService';
 
 /**
@@ -33,6 +34,7 @@ const TrainListPage: React.FC = () => {
   const [error, setError] = useState('');
   const [queryTimestamp, setQueryTimestamp] = useState<Date>(new Date());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showUnpaidOrderModal, setShowUnpaidOrderModal] = useState(false);
 
   // 检查登录状态
   useEffect(() => {
@@ -302,6 +304,20 @@ const TrainListPage: React.FC = () => {
                )}
       </div>
       <BottomNavigation />
+      
+      {/* 未支付订单提示弹窗 */}
+      <ConfirmModal
+        isVisible={showUnpaidOrderModal}
+        title="提示"
+        message="您还有未处理的订单，请您到[未完成订单]进行处理！"
+        confirmText="确认"
+        cancelText=""
+        onConfirm={() => {
+          setShowUnpaidOrderModal(false);
+          navigate('/orders');
+        }}
+        onCancel={() => setShowUnpaidOrderModal(false)}
+      />
     </div>
   );
 };

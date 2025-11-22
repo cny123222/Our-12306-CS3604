@@ -1,0 +1,78 @@
+.order-info-display {
+  background-color: white;
+  margin: 20px 0;
+}
+
+.order-info-header {
+  background-color: #003d82;
+  padding: 12px 20px;
+  border-radius: 4px 4px 0 0;
+}
+
+.order-info-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+.train-info-section {
+  padding: 15px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.train-info-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+}
+
+.passenger-table-container {
+  overflow-x: auto;
+}
+
+.passenger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.passenger-table thead {
+  background-color: #f5f5f5;
+}
+
+.passenger-table th {
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.passenger-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #666;
+}
+
+.passenger-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.passenger-table tfoot {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.passenger-table .total-label {
+  text-align: right;
+  color: #333;
+}
+
+.passenger-table .total-price {
+  color: #ff6600;
+  font-size: 16px;
+}
+

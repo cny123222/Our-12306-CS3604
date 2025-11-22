@@ -8,6 +8,8 @@ import PersonalInfoPage from './pages/PersonalInfoPage'
 import PhoneVerificationPage from './pages/PhoneVerificationPage'
 import PassengerManagementPage from './pages/PassengerManagementPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
+import PaymentPage from './pages/PaymentPage'
+import SuccessfulPurchasePage from './pages/SuccessfulPurchasePage'
 import './App.css'
 
 function App() {
@@ -23,6 +25,8 @@ function App() {
         <Route path="/phone-verification" element={<PhoneVerificationPage />} />
         <Route path="/passengers" element={<PassengerManagementPage />} />
         <Route path="/orders" element={<OrderHistoryPage />} />
+        <Route path="/payment/:orderId" element={<PaymentPage />} />
+        <Route path="/purchase-success/:orderId" element={<SuccessfulPurchasePage />} />
       </Routes>
     </div>
   )

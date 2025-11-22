@@ -1,0 +1,50 @@
+.payment-countdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  background-color: white;
+  border: 2px solid #0066cc;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.payment-countdown.warning {
+  border-color: #ff6600;
+  background-color: #fff8f0;
+}
+
+.payment-countdown.expired {
+  border-color: #cc0000;
+  background-color: #ffe6e6;
+}
+
+.countdown-icon {
+  flex-shrink: 0;
+  color: #0066cc;
+}
+
+.payment-countdown.warning .countdown-icon {
+  color: #ff6600;
+}
+
+.payment-countdown.expired .countdown-icon {
+  color: #cc0000;
+}
+
+.countdown-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.payment-countdown.warning .countdown-text {
+  color: #ff6600;
+  font-weight: 500;
+}
+
+.payment-countdown.expired .countdown-text {
+  color: #cc0000;
+  font-weight: 500;
+}
+

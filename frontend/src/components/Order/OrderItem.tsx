@@ -20,6 +20,8 @@ const OrderItem: React.FC<OrderItemProps> = ({
   const formatStatus = (status: string) => {
     const statusMap: { [key: string]: string } = {
       'pending': '待支付',
+      'confirmed_unpaid': '待支付',
+      'paid': '已支付',
       'completed': '已完成',
       'cancelled': '已取消'
     };
@@ -145,7 +147,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
       )}
 
       {/* 订单操作按钮 */}
-      {isExpanded && order.status === 'pending' && (
+      {isExpanded && (order.status === 'pending' || order.status === 'confirmed_unpaid') && (
         <div className="order-actions">
           <button className="action-button cancel-button" onClick={onCancelOrder}>
             取消订单

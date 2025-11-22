@@ -11,6 +11,7 @@ const ticketsRoutes = require('./routes/tickets');
 const ordersRoutes = require('./routes/orders');
 const passengersRoutes = require('./routes/passengers');
 const userInfoRoutes = require('./routes/userInfo');
+const paymentRoutes = require('./routes/payment');
 const { startCleanupScheduler } = require('./services/pendingOrderCleanupService');
 const trainCleanupService = require('./services/trainCleanupService');
 const { generateDay15Trains } = require('../database/generate-daily-trains');
@@ -34,6 +35,7 @@ app.use('/api/tickets', ticketsRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/passengers', passengersRoutes);
 app.use('/api/user', userInfoRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

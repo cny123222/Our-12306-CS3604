@@ -1,0 +1,68 @@
+.success-banner {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.success-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.success-content {
+  flex: 1;
+}
+
+.success-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.success-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.success-thanks {
+  font-size: 14px;
+  color: #333;
+}
+
+.success-order-info {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.order-number {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff6600;
+}
+
+.success-passenger-info {
+  margin-bottom: 15px;
+}
+
+.passenger-name {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.success-notification-info {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.6;
+}
+
