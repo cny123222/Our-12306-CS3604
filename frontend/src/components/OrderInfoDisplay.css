@@ -16,13 +16,13 @@
   color: white;
 }
 
-.train-info-section {
+.order-info-display .train-info-section {
   padding: 15px 20px;
   background-color: #f5f5f5;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.train-info-text {
+.order-info-display .train-info-text {
   font-size: 14px;
   color: #333;
   line-height: 1.6;
