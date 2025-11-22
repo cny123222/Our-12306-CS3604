@@ -368,14 +368,26 @@ const TrainListPage: React.FC = () => {
       <ConfirmModal
         isVisible={showUnpaidOrderModal}
         title="提示"
-        message="您还有未处理的订单，请您到[未完成订单]进行处理！"
+        message={
+          <span>
+            您还有未处理的订单，请您到
+            <span 
+              className="link-text"
+              onClick={() => {
+                setShowUnpaidOrderModal(false);
+                navigate('/orders');
+              }}
+            >
+              [未完成订单]
+            </span>
+            进行处理！
+          </span>
+        }
         confirmText="确认"
-        cancelText=""
         onConfirm={() => {
+          // 点击"确认"：关闭弹窗，保持在车次列表页
           setShowUnpaidOrderModal(false);
-          navigate('/orders');
         }}
-        onCancel={() => setShowUnpaidOrderModal(false)}
       />
     </div>
   );

@@ -9,12 +9,14 @@ interface OrderListPanelProps {
   orders: any[];
   onSearch: (startDate: string, endDate: string, keyword: string) => void;
   onNavigateToTrainList: () => void;
+  onOrderCancelled?: () => void;  // 订单取消后的回调
 }
 
 const OrderListPanel: React.FC<OrderListPanelProps> = ({
   orders,
   onSearch,
-  onNavigateToTrainList
+  onNavigateToTrainList,
+  onOrderCancelled
 }) => {
   const [activeTab, setActiveTab] = useState<'pending' | 'unpaid' | 'history'>('unpaid');
 
@@ -108,6 +110,7 @@ const OrderListPanel: React.FC<OrderListPanelProps> = ({
         orders={filteredOrders}
         onNavigateToTrainList={onNavigateToTrainList}
         showEmptyState={activeTab === 'pending'}  // 只有未完成订单显示空状态
+        onOrderCancelled={onOrderCancelled}  // 传递订单取消回调
       />
 
       {/* 所有标签都显示温馨提示 */}

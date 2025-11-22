@@ -30,9 +30,8 @@ const OrderItem: React.FC<OrderItemProps> = ({
 
   // 格式化座位信息
   const formatSeatInfo = (passenger: any, status: string) => {
-    if (status === 'completed' && passenger.seat_number) {
-      // 已完成订单且有座位号
-      // 座位号格式可能是 "4-01" 或类似格式，需要转换为 "04车01号"
+    // 已确认未支付（confirmed_unpaid）、已支付（paid）或已完成（completed）的订单，如果有座位号则显示完整信息
+    if ((status === 'confirmed_unpaid' || status === 'paid' || status === 'completed') && passenger.seat_number) {
       const seatNo = passenger.seat_number;
       
       // 尝试解析座位号格式
@@ -45,11 +44,16 @@ const OrderItem: React.FC<OrderItemProps> = ({
         }
       }
       
-      // 如果格式不符合预期，直接返回原始值
+      // 如果格式不符合预期，但有 car_number，组合显示
+      if (passenger.car_number) {
+        return `${String(passenger.car_number).padStart(2, '0')}车${seatNo}号`;
+      }
+      
+      // 直接返回原始值
       return seatNo;
-    } else if (passenger.car_number) {
-      // 有车厢号但没有座位号
-      return `${passenger.car_number}车`;
+    } else if (passenger.car_number && !passenger.seat_number) {
+      // 有车厢号但没有座位号（pending 状态）
+      return `${String(passenger.car_number).padStart(2, '0')}车`;
     } else {
       // 没有分配座位
       return '待分配';

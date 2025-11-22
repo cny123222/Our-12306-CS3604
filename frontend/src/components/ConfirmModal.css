@@ -42,6 +42,17 @@
   color: #666;
 }
 
+.modal-message .link-text {
+  color: #2196f3;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.modal-message .link-text:hover {
+  text-decoration: underline;
+}
+
 .modal-footer {
   padding: 15px 20px;
   border-top: 1px solid #e0e0e0;

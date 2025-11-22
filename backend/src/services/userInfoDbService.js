@@ -203,8 +203,8 @@ async function getUserOrders(userId, options = {}) {
       let seatInfo = '';
       let seatType = '';
       
-      if (order.status === 'completed') {
-        // 已完成订单：返回完整的座位信息（包括座位号）
+      if (order.status === 'completed' || order.status === 'paid' || order.status === 'confirmed_unpaid') {
+        // 已完成、已支付或已确认未支付订单：返回完整的座位信息（包括座位号）
         seatInfo = passengerDetails.map(p => {
           if (p.seat_number) {
             return `${p.seat_type} ${p.seat_number}`;
@@ -212,7 +212,7 @@ async function getUserOrders(userId, options = {}) {
           return p.seat_type;
         }).join(', ');
       } else if (order.status === 'pending') {
-        // 未完成订单：只返回席位类型，不包含座位号
+        // 待确认订单：只返回席位类型，不包含座位号
         seatType = passengerDetails.map(p => p.seat_type).join(', ');
       }
       
@@ -319,8 +319,8 @@ async function searchOrders(userId, searchCriteria) {
       let seatInfo = '';
       let seatType = '';
       
-      if (order.status === 'completed') {
-        // 已完成订单：返回完整的座位信息（包括座位号）
+      if (order.status === 'completed' || order.status === 'paid' || order.status === 'confirmed_unpaid') {
+        // 已完成、已支付或已确认未支付订单：返回完整的座位信息（包括座位号）
         seatInfo = passengerDetails.map(p => {
           if (p.seat_number) {
             return `${p.seat_type} ${p.seat_number}`;
@@ -328,7 +328,7 @@ async function searchOrders(userId, searchCriteria) {
           return p.seat_type;
         }).join(', ');
       } else if (order.status === 'pending') {
-        // 未完成订单：只返回席位类型，不包含座位号
+        // 待确认订单：只返回席位类型，不包含座位号
         seatType = passengerDetails.map(p => p.seat_type).join(', ');
       }
       

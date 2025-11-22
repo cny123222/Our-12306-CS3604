@@ -162,6 +162,7 @@ const OrderHistoryPage = () => {
             orders={filteredOrders}
             onSearch={handleSearch}
             onNavigateToTrainList={() => navigate('/')}
+            onOrderCancelled={fetchOrders}  // 订单取消后重新获取订单列表
           />
         </div>
       </div>

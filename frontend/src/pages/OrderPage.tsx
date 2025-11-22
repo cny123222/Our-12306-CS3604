@@ -383,23 +383,35 @@ const OrderPage: React.FC = () => {
         <ConfirmModal
           isVisible={showUnpaidOrderModal}
           title="提示"
-          message="您还有未处理的订单，请您到[未完成订单]进行处理！"
+          message={
+            <span>
+              您还有未处理的订单，请您到
+              <a
+                herf="#"
+                style={{ margin: '0 6px' }}
+                onClick={(e) =>  {
+                  e.preventDefault();
+                  setShowUnpaidOrderModal(false);
+                  navigate('/personal-info', { 
+                    state: { defaultTab: 'order', defaultSubTab: 'pending' } 
+                  });
+                }}
+                aria-label="跳转到未完成订单"
+              >
+                未完成订单
+              </a>
+              进行处理！
+            </span>
+          }
           confirmText="确认"
-          cancelText="[未完成订单]"
           onConfirm={() => {
             setShowUnpaidOrderModal(false);
-            navigate('/train-list', { 
+            navigate('/trains', { 
               state: {
                 departureStation,
                 arrivalStation,
                 departureDate
               }
-            });
-          }}
-          onCancel={() => {
-            setShowUnpaidOrderModal(false);
-            navigate('/personal-info', { 
-              state: { defaultTab: 'order', defaultSubTab: 'pending' } 
             });
           }}
         />
