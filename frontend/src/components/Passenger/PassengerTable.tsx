@@ -20,15 +20,15 @@ const PassengerTable: React.FC<PassengerTableProps> = ({
   const maskIdCard = (idCard: string) => {
     if (idCard.length <= 8) return idCard;
     const start = idCard.substring(0, 4);
-    const end = idCard.substring(idCard.length - 4);
-    return `${start}${'*'.repeat(idCard.length - 8)}${end}`;
+    const end = idCard.substring(idCard.length - 3);
+    return `${start}${'*'.repeat(idCard.length - 7)}${end}`;
   };
 
   const maskPhone = (phone: string) => {
     if (!phone || phone.length <= 7) return phone;
     const start = phone.substring(0, 3);
     const end = phone.substring(phone.length - 4);
-    return `${start}****${end}`;
+    return `(+86)${start}****${end}`;
   };
 
   const handleSelectOne = (passengerId: string) => {
@@ -50,6 +50,7 @@ const PassengerTable: React.FC<PassengerTableProps> = ({
                   type="checkbox"
                   checked={selectedIds.includes(passenger.id)}
                   onChange={() => handleSelectOne(passenger.id)}
+                  disabled={passenger.isSelf}
                 />
                 <span className="index-number">{index + 1}</span>
               </td>
@@ -68,20 +69,24 @@ const PassengerTable: React.FC<PassengerTableProps> = ({
                 </span>
               </td>
               <td className="action-cell">
-                <button
-                  className="action-button edit-button"
-                  onClick={() => onEdit(passenger)}
-                  title="修改"
-                >
-                  <img src="/images/修改.svg" alt="修改" className="action-icon" />
-                </button>
-                <button
-                  className="action-button delete-button"
-                  onClick={() => onDelete(passenger.id)}
-                  title="删除"
-                >
-                  <img src="/images/删除.svg" alt="删除" className="action-icon" />
-                </button>
+                {!passenger.isSelf && (
+                  <>
+                    <button
+                      className="action-button edit-button"
+                      onClick={() => onEdit(passenger)}
+                      title="修改"
+                    >
+                      <img src="/images/修改.svg" alt="修改" className="action-icon" />
+                    </button>
+                    <button
+                      className="action-button delete-button"
+                      onClick={() => onDelete(passenger.id)}
+                      title="删除"
+                    >
+                      <img src="/images/删除.svg" alt="删除" className="action-icon" />
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}

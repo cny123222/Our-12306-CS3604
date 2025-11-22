@@ -12,17 +12,17 @@ function uuidv4() {
 
 /**
  * 证件号码脱敏
- * 保留前4位和后2位，中间用星号替换
+ * 保留前4位和后3位，中间用星号替换
  */
 function maskIdNumber(idNumber) {
   if (!idNumber || idNumber.length < 8) return idNumber;
   const length = idNumber.length;
   if (length === 18) {
-    // 18位身份证：保留前4位和后2位
-    return idNumber.substring(0, 4) + '************' + idNumber.substring(length - 2);
+    // 18位身份证：保留前4位和后3位
+    return idNumber.substring(0, 4) + '***********' + idNumber.substring(length - 3);
   }
-  // 其他证件
-  return idNumber.substring(0, 4) + '************' + idNumber.substring(length - 4);
+  // 其他证件：保留前4位和后3位
+  return idNumber.substring(0, 4) + '*'.repeat(length - 7) + idNumber.substring(length - 3);
 }
 
 /**
@@ -30,12 +30,19 @@ function maskIdNumber(idNumber) {
  */
 async function getUserPassengers(userId) {
   try {
+    // 首先获取当前用户的身份证号码
+    const userRows = await db.query(
+      'SELECT id_card_number FROM users WHERE id = ?',
+      [userId]
+    );
+    const userIdCardNumber = userRows[0]?.id_card_number || '';
+    
     const rows = await db.query(
       'SELECT * FROM passengers WHERE user_id = ? ORDER BY created_at DESC',
       [userId]
     );
     
-    // 证件号码脱敏
+    // 证件号码脱敏，并标记是否是自己
     const passengers = rows.map(p => ({
       id: p.id,
       name: p.name,
@@ -43,7 +50,8 @@ async function getUserPassengers(userId) {
       idCardNumber: maskIdNumber(p.id_card_number),
       discountType: p.discount_type,
       phone: p.phone || '',
-      points: p.points || 0
+      points: p.points || 0,
+      isSelf: p.id_card_number === userIdCardNumber  // 标记是否是本人
     }));
     
     return passengers;
@@ -65,6 +73,13 @@ async function searchPassengers(userId, keyword) {
   }
   
   try {
+    // 首先获取当前用户的身份证号码
+    const userRows = await db.query(
+      'SELECT id_card_number FROM users WHERE id = ?',
+      [userId]
+    );
+    const userIdCardNumber = userRows[0]?.id_card_number || '';
+    
     const searchPattern = `%${keyword}%`;
     
     const rows = await db.query(
@@ -72,7 +87,7 @@ async function searchPassengers(userId, keyword) {
       [userId, searchPattern]
     );
     
-    // 证件号码脱敏
+    // 证件号码脱敏，并标记是否是自己
     const passengers = rows.map(p => ({
       id: p.id,
       name: p.name,
@@ -80,7 +95,8 @@ async function searchPassengers(userId, keyword) {
       idCardNumber: maskIdNumber(p.id_card_number),
       discountType: p.discount_type,
       phone: p.phone || '',
-      points: p.points || 0
+      points: p.points || 0,
+      isSelf: p.id_card_number === userIdCardNumber  // 标记是否是本人
     }));
     
     return passengers;
@@ -110,7 +126,8 @@ async function getPassengerDetails(userId, passengerId) {
       throw error;
     }
     
-    if (row.user_id !== userId) {
+    // 类型转换：确保两者都是字符串进行比较
+    if (String(row.user_id) !== String(userId)) {
       const error = new Error('无权访问此乘客信息');
       error.status = 403;
       throw error;
@@ -259,21 +276,29 @@ async function createPassenger(userId, passengerData) {
 
 /**
  * 更新乘客信息
+ * 注意：只允许更新 phone 和 discountType 字段
+ * 姓名、证件类型、证件号码等基本信息不允许修改
  */
 async function updatePassenger(userId, passengerId, updateData) {
-  const { name, idCardType, idCardNumber, discountType, phone } = updateData;
+  console.log('📝 收到更新乘客请求:', { userId, passengerId, updateData });
   
-  // 验证数据格式
-  if (name && !validateNameLength(name)) {
-    const error = new Error('姓名长度不符合要求');
+  const { discountType, phone } = updateData;
+  
+  // 验证优惠类型
+  const validDiscountTypes = ['成人', '儿童', '学生', '残疾军人'];
+  if (discountType && !validDiscountTypes.includes(discountType)) {
+    const error = new Error(`优惠类型无效，必须是以下之一：${validDiscountTypes.join('、')}`);
     error.status = 400;
     throw error;
   }
   
-  if (idCardNumber && !validateIdCardNumber(idCardNumber, idCardType)) {
-    const error = new Error('证件号码格式错误');
-    error.status = 400;
-    throw error;
+  // 验证手机号格式（可选）
+  if (phone && phone.trim() !== '') {
+    if (!/^\d{11}$/.test(phone)) {
+      const error = new Error('手机号码格式错误，必须是11位数字');
+      error.status = 400;
+      throw error;
+    }
   }
   
   try {
@@ -291,19 +316,44 @@ async function updatePassenger(userId, passengerId, updateData) {
       throw error;
     }
     
-    if (passenger.user_id !== userId) {
+    // 类型转换：确保两者都是字符串或数字进行比较
+    const passengerUserId = String(passenger.user_id);
+    const requestUserId = String(userId);
+    
+    console.log('🔐 权限检查:', { 
+      passengerUserId, 
+      requestUserId, 
+      match: passengerUserId === requestUserId 
+    });
+    
+    if (passengerUserId !== requestUserId) {
       const error = new Error('无权修改此乘客信息');
       error.status = 403;
       throw error;
     }
     
-    // 更新乘客信息
-    await db.run(
+    console.log('📊 更新前数据:', { 
+      oldPhone: passenger.phone, 
+      oldDiscountType: passenger.discount_type,
+      newPhone: phone,
+      newDiscountType: discountType
+    });
+    
+    // 只更新允许修改的字段：phone 和 discountType
+    const result = await db.run(
       `UPDATE passengers 
-       SET name = ?, id_card_type = ?, id_card_number = ?, discount_type = ?, phone = ?, updated_at = datetime('now')
+       SET discount_type = ?, phone = ?, updated_at = datetime('now')
        WHERE id = ? AND user_id = ?`,
-      [name, idCardType, idCardNumber, discountType, phone || '', passengerId, userId]
+      [discountType, phone || '', passengerId, userId]
     );
+    
+    console.log('✅ 乘客信息更新成功:', { 
+      passengerId, 
+      userId, 
+      discountType, 
+      phone: phone ? '***' + phone.slice(-4) : '',
+      changes: result.changes 
+    });
     
     return { 
       message: '更新乘客信息成功',
@@ -311,8 +361,8 @@ async function updatePassenger(userId, passengerId, updateData) {
     };
   } catch (err) {
     if (err.status) throw err;
-    console.error('更新乘客失败:', err);
-    const error = new Error('更新乘客失败');
+    console.error('❌ 更新乘客失败:', err);
+    const error = new Error('更新乘客失败: ' + err.message);
     error.status = 500;
     throw error;
   }
