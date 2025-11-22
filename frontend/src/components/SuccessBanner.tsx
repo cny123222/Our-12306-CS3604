@@ -16,18 +16,15 @@ const SuccessBanner: React.FC<SuccessBannerProps> = ({
   return (
     <div className="success-banner">
       <div className="success-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10" fill="#4caf50"/>
-          <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <img src="/images/tick.png" alt="成功" />
       </div>
       <div className="success-content">
         <div className="success-title-row">
           <span className="success-title">交易已成功！</span>
           <span className="success-thanks">感谢您选择铁路出行！</span>
-        </div>
-        <div className="success-order-info">
-          您的订单号：<span className="order-number">{orderNumber}</span>
+          <span className="success-order-info">
+            您的订单号：<span className="order-number">{orderNumber}</span>
+          </span>
         </div>
         <div className="success-passenger-info">
           {passengers.map((p, index) => (
