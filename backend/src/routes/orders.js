@@ -3,12 +3,13 @@ const router = express.Router();
 const orderService = require('../services/orderService');
 const passengerService = require('../services/passengerService');
 const { authenticateUser } = require('../middleware/auth');
+const { checkUnpaidOrder } = require('../middleware/bookingRestriction');
 
 /**
  * 获取订单填写页面信息
  * GET /api/orders/new
  */
-router.get('/new', authenticateUser, async (req, res) => {
+router.get('/new', authenticateUser, checkUnpaidOrder, async (req, res) => {
   try {
     
     const { trainNo, departureStation, arrivalStation, departureDate } = req.query;

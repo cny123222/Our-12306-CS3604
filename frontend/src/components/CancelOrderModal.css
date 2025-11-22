@@ -1,0 +1,110 @@
+.cancel-order-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.cancel-order-modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cancel-order-modal-header {
+  background-color: #0066cc;
+  padding: 15px 20px;
+  border-radius: 8px 8px 0 0;
+}
+
+.cancel-order-modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.cancel-order-modal-body {
+  padding: 20px;
+}
+
+.cancel-order-modal-content-wrapper {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.cancel-order-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.cancel-order-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cancel-order-text-content {
+  flex: 1;
+}
+
+.cancel-order-question {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.cancel-order-warning {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.6;
+}
+
+.cancel-order-modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-order-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  min-width: 80px;
+}
+
+.cancel-order-button.cancel-button {
+  background-color: white;
+  color: #333;
+  border: 1px solid #e0e0e0;
+}
+
+.cancel-order-button.cancel-button:hover {
+  background-color: #f5f5f5;
+}
+
+.cancel-order-button.confirm-button {
+  background-color: #ff6600;
+  color: white;
+}
+
+.cancel-order-button.confirm-button:hover {
+  background-color: #ff8833;
+}
+

@@ -1,5 +1,6 @@
 // 订单结果展示组件
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
 import './OrderResultDisplay.css';
 
@@ -14,6 +15,16 @@ const OrderResultDisplay: React.FC<OrderResultDisplayProps> = ({
   onNavigateToTrainList,
   showEmptyState = true
 }) => {
+  const navigate = useNavigate();
+
+  const handlePayOrder = (orderId: string) => {
+    navigate(`/payment/${orderId}`);
+  };
+
+  const handleCancelOrder = (orderId: string) => {
+    // TODO: Implement cancel order logic
+    console.log('Cancel order:', orderId);
+  };
   // 如果没有订单且需要显示空状态（仅未完成订单）
   if (orders.length === 0 && showEmptyState) {
     return (
@@ -54,7 +65,12 @@ const OrderResultDisplay: React.FC<OrderResultDisplayProps> = ({
         {/* 订单列表 */}
         <div className="order-table-body">
           {orders.map((order) => (
-            <OrderItem key={order.id} order={order} />
+            <OrderItem 
+              key={order.id} 
+              order={order}
+              onPayOrder={() => handlePayOrder(order.id)}
+              onCancelOrder={() => handleCancelOrder(order.id)}
+            />
           ))}
         </div>
       </div>

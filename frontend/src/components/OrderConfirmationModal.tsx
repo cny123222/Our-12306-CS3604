@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import './OrderConfirmationModal.css';
 import TrainInfoDisplay from './TrainInfoDisplay';
@@ -26,6 +27,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   onBack,
   onSuccess,
 }) => {
+  const navigate = useNavigate();
   const [orderInfo, setOrderInfo] = useState<any>(externalOrderInfo || null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -117,14 +119,11 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
       console.log('🟢 关闭处理中弹窗');
       setShowProcessingModal(false);
       
-      // 使用 setTimeout 确保 ProcessingModal 完全关闭后再显示 OrderSuccessModal
+      // 跳转到支付页面
       setTimeout(() => {
-        console.log('🟢 准备显示成功弹窗');
-        setShowSuccessModal(true);
-        console.log('✅ 已调用 setShowSuccessModal(true)');
+        console.log('🟢 跳转到支付页面');
+        navigate(`/payment/${orderId}`);
       }, 100);
-      
-      // 不要立即调用 onConfirm，等用户在成功弹窗点击"确认"时才调用 onSuccess
     } catch (error: any) {
       console.error('❌ handleConfirm 错误:', error);
       setShowProcessingModal(false);
@@ -162,7 +161,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               <h2 className="modal-title">请核对以下信息</h2>
               <button 
                 className="modal-close" 
-                onClick={(e) => {
+                onClick={() => {
                   console.log('❌ 点击关闭按钮');
                   onBack();
                 }}
