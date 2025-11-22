@@ -235,6 +235,12 @@ const PassengerManagementPage = () => {
   const handleEditSubmit = async (passengerData: any) => {
     try {
       const token = localStorage.getItem('authToken');
+      
+      console.log('📝 编辑乘客请求:', {
+        passengerId: editingPassenger.id,
+        data: passengerData
+      });
+      
       const response = await fetch(`/api/passengers/${editingPassenger.id}`, {
         method: 'PUT',
         headers: {
@@ -244,15 +250,22 @@ const PassengerManagementPage = () => {
         body: JSON.stringify(passengerData)
       });
 
+      console.log('📡 响应状态:', response.status);
+
       if (response.ok) {
+        const result = await response.json();
+        console.log('✅ 更新成功:', result);
         await fetchPassengers();
         setCurrentView('list');
         setEditingPassenger(null);
       } else {
-        alert('更新失败');
+        const errorData = await response.json().catch(() => ({ error: '更新失败' }));
+        console.error('❌ 更新失败:', errorData);
+        alert(errorData.error || '更新失败');
       }
     } catch (err) {
-      alert('更新失败');
+      console.error('❌ 请求异常:', err);
+      alert('更新失败: ' + (err instanceof Error ? err.message : '网络错误'));
     }
   };
 
