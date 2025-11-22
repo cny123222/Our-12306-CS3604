@@ -7,7 +7,7 @@
 .success-order-info-display {
   background-color: #ffffff !important;
   border: 1px solid #c0d7eb !important;
-  border-radius: 10px !important;
+  border-radius: 10px 10px 0 0 !important;
   margin: 0 auto !important;
   overflow: hidden !important;
 }
@@ -64,9 +64,9 @@
 }
 
 .success-train-station {
-  font-weight: 800 !important;
-  color: #000000 !important;
-  font-size: 20px !important;
+  font-weight: 1000 !important;
+  color: #ff0000 !important;
+  font-size: 26px !important;
 }
 
 .success-train-bold-group {
@@ -148,9 +148,14 @@
   background-color: #e5e7ef !important;
 }
 
+/* 表格最后一行底部边框 - 与表头顶部边框一致 */
+.success-passenger-table tbody tr:last-child td {
+  border-bottom: 1px solid #999999 !important;
+}
+
 /* 订单状态 */
 .status-paid {
-  color: #4caf50 !important;
+  color: #fb8530 !important;
   font-weight: 600 !important;
 }
 
@@ -159,9 +164,9 @@
   display: flex !important;
   justify-content: center !important;
   gap: 30px !important;
-  margin: 20px 0 !important;
+  margin: 20px 0 10px 0!important;
   padding: 20px 0 !important;
-  border-top: 1px dashed #cecece !important;
+  border-top: 2px solid #c0d7eb !important;
 }
 
 .success-order-button {
@@ -210,15 +215,16 @@
   border: 1px solid #f5e6a8 !important;
   border-radius: 0 !important;
   padding: 10px 15px !important;
-  margin-top: 20px !important;
+  margin-top: 0px !important;
   display: flex !important;
-  gap: 20px !important;
-  align-items: flex-start !important;
+  gap: 40px !important;
+  align-items: center !important;
 }
 
 /* 温馨提示文字内容区域 */
 .success-order-warm-tips-content {
   flex: 1 !important;
+  max-width: 600px !important;
 }
 
 .success-order-tips-title {
@@ -261,7 +267,7 @@
 .success-order-qr-codes-inline {
   display: flex !important;
   flex-direction: row !important;
-  gap: 15px !important;
+  gap: 30px !important;
   flex-shrink: 0 !important;
 }
 
@@ -270,26 +276,27 @@
 }
 
 .success-order-qr-item-inline img {
-  width: 120px !important;
-  height: 120px !important;
+  width: 150px !important;
+  height: 150px !important;
   border: 1px solid #e0e0e0 !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 10px !important;
   display: block !important;
 }
 
 .success-order-qr-text-inline {
-  font-size: 11px !important;
-  color: #666 !important;
+  font-size: 12px !important;
+  color: #222 !important;
   margin: 0 !important;
-  max-width: 120px !important;
+  max-width: 150px !important;
   line-height: 1.4 !important;
+  text-align: left !important;
 }
 
 /* 广告区域 */
 .success-order-advertisement {
-  margin-top: 20px !important;
+  margin-top: 10px !important;
   text-align: center !important;
-  padding-bottom: 20px !important;
+  padding-bottom: 0px !important;
 }
 
 .success-order-advertisement img {
