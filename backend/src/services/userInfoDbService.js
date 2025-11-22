@@ -168,12 +168,12 @@ async function updateUserDiscountType(userId, discountType) {
 /**
  * DB-GetUserOrders: 获取用户的订单列表
  * @param {string} userId - 用户ID
- * @param {Object} options - 查询选项 { startDate, endDate }
+ * @param {Object} options - 查询选项 { startDate, endDate, searchType }
  * @returns {Promise<Array>} 订单列表
  */
 async function getUserOrders(userId, options = {}) {
   try {
-    const { startDate, endDate } = options;
+    const { startDate, endDate, searchType } = options;
     
     // 计算30日前的日期
     const thirtyDaysAgo = new Date();
@@ -205,14 +205,16 @@ async function getUserOrders(userId, options = {}) {
     
     const params = [String(userId), thirtyDaysAgoStr];
     
-    // 添加日期范围筛选
+    // 添加日期范围筛选（根据查询类型选择字段）
+    const dateField = searchType === 'travel-date' ? 'departure_date' : 'DATE(created_at)';
+    
     if (startDate) {
-      sql += ' AND departure_date >= ?';
+      sql += ` AND ${dateField} >= ?`;
       params.push(startDate);
     }
     
     if (endDate) {
-      sql += ' AND departure_date <= ?';
+      sql += ` AND ${dateField} <= ?`;
       params.push(endDate);
     }
     
@@ -281,12 +283,12 @@ async function getUserOrders(userId, options = {}) {
 /**
  * DB-SearchOrders: 搜索用户的订单
  * @param {string} userId - 用户ID
- * @param {Object} searchCriteria - 搜索条件 { keyword, startDate, endDate }
+ * @param {Object} searchCriteria - 搜索条件 { keyword, startDate, endDate, searchType }
  * @returns {Promise<Array>} 匹配的订单列表
  */
 async function searchOrders(userId, searchCriteria) {
   try {
-    const { keyword, startDate, endDate } = searchCriteria;
+    const { keyword, startDate, endDate, searchType } = searchCriteria;
     
     let sql = `
       SELECT 
@@ -327,14 +329,16 @@ async function searchOrders(userId, searchCriteria) {
       params.push(keywordParam, keywordParam, keywordParam);
     }
     
-    // 日期范围筛选
+    // 日期范围筛选（根据查询类型选择字段）
+    const dateField = searchType === 'travel-date' ? 'departure_date' : 'DATE(created_at)';
+    
     if (startDate) {
-      sql += ' AND departure_date >= ?';
+      sql += ` AND ${dateField} >= ?`;
       params.push(startDate);
     }
     
     if (endDate) {
-      sql += ' AND departure_date <= ?';
+      sql += ` AND ${dateField} <= ?`;
       params.push(endDate);
     }
     

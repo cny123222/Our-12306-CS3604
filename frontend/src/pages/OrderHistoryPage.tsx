@@ -65,7 +65,7 @@ const OrderHistoryPage = () => {
     }
   };
 
-  const handleSearch = async (start: string, end: string, kw: string) => {
+  const handleSearch = async (start: string, end: string, kw: string, searchType?: string) => {
     setStartDate(start);
     setEndDate(end);
     setKeyword(kw);
@@ -81,6 +81,7 @@ const OrderHistoryPage = () => {
       if (start) params.append('startDate', start);
       if (end) params.append('endDate', end);
       if (kw) params.append('keyword', kw);
+      if (searchType) params.append('searchType', searchType);
 
       const response = await fetch(`/api/user/orders?${params}`, {
         headers: { 'Authorization': `Bearer ${token}` }

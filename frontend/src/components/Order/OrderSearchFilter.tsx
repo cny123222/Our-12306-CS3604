@@ -4,7 +4,7 @@ import DatePicker from '../DatePicker';
 import './OrderSearchFilter.css';
 
 interface OrderSearchFilterProps {
-  onSearch: (startDate: string, endDate: string, keyword: string) => void;
+  onSearch: (startDate: string, endDate: string, keyword: string, searchType?: string) => void;
   variant?: 'history' | 'unpaid';  // 区分历史订单和未出行订单
 }
 
@@ -15,6 +15,7 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [keyword, setKeyword] = useState('');
+  const [searchType, setSearchType] = useState('order-date'); // 'order-date' 或 'travel-date'
 
   // 设置默认日期范围（根据订单类型）
   React.useEffect(() => {
@@ -54,7 +55,7 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
   };
 
   const handleSearch = () => {
-    onSearch(startDate, endDate, keyword);
+    onSearch(startDate, endDate, keyword, searchType);
   };
 
   const handleClear = () => {
@@ -117,8 +118,18 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
     return (
       <div className="order-search-filter history-filter">
         <div className="filter-row single-row">
+          <div className="filter-group dropdown-group">
+            <select 
+              className="filter-dropdown"
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
+            >
+              <option value="order-date">按订票日期查询</option>
+              <option value="travel-date">按乘车日期查询</option>
+            </select>
+          </div>
+
           <div className="filter-group date-group">
-            <label className="filter-label">乘车日期</label>
             <DatePicker
               value={startDate}
               onChange={handleStartDateChange}
@@ -160,8 +171,13 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
     <div className="order-search-filter unpaid-filter">
       <div className="filter-row single-row">
         <div className="filter-group dropdown-group">
-          <select className="filter-dropdown">
+          <select 
+            className="filter-dropdown"
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+          >
             <option value="order-date">按订票日期查询</option>
+            <option value="travel-date">按乘车日期查询</option>
           </select>
         </div>
 
