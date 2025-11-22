@@ -41,22 +41,30 @@
 }
 
 .reg-verification-modal .close-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
+  background: none !important;
+  border: none !important;
+  color: white !important;
+  font-size: 28px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  border-radius: 0 !important;
 }
 
 .reg-verification-modal .close-button:hover {
-  opacity: 0.8;
+  opacity: 0.8 !important;
+  border-color: transparent !important;
+}
+
+.reg-verification-modal .close-button:focus,
+.reg-verification-modal .close-button:focus-visible {
+  outline: none !important;
+  border-color: transparent !important;
 }
 
 /* 内容区域 */
@@ -99,21 +107,22 @@
 }
 
 .reg-verification-modal .form-input {
-  flex: 1;
-  max-width: 200px;
-  height: 32px;
-  padding: 0 10px;
-  border: 1px solid #ccc;
-  border-radius: 0px;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.3s;
-  background: white;
+  flex: 1 !important;
+  max-width: 200px !important;
+  height: 32px !important;
+  padding: 0 10px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 0px !important;
+  font-size: 13px !important;
+  outline: none !important;
+  transition: border-color 0.3s !important;
+  background: white !important;
 }
 
 .reg-verification-modal .form-input:focus {
-  border-color: #5ca3e6;
-  box-shadow: 0 0 0 1px rgba(92, 163, 230, 0.2);
+  border-color: #5ca3e6 !important;
+  box-shadow: 0 0 0 1px rgba(92, 163, 230, 0.2) !important;
+  outline: none !important;
 }
 
 .reg-verification-modal .reg-verification-error-message {
@@ -135,46 +144,59 @@
 
 .reg-verification-modal .complete-button,
 .reg-verification-modal .back-button {
-  padding: 8px 20px;
-  font-size: 14px;
-  border-radius: 0px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: normal;
-  width: 140px;
-  min-width: 140px;
-  max-width: 140px;
+  padding: 8px 20px !important;
+  font-size: 14px !important;
+  border-radius: 0px !important;
+  cursor: pointer !important;
+  transition: all 0.3s !important;
+  font-weight: normal !important;
+  width: 140px !important;
+  min-width: 140px !important;
+  max-width: 140px !important;
 }
 
 .reg-verification-modal .complete-button {
-  background: #ff8533;
-  color: white;
-  border: none;
+  background: #ff8533 !important;
+  color: white !important;
+  border: none !important;
 }
 
 .reg-verification-modal .complete-button:hover {
-  background: #ff9547;
-  box-shadow: 0 2px 4px rgba(255, 133, 51, 0.3);
+  background: #ff9547 !important;
+  box-shadow: 0 2px 4px rgba(255, 133, 51, 0.3) !important;
+  border-color: transparent !important;
+}
+
+.reg-verification-modal .complete-button:focus,
+.reg-verification-modal .complete-button:focus-visible {
+  outline: none !important;
+  border-color: transparent !important;
 }
 
 .reg-verification-modal .complete-button:active {
-  background: #e67529;
+  background: #e67529 !important;
 }
 
 .reg-verification-modal .back-button {
-  background: white;
-  color: #2681d5;
-  border: none;
+  background: white !important;
+  color: #2681d5 !important;
+  border: none !important;
 }
 
 .reg-verification-modal .back-button:hover {
-  background: #f5f9ff;
-  border-color: #5ca3e6;
-  color: #5ca3e6;
+  background: #f5f9ff !important;
+  border-color: transparent !important;
+  color: #5ca3e6 !important;
+}
+
+.reg-verification-modal .back-button:focus,
+.reg-verification-modal .back-button:focus-visible {
+  outline: none !important;
+  border-color: transparent !important;
 }
 
 .reg-verification-modal .back-button:active {
-  background: #e8f3ff;
+  background: #e8f3ff !important;
 }
 
 /* 响应式设计 */

@@ -57,6 +57,18 @@
   font-weight: 400 !important;
   color: #888888 !important;
   cursor: pointer !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.sms-modal .close-button:hover {
+  border-color: transparent !important;
+}
+
+.sms-modal .close-button:focus,
+.sms-modal .close-button:focus-visible {
+  outline: none !important;
+  border-color: transparent !important;
 }
 
 /* ==================== "短信验证"蓝色居中标题 ==================== */
@@ -153,6 +165,11 @@
   border: 1px solid #e4e7ed !important;
 }
 
+.sms-modal .send-code-button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
 .sms-modal .send-code-button:not(:disabled) {
   background-color: #ffffff !important;
   color: #606266 !important;
@@ -163,6 +180,11 @@
 .sms-modal .send-code-button:not(:disabled):hover {
   border-color: #1890ff !important;
   color: #1890ff !important;
+}
+
+.sms-modal .send-code-button:focus,
+.sms-modal .send-code-button:focus-visible {
+  outline: none !important;
 }
 
 /* ==================== "确定"按钮 ==================== */
@@ -183,4 +205,11 @@
 
 .sms-modal .confirm-button:hover {
   background: #ffa151 !important;
+  border-color: transparent !important;
+}
+
+.sms-modal .confirm-button:focus,
+.sms-modal .confirm-button:focus-visible {
+  outline: none !important;
+  border-color: transparent !important;
 }
