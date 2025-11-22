@@ -30,8 +30,8 @@ async function cleanupExpiredPendingOrders() {
       const expiredOrders = await new Promise((resolve, reject) => {
         db.all(
           `SELECT id FROM orders 
-           WHERE status = 'pending' 
-           AND created_at < datetime('now', '-10 minutes')`,
+         WHERE status = 'pending' 
+         AND created_at < datetime('now', '-10 minutes')`,
           (err, orders) => {
             if (err) return reject(err);
             resolve(orders || []);
@@ -39,14 +39,14 @@ async function cleanupExpiredPendingOrders() {
         );
       });
       
-      db.close();
+            db.close();
       
       if (expiredOrders.length === 0) {
         return resolve({ ordersDeleted: 0, detailsDeleted: 0 });
-      }
-      
+          }
+          
       console.log(`[订单清理] 发现 ${expiredOrders.length} 个超时pending订单，开始清理...`);
-      
+          
       let detailsDeleted = 0;
       let ordersDeleted = 0;
       
@@ -78,7 +78,7 @@ async function cleanupExpiredPendingOrders() {
             deleteDb.run(
               'DELETE FROM orders WHERE id = ?',
               [order.id],
-              function(err) {
+            function(err) {
                 if (err) return reject(err);
                 resolve(this.changes);
               }
@@ -90,18 +90,18 @@ async function cleanupExpiredPendingOrders() {
         } catch (error) {
           console.error(`[订单清理] 清理订单 ${order.id} 失败:`, error.message);
           // 继续处理其他订单
-        }
+                    }
       }
-      
-      if (ordersDeleted > 0) {
-        console.log(`[订单清理] ✅ 清理完成，删除了 ${ordersDeleted} 个订单，${detailsDeleted} 条订单明细`);
-      }
-      
-      resolve({ ordersDeleted, detailsDeleted });
+                    
+                    if (ordersDeleted > 0) {
+                      console.log(`[订单清理] ✅ 清理完成，删除了 ${ordersDeleted} 个订单，${detailsDeleted} 条订单明细`);
+                    }
+                    
+                    resolve({ ordersDeleted, detailsDeleted });
     } catch (error) {
       console.error('[订单清理] 清理过程出错:', error);
       reject(error);
-    }
+        }
   });
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import './OrderInfoDisplay.css';
+import { formatSeatNumber } from '../utils/seatNumberFormatter';
 
 interface Passenger {
   sequence: number;
@@ -86,14 +87,9 @@ const OrderInfoDisplay: React.FC<OrderInfoDisplayProps> = ({
   };
 
   // 格式化座位号显示
-  const formatSeatDisplay = (seatNumber?: string): string => {
-    if (seatNumber) {
-      // 如果包含 "-"，提取座位号部分（如 "4-01" -> "01"）
-      const parts = seatNumber.split('-');
-      const seatPart = parts.length > 1 ? parts[1] : seatNumber;
-      return `${seatPart}号`;
-    }
-    return '';
+  const formatSeatDisplay = (seatNumber?: string, seatType?: string): string => {
+    if (!seatNumber || !seatType) return '';
+    return formatSeatNumber(seatNumber, seatType);
   };
 
   return (
@@ -146,7 +142,7 @@ const OrderInfoDisplay: React.FC<OrderInfoDisplayProps> = ({
                     <td>{passenger.ticketType}</td>
                     <td>{passenger.seatType}</td>
                     <td>{passenger.carNumber ? `${String(passenger.carNumber).padStart(2, '0')}` : ''}</td>
-                    <td>{formatSeatDisplay(passenger.seatNumber)}</td>
+                    <td>{formatSeatDisplay(passenger.seatNumber, passenger.seatType)}</td>
                     <td>{passenger.price.toFixed(1)}元</td>
                   </tr>
                 ))}

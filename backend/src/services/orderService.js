@@ -625,31 +625,31 @@ async function confirmOrder(orderId, userId) {
               }
               
               // 获取出发站和到达站之间的所有区间（只需查询一次）
-              const stops = await new Promise((resolve, reject) => {
-                db.all(
-                  `SELECT station FROM train_stops 
-                   WHERE train_no = ? 
-                   AND seq >= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
-                   AND seq <= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
-                   ORDER BY seq`,
-                  [order.train_number, order.train_number, order.departure_station, 
-                   order.train_number, order.arrival_station],
-                  (err, stops) => {
-                    if (err) return reject(err);
-                    resolve(stops);
-                  }
-                );
-              });
-              
-              // 构建所有区间
-              const segments = [];
-              for (let i = 0; i < stops.length - 1; i++) {
-                segments.push({
-                  from: stops[i].station,
-                  to: stops[i + 1].station
+                const stops = await new Promise((resolve, reject) => {
+                  db.all(
+                    `SELECT station FROM train_stops 
+                     WHERE train_no = ? 
+                     AND seq >= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
+                     AND seq <= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
+                     ORDER BY seq`,
+                    [order.train_number, order.train_number, order.departure_station, 
+                     order.train_number, order.arrival_station],
+                    (err, stops) => {
+                      if (err) return reject(err);
+                      resolve(stops);
+                    }
+                  );
                 });
-              }
-              
+                
+                // 构建所有区间
+                const segments = [];
+                for (let i = 0; i < stops.length - 1; i++) {
+                  segments.push({
+                    from: stops[i].station,
+                    to: stops[i + 1].station
+                  });
+                }
+                
               // 检查每种席别的可用座位数量是否充足
               for (const [seatType, requiredCount] of Object.entries(seatTypeRequirements)) {
                 // 获取该席别的所有座位
@@ -745,97 +745,97 @@ async function confirmOrder(orderId, userId) {
                       }
                     );
                   });
-                  
-                  // 找到第一个在所有区间都是available的座位
-                  let selectedSeatNo = null;
-                  let selectedCarNo = null;
-                  
+                
+                // 找到第一个在所有区间都是available的座位
+                let selectedSeatNo = null;
+                let selectedCarNo = null;
+                
                   const segmentConditions = segments.map(() => 
                     '(from_station = ? AND to_station = ?)'
                   ).join(' OR ');
                   const segmentParams = segments.flatMap(s => [s.from, s.to]);
                   
                   for (const seat of allSeats) {
-                    const seatStatuses = await new Promise((resolve, reject) => {
-                      db.all(
-                        `SELECT status 
-                         FROM seat_status 
-                         WHERE train_no = ? 
-                         AND departure_date = ?
-                         AND seat_type = ? 
-                         AND seat_no = ? 
-                         AND (${segmentConditions})`,
-                        [order.train_number, order.departure_date, detail.seat_type, seat.seat_no, ...segmentParams],
-                        (err, statuses) => {
-                          if (err) return reject(err);
-                          resolve(statuses);
-                        }
-                      );
-                    });
-                    
-                    // 检查是否所有区间都是available
-                    if (seatStatuses.length === segments.length) {
-                      const allAvailable = seatStatuses.every(s => s.status === 'available');
-                      if (allAvailable) {
-                        selectedSeatNo = seat.seat_no;
-                        selectedCarNo = seat.car_no;
-                        break;
+                  const seatStatuses = await new Promise((resolve, reject) => {
+                    db.all(
+                      `SELECT status 
+                       FROM seat_status 
+                       WHERE train_no = ? 
+                       AND departure_date = ?
+                       AND seat_type = ? 
+                       AND seat_no = ? 
+                       AND (${segmentConditions})`,
+                      [order.train_number, order.departure_date, detail.seat_type, seat.seat_no, ...segmentParams],
+                      (err, statuses) => {
+                        if (err) return reject(err);
+                        resolve(statuses);
                       }
+                    );
+                  });
+                  
+                  // 检查是否所有区间都是available
+                  if (seatStatuses.length === segments.length) {
+                    const allAvailable = seatStatuses.every(s => s.status === 'available');
+                    if (allAvailable) {
+                      selectedSeatNo = seat.seat_no;
+                      selectedCarNo = seat.car_no;
+                      break;
                     }
                   }
-                  
-                  if (!selectedSeatNo) {
+                }
+                
+                if (!selectedSeatNo) {
                     throw new Error(`${detail.seat_type}座位已售罄`);
-                  }
-                  
-                  // 更新所有区间的座位状态为已预定
-                  for (const segment of segments) {
-                    await new Promise((resolve, reject) => {
-                      db.run(
-                        `UPDATE seat_status 
-                         SET status = 'booked', booked_by = ?, booked_at = datetime('now')
-                         WHERE train_no = ? 
-                         AND departure_date = ?
-                         AND seat_type = ? 
-                         AND seat_no = ? 
-                         AND from_station = ? 
-                         AND to_station = ?`,
-                        [String(userId), order.train_number, order.departure_date, detail.seat_type, selectedSeatNo, segment.from, segment.to],
-                        (err) => {
-                          if (err) return reject(err);
-                          resolve(true);
-                        }
-                      );
-                    });
-                  }
-                  
-                  // 更新订单明细中的车厢号和座位号
+                }
+                
+                // 更新所有区间的座位状态为已预定
+                for (const segment of segments) {
                   await new Promise((resolve, reject) => {
                     db.run(
-                      'UPDATE order_details SET car_number = ?, seat_number = ? WHERE id = ?',
-                      [selectedCarNo, selectedSeatNo, detail.id],
+                      `UPDATE seat_status 
+                       SET status = 'booked', booked_by = ?, booked_at = datetime('now')
+                       WHERE train_no = ? 
+                       AND departure_date = ?
+                       AND seat_type = ? 
+                       AND seat_no = ? 
+                       AND from_station = ? 
+                       AND to_station = ?`,
+                      [String(userId), order.train_number, order.departure_date, detail.seat_type, selectedSeatNo, segment.from, segment.to],
                       (err) => {
                         if (err) return reject(err);
                         resolve(true);
                       }
                     );
                   });
-                  
-                  ticketInfo.push({
-                    passengerName: detail.passenger_name,
-                    seatType: detail.seat_type,
-                    carNo: selectedCarNo,
-                    seatNo: selectedSeatNo,
-                    ticketType: detail.ticket_type
-                  });
                 }
                 
-                // 更新订单状态
+                // 更新订单明细中的车厢号和座位号
                 await new Promise((resolve, reject) => {
                   db.run(
-                    "UPDATE orders SET status = 'confirmed_unpaid', payment_expires_at = datetime('now', '+20 minutes'), updated_at = datetime('now') WHERE id = ?",
-                    [orderId],
+                    'UPDATE order_details SET car_number = ?, seat_number = ? WHERE id = ?',
+                    [selectedCarNo, selectedSeatNo, detail.id],
                     (err) => {
+                      if (err) return reject(err);
+                      resolve(true);
+                    }
+                  );
+                });
+                
+                ticketInfo.push({
+                  passengerName: detail.passenger_name,
+                  seatType: detail.seat_type,
+                  carNo: selectedCarNo,
+                  seatNo: selectedSeatNo,
+                  ticketType: detail.ticket_type
+                });
+              }
+              
+                // 更新订单状态
+                await new Promise((resolve, reject) => {
+              db.run(
+                "UPDATE orders SET status = 'confirmed_unpaid', payment_expires_at = datetime('now', '+20 minutes'), updated_at = datetime('now') WHERE id = ?",
+                [orderId],
+                (err) => {
                       if (err) return reject(err);
                       resolve(true);
                     }
@@ -849,35 +849,35 @@ async function confirmOrder(orderId, userId) {
                     resolve(true);
                   });
                 });
-                
-                // 查询更新后的订单信息以获取 payment_expires_at
-                db.get(
-                  'SELECT payment_expires_at FROM orders WHERE id = ?',
-                  [orderId],
-                  (err, orderInfo) => {
-                    db.close();
-                    
-                    if (err) {
-                      return reject({ status: 500, message: '查询订单信息失败' });
+                  
+                  // 查询更新后的订单信息以获取 payment_expires_at
+                  db.get(
+                    'SELECT payment_expires_at FROM orders WHERE id = ?',
+                    [orderId],
+                    (err, orderInfo) => {
+                      db.close();
+                      
+                      if (err) {
+                        return reject({ status: 500, message: '查询订单信息失败' });
+                      }
+                      
+                      resolve({
+                        message: '订单已确认，请完成支付',
+                        orderId,
+                        status: 'confirmed_unpaid',
+                        paymentExpiresAt: orderInfo?.payment_expires_at,
+                        trainInfo: {
+                          trainNo: order.train_number,
+                          departureStation: order.departure_station,
+                          arrivalStation: order.arrival_station,
+                          departureDate: order.departure_date,
+                          departureTime: order.departure_time,
+                          arrivalTime: order.arrival_time
+                        },
+                        tickets: ticketInfo
+                      });
                     }
-                    
-                    resolve({
-                      message: '订单已确认，请完成支付',
-                      orderId,
-                      status: 'confirmed_unpaid',
-                      paymentExpiresAt: orderInfo?.payment_expires_at,
-                      trainInfo: {
-                        trainNo: order.train_number,
-                        departureStation: order.departure_station,
-                        arrivalStation: order.arrival_station,
-                        departureDate: order.departure_date,
-                        departureTime: order.departure_time,
-                        arrivalTime: order.arrival_time
-                      },
-                      tickets: ticketInfo
-                    });
-                  }
-                );
+                  );
               } catch (transactionError) {
                 // 回滚事务
                 await new Promise((resolve) => {

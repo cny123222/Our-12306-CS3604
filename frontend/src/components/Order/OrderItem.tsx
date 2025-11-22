@@ -1,6 +1,7 @@
 // 订单项组件
 import React, { useState } from 'react';
 import './OrderItem.css';
+import { formatSeatInfoForDisplay } from '../../utils/seatNumberFormatter';
 
 interface OrderItemProps {
   order: any;
@@ -32,25 +33,8 @@ const OrderItem: React.FC<OrderItemProps> = ({
   const formatSeatInfo = (passenger: any, status: string) => {
     // 已确认未支付（confirmed_unpaid）、已支付（paid）或已完成（completed）的订单，如果有座位号则显示完整信息
     if ((status === 'confirmed_unpaid' || status === 'paid' || status === 'completed') && passenger.seat_number) {
-      const seatNo = passenger.seat_number;
-      
-      // 尝试解析座位号格式
-      if (seatNo.includes('-')) {
-        const parts = seatNo.split('-');
-        if (parts.length === 2) {
-          const carNum = parts[0].padStart(2, '0');  // 车厢号补零
-          const seatNum = parts[1].padStart(2, '0'); // 座位号补零
-          return `${carNum}车${seatNum}号`;
-        }
-      }
-      
-      // 如果格式不符合预期，但有 car_number，组合显示
-      if (passenger.car_number) {
-        return `${String(passenger.car_number).padStart(2, '0')}车${seatNo}号`;
-      }
-      
-      // 直接返回原始值
-      return seatNo;
+      const seatType = passenger.seat_type || passenger.seatType || '二等座';
+      return formatSeatInfoForDisplay(passenger.seat_number, passenger.car_number, seatType);
     } else if (passenger.car_number && !passenger.seat_number) {
       // 有车厢号但没有座位号（pending 状态）
       return `${String(passenger.car_number).padStart(2, '0')}车`;
