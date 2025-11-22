@@ -221,9 +221,9 @@
   font-weight: 600;
 }
 
-/* 余票少（小于20张）- 橙色显示具体数字 */
+/* 余票少（小于20张）- 黑色显示具体数字 */
 .seat-info.limited {
-  color: #ff7700;
+  color: #000000;
   font-weight: 600;
 }
 
