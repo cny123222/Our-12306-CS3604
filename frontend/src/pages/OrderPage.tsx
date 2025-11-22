@@ -166,6 +166,11 @@ const OrderPage: React.FC = () => {
   
   // 实现席位变更逻辑
   const handleSeatTypeChange = (index: number, seatType: string) => {
+    // 检查索引是否有效
+    if (index < 0 || index >= purchaseInfo.length) {
+      return; // 如果是空行（默认显示），不执行任何操作
+    }
+    
     const newPurchaseInfo = [...purchaseInfo];
     newPurchaseInfo[index] = {
       ...newPurchaseInfo[index],
@@ -176,6 +181,11 @@ const OrderPage: React.FC = () => {
   
   // 实现票种变更逻辑
   const handleTicketTypeChange = (index: number, ticketType: string) => {
+    // 检查索引是否有效
+    if (index < 0 || index >= purchaseInfo.length) {
+      return; // 如果是空行（默认显示），不执行任何操作
+    }
+    
     const newPurchaseInfo = [...purchaseInfo];
     newPurchaseInfo[index] = {
       ...newPurchaseInfo[index],
