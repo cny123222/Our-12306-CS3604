@@ -1,79 +1,80 @@
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
+/* 确认弹窗样式 - 使用唯一的类名前缀避免冲突 */
+.confirm-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 10000 !important;
 }
 
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.confirm-modal-content {
+  background: white !important;
+  border-radius: 8px !important;
+  width: 90% !important;
+  max-width: 500px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
-.modal-header {
-  padding: 20px;
-  border-bottom: 1px solid #e0e0e0;
+.confirm-modal-header {
+  padding: 20px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
 }
 
-.modal-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
+.confirm-modal-title {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  color: #333 !important;
 }
 
-.modal-body {
-  padding: 20px;
+.confirm-modal-body {
+  padding: 20px !important;
 }
 
-.modal-message {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #666;
+.confirm-modal-message {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #666 !important;
 }
 
-.modal-footer {
-  padding: 15px 20px;
-  border-top: 1px solid #e0e0e0;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+.confirm-modal-footer {
+  padding: 15px 20px !important;
+  border-top: 1px solid #e0e0e0 !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
 }
 
-.modal-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
+.confirm-modal-button {
+  padding: 10px 20px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
 }
 
-.confirm-button {
-  background-color: #ff6600;
-  color: white;
+.confirm-modal-confirm-button {
+  background-color: #ff6600 !important;
+  color: white !important;
 }
 
-.confirm-button:hover {
-  background-color: #ff8833;
+.confirm-modal-confirm-button:hover {
+  background-color: #ff8833 !important;
 }
 
-.cancel-button {
-  background-color: #e0e0e0;
-  color: #333;
+.confirm-modal-cancel-button {
+  background-color: #e0e0e0 !important;
+  color: #333 !important;
 }
 
-.cancel-button:hover {
-  background-color: #d0d0d0;
+.confirm-modal-cancel-button:hover {
+  background-color: #d0d0d0 !important;
 }
 

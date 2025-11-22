@@ -28,19 +28,19 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   if (!isVisible) return null;
 
   const modalContent = (
-    <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">{title}</h3>
+    <div className="confirm-modal-overlay" onClick={onCancel}>
+      <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="confirm-modal-header">
+          <h3 className="confirm-modal-title">{title}</h3>
         </div>
-        <div className="modal-body">
-          <p className="modal-message">{message}</p>
+        <div className="confirm-modal-body">
+          <p className="confirm-modal-message">{message}</p>
         </div>
-        <div className="modal-footer">
-          <button className="modal-button confirm-button" onClick={onConfirm}>
+        <div className="confirm-modal-footer">
+          <button className="confirm-modal-button confirm-modal-confirm-button" onClick={onConfirm}>
             {confirmText}
           </button>
-          <button className="modal-button cancel-button" onClick={onCancel}>
+          <button className="confirm-modal-button confirm-modal-cancel-button" onClick={onCancel}>
             {cancelText}
           </button>
         </div>
