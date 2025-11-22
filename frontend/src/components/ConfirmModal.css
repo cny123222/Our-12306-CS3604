@@ -1,4 +1,5 @@
-.modal-overlay {
+/* 确认弹窗样式 - 使用 .confirm-modal 命名空间避免与其他弹窗冲突 */
+.confirm-modal .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +12,7 @@
   z-index: 10000;
 }
 
-.modal-content {
+.confirm-modal .modal-content {
   background: white;
   border-radius: 8px;
   width: 90%;
@@ -19,30 +20,30 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.modal-header {
+.confirm-modal .modal-header {
   padding: 20px;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.modal-title {
+.confirm-modal .modal-title {
   margin: 0;
   font-size: 18px;
   font-weight: bold;
   color: #333;
 }
 
-.modal-body {
+.confirm-modal .modal-body {
   padding: 20px;
 }
 
-.modal-message {
+.confirm-modal .modal-message {
   margin: 0;
   font-size: 14px;
   line-height: 1.6;
   color: #666;
 }
 
-.modal-footer {
+.confirm-modal .modal-footer {
   padding: 15px 20px;
   border-top: 1px solid #e0e0e0;
   display: flex;
@@ -50,7 +51,7 @@
   gap: 10px;
 }
 
-.modal-button {
+.confirm-modal .modal-button {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -59,21 +60,21 @@
   font-weight: bold;
 }
 
-.confirm-button {
+.confirm-modal .confirm-button {
   background-color: #ff6600;
   color: white;
 }
 
-.confirm-button:hover {
+.confirm-modal .confirm-button:hover {
   background-color: #ff8833;
 }
 
-.cancel-button {
+.confirm-modal .cancel-button {
   background-color: #e0e0e0;
   color: #333;
 }
 
-.cancel-button:hover {
+.confirm-modal .cancel-button:hover {
   background-color: #d0d0d0;
 }
 
