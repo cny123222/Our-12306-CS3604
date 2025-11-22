@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './OrderSuccessModal.css';
+import { formatSeatInfoForDisplay } from '../utils/seatNumberFormatter';
 
 interface TicketInfo {
   passengerName: string;
   seatType: string;
   seatNo: string;
+  carNo?: string;
   ticketType: string;
 }
 
@@ -96,14 +98,21 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {tickets.map((ticket, index) => (
-                  <tr key={index}>
-                    <td>{ticket.passengerName}</td>
-                    <td>{ticket.seatType}</td>
-                    <td className="seat-no-highlight">{ticket.seatNo}</td>
-                    <td>{ticket.ticketType}</td>
-                  </tr>
-                ))}
+                {tickets.map((ticket, index) => {
+                  const formattedSeat = formatSeatInfoForDisplay(
+                    ticket.seatNo,
+                    ticket.carNo,
+                    ticket.seatType
+                  );
+                  return (
+                    <tr key={index}>
+                      <td>{ticket.passengerName}</td>
+                      <td>{ticket.seatType}</td>
+                      <td className="seat-no-highlight">{formattedSeat}</td>
+                      <td>{ticket.ticketType}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
