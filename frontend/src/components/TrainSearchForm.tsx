@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './TrainSearchForm.css';
-import StationInput from './StationInput';
+import CityInput from './CityInput';
 import DatePicker from './DatePicker';
-import { validateStation } from '../services/stationService';
+import { validateCity } from '../services/stationService';
+import { getTodayString, getDateAfterDays } from '../utils/dateUtils';
 
 interface TrainSearchFormProps {
   onNavigateToTrainList: (params: any) => void;
@@ -14,8 +15,8 @@ interface TrainSearchFormProps {
 const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList }) => {
   const [departureStation, setDepartureStation] = useState('');
   const [arrivalStation, setArrivalStation] = useState('');
-  // 默认日期设置为今天
-  const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
+  // 默认日期设置为今天（使用本地时间）
+  const [departureDate, setDepartureDate] = useState(getTodayString());
   const [isStudent, setIsStudent] = useState(false); // 【新增】学生票状态
   const [isHighSpeed, setIsHighSpeed] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -31,50 +32,50 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
   const handleSearch = async () => {
     const newErrors: { [key: string]: string } = {};
 
-    // 验证出发地
+    // 验证出发城市
     if (!departureStation || departureStation.trim() === '') {
-      newErrors.departure = '请选择出发地';
-      setErrors({ ...newErrors, general: '请选择出发地' });
+      newErrors.departure = '请选择出发城市';
+      setErrors({ ...newErrors, general: '请选择出发城市' });
       return;
     }
 
-    // 验证到达地
+    // 验证到达城市
     if (!arrivalStation || arrivalStation.trim() === '') {
-      newErrors.arrival = '请选择到达地';
-      setErrors({ ...newErrors, general: '请选择到达地' });
+      newErrors.arrival = '请选择到达城市';
+      setErrors({ ...newErrors, general: '请选择到达城市' });
       return;
     }
 
-    // 验证出发地是否合法
-    const departureResult = await validateStation(departureStation);
+    // 验证出发城市是否合法
+    const departureResult = await validateCity(departureStation);
     if (!departureResult.valid) {
       // Check if this is a network error
-      if (departureResult.error === '验证站点失败，请稍后重试') {
+      if (departureResult.error === '验证城市失败，请稍后重试') {
         setErrors({
           general: '查询失败，请稍后重试'
         });
         return;
       }
       setErrors({
-        departure: departureResult.error || '无法匹配该出发地',
-        general: departureResult.error || '无法匹配该出发地'
+        departure: departureResult.error || '无法匹配该出发城市',
+        general: departureResult.error || '无法匹配该出发城市'
       });
       return;
     }
 
-    // 验证到达地是否合法
-    const arrivalResult = await validateStation(arrivalStation);
+    // 验证到达城市是否合法
+    const arrivalResult = await validateCity(arrivalStation);
     if (!arrivalResult.valid) {
       // Check if this is a network error
-      if (arrivalResult.error === '验证站点失败，请稍后重试') {
+      if (arrivalResult.error === '验证城市失败，请稍后重试') {
         setErrors({
           general: '查询失败，请稍后重试'
         });
         return;
       }
       setErrors({
-        arrival: arrivalResult.error || '无法匹配该到达地',
-        general: arrivalResult.error || '无法匹配该到达地'
+        arrival: arrivalResult.error || '无法匹配该到达城市',
+        general: arrivalResult.error || '无法匹配该到达城市'
       });
       return;
     }
@@ -128,15 +129,15 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
           </button>
         </div>
         
-        {/* 站点选择区域 - 带灰色折线和转换按钮 */}
+        {/* 城市选择区域 - 带灰色折线和转换按钮 */}
         <div className="stations-container">
-          {/* 出发地 */}
+          {/* 出发城市 */}
           <div className="train-search-row-horizontal">
-            <label className="field-label-left">出发地</label>
+            <label className="field-label-left">出发城市</label>
             <div className="input-with-icon">
-              <StationInput
+              <CityInput
                 value={departureStation}
-                placeholder="简拼/全拼/汉字"
+                placeholder="请选择城市"
                 type="departure"
                 onChange={setDepartureStation}
                 onSelect={setDepartureStation}
@@ -152,18 +153,18 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
             <svg className="connector-line" width="40" height="90" viewBox="0 0 40 90">
               <path d="M0 10 H25 V80 H0" stroke="#e5e5e5" strokeWidth="2" fill="none"/>
             </svg>
-            <button className="swap-button-center" onClick={handleSwapStations} aria-label="交换出发地和到达地">
+            <button className="swap-button-center" onClick={handleSwapStations} aria-label="交换出发城市和到达城市">
               <span className="swap-icon" aria-hidden="true" />
             </button>
           </div>
 
-          {/* 到达地 */}
+          {/* 到达城市 */}
           <div className="train-search-row-horizontal">
-            <label className="field-label-left">到达地</label>
+            <label className="field-label-left">到达城市</label>
             <div className="input-with-icon">
-              <StationInput
+              <CityInput
                 value={arrivalStation}
-                placeholder="简拼/全拼/汉字"
+                placeholder="请选择城市"
                 type="arrival"
                 onChange={setArrivalStation}
                 onSelect={setArrivalStation}
@@ -182,12 +183,8 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onNavigateToTrainList
             <DatePicker
               value={departureDate}
               onChange={setDepartureDate}
-              minDate={new Date().toISOString().split('T')[0]}
-              maxDate={(() => {
-                const maxDate = new Date();
-                maxDate.setDate(maxDate.getDate() + 13);
-                return maxDate.toISOString().split('T')[0];
-              })()}
+              minDate={getTodayString()}
+              maxDate={getDateAfterDays(13)}
             />
             <svg className="calendar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="#cccccc"/>

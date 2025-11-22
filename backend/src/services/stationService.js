@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const cityStationMapping = require('../config/cityStationMapping');
 
 // 创建数据库连接
 function getDatabase() {
@@ -111,9 +112,64 @@ if (err) {
   });
 }
 
+/**
+ * 获取所有支持的城市列表
+ */
+async function getAllCities() {
+  return cityStationMapping.getAllCities();
+}
+
+/**
+ * 根据城市名获取该城市的所有车站
+ * @param {string} cityName - 城市名
+ * @returns {string[]} 车站列表
+ */
+async function getStationsByCity(cityName) {
+  return cityStationMapping.getStationsByCity(cityName);
+}
+
+/**
+ * 验证城市名是否有效
+ * @param {string} cityName - 城市名
+ * @returns {Object} 验证结果
+ */
+async function validateCity(cityName) {
+  if (!cityName) {
+    return { valid: false, error: '城市名称不能为空', suggestions: [] };
+  }
+  
+  const isValid = cityStationMapping.isCityValid(cityName);
+  
+  if (isValid) {
+    const stations = cityStationMapping.getStationsByCity(cityName);
+    return { valid: true, city: cityName, stations };
+  }
+  
+  // 城市无效，提供所有城市作为建议
+  const allCities = cityStationMapping.getAllCities();
+  return {
+    valid: false,
+    error: '无法匹配该城市',
+    suggestions: allCities
+  };
+}
+
+/**
+ * 根据车站名反查所属城市
+ * @param {string} stationName - 车站名
+ * @returns {string|null} 城市名
+ */
+async function getCityByStation(stationName) {
+  return cityStationMapping.getCityByStation(stationName);
+}
+
 module.exports = {
   getAllStations,
   searchStations,
-  validateStation
+  validateStation,
+  getAllCities,
+  getStationsByCity,
+  validateCity,
+  getCityByStation
 };
 

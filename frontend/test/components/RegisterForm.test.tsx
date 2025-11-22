@@ -523,7 +523,7 @@ describe('RegisterForm Component Tests', () => {
     test('邮箱不包含@符号时应提示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const emailInput = screen.getByPlaceholderText(/请正确填写您的邮箱地址/);
+      const emailInput = screen.getByPlaceholderText(/请正确填写邮箱地址/);
 
       // When: 输入不包含@的邮箱
       await userEvent.type(emailInput, 'invalidemail.com');
@@ -538,7 +538,7 @@ describe('RegisterForm Component Tests', () => {
     test('符合规范的邮箱不应显示错误', async () => {
       // Given: 渲染组件
       render(<RegisterForm onSubmit={mockOnSubmit} onNavigateToLogin={mockOnNavigateToLogin} />);
-      const emailInput = screen.getByPlaceholderText(/请正确填写您的邮箱地址/);
+      const emailInput = screen.getByPlaceholderText(/请正确填写邮箱地址/);
 
       // When: 输入符合规范的邮箱
       await userEvent.type(emailInput, 'user@example.com');

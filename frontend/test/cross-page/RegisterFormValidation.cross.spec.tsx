@@ -284,7 +284,7 @@ describe('跨组件交互：注册表单验证流程', () => {
     })
 
     // 填写不正确的邮箱格式
-    const emailInput = screen.getByPlaceholderText(/请正确填写您的邮箱地址/i)
+    const emailInput = screen.getByPlaceholderText(/请正确填写邮箱地址/i)
     await user.type(emailInput, 'invalidemail')
     await user.tab()
 

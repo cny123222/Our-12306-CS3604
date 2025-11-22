@@ -100,7 +100,7 @@ const RegistrationVerificationModal: React.FC<RegistrationVerificationModalProps
             </div>
 
             {(error || externalError) && (
-              <div className="error-message">{externalError || error}</div>
+              <div className="reg-verification-error-message">{externalError || error}</div>
             )}
 
             {/* 按钮区域 */}

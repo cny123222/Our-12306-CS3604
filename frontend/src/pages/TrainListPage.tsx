@@ -9,6 +9,8 @@ import TrainList from '../components/TrainList';
 import BottomNavigation from '../components/BottomNavigation';
 import ConfirmModal from '../components/ConfirmModal';
 import { searchTrains } from '../services/trainService';
+import { getStationsByCity } from '../services/stationService';
+import { getTodayString } from '../utils/dateUtils';
 
 /**
  * 车次列表页主容器组件
@@ -20,7 +22,7 @@ const TrainListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<any>({
     departureStation: location.state?.departureStation || '',
     arrivalStation: location.state?.arrivalStation || '',
-    departureDate: location.state?.departureDate || new Date().toISOString().split('T')[0],
+    departureDate: location.state?.departureDate || getTodayString(),
     isHighSpeed: location.state?.isHighSpeed || false
   });
   const [trains, setTrains] = useState<any[]>([]);
@@ -91,10 +93,10 @@ const TrainListPage: React.FC = () => {
       setFilteredTrains(result.trains);
       setQueryTimestamp(new Date());
 
-      // 从当前车次列表中提取筛选选项（根据需求文档）
-      console.log('Extracting filter options from current train list...');
-      const depStations = [...new Set(result.trains.map((t: any) => t.departureStation))];
-      const arrStations = [...new Set(result.trains.map((t: any) => t.arrivalStation))];
+      // 获取城市的所有车站（而不是仅从当前车次列表中提取）
+      console.log('Fetching all stations for cities...');
+      const depStations = await getStationsByCity(params.departureStation);
+      const arrStations = await getStationsByCity(params.arrivalStation);
       
       // 提取所有席别类型
       const seatTypesSet = new Set<string>();
@@ -252,8 +254,33 @@ const TrainListPage: React.FC = () => {
       });
     }
     
+    // 5. 按发车时间筛选
+    if (filters.departureTimeRange && filters.departureTimeRange !== '00:00--24:00') {
+      const [startTime, endTime] = filters.departureTimeRange.split('--');
+      filtered = filtered.filter(train => {
+        if (!train.departureTime) return false;
+        const trainTime = train.departureTime;
+        return trainTime >= startTime && trainTime < endTime;
+      });
+    }
+    
     console.log('Filtered trains:', filtered.length);
     setFilteredTrains(filtered);
+  };
+
+  // 处理日期变化
+  const handleDateChange = (newDate: string) => {
+    console.log('Date changed to:', newDate);
+    
+    // 更新搜索参数
+    const newSearchParams = {
+      ...searchParams,
+      departureDate: newDate
+    };
+    setSearchParams(newSearchParams);
+    
+    // 重新查询车次
+    fetchTrains(newSearchParams);
   };
 
   // 获取用户名
@@ -287,8 +314,10 @@ const TrainListPage: React.FC = () => {
           arrivalStations={filterOptions.arrivalStations || []}
           seatTypes={filterOptions.seatTypes || []}
           departureDate={searchParams.departureDate}
+          onDateChange={handleDateChange}
+          isHighSpeed={searchParams.isHighSpeed}
         />
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="train-list-error-message">{error}</div>}
         {isLoading ? (
           <div className="loading">加载中...</div>
                ) : (

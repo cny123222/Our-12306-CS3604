@@ -19,60 +19,100 @@ function getDatabase() {
  * 搜索车次
  * 支持按车次类型筛选，只返回直达车次
  * 添加日期过滤，只返回指定日期的车次，且过滤已过期的车次
+ * 支持城市级搜索：当传入城市名时，查询该城市所有车站的车次
  */
-async function searchTrains(departureStation, arrivalStation, departureDate, trainTypes = []) {
-  return new Promise((resolve, reject) => {
-    const db = getDatabase();
-    
-    // 确保departureDate是有效的日期
-    if (!departureDate) {
-      departureDate = new Date().toISOString().split('T')[0];
-    }
-    
-    console.log('trainService.searchTrains 调用:', { 
-      departureStation, 
-      arrivalStation, 
-      departureDate, 
-      trainTypes 
-    });
-    
-    let sql = `
-      SELECT t.*, 
-        (SELECT depart_time FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as dep_time,
-        (SELECT arrive_time FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as arr_time,
-        (SELECT seq FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as dep_seq,
-        (SELECT seq FROM train_stops WHERE train_no = t.train_no AND station = ? ORDER BY seq DESC LIMIT 1) as arr_seq
-      FROM trains t
-      WHERE EXISTS (
-        SELECT 1 FROM train_stops WHERE train_no = t.train_no AND station = ?
-      )
-      AND EXISTS (
-        SELECT 1 FROM train_stops WHERE train_no = t.train_no AND station = ?
-      )
-      AND is_direct = 1
-      AND t.departure_date = ?
-      AND t.departure_date >= DATE('now', 'localtime')
-    `;
-    
-    const params = [
-      departureStation, arrivalStation, 
-      departureStation, arrivalStation,
-      departureStation, arrivalStation,
-      departureDate
-    ];
-    
-    // 如果提供了车次类型筛选
-    if (trainTypes && trainTypes.length > 0) {
-      const typePlaceholders = trainTypes.map(() => '?').join(',');
-      sql += ` AND SUBSTR(t.train_no, 1, 1) IN (${typePlaceholders})`;
-      params.push(...trainTypes);
-    }
-    
-    sql += ' ORDER BY t.departure_time';
-    
-    console.log('执行SQL查询:', { sql: sql.substring(0, 200) + '...', params });
-    
-    db.all(sql, params, async (err, rows) => {
+async function searchTrains(departureCityOrStation, arrivalCityOrStation, departureDate, trainTypes = []) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = getDatabase();
+      
+      // 确保departureDate是有效的日期
+      if (!departureDate) {
+        departureDate = new Date().toISOString().split('T')[0];
+      }
+      
+      console.log('trainService.searchTrains 调用:', { 
+        departureCityOrStation, 
+        arrivalCityOrStation, 
+        departureDate, 
+        trainTypes 
+      });
+      
+      // 获取出发站点列表（优先判断为城市）
+      let departureStations = [];
+      // 先尝试作为城市名获取车站列表
+      departureStations = await stationService.getStationsByCity(departureCityOrStation);
+      if (departureStations.length === 0) {
+        // 不是城市名，尝试作为车站名
+        const depCity = await stationService.getCityByStation(departureCityOrStation);
+        if (depCity) {
+          // 是车站名，获取该车站所在城市的所有车站
+          departureStations = await stationService.getStationsByCity(depCity);
+        } else {
+          // 既不是城市也不是车站，返回空结果
+          console.log('无效的出发地:', departureCityOrStation);
+          db.close();
+          return resolve([]);
+        }
+      }
+      
+      // 获取到达站点列表（优先判断为城市）
+      let arrivalStations = [];
+      // 先尝试作为城市名获取车站列表
+      arrivalStations = await stationService.getStationsByCity(arrivalCityOrStation);
+      if (arrivalStations.length === 0) {
+        // 不是城市名，尝试作为车站名
+        const arrCity = await stationService.getCityByStation(arrivalCityOrStation);
+        if (arrCity) {
+          // 是车站名，获取该车站所在城市的所有车站
+          arrivalStations = await stationService.getStationsByCity(arrCity);
+        } else {
+          // 既不是城市也不是车站，返回空结果
+          console.log('无效的到达地:', arrivalCityOrStation);
+          db.close();
+          return resolve([]);
+        }
+      }
+      
+      console.log('出发站点列表:', departureStations);
+      console.log('到达站点列表:', arrivalStations);
+      
+      // 构建SQL查询，使用IN子句匹配多个车站
+      const depPlaceholders = departureStations.map(() => '?').join(',');
+      const arrPlaceholders = arrivalStations.map(() => '?').join(',');
+      
+      let sql = `
+        SELECT DISTINCT t.* 
+        FROM trains t
+        WHERE EXISTS (
+          SELECT 1 FROM train_stops WHERE train_no = t.train_no AND station IN (${depPlaceholders})
+        )
+        AND EXISTS (
+          SELECT 1 FROM train_stops WHERE train_no = t.train_no AND station IN (${arrPlaceholders})
+        )
+        AND is_direct = 1
+        AND t.departure_date = ?
+        AND t.departure_date >= DATE('now', 'localtime')
+      `;
+      
+      const params = [
+        ...departureStations,
+        ...arrivalStations,
+        departureDate
+      ];
+      
+      // 如果提供了车次类型筛选
+      if (trainTypes && trainTypes.length > 0) {
+        const typePlaceholders = trainTypes.map(() => '?').join(',');
+        sql += ` AND SUBSTR(t.train_no, 1, 1) IN (${typePlaceholders})`;
+        params.push(...trainTypes);
+      }
+      
+      sql += ' ORDER BY t.departure_time';
+      
+      console.log('执行SQL查询:', { sql: sql.substring(0, 200) + '...', params });
+      
+      db.all(sql, params, async (err, rows) => {
       if (err) {
         db.close();
         console.error('搜索车次SQL执行失败:', {
@@ -85,65 +125,98 @@ async function searchTrains(departureStation, arrivalStation, departureDate, tra
       
       console.log(`SQL查询返回 ${rows.length} 条原始记录`);
       
-      // 过滤出发站在到达站之前的车次
-      const validTrains = rows.filter(train => {
-        const isValid = train.dep_seq && train.arr_seq && train.dep_seq < train.arr_seq;
-        if (!isValid) {
-          console.log(`过滤掉无效车次: ${train.train_no}, dep_seq: ${train.dep_seq}, arr_seq: ${train.arr_seq}`);
-        }
-        return isValid;
-      });
-      
-      console.log(`过滤后有效车次数: ${validTrains.length}`);
-      
       // 获取每个车次的详细停靠信息和余票信息
       const trainsWithDetails = [];
       let completed = 0;
       
-      if (validTrains.length === 0) {
+      if (rows.length === 0) {
         console.log('没有找到符合条件的车次');
         db.close();
         return resolve([]);
       }
       
-      for (const train of validTrains) {
-        // 获取出发时间和到达时间
-        db.all(
-          'SELECT * FROM train_stops WHERE train_no = ? AND (station = ? OR station = ?) ORDER BY seq',
-          [train.train_no, departureStation, arrivalStation],
-          async (err, stops) => {
-            if (!err && stops.length >= 2) {
-              const depStop = stops.find(s => s.station === departureStation);
-              const arrStop = stops.find(s => s.station === arrivalStation);
+      const validTrains = rows;
+      
+      // 使用Promise.all来并行处理所有车次
+      const trainPromises = validTrains.map(train => {
+        return new Promise((resolveStation) => {
+          // 获取该车次所有停靠站
+          db.all(
+            'SELECT * FROM train_stops WHERE train_no = ? ORDER BY seq',
+            [train.train_no],
+            async (err, stops) => {
+              if (err || !stops || stops.length < 2) {
+                console.log(`跳过车次 ${train.train_no}: 停靠站信息不完整`);
+                return resolveStation(null);
+              }
               
-              if (depStop && arrStop) {
-                // 计算余票
-                const availableSeats = await calculateAvailableSeats(train.train_no, departureStation, arrivalStation, departureDate);
+              // 找到匹配的出发站和到达站
+              const depStop = stops.find(s => departureStations.includes(s.station));
+              const arrStop = stops.find(s => arrivalStations.includes(s.station));
+              
+              if (!depStop || !arrStop || depStop.seq >= arrStop.seq) {
+                console.log(`跳过车次 ${train.train_no}: 出发站/到达站不匹配或顺序错误`);
+                return resolveStation(null);
+              }
+              
+              // 如果是今天的车次，检查是否已过发车时间
+              const today = new Date().toISOString().split('T')[0];
+              if (departureDate === today) {
+                const now = new Date();
+                const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
                 
-                trainsWithDetails.push({
+                if (depStop.depart_time < currentTime) {
+                  console.log(`跳过车次 ${train.train_no}: 发车时间${depStop.depart_time}已过当前时间${currentTime}`);
+                  return resolveStation(null);
+                }
+              }
+              
+              try {
+                // 计算余票
+                const availableSeats = await calculateAvailableSeats(
+                  train.train_no, 
+                  depStop.station, 
+                  arrStop.station, 
+                  departureDate
+                );
+                
+                resolveStation({
                   trainNo: train.train_no,
                   trainType: train.train_type,
                   model: train.model,
-                  departureStation: departureStation,
-                  arrivalStation: arrivalStation,
+                  departureStation: depStop.station,  // 使用实际的车站名
+                  arrivalStation: arrStop.station,    // 使用实际的车站名
                   departureTime: depStop.depart_time,
                   arrivalTime: arrStop.arrive_time,
                   duration: calculateDuration(depStop.depart_time, arrStop.arrive_time),
-                  departureDate: departureDate, // 添加出发日期
+                  departureDate: departureDate,
                   availableSeats: availableSeats
                 });
+              } catch (error) {
+                console.error(`处理车次 ${train.train_no} 时出错:`, error);
+                resolveStation(null);
               }
             }
-            
-            completed++;
-            if (completed === validTrains.length) {
-              db.close();
-              resolve(trainsWithDetails);
-            }
-          }
-        );
-      }
+          );
+        });
+      });
+      
+      Promise.all(trainPromises).then(results => {
+        db.close();
+        // 过滤掉null值
+        const trainsWithDetails = results.filter(train => train !== null);
+        console.log(`最终返回 ${trainsWithDetails.length} 个车次`);
+        resolve(trainsWithDetails);
+      }).catch(error => {
+        db.close();
+        console.error('处理车次列表时出错:', error);
+        reject(error);
+      });
     });
+    } catch (error) {
+      console.error('searchTrains error:', error);
+      reject(error);
+    }
   });
 }
 
@@ -413,78 +486,51 @@ async function calculateAvailableSeats(trainNo, departureStation, arrivalStation
 
 /**
  * 获取筛选选项
+ * 返回出发城市和到达城市的所有车站（不只是有车的）
  */
-async function getFilterOptions(departureStation, arrivalStation, departureDate) {
+async function getFilterOptions(departureCityOrStation, arrivalCityOrStation, departureDate) {
   return new Promise(async (resolve, reject) => {
     try {
-      // 先搜索符合条件的车次
-      const trains = await searchTrains(departureStation, arrivalStation, departureDate);
-      
-      const db = getDatabase();
-      
-      // 获取这些车次途经的所有出发站和到达站
-      const trainNos = trains.map(t => t.trainNo);
-      
-      if (trainNos.length === 0) {
-        db.close();
-        return resolve({
-          departureStations: [],
-          arrivalStations: [],
-          seatTypes: []
-        });
+      // 获取出发站点列表
+      let departureStations = [];
+      const depCity = await stationService.getCityByStation(departureCityOrStation);
+      if (depCity) {
+        // 输入的是车站名，获取该车站所在城市的所有车站
+        departureStations = await stationService.getStationsByCity(depCity);
+      } else {
+        // 输入的是城市名，获取该城市所有车站
+        departureStations = await stationService.getStationsByCity(departureCityOrStation);
       }
       
-      const placeholders = trainNos.map(() => '?').join(',');
+      // 获取到达站点列表
+      let arrivalStations = [];
+      const arrCity = await stationService.getCityByStation(arrivalCityOrStation);
+      if (arrCity) {
+        // 输入的是车站名，获取该车站所在城市的所有车站
+        arrivalStations = await stationService.getStationsByCity(arrCity);
+      } else {
+        // 输入的是城市名，获取该城市所有车站
+        arrivalStations = await stationService.getStationsByCity(arrivalCityOrStation);
+      }
       
-      // 获取所有出发站
-      db.all(
-        `SELECT DISTINCT station FROM train_stops 
-         WHERE train_no IN (${placeholders}) 
-         ORDER BY station`,
-        trainNos,
-        (err, depStations) => {
-          if (err) {
-            db.close();
-            return reject(err);
-          }
-          
-          // 获取所有到达站
-          db.all(
-            `SELECT DISTINCT station FROM train_stops 
-             WHERE train_no IN (${placeholders}) 
-             ORDER BY station`,
-            trainNos,
-            (err, arrStations) => {
-              if (err) {
-                db.close();
-                return reject(err);
-              }
-              
-              // 获取所有席别类型
-              db.all(
-                `SELECT DISTINCT seat_type FROM train_cars 
-                 WHERE train_no IN (${placeholders}) 
-                 AND seat_type != '餐车'
-                 ORDER BY seat_type`,
-                trainNos,
-                (err, seatTypes) => {
-                  db.close();
-                  
-                  if (err) {
-                    return reject(err);
-                  }
-                  
-                  resolve({
-                    departureStations: depStations.map(s => s.station),
-                    arrivalStations: arrStations.map(s => s.station),
-                    seatTypes: seatTypes.map(s => s.seat_type)
-                  });
-                }
-              );
-            }
-          );
+      // 先搜索符合条件的车次，用于获取席别类型
+      const trains = await searchTrains(departureCityOrStation, arrivalCityOrStation, departureDate);
+      
+      // 从车次列表中提取席别类型
+      const seatTypesSet = new Set();
+      trains.forEach(train => {
+        if (train.availableSeats) {
+          Object.keys(train.availableSeats).forEach(seatType => {
+            seatTypesSet.add(seatType);
+          });
         }
-      );
+      });
+      
+      resolve({
+        departureStations: departureStations,
+        arrivalStations: arrivalStations,
+        seatTypes: Array.from(seatTypesSet)
+      });
     } catch (error) {
       reject(error);
     }

@@ -172,7 +172,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               {isLoading ? (
                 <div className="loading">加载中...</div>
               ) : error ? (
-                <div className="error-message">{error}</div>
+                <div className="order-confirmation-error-message">{error}</div>
               ) : orderInfo ? (
                 <>
                   <TrainInfoDisplay trainInfo={orderInfo.trainInfo} />
