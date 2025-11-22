@@ -212,3 +212,6 @@ frontend/node_modules/
 backend/node_modules/
 frontend/.vite/
 frontend/dist/
+
+# Database files (too large for GitHub without LFS)
+backend/database/railway.db
