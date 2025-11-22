@@ -196,6 +196,11 @@ async function getUserOrders(userId, options = {}) {
       WHERE user_id = ?
         AND created_at >= ?
         AND status != 'pending'
+        AND (
+          status != 'confirmed_unpaid' 
+          OR payment_expires_at IS NULL 
+          OR datetime('now') <= payment_expires_at
+        )
     `;
     
     const params = [String(userId), thirtyDaysAgoStr];
@@ -298,6 +303,11 @@ async function searchOrders(userId, searchCriteria) {
       FROM orders
       WHERE user_id = ?
         AND status != 'pending'
+        AND (
+          status != 'confirmed_unpaid' 
+          OR payment_expires_at IS NULL 
+          OR datetime('now') <= payment_expires_at
+        )
     `;
     
     const params = [String(userId)];
