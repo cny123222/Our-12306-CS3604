@@ -13,9 +13,6 @@ const OrderHistoryPage = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<any[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [keyword, setKeyword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,6 +45,7 @@ const OrderHistoryPage = () => {
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
+      setError('');
       const token = localStorage.getItem('authToken');
       const response = await fetch('/api/user/orders', {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -57,6 +55,8 @@ const OrderHistoryPage = () => {
         const data = await response.json();
         setOrders(data.orders || []);
         setFilteredOrders(data.orders || []);
+      } else {
+        setError('获取订单列表失败');
       }
     } catch (err) {
       setError('获取订单列表失败');
@@ -66,10 +66,6 @@ const OrderHistoryPage = () => {
   };
 
   const handleSearch = async (start: string, end: string, kw: string, searchType?: string) => {
-    setStartDate(start);
-    setEndDate(end);
-    setKeyword(kw);
-
     if (!start && !end && !kw) {
       setFilteredOrders(orders);
       return;
@@ -93,6 +89,7 @@ const OrderHistoryPage = () => {
       }
     } catch (err) {
       console.error('Search error:', err);
+      setError('搜索失败');
     }
   };
 
@@ -159,12 +156,18 @@ const OrderHistoryPage = () => {
         <SideMenu currentSection="train-orders" onMenuClick={handleMenuClick} />
 
         <div className="content-area">
-          <OrderListPanel
-            orders={filteredOrders}
-            onSearch={handleSearch}
-            onNavigateToTrainList={() => navigate('/')}
-            onOrderCancelled={fetchOrders}  // 订单取消后重新获取订单列表
-          />
+          {isLoading ? (
+            <div className="loading">加载中...</div>
+          ) : error ? (
+            <div className="error-message">{error}</div>
+          ) : (
+            <OrderListPanel
+              orders={filteredOrders}
+              onSearch={handleSearch}
+              onNavigateToTrainList={() => navigate('/')}
+              onOrderCancelled={fetchOrders}  // 订单取消后重新获取订单列表
+            />
+          )}
         </div>
       </div>
 
