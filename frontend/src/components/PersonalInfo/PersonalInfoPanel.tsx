@@ -22,7 +22,7 @@ interface PersonalInfoPanelProps {
   onEditContact?: () => void;
   onEditAdditional?: () => void;
   onNavigateToPhoneVerification?: () => void;
-  onSaveEmail?: (email: string) => void;
+  onSaveDiscountType?: (discountType: string) => void;
 }
 
 /**
@@ -34,13 +34,17 @@ const PersonalInfoPanel: React.FC<PersonalInfoPanelProps> = ({
   onEditContact,
   onEditAdditional,
   onNavigateToPhoneVerification,
-  onSaveEmail
+  onSaveDiscountType
 }) => {
   const [isEditingContact, setIsEditingContact] = useState(false);
 
   const handleEditContact = () => {
     setIsEditingContact(true);
     onEditContact?.();
+  };
+
+  const handleSaveContact = () => {
+    setIsEditingContact(false);
   };
 
   const handleEditAdditional = () => {
@@ -64,13 +68,14 @@ const PersonalInfoPanel: React.FC<PersonalInfoPanelProps> = ({
         email={userInfo.email}
         isEditing={isEditingContact}
         onEdit={handleEditContact}
+        onSave={handleSaveContact}
         onNavigateToPhoneVerification={onNavigateToPhoneVerification}
-        onSaveEmail={onSaveEmail}
       />
       
       <AdditionalInfoSection
         discountType={userInfo.discountType}
         onEdit={handleEditAdditional}
+        onSaveDiscountType={onSaveDiscountType}
       />
     </div>
   );

@@ -7,46 +7,36 @@ interface ContactInfoSectionProps {
   email: string;
   isEditing?: boolean;
   onEdit?: () => void;
+  onSave?: () => void;
   onNavigateToPhoneVerification?: () => void;
-  onSaveEmail?: (email: string) => void;
 }
 
 /**
  * UI-ContactInfoSection: 联系方式模块组件
- * 显示手机号和邮箱信息，支持编辑
+ * 显示手机号和邮箱信息，支持编辑手机号
  */
 const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
   phone,
   email,
   isEditing = false,
   onEdit,
-  onNavigateToPhoneVerification,
-  onSaveEmail
+  onSave,
+  onNavigateToPhoneVerification
 }) => {
-  const [editingEmail, setEditingEmail] = useState(email);
   const [localIsEditing, setLocalIsEditing] = useState(false);
 
-  // 当email prop变化时，同步更新editingEmail
-  React.useEffect(() => {
-    setEditingEmail(email);
-  }, [email]);
-
   const handleEdit = () => {
-    setEditingEmail(email); // 确保编辑时从最新的email开始
     setLocalIsEditing(true);
     onEdit?.();
   };
 
-  const handleSave = async () => {
-    if (onSaveEmail && editingEmail !== email) {
-      await onSaveEmail(editingEmail);
-    }
+  const handleSave = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('保存按钮被点击');
+    // 退出编辑模式，手机号已通过手机核验页面更新
     setLocalIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    setEditingEmail(email); // 恢复原值
-    setLocalIsEditing(false); // 退出编辑模式
+    onSave?.();
   };
 
   const showEditing = isEditing || localIsEditing;
@@ -61,7 +51,11 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
     <div className="contact-info-section">
       <div className="section-header">
         <h3 className="section-title">联系方式</h3>
-        {!showEditing && (
+        {showEditing ? (
+          <button className="save-button" onClick={handleSave}>
+            保存
+          </button>
+        ) : (
           <button className="edit-button" onClick={handleEdit}>
             编辑
           </button>
@@ -74,24 +68,18 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           </span>
           <div className="info-value-group">
             <span className="info-value">{formatPhone(phone)}</span>
-            <span className="verification-status">已通过核验</span>
+            {showEditing ? (
+              <span className="phone-verification-text">
+                去<span className="phone-verification-link" onClick={onNavigateToPhoneVerification}>手机核验</span>修改
+              </span>
+            ) : (
+              <span className="verification-status">已通过核验</span>
+            )}
           </div>
         </div>
         <div className="info-row">
           <span className="info-label">邮箱：</span>
-          {showEditing ? (
-            <div className="email-edit-group">
-              <input
-                type="email"
-                className="email-input"
-                value={editingEmail}
-                onChange={(e) => setEditingEmail(e.target.value)}
-                placeholder="请输入邮箱"
-              />
-            </div>
-          ) : (
-            <span className="info-value">{email || ''}</span>
-          )}
+          <span className="info-value">{email || ''}</span>
         </div>
       </div>
     </div>
