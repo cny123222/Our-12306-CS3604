@@ -44,9 +44,6 @@
     ],
     "fares": {
       "currency": "CNY",
-      "second_class": 662,
-      "first_class": 1060,
-      "business": 2318,
       "segments": [
         { "from": "北京南", "to": "沧州西", "distance_km": 210, "second_class": 116, "first_class": 185, "business": 404 },
         { "from": "沧州西", "to": "济南西", "distance_km": 196, "second_class": 107, "first_class": 172, "business": 378 },
@@ -108,9 +105,6 @@
     ],
     "fares": {
       "currency": "CNY",
-      "second_class": 662,
-      "first_class": 1060,
-      "business": 2318,
       "segments": [
         { "from": "上海虹桥", "to": "无锡东", "distance_km": 108, "second_class": 47,  "first_class": 76,  "business": 166 },
         { "from": "无锡东", "to": "南京南", "distance_km": 187, "second_class": 82,  "first_class": 132, "business": 288 },
@@ -168,9 +162,6 @@
     ],
     "fares": {
       "currency": "CNY",
-      "second_class": 517,
-      "hard_sleeper": 1170,
-      "soft_sleeper": 1420,
       "segments": [
         { "from": "上海", "to": "无锡", "distance_km": 126, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
         { "from": "无锡", "to": "南京", "distance_km": 175, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
@@ -224,9 +215,6 @@
     ],
     "fares": {
       "currency": "CNY",
-      "second_class": 517,
-      "hard_sleeper": 1170,
-      "soft_sleeper": 1420,
       "segments": [
         { "from": "北京南", "to": "天津西", "distance_km": 144, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
         { "from": "天津西", "to": "南京", "distance_km": 1014, "second_class": 400, "hard_sleeper": 600, "soft_sleeper": 700 },

@@ -23,7 +23,8 @@ const PurchaseInfoTable: React.FC<PurchaseInfoTableProps> = ({
   fareInfo,
 }) => {
   // 如果没有选择乘客，显示一个默认的空行
-  const displayInfo = purchaseInfo.length === 0 
+  const isEmptyRow = purchaseInfo.length === 0;
+  const displayInfo = isEmptyRow 
     ? [{
         passenger: { name: '', idCardType: '居民身份证', idCardNumber: '' },
         ticketType: '成人票',
@@ -52,9 +53,9 @@ const PurchaseInfoTable: React.FC<PurchaseInfoTableProps> = ({
             ticketType={info.ticketType}
             seatType={info.seatType}
             availableSeatTypes={availableSeatTypes}
-            onSeatTypeChange={(seatType) => onSeatTypeChange(index, seatType)}
-            onTicketTypeChange={(ticketType) => onTicketTypeChange(index, ticketType)}
-            onDelete={onDeleteRow ? () => onDeleteRow(index) : undefined}
+            onSeatTypeChange={isEmptyRow ? () => {} : (seatType) => onSeatTypeChange(index, seatType)}
+            onTicketTypeChange={isEmptyRow ? () => {} : (ticketType) => onTicketTypeChange(index, ticketType)}
+            onDelete={onDeleteRow && !isEmptyRow ? () => onDeleteRow(index) : undefined}
             fareInfo={fareInfo}
           />
         ))}

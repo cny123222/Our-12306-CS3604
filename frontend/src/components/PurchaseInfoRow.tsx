@@ -55,6 +55,9 @@ const PurchaseInfoRow: React.FC<PurchaseInfoRowProps> = ({
     return idNumber.substring(0, 4) + '************' + idNumber.substring(idNumber.length - 4);
   };
   
+  // 防御性编程：确保 passenger 对象存在
+  const safePassenger = passenger || { name: '', idCardType: '居民身份证', idCardNumber: '' };
+  
   return (
     <div className="purchase-info-row">
       <div className="row-cell">{sequence}</div>
@@ -75,18 +78,18 @@ const PurchaseInfoRow: React.FC<PurchaseInfoRowProps> = ({
         />
       </div>
       <div className="row-cell">
-        <input type="text" value={passenger.name} readOnly className="readonly-input" />
+        <input type="text" value={safePassenger.name} readOnly className="readonly-input" />
       </div>
       <div className="row-cell">
         <SelectDropdown
           options={idCardTypeOptions}
-          value={passenger.idCardType || '居民身份证'}
+          value={safePassenger.idCardType || '居民身份证'}
           onChange={() => {}}
           placeholder="证件类型"
         />
       </div>
       <div className="row-cell">
-        <input type="text" value={maskIdNumber(passenger.idCardNumber)} readOnly className="readonly-input" />
+        <input type="text" value={maskIdNumber(safePassenger.idCardNumber)} readOnly className="readonly-input" />
       </div>
       <div className="row-cell row-cell-delete">
         {onDelete && (

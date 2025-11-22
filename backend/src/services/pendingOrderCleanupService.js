@@ -17,108 +17,91 @@ function getDatabase() {
 
 /**
  * 清理超过10分钟的pending订单
+ * 先释放座位，再删除订单
  * @returns {Promise<{ordersDeleted: number, detailsDeleted: number}>}
  */
 async function cleanupExpiredPendingOrders() {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const db = getDatabase();
+    const orderService = require('./orderService');
     
-    db.serialize(() => {
-      // 开始事务
-      db.run('BEGIN TRANSACTION', (err) => {
-        if (err) {
-          console.error('[订单清理] 开始事务失败:', err.message);
-          db.close();
-          return reject(err);
-        }
+    try {
+      // 查询过期的pending订单
+      const expiredOrders = await new Promise((resolve, reject) => {
+        db.all(
+          `SELECT id FROM orders 
+           WHERE status = 'pending' 
+           AND created_at < datetime('now', '-10 minutes')`,
+          (err, orders) => {
+            if (err) return reject(err);
+            resolve(orders || []);
+          }
+        );
       });
       
-      // 查询超过10分钟的pending订单数量
-      db.get(
-        `SELECT COUNT(*) as count FROM orders 
-         WHERE status = 'pending' 
-         AND created_at < datetime('now', '-10 minutes')`,
-        (err, row) => {
-          if (err) {
-            console.error('[订单清理] 查询超时订单数量失败:', err.message);
-            db.run('ROLLBACK');
-            db.close();
-            return reject(err);
-          }
+      db.close();
+      
+      if (expiredOrders.length === 0) {
+        return resolve({ ordersDeleted: 0, detailsDeleted: 0 });
+      }
+      
+      console.log(`[订单清理] 发现 ${expiredOrders.length} 个超时pending订单，开始清理...`);
+      
+      let detailsDeleted = 0;
+      let ordersDeleted = 0;
+      
+      // 逐个处理过期订单（不使用事务，避免数据库锁定冲突）
+      for (const order of expiredOrders) {
+        try {
+          // 尝试释放座位锁定（releaseSeatLocks内部会打开自己的数据库连接）
+          // 对于pending订单，如果有座位信息（虽然正常情况下不应该有），也会被释放
+          await orderService.releaseSeatLocks(order.id);
           
-          const expiredCount = row.count;
+          // 为每个删除操作创建新的数据库连接
+          const deleteDb = getDatabase();
           
-          // 如果没有超时订单，直接提交事务并返回
-          if (expiredCount === 0) {
-            db.run('COMMIT', (err) => {
-              if (err) {
-                console.error('[订单清理] 提交事务失败:', err.message);
+          // 删除订单明细
+          const detailsResult = await new Promise((resolve, reject) => {
+            deleteDb.run(
+              'DELETE FROM order_details WHERE order_id = ?',
+              [order.id],
+              function(err) {
+                if (err) return reject(err);
+                resolve(this.changes);
               }
-              db.close();
-              resolve({ ordersDeleted: 0, detailsDeleted: 0 });
-            });
-            return;
-          }
+            );
+          });
+          detailsDeleted += detailsResult;
           
-          console.log(`[订单清理] 发现 ${expiredCount} 个超时pending订单，开始清理...`);
-          
-          // 删除超时订单的order_details记录
-          db.run(
-            `DELETE FROM order_details 
-             WHERE order_id IN (
-               SELECT id FROM orders 
-               WHERE status = 'pending' 
-               AND created_at < datetime('now', '-10 minutes')
-             )`,
-            function(err) {
-              if (err) {
-                console.error('[订单清理] 删除order_details失败:', err.message);
-                db.run('ROLLBACK');
-                db.close();
-                return reject(err);
+          // 删除订单
+          const ordersResult = await new Promise((resolve, reject) => {
+            deleteDb.run(
+              'DELETE FROM orders WHERE id = ?',
+              [order.id],
+              function(err) {
+                if (err) return reject(err);
+                resolve(this.changes);
               }
-              
-              const detailsDeleted = this.changes;
-              
-              // 删除超时订单
-              db.run(
-                `DELETE FROM orders 
-                 WHERE status = 'pending' 
-                 AND created_at < datetime('now', '-10 minutes')`,
-                function(err) {
-                  if (err) {
-                    console.error('[订单清理] 删除orders失败:', err.message);
-                    db.run('ROLLBACK');
-                    db.close();
-                    return reject(err);
-                  }
-                  
-                  const ordersDeleted = this.changes;
-                  
-                  // 提交事务
-                  db.run('COMMIT', (err) => {
-                    if (err) {
-                      console.error('[订单清理] 提交事务失败:', err.message);
-                      db.run('ROLLBACK');
-                      db.close();
-                      return reject(err);
-                    }
-                    
-                    db.close();
-                    
-                    if (ordersDeleted > 0) {
-                      console.log(`[订单清理] ✅ 清理完成，删除了 ${ordersDeleted} 个订单，${detailsDeleted} 条订单明细`);
-                    }
-                    
-                    resolve({ ordersDeleted, detailsDeleted });
-                  });
-                }
-              );
-            }
-          );
+            );
+          });
+          ordersDeleted += ordersResult;
+          
+          deleteDb.close();
+        } catch (error) {
+          console.error(`[订单清理] 清理订单 ${order.id} 失败:`, error.message);
+          // 继续处理其他订单
         }
-      );
-    });
+      }
+      
+      if (ordersDeleted > 0) {
+        console.log(`[订单清理] ✅ 清理完成，删除了 ${ordersDeleted} 个订单，${detailsDeleted} 条订单明细`);
+      }
+      
+      resolve({ ordersDeleted, detailsDeleted });
+    } catch (error) {
+      console.error('[订单清理] 清理过程出错:', error);
+      reject(error);
+    }
   });
 }
 

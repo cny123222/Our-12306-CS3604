@@ -17,93 +17,141 @@ function getDatabase() {
 
 /**
  * 预订车票
+ * 支持跨区间座位预订，正确处理日期过滤
  */
 async function reserveTicket(trainNo, departureStation, arrivalStation, departureDate, seatType, passengerId, userId) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const db = getDatabase();
     
-    // 首先检查是否有余票
-    db.all(
-      `SELECT DISTINCT seat_no 
-       FROM seat_status 
-       WHERE train_no = ? 
-       AND seat_type = ?`,
-      [trainNo, seatType],
-      async (err, seats) => {
-        if (err) {
-return reject(err);
-        }
-        
-        // 获取途经站点
+    try {
+      // 步骤1: 获取出发站和到达站之间的所有途经站点
+      const stops = await new Promise((resolve, reject) => {
         db.all(
-          'SELECT station FROM train_stops WHERE train_no = ? AND station IN (?, ?) ORDER BY seq',
-          [trainNo, departureStation, arrivalStation],
+          `SELECT station FROM train_stops 
+           WHERE train_no = ? 
+           AND seq >= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
+           AND seq <= (SELECT seq FROM train_stops WHERE train_no = ? AND station = ?)
+           ORDER BY seq`,
+          [trainNo, trainNo, departureStation, trainNo, arrivalStation],
           (err, stops) => {
-            if (err || stops.length < 2) {
-return reject(new Error('站点信息错误'));
-            }
-            
-            // 查找全程空闲的座位
-            let availableSeat = null;
-            let checked = 0;
-            
-            for (const { seat_no } of seats) {
-              db.all(
-                `SELECT status 
-                 FROM seat_status 
-                 WHERE train_no = ? 
-                 AND seat_type = ? 
-                 AND seat_no = ? 
-                 AND from_station = ? 
-                 AND to_station = ?`,
-                [trainNo, seatType, seat_no, departureStation, arrivalStation],
-                (err, statuses) => {
-                  if (!err && statuses.length > 0 && statuses.every(s => s.status === 'available')) {
-                    if (!availableSeat) {
-                      availableSeat = seat_no;
-                    }
-                  }
-                  
-                  checked++;
-                  
-                  if (checked === seats.length) {
-                    if (!availableSeat) {
-return resolve({ success: false, error: '手慢了，该车次车票已售罄！' });
-                    }
-                    
-                    // 创建订单
-                    const orderId = uuidv4();
-                    
-                    // 更新座位状态
-                    db.run(
-                      `UPDATE seat_status 
-                       SET status = 'booked', booked_by = ?, booked_at = datetime('now')
-                       WHERE train_no = ? 
-                       AND seat_type = ? 
-                       AND seat_no = ? 
-                       AND from_station = ? 
-                       AND to_station = ?`,
-                      [userId || passengerId, trainNo, seatType, availableSeat, departureStation, arrivalStation],
-                      (err) => {
-if (err) {
-                          return reject(err);
-                        }
-                        
-                        resolve({ 
-                          success: true, 
-                          orderId: orderId,
-                          seatNo: availableSeat
-                        });
-                      }
-                    );
-                  }
-                }
-              );
-            }
+            if (err) return reject(err);
+            resolve(stops);
           }
         );
+      });
+      
+      if (!stops || stops.length < 2) {
+        db.close();
+        return reject(new Error('站点信息错误'));
       }
-    );
+      
+      // 步骤2: 构建所有区间段
+      const segments = [];
+      for (let i = 0; i < stops.length - 1; i++) {
+        segments.push({
+          from: stops[i].station,
+          to: stops[i + 1].station
+        });
+      }
+      
+      // 步骤3: 获取该席别的所有座位（包含日期过滤）
+      const allSeats = await new Promise((resolve, reject) => {
+        db.all(
+          `SELECT DISTINCT seat_no 
+           FROM seat_status 
+           WHERE train_no = ? 
+           AND departure_date = ?
+           AND seat_type = ?`,
+          [trainNo, departureDate, seatType],
+          (err, seats) => {
+            if (err) return reject(err);
+            resolve(seats);
+          }
+        );
+      });
+      
+      if (!allSeats || allSeats.length === 0) {
+        db.close();
+        return resolve({ success: false, error: '手慢了，该车次车票已售罄！' });
+      }
+      
+      // 步骤4: 找到第一个在所有区间都是available的座位
+      let selectedSeatNo = null;
+      
+      for (const seat of allSeats) {
+        // 检查该座位在所有区间是否都是available
+        const segmentConditions = segments.map(() => 
+          '(from_station = ? AND to_station = ?)'
+        ).join(' OR ');
+        
+        const segmentParams = segments.flatMap(s => [s.from, s.to]);
+        
+        const seatStatuses = await new Promise((resolve, reject) => {
+          db.all(
+            `SELECT status 
+             FROM seat_status 
+             WHERE train_no = ? 
+             AND departure_date = ?
+             AND seat_type = ? 
+             AND seat_no = ? 
+             AND (${segmentConditions})`,
+            [trainNo, departureDate, seatType, seat.seat_no, ...segmentParams],
+            (err, statuses) => {
+              if (err) return reject(err);
+              resolve(statuses);
+            }
+          );
+        });
+        
+        // 检查是否所有区间都是available
+        if (seatStatuses.length === segments.length) {
+          const allAvailable = seatStatuses.every(s => s.status === 'available');
+          if (allAvailable) {
+            selectedSeatNo = seat.seat_no;
+            break;
+          }
+        }
+      }
+      
+      if (!selectedSeatNo) {
+        db.close();
+        return resolve({ success: false, error: '手慢了，该车次车票已售罄！' });
+      }
+      
+      // 步骤5: 更新所有区间的座位状态为已预定
+      const orderId = uuidv4();
+      
+      for (const segment of segments) {
+        await new Promise((resolve, reject) => {
+          db.run(
+            `UPDATE seat_status 
+             SET status = 'booked', booked_by = ?, booked_at = datetime('now')
+             WHERE train_no = ? 
+             AND departure_date = ?
+             AND seat_type = ? 
+             AND seat_no = ? 
+             AND from_station = ? 
+             AND to_station = ?`,
+            [userId || passengerId, trainNo, departureDate, seatType, selectedSeatNo, segment.from, segment.to],
+            (err) => {
+              if (err) return reject(err);
+              resolve(true);
+            }
+          );
+        });
+      }
+      
+      db.close();
+      resolve({ 
+        success: true, 
+        orderId: orderId,
+        seatNo: selectedSeatNo
+      });
+      
+    } catch (error) {
+      db.close();
+      reject(error);
+    }
   });
 }
 
