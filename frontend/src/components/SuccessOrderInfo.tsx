@@ -49,19 +49,13 @@ const SuccessOrderInfo: React.FC<SuccessOrderInfoProps> = ({
         <div className="success-order-warm-tips-content">
           <h3 className="success-order-tips-title">温馨提示：</h3>
           <ol className="success-order-tips-list">
-            <li className="success-order-tip-item">请在指定时间内完成网上支付。</li>
-            <li className="success-order-tip-item">逾期未支付，系统将取消本次交易。</li>
-            <li className="success-order-tip-item">在完成支付或取消本订单之前，您将无法购买其他车票。</li>
+            <li className="success-order-tip-item">如需换票，请尽早携带购票时使用的乘车人有效身份证件到车站、售票窗口、自动售（取）票机、铁路客票代售点办理。</li>
+            <li className="success-order-tip-item">请乘车人持购票时使用的有效证件按时乘车。</li>
             <li className="success-order-tip-item">
-              退票政策收获现：<a href="#" onClick={(e) => e.preventDefault()}>退改说明</a>
+              投保后可于凭保单号"查看电子保单"查看保单（登陆<a href="#" onClick={(e) => e.preventDefault()}>中国铁路保险www.china-ric.com</a> 查看电子保单）。
             </li>
-            <li className="success-order-tip-item">购买铁路乘意险保障您的出行安全，提供意外伤害身故伤残、意外伤害医疗费用、意外伤害住院津贴、突发急性病身故保障，同时保障您和随行被监护人因意疏忽过失造成第三人身伤亡和财产损失依法应由您承担的直接经济赔偿责任，详见保险条款</li>
-            <li className="success-order-tip-item">
-              请充分理解保险责任、责任免除、保险期间、合同解除等约定，详见保险条款，凭保单号或保单查询号登录<a href="#" onClick={(e) => e.preventDefault()}>www.china-ric.com</a> 查看电子保单或下载电子发票。
-            </li>
-            <li className="success-order-tip-item">如因运力原因或其他不可控因素致列车调度调整时，当前车型可能会发生变动。</li>
-            <li className="success-order-tip-item">跨境旅客旅行须知详见跨境旅客相关运输组织规则和车站公告。</li>
-            <li className="success-order-tip-item">未尽事宜详见《国铁集团铁路旅客运输规程》等有关规定和车站公告。</li>
+            <li className="success-order-tip-item">完成微信或付宝绑定后，购票、改签、退票、购买餐食险、退票爱路险的通知消息，将会通过微信或付宝通知提醒发送给您；手机号码换频、通过手机号码投回密码、列车运行调整的通知仍然通过短信发送给您。</li>
+            <li className="success-order-tip-item">未尽事宜详见《铁路旅客运输规程》等有关规定和车站公告。</li>
           </ol>
         </div>
         
