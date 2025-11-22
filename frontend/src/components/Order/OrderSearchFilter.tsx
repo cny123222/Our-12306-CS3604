@@ -77,10 +77,10 @@ const OrderSearchFilter: React.FC<OrderSearchFilterProps> = ({
         maxDate: maxDate.toISOString().split('T')[0]
       };
     } else {
-      // 未出行订单：今天到未来14天
+      // 未出行订单：今天到未来15天
       const minDate = new Date(today);
       const maxDate = new Date(today);
-      maxDate.setDate(today.getDate() + 13); // 14天内（包括今天）
+      maxDate.setDate(today.getDate() + 14); // 15天内（包括今天）
       
       return {
         minDate: minDate.toISOString().split('T')[0],

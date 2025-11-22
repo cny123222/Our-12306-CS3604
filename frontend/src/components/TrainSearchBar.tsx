@@ -193,7 +193,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
             value={departureDate}
             onChange={handleDepartureDateChange}
             minDate={getTodayString()}
-            maxDate={getDateAfterDays(13)}
+            maxDate={getDateAfterDays(14)}
           />
         </div>
         
@@ -204,7 +204,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
             value={returnDate}
             onChange={setReturnDate}
             minDate={getTodayString()}
-            maxDate={getDateAfterDays(13)}
+            maxDate={getDateAfterDays(14)}
             disabled={true}
           />
         </div>

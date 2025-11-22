@@ -32,15 +32,15 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, minDate, maxDa
       min = today;
     }
     
-    // 处理最大日期：如果传入了 maxDate 且不为空，使用它；否则使用今天+13天（向后兼容，14天内）
+    // 处理最大日期：如果传入了 maxDate 且不为空，使用它；否则使用今天+14天（向后兼容，15天内）
     let max: Date;
     if (maxDate && maxDate.trim() !== '') {
       max = new Date(maxDate);
       max.setHours(0, 0, 0, 0);
     } else {
-      // 默认：今天起14天
+      // 默认：今天起15天
       max = new Date(today);
-      max.setDate(today.getDate() + 13);
+      max.setDate(today.getDate() + 14);
     }
     
     return { min, max };
