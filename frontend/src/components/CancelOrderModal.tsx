@@ -28,12 +28,8 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           <div className="cancel-order-modal-content-wrapper">
             <div className="cancel-order-icon">
               <img 
-                src="/images/question-mark.png" 
-                alt="问号" 
-                onError={(e) => {
-                  // 如果图片加载失败，显示文字
-                  e.currentTarget.style.display = 'none';
-                }}
+                src="/images/问号.png" 
+                alt="问号"
               />
             </div>
             <div className="cancel-order-text-content">
