@@ -7,7 +7,7 @@ import './OrderListPanel.css';
 
 interface OrderListPanelProps {
   orders: any[];
-  onSearch: (startDate: string, endDate: string, keyword: string) => void;
+  onSearch: (startDate: string, endDate: string, keyword: string, searchType?: string) => void;
   onNavigateToTrainList: () => void;
   onOrderCancelled?: () => void;  // 订单取消后的回调
 }

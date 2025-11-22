@@ -248,7 +248,7 @@ router.put('/discount-type', testAuth, async (req, res) => {
 router.get('/orders', testAuth, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { startDate, endDate, keyword } = req.query;
+    const { startDate, endDate, keyword, searchType } = req.query;
     
     let orders;
     
@@ -257,13 +257,15 @@ router.get('/orders', testAuth, async (req, res) => {
       orders = await userInfoDbService.searchOrders(userId, {
         keyword,
         startDate,
-        endDate
+        endDate,
+        searchType
       });
     } else {
       // 使用普通查询
       orders = await userInfoDbService.getUserOrders(userId, {
         startDate,
-        endDate
+        endDate,
+        searchType
       });
     }
     
