@@ -5,8 +5,7 @@ import TrainListTopBar from '../components/TrainListTopBar';
 import MainNavigation from '../components/MainNavigation';
 import BottomNavigation from '../components/BottomNavigation';
 import SuccessBanner from '../components/SuccessBanner';
-import OrderInfoDisplay from '../components/OrderInfoDisplay';
-import WarmTipsSection from '../components/WarmTipsSection';
+import SuccessOrderInfo from '../components/SuccessOrderInfo';
 
 /**
  * 购票成功页
@@ -122,14 +121,9 @@ const SuccessfulPurchasePage: React.FC = () => {
 
   const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
 
-  // 购票成功页温馨提示内容
-  const successWarmTips = [
-    '如需换票，请尽早携带购票时使用的乘车人有效身份证件到车站、售票窗口、自动售（取）票机、铁路客票代售点办理。',
-    '请乘车人持购票时使用的有效证件按时乘车。',
-    '投保后可在"我的12306-我的保险"查看电子保单号（登陆中国铁路保险www.china-ric.com 查看电子保单）。',
-    '完成微信或支付宝绑定后，购票、购买乘意险、退乘意险的通知消息，将会通过微信或支付宝通知提醒发送给您；手机号码核验、通过手机号码找回密码、列车运行调整的通知仍然通过短信发送给您。',
-    '未尽事宜详见《铁路旅客运输规程》等有关规定和车站公告。'
-  ];
+  const handleFoodClick = () => {
+    // 餐饮特产功能
+  };
 
   if (isLoading) {
     return (
@@ -170,78 +164,17 @@ const SuccessfulPurchasePage: React.FC = () => {
           />
         )}
 
-        {/* 订单信息与乘车信息区 */}
+        {/* 订单信息区（包含所有内容） */}
         {orderData && (
-          <OrderInfoDisplay
+          <SuccessOrderInfo
             trainInfo={orderData.trainInfo}
             passengers={orderData.passengers}
             totalPrice={orderData.totalPrice}
+            onFoodClick={handleFoodClick}
+            onContinuePurchase={handleContinuePurchase}
+            onViewDetails={handleViewOrderDetails}
           />
         )}
-
-        {/* 操作按钮 */}
-        <div className="success-actions">
-          <button
-            className="success-button food-button"
-            onClick={() => {}}
-          >
-            餐饮·特产
-          </button>
-          <button
-            className="success-button continue-button"
-            onClick={handleContinuePurchase}
-          >
-            继续购票
-          </button>
-          <button
-            className="success-button view-details-button"
-            onClick={handleViewOrderDetails}
-          >
-            查询订单详情
-          </button>
-        </div>
-
-        {/* 温馨提示面板与广告面板 */}
-        <div className="success-bottom-section">
-          <div className="success-warm-tips">
-            <WarmTipsSection tips={successWarmTips} variant="default" />
-          </div>
-          
-          {/* 电子客票二维码区域 */}
-          <div className="qr-codes-section">
-            <div className="qr-code-item">
-              <img 
-                src="/images/wechat-qr.png" 
-                alt="微信二维码"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-              <p className="qr-code-text">使用微信扫一扫，可通过微信接收12306行程通知</p>
-            </div>
-            <div className="qr-code-item">
-              <img 
-                src="/images/alipay-qr.png" 
-                alt="支付宝二维码"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-              <p className="qr-code-text">使用支付宝扫一扫，可通过支付宝通知提醒接收12306行程通知</p>
-            </div>
-          </div>
-
-          {/* 广告区域 */}
-          <div className="advertisement-section">
-            <img 
-              src="/images/advertisement.png" 
-              alt="广告"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          </div>
-        </div>
       </main>
 
       <BottomNavigation />

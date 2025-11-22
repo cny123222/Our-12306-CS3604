@@ -25,9 +25,9 @@ const SuccessBanner: React.FC<SuccessBannerProps> = ({
         <div className="success-title-row">
           <span className="success-title">交易已成功！</span>
           <span className="success-thanks">感谢您选择铁路出行！</span>
-        </div>
-        <div className="success-order-info">
-          您的订单号：<span className="order-number">{orderNumber}</span>
+          <span className="success-order-info">
+            您的订单号：<span className="order-number">{orderNumber}</span>
+          </span>
         </div>
         <div className="success-passenger-info">
           {passengers.map((p, index) => (
