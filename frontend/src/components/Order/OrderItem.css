@@ -57,6 +57,7 @@
   border-top: 1px solid #d0d0d0;
   padding: 0;
   gap: 0;
+  border-bottom: 1px solid #d0d0d0;
 }
 
 /* 车次信息列（左侧，只显示一次）*/
@@ -141,7 +142,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 2px;
+  gap: 4px;
   min-width: 120px;
   padding: 0 10px;
   border-right: 1px solid #e8e8e8;
@@ -266,6 +267,7 @@
 .order-item-cancel-button {
   background-color: #fff;
   color: #666;
+  border-radius: 5px;
 }
 
 .order-item-cancel-button:hover {
@@ -277,6 +279,7 @@
   background-color: #ff7200;
   color: #fff;
   border-color: #ff7200;
+  border-radius: 5px;
 }
 
 .order-item-pay-button:hover {

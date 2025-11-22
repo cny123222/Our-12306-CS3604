@@ -92,18 +92,15 @@ const PaymentCountdownTimer: React.FC<PaymentCountdownTimerProps> = ({
   const isWarning = timeRemaining < 300; // 小于5分钟时显示警告
 
   return (
-    <div className={`payment-countdown ${isExpired ? 'expired' : ''} ${isWarning ? 'warning' : ''}`}>
-      <div className="countdown-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="currentColor"/>
-        </svg>
+    <div className={`payment-countdown-timer ${isExpired ? 'payment-countdown-expired' : ''} ${isWarning ? 'payment-countdown-warning' : ''}`}>
+      <div className="payment-countdown-icon">
+        <img src="/images/lock.png" alt="锁定" />
       </div>
-      <span className="countdown-text">
-        席位已锁定，请在提示时间内尽快完成支付，完成网上购票，支付剩余时间：{formatTime(timeRemaining)}
+      <span className="payment-countdown-text">
+        席位已锁定，请在提示时间内尽快完成支付，完成网上购票。支付剩余时间：<span className="payment-countdown-time">{formatTime(timeRemaining)}</span>
       </span>
     </div>
   );
 };
 
 export default PaymentCountdownTimer;
-
