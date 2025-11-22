@@ -217,14 +217,19 @@ const TrainListPage: React.FC = () => {
       departureDate: searchParams.departureDate
     });
     
+    console.log('Actual train stations:', {
+      departureStation: train.departureStation,
+      arrivalStation: train.arrivalStation
+    });
+    
     // 跳转到订单填写页，传递完整的车次信息
-    // 使用原始搜索参数而不是车次数据中的站点信息
+    // 重要：使用车次的实际车站名（如"沧州西"），而不是搜索参数中的城市名（如"沧州"）
     navigate('/order', { 
       state: { 
         trainNo: train.trainNo,
-        departureStation: searchParams.departureStation,
-        arrivalStation: searchParams.arrivalStation,
-        departureDate: searchParams.departureDate
+        departureStation: train.departureStation,  // 使用车次的实际出发车站
+        arrivalStation: train.arrivalStation,      // 使用车次的实际到达车站
+        departureDate: train.departureDate
       } 
     });
   };
