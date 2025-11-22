@@ -10,6 +10,7 @@ interface TrainSearchBarProps {
   initialArrivalStation: string;
   initialDepartureDate: string;
   onSearch: (params: any) => void;
+  onDateUpdate?: (date: string) => void; // 新增：日期更新回调（不触发搜索）
 }
 
 /**
@@ -20,6 +21,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
   initialArrivalStation,
   initialDepartureDate,
   onSearch,
+  onDateUpdate,
 }) => {
   const [tripType, setTripType] = useState<'single' | 'round'>('single'); // 单程/往返
   const [ticketType, setTicketType] = useState<'normal' | 'student'>('normal'); // 普通/学生
@@ -55,16 +57,12 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
     }
   }, [initialArrivalStation]);
 
-  // 处理日期改变 - 立即触发搜索（双向同步）
+  // 处理日期改变 - 只更新状态和日期标签显示，不触发搜索（等待点击查询按钮）
   const handleDepartureDateChange = (newDate: string) => {
     setDepartureDate(newDate);
-    // 立即触发搜索，实现与标签的双向同步
-    if (departureStation && arrivalStation) {
-      onSearch({
-        departureStation,
-        arrivalStation,
-        departureDate: newDate,
-      });
+    // 通知父组件更新日期（用于同步日期标签显示），但不触发搜索
+    if (onDateUpdate) {
+      onDateUpdate(newDate);
     }
   };
 
