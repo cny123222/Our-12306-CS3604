@@ -73,25 +73,26 @@
   flex: 1;
 }
 
-.qr-codes-section {
+/* 为支付成功页面的二维码区域添加前缀，避免与底部导航栏样式冲突 */
+.successful-purchase-page .qr-codes-section {
   display: flex;
   flex-direction: column;
   gap: 20px;
   margin-left: 20px;
 }
 
-.qr-code-item {
+.successful-purchase-page .qr-code-item {
   text-align: center;
 }
 
-.qr-code-item img {
+.successful-purchase-page .qr-code-item img {
   width: 150px;
   height: 150px;
   border: 1px solid #e0e0e0;
   margin-bottom: 10px;
 }
 
-.qr-code-text {
+.successful-purchase-page .qr-code-text {
   font-size: 12px;
   color: #666;
   margin: 0;
@@ -113,7 +114,7 @@
     flex-direction: column;
   }
 
-  .qr-codes-section {
+  .successful-purchase-page .qr-codes-section {
     margin-left: 0;
     flex-direction: row;
     justify-content: center;
