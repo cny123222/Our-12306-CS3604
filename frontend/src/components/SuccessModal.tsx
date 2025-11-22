@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './SuccessModal.css';
 
 interface SuccessModalProps {
@@ -24,7 +25,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
     return null;
   }
 
-  return (
+  const modalContent = (
     <>
       <div 
         data-testid="modal-overlay" 
@@ -44,6 +45,8 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
       </div>
     </>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default SuccessModal;

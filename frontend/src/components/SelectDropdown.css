@@ -4,6 +4,12 @@
   width: 100%;
   cursor: pointer;
   user-select: none;
+  z-index: 1; /* 默认层级 */
+}
+
+/* 展开时提升z-index，确保下拉选项显示在其他行之上 */
+.select-dropdown.expanded {
+  z-index: 10000;
 }
 
 .select-dropdown.disabled {

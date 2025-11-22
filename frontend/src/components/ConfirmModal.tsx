@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './ConfirmModal.css';
 
 interface ConfirmModalProps {
@@ -13,7 +14,7 @@ interface ConfirmModalProps {
 
 /**
  * 确认弹窗组件
- * 骨架实现：仅包含组件结构，不实现真实逻辑
+ * 使用 React Portal 渲染到 body，避免被父元素样式限制
  */
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isVisible,
@@ -26,29 +27,32 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 }) => {
   if (!isVisible) return null;
 
-  return (
-    <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">{title}</h3>
-        </div>
-        <div className="modal-body">
-          <div className="modal-message">{message}</div>
-        </div>
-        <div className="modal-footer">
-          <button className="modal-button confirm-button" onClick={onConfirm}>
-            {confirmText}
-          </button>
-          {cancelText && onCancel && (
-            <button className="modal-button cancel-button" onClick={onCancel}>
-              {cancelText}
+  const modalContent = (
+    <div className="confirm-modal">
+      <div className="modal-overlay" onClick={onCancel}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h3 className="modal-title">{title}</h3>
+          </div>
+          <div className="modal-body">
+            <div className="modal-message">{message}</div>
+          </div>
+          <div className="modal-footer">
+            <button className="modal-button confirm-button" onClick={onConfirm}>
+              {confirmText}
             </button>
-          )}
+            {cancelText && onCancel && (
+              <button className="modal-button cancel-button" onClick={onCancel}>
+                {cancelText}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default ConfirmModal;
-

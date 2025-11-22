@@ -1,5 +1,6 @@
 // 手机验证弹窗组件
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import './PhoneVerificationModal.css';
 
 interface PhoneVerificationModalProps {
@@ -57,8 +58,8 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
     }
   };
 
-  return (
-    <div className="modal-overlay" onClick={onCancel}>
+  const modalContent = (
+    <div className="phone-verification-modal-overlay" onClick={onCancel}>
       <div className="phone-verification-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">手机验证</h3>
@@ -98,6 +99,8 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default PhoneVerificationModal;

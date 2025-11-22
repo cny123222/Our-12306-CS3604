@@ -45,6 +45,22 @@ const PersonalInfoPage = () => {
     };
   }, [navigate]);
 
+  // 监听从手机核验页返回，自动刷新用户信息
+  useEffect(() => {
+    const handleFocus = () => {
+      // 当页面获得焦点时（从其他页面返回），刷新用户信息
+      if (isLoggedIn) {
+        fetchUserInfo();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [isLoggedIn]);
+
   const fetchUserInfo = async () => {
     try {
       setIsLoading(true);
@@ -130,29 +146,36 @@ const PersonalInfoPage = () => {
     navigate('/phone-verification');
   };
 
-  const handleSaveEmail = async (email: string) => {
+  const handleSaveDiscountType = async (discountType: string) => {
     try {
       const token = localStorage.getItem('authToken');
       
-      const response = await fetch('/api/user/email', {
+      const response = await fetch('/api/user/discount-type', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ discountType })
       });
       
       if (!response.ok) {
-        throw new Error('更新邮箱失败');
+        const errorData = await response.json();
+        console.error('更新优惠类型失败，错误详情:', errorData);
+        throw new Error(errorData.error || '更新优惠类型失败');
       }
       
-      // 保存成功后重新获取用户信息（刷新页面数据）
-      await fetchUserInfo();
-      alert('邮箱更新成功！');
-    } catch (err) {
-      console.error('Error updating email:', err);
-      alert('更新邮箱失败');
+      // 保存成功，直接更新本地状态，不刷新整个页面
+      if (userInfo) {
+        setUserInfo({
+          ...userInfo,
+          discountType: discountType
+        });
+      }
+      console.log('✅ 优惠类型更新成功');
+    } catch (err: any) {
+      console.error('Error updating discount type:', err);
+      alert(err.message || '更新优惠类型失败');
     }
   };
 
@@ -217,7 +240,7 @@ const PersonalInfoPage = () => {
             <PersonalInfoPanel
               userInfo={userInfo}
               onNavigateToPhoneVerification={handleNavigateToPhoneVerification}
-              onSaveEmail={handleSaveEmail}
+              onSaveDiscountType={handleSaveDiscountType}
             />
           )}
         </div>
