@@ -51,6 +51,12 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
 
   const showEditing = isEditing || localIsEditing;
 
+  // 格式化手机号，在区号和号码之间添加空格
+  const formatPhone = (phoneNumber: string) => {
+    // 如果包含 (+86) 前缀，在后面添加空格
+    return phoneNumber.replace(/(\(\+\d+\))(\d)/, '$1 $2');
+  };
+
   return (
     <div className="contact-info-section">
       <div className="section-header">
@@ -67,7 +73,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
             <span className="required-mark">* </span>手机号：
           </span>
           <div className="info-value-group">
-            <span className="info-value">{phone}</span>
+            <span className="info-value">{formatPhone(phone)}</span>
             <span className="verification-status">已通过核验</span>
           </div>
         </div>
