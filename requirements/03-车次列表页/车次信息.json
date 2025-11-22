@@ -44,6 +44,9 @@
     ],
     "fares": {
       "currency": "CNY",
+      "second_class": 662,
+      "first_class": 1060,
+      "business": 2318,
       "segments": [
         { "from": "北京南", "to": "沧州西", "distance_km": 210, "second_class": 116, "first_class": 185, "business": 404 },
         { "from": "沧州西", "to": "济南西", "distance_km": 196, "second_class": 107, "first_class": 172, "business": 378 },
@@ -105,6 +108,9 @@
     ],
     "fares": {
       "currency": "CNY",
+      "second_class": 662,
+      "first_class": 1060,
+      "business": 2318,
       "segments": [
         { "from": "上海虹桥", "to": "无锡东", "distance_km": 108, "second_class": 47,  "first_class": 76,  "business": 166 },
         { "from": "无锡东", "to": "南京南", "distance_km": 187, "second_class": 82,  "first_class": 132, "business": 288 },
@@ -162,6 +168,9 @@
     ],
     "fares": {
       "currency": "CNY",
+      "second_class": 517,
+      "hard_sleeper": 1170,
+      "soft_sleeper": 1420,
       "segments": [
         { "from": "上海", "to": "无锡", "distance_km": 126, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
         { "from": "无锡", "to": "南京", "distance_km": 175, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
@@ -215,6 +224,9 @@
     ],
     "fares": {
       "currency": "CNY",
+      "second_class": 517,
+      "hard_sleeper": 1170,
+      "soft_sleeper": 1420,
       "segments": [
         { "from": "北京南", "to": "天津西", "distance_km": 144, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
         { "from": "天津西", "to": "南京", "distance_km": 1014, "second_class": 400, "hard_sleeper": 600, "soft_sleeper": 700 },
@@ -226,5 +238,1231 @@
       "last_verified": "2025-10-31",
       "notes": "票价与 D6 类似（按相同区间反向设置），席位为二等座/硬卧/软卧。"
     }
-  }
+  },
+  {
+    "train_no": "G1",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京南",
+      "destination": "上海虹桥",
+      "distance_km": 1318,
+      "planned_duration_min": 273,
+      "departure_time": "09:00",
+      "arrival_time": "13:33"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京南", "arrive": null, "depart": "09:00", "stop_min": 0 },
+      { "seq": 2, "station": "南京南", "arrive": "12:08", "depart": "12:10", "stop_min": 2 },
+      { "seq": 3, "station": "上海虹桥", "arrive": "13:33", "depart": "13:33", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 663,
+      "first_class": 1062,
+      "business": 2320,
+      "segments": [
+        { "from": "北京南", "to": "南京南", "distance_km": 1106, "second_class": 509, "first_class": 815, "business": 1780 },
+        { "from": "南京南", "to": "上海虹桥", "distance_km": 212, "second_class": 154, "first_class": 247, "business": 540 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "G1/G2 为京沪线著名大站直达车次，停站少、时短。"
+    }
+  },
+  {
+    "train_no": "G2",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海虹桥",
+      "destination": "北京南",
+      "distance_km": 1318,
+      "planned_duration_min": 274,
+      "departure_time": "09:00",
+      "arrival_time": "13:34"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海虹桥", "arrive": null, "depart": "09:00", "stop_min": 0 },
+      { "seq": 2, "station": "南京南", "arrive": "10:23", "depart": "10:25", "stop_min": 2 },
+      { "seq": 3, "station": "北京南", "arrive": "13:34", "depart": "13:34", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 663,
+      "first_class": 1062,
+      "business": 2320,
+      "segments": [
+        { "from": "上海虹桥", "to": "南京南", "distance_km": 212, "second_class": 154, "first_class": 247, "business": 540 },
+        { "from": "南京南", "to": "北京南", "distance_km": 1106, "second_class": 509, "first_class": 815, "business": 1780 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "与 G1 对应的反向车次，站序一致。"
+    }
+  },
+  {
+    "train_no": "G5",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京南",
+      "destination": "上海虹桥",
+      "distance_km": 1318,
+      "planned_duration_min": 300,
+      "departure_time": "07:00",
+      "arrival_time": "12:00"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京南", "arrive": null, "depart": "07:00", "stop_min": 0 },
+      { "seq": 2, "station": "天津南", "arrive": "07:24", "depart": "07:26", "stop_min": 2 },
+      { "seq": 3, "station": "济南西", "arrive": "08:38", "depart": "08:40", "stop_min": 2 },
+      { "seq": 4, "station": "南京南", "arrive": "11:02", "depart": "11:05", "stop_min": 3 },
+      { "seq": 5, "station": "上海虹桥", "arrive": "12:00", "depart": "12:00", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 662,
+      "first_class": 1060,
+      "business": 2318,
+      "segments": [
+        { "from": "北京南", "to": "天津南", "distance_km": 131, "second_class": 66, "first_class": 105, "business": 230 },
+        { "from": "天津南", "to": "济南西", "distance_km": 382, "second_class": 192, "first_class": 307, "business": 672 },
+        { "from": "济南西", "to": "南京南", "distance_km": 593, "second_class": 298, "first_class": 477, "business": 1043 },
+        { "from": "南京南", "to": "上海虹桥", "distance_km": 212, "second_class": 106, "first_class": 171, "business": 373 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "参照真实G5区段设置。"
+    }
+  },
+  {
+    "train_no": "G79",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京西",
+      "destination": "广州南",
+      "distance_km": 2298,
+      "planned_duration_min": 520,
+      "departure_time": "07:26",
+      "arrival_time": "16:06"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京西", "arrive": null, "depart": "07:26", "stop_min": 0 },
+      { "seq": 2, "station": "石家庄", "arrive": "08:17", "depart": "08:19", "stop_min": 2 },
+      { "seq": 3, "station": "郑州东", "arrive": "09:38", "depart": "09:41", "stop_min": 3 },
+      { "seq": 4, "station": "武汉", "arrive": "11:25", "depart": "11:28", "stop_min": 3 },
+      { "seq": 5, "station": "长沙南", "arrive": "13:28", "depart": "13:31", "stop_min": 3 },
+      { "seq": 6, "station": "广州南", "arrive": "16:06", "depart": "16:06", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 862,
+      "first_class": 1380,
+      "business": 2840,
+      "segments": [
+        { "from": "北京西", "to": "石家庄", "distance_km": 280, "second_class": 105, "first_class": 168, "business": 346 },
+        { "from": "石家庄", "to": "郑州东", "distance_km": 360, "second_class": 135, "first_class": 216, "business": 445 },
+        { "from": "郑州东", "to": "武汉", "distance_km": 480, "second_class": 180, "first_class": 288, "business": 593 },
+        { "from": "武汉", "to": "长沙南", "distance_km": 340, "second_class": 128, "first_class": 204, "business": 420 },
+        { "from": "长沙南", "to": "广州南", "distance_km": 838, "second_class": 314, "first_class": 504, "business": 1036 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "京广高铁标志性大站车 G79。"
+    }
+  },
+  {
+    "train_no": "G80",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "广州南",
+      "destination": "北京西",
+      "distance_km": 2298,
+      "planned_duration_min": 520,
+      "departure_time": "09:00",
+      "arrival_time": "17:40"
+    },
+    "stops": [
+      { "seq": 1, "station": "广州南", "arrive": null, "depart": "09:00", "stop_min": 0 },
+      { "seq": 2, "station": "长沙南", "arrive": "11:35", "depart": "11:38", "stop_min": 3 },
+      { "seq": 3, "station": "武汉", "arrive": "13:40", "depart": "13:43", "stop_min": 3 },
+      { "seq": 4, "station": "郑州东", "arrive": "15:18", "depart": "15:21", "stop_min": 3 },
+      { "seq": 5, "station": "石家庄", "arrive": "16:30", "depart": "16:32", "stop_min": 2 },
+      { "seq": 6, "station": "北京西", "arrive": "17:40", "depart": "17:40", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 862,
+      "first_class": 1380,
+      "business": 2840,
+      "segments": [
+        { "from": "广州南", "to": "长沙南", "distance_km": 838, "second_class": 314, "first_class": 504, "business": 1036 },
+        { "from": "长沙南", "to": "武汉", "distance_km": 340, "second_class": 128, "first_class": 204, "business": 420 },
+        { "from": "武汉", "to": "郑州东", "distance_km": 480, "second_class": 180, "first_class": 288, "business": 593 },
+        { "from": "郑州东", "to": "石家庄", "distance_km": 360, "second_class": 135, "first_class": 216, "business": 445 },
+        { "from": "石家庄", "to": "北京西", "distance_km": 280, "second_class": 105, "first_class": 168, "business": 346 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "京广线反向对开车。"
+    }
+  },
+  {
+    "train_no": "G99",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京西",
+      "destination": "深圳北",
+      "distance_km": 2400,
+      "planned_duration_min": 530,
+      "departure_time": "10:00",
+      "arrival_time": "18:50"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京西", "arrive": null, "depart": "10:00", "stop_min": 0 },
+      { "seq": 2, "station": "石家庄", "arrive": "10:52", "depart": "10:54", "stop_min": 2 },
+      { "seq": 3, "station": "郑州东", "arrive": "12:12", "depart": "12:15", "stop_min": 3 },
+      { "seq": 4, "station": "武汉", "arrive": "13:55", "depart": "13:58", "stop_min": 3 },
+      { "seq": 5, "station": "长沙南", "arrive": "15:50", "depart": "15:53", "stop_min": 3 },
+      { "seq": 6, "station": "广州南", "arrive": "17:40", "depart": "17:43", "stop_min": 3 },
+      { "seq": 7, "station": "深圳北", "arrive": "18:50", "depart": "18:50", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 987,
+      "first_class": 1600,
+      "business": 3200,
+      "segments": [
+        { "from": "北京西", "to": "石家庄", "distance_km": 270, "second_class": 111, "first_class": 180, "business": 360 },
+        { "from": "石家庄", "to": "郑州东", "distance_km": 360, "second_class": 148, "first_class": 240, "business": 480 },
+        { "from": "郑州东", "to": "武汉", "distance_km": 470, "second_class": 193, "first_class": 313, "business": 627 },
+        { "from": "武汉", "to": "长沙南", "distance_km": 340, "second_class": 140, "first_class": 227, "business": 453 },
+        { "from": "长沙南", "to": "广州南", "distance_km": 680, "second_class": 280, "first_class": 453, "business": 907 },
+        { "from": "广州南", "to": "深圳北", "distance_km": 280, "second_class": 115, "first_class": 187, "business": 373 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "京深高铁典型运行方式，跨广州中转。"
+    }
+  },
+  {
+    "train_no": "G100",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "深圳北",
+      "destination": "北京西",
+      "distance_km": 2400,
+      "planned_duration_min": 530,
+      "departure_time": "10:18",
+      "arrival_time": "19:08"
+    },
+    "stops": [
+      { "seq": 1, "station": "深圳北", "arrive": null, "depart": "10:18", "stop_min": 0 },
+      { "seq": 2, "station": "广州南", "arrive": "11:25", "depart": "11:28", "stop_min": 3 },
+      { "seq": 3, "station": "长沙南", "arrive": "13:15", "depart": "13:18", "stop_min": 3 },
+      { "seq": 4, "station": "武汉", "arrive": "15:15", "depart": "15:18", "stop_min": 3 },
+      { "seq": 5, "station": "郑州东", "arrive": "16:55", "depart": "16:58", "stop_min": 3 },
+      { "seq": 6, "station": "石家庄", "arrive": "18:05", "depart": "18:07", "stop_min": 2 },
+      { "seq": 7, "station": "北京西", "arrive": "19:08", "depart": "19:08", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 987,
+      "first_class": 1600,
+      "business": 3200,
+      "segments": [
+        { "from": "深圳北", "to": "广州南", "distance_km": 280, "second_class": 115, "first_class": 187, "business": 373 },
+        { "from": "广州南", "to": "长沙南", "distance_km": 680, "second_class": 280, "first_class": 453, "business": 907 },
+        { "from": "长沙南", "to": "武汉", "distance_km": 340, "second_class": 140, "first_class": 227, "business": 453 },
+        { "from": "武汉", "to": "郑州东", "distance_km": 470, "second_class": 193, "first_class": 313, "business": 627 },
+        { "from": "郑州东", "to": "石家庄", "distance_km": 360, "second_class": 148, "first_class": 240, "business": 480 },
+        { "from": "石家庄", "to": "北京西", "distance_km": 270, "second_class": 111, "first_class": 180, "business": 360 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "深圳北对北京西直达车。"
+    }
+  },
+  {
+    "train_no": "G132",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海虹桥",
+      "destination": "广州南",
+      "distance_km": 1660,
+      "planned_duration_min": 410,
+      "departure_time": "08:00",
+      "arrival_time": "14:50"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海虹桥", "arrive": null, "depart": "08:00", "stop_min": 0 },
+      { "seq": 2, "station": "杭州东", "arrive": "08:47", "depart": "08:50", "stop_min": 3 },
+      { "seq": 3, "station": "义乌", "arrive": "09:38", "depart": "09:40", "stop_min": 2 },
+      { "seq": 4, "station": "南昌西", "arrive": "11:25", "depart": "11:28", "stop_min": 3 },
+      { "seq": 5, "station": "长沙南", "arrive": "13:05", "depart": "13:08", "stop_min": 3 },
+      { "seq": 6, "station": "广州南", "arrive": "14:50", "depart": "14:50", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 760,
+      "first_class": 1200,
+      "business": 2600,
+      "segments": [
+        { "from": "上海虹桥", "to": "杭州东", "distance_km": 160, "second_class": 73, "first_class": 116, "business": 251 },
+        { "from": "杭州东", "to": "义乌", "distance_km": 120, "second_class": 55, "first_class": 87, "business": 188 },
+        { "from": "义乌", "to": "南昌西", "distance_km": 500, "second_class": 229, "first_class": 361, "business": 783 },
+        { "from": "南昌西", "to": "长沙南", "distance_km": 430, "second_class": 197, "first_class": 311, "business": 673 },
+        { "from": "长沙南", "to": "广州南", "distance_km": 450, "second_class": 206, "first_class": 325, "business": 705 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "沪广线典型运行结构。"
+    }
+  },
+  {
+    "train_no": "G7501",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海虹桥",
+      "destination": "杭州东",
+      "distance_km": 160,
+      "planned_duration_min": 47,
+      "departure_time": "07:00",
+      "arrival_time": "07:47"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海虹桥", "arrive": null, "depart": "07:00", "stop_min": 0 },
+      { "seq": 2, "station": "嘉兴南", "arrive": "07:25", "depart": "07:27", "stop_min": 2 },
+      { "seq": 3, "station": "杭州东", "arrive": "07:47", "depart": "07:47", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 73,
+      "first_class": 117,
+      "business": 230,
+      "segments": [
+        { "from": "上海虹桥", "to": "嘉兴南", "distance_km": 90, "second_class": 41, "first_class": 66, "business": 129 },
+        { "from": "嘉兴南", "to": "杭州东", "distance_km": 70, "second_class": 32, "first_class": 51, "business": 101 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "典型沪杭早班高铁。"
+    }
+  },
+  {
+    "train_no": "G7502",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "杭州东",
+      "destination": "上海虹桥",
+      "distance_km": 160,
+      "planned_duration_min": 48,
+      "departure_time": "08:00",
+      "arrival_time": "08:48"
+    },
+    "stops": [
+      { "seq": 1, "station": "杭州东", "arrive": null, "depart": "08:00", "stop_min": 0 },
+      { "seq": 2, "station": "嘉兴南", "arrive": "08:26", "depart": "08:28", "stop_min": 2 },
+      { "seq": 3, "station": "上海虹桥", "arrive": "08:48", "depart": "08:48", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 73,
+      "first_class": 117,
+      "business": 230,
+      "segments": [
+        { "from": "杭州东", "to": "嘉兴南", "distance_km": 70, "second_class": 32, "first_class": 51, "business": 101 },
+        { "from": "嘉兴南", "to": "上海虹桥", "distance_km": 90, "second_class": 41, "first_class": 66, "business": 129 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "沪杭对向班次。"
+    }
+  },
+  {
+    "train_no": "G7607",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": false,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海虹桥",
+      "destination": "杭州",
+      "distance_km": 180,
+      "planned_duration_min": 70,
+      "departure_time": "15:10",
+      "arrival_time": "16:20"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海虹桥", "arrive": null, "depart": "15:10", "stop_min": 0 },
+      { "seq": 2, "station": "金山北", "arrive": "15:33", "depart": "15:35", "stop_min": 2 },
+      { "seq": 3, "station": "嘉兴南", "arrive": "15:55", "depart": "15:57", "stop_min": 2 },
+      { "seq": 4, "station": "桐乡", "arrive": "16:08", "depart": "16:10", "stop_min": 2 },
+      { "seq": 5, "station": "杭州", "arrive": "16:20", "depart": "16:20", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 82,
+      "first_class": 132,
+      "business": 250,
+      "segments": [
+        { "from": "上海虹桥", "to": "金山北", "distance_km": 50, "second_class": 23, "first_class": 37, "business": 69 },
+        { "from": "金山北", "to": "嘉兴南", "distance_km": 60, "second_class": 27, "first_class": 44, "business": 83 },
+        { "from": "嘉兴南", "to": "桐乡", "distance_km": 30, "second_class": 14, "first_class": 22, "business": 42 },
+        { "from": "桐乡", "to": "杭州", "distance_km": 40, "second_class": 18, "first_class": 29, "business": 56 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "终到杭州站而非杭州东。"
+    }
+  },
+  {
+    "train_no": "G7608",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": false,
+    "air_conditioning": true,
+    "route": {
+      "origin": "杭州",
+      "destination": "上海虹桥",
+      "distance_km": 180,
+      "planned_duration_min": 71,
+      "departure_time": "17:00",
+      "arrival_time": "18:11"
+    },
+    "stops": [
+      { "seq": 1, "station": "杭州", "arrive": null, "depart": "17:00", "stop_min": 0 },
+      { "seq": 2, "station": "桐乡", "arrive": "17:12", "depart": "17:14", "stop_min": 2 },
+      { "seq": 3, "station": "嘉兴南", "arrive": "17:34", "depart": "17:36", "stop_min": 2 },
+      { "seq": 4, "station": "金山北", "arrive": "17:57", "depart": "17:59", "stop_min": 2 },
+      { "seq": 5, "station": "上海虹桥", "arrive": "18:11", "depart": "18:11", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 82,
+      "first_class": 132,
+      "business": 250,
+      "segments": [
+        { "from": "杭州", "to": "桐乡", "distance_km": 40, "second_class": 18, "first_class": 29, "business": 56 },
+        { "from": "桐乡", "to": "嘉兴南", "distance_km": 30, "second_class": 14, "first_class": 22, "business": 42 },
+        { "from": "嘉兴南", "to": "金山北", "distance_km": 60, "second_class": 27, "first_class": 44, "business": 83 },
+        { "from": "金山北", "to": "上海虹桥", "distance_km": 50, "second_class": 23, "first_class": 37, "business": 69 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "傍晚返程车。"
+    }
+  },
+  {
+    "train_no": "G11",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海虹桥",
+      "destination": "北京南",
+      "distance_km": 1318,
+      "planned_duration_min": 270,
+      "departure_time": "14:00",
+      "arrival_time": "18:30"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海虹桥", "arrive": null, "depart": "14:00", "stop_min": 0 },
+      { "seq": 2, "station": "南京南", "arrive": "15:23", "depart": "15:25", "stop_min": 2 },
+      { "seq": 3, "station": "北京南", "arrive": "18:30", "depart": "18:30", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 663,
+      "first_class": 1062,
+      "business": 2320,
+      "segments": [
+        { "from": "上海虹桥", "to": "南京南", "distance_km": 212, "second_class": 107, "first_class": 171, "business": 373 },
+        { "from": "南京南", "to": "北京南", "distance_km": 1106, "second_class": 556, "first_class": 891, "business": 1947 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "沪京高铁经典大站直达。"
+    }
+  },
+  {
+    "train_no": "G12",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京南",
+      "destination": "上海虹桥",
+      "distance_km": 1318,
+      "planned_duration_min": 271,
+      "departure_time": "14:10",
+      "arrival_time": "18:41"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京南", "arrive": null, "depart": "14:10", "stop_min": 0 },
+      { "seq": 2, "station": "南京南", "arrive": "17:17", "depart": "17:19", "stop_min": 2 },
+      { "seq": 3, "station": "上海虹桥", "arrive": "18:41", "depart": "18:41", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 663,
+      "first_class": 1062,
+      "business": 2320,
+      "segments": [
+        { "from": "北京南", "to": "南京南", "distance_km": 1106, "second_class": 556, "first_class": 891, "business": 1947 },
+        { "from": "南京南", "to": "上海虹桥", "distance_km": 212, "second_class": 107, "first_class": 171, "business": 373 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "沪京单停南京南班次。"
+    }
+  },
+  {
+    "train_no": "G125",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": false,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海",
+      "destination": "北京南",
+      "distance_km": 1310,
+      "planned_duration_min": 298,
+      "departure_time": "09:25",
+      "arrival_time": "14:23"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海", "arrive": null, "depart": "09:25", "stop_min": 0 },
+      { "seq": 2, "station": "昆山南", "arrive": "09:48", "depart": "09:49", "stop_min": 1 },
+      { "seq": 3, "station": "苏州北", "arrive": "10:03", "depart": "10:04", "stop_min": 1 },
+      { "seq": 4, "station": "南京南", "arrive": "11:15", "depart": "11:17", "stop_min": 2 },
+      { "seq": 5, "station": "徐州东", "arrive": "12:34", "depart": "12:36", "stop_min": 2 },
+      { "seq": 6, "station": "北京南", "arrive": "14:23", "depart": "14:23", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 645,
+      "first_class": 1032,
+      "business": 2280,
+      "segments": [
+        { "from": "上海", "to": "昆山南", "distance_km": 50, "second_class": 25, "first_class": 39, "business": 87 },
+        { "from": "昆山南", "to": "苏州北", "distance_km": 30, "second_class": 15, "first_class": 24, "business": 52 },
+        { "from": "苏州北", "to": "南京南", "distance_km": 260, "second_class": 128, "first_class": 205, "business": 453 },
+        { "from": "南京南", "to": "徐州东", "distance_km": 350, "second_class": 172, "first_class": 276, "business": 609 },
+        { "from": "徐州东", "to": "北京南", "distance_km": 620, "second_class": 305, "first_class": 488, "business": 1079 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "由上海站始发的京沪高铁车。"
+    }
+  },
+  {
+    "train_no": "G126",
+    "train_type": "高速动车组",
+    "model": "CR400AF-B",
+    "direct": false,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京南",
+      "destination": "上海",
+      "distance_km": 1310,
+      "planned_duration_min": 299,
+      "departure_time": "09:58",
+      "arrival_time": "14:57"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京南", "arrive": null, "depart": "09:58", "stop_min": 0 },
+      { "seq": 2, "station": "徐州东", "arrive": "12:02", "depart": "12:04", "stop_min": 2 },
+      { "seq": 3, "station": "南京南", "arrive": "13:21", "depart": "13:23", "stop_min": 2 },
+      { "seq": 4, "station": "苏州北", "arrive": "14:34", "depart": "14:35", "stop_min": 1 },
+      { "seq": 5, "station": "昆山南", "arrive": "14:45", "depart": "14:46", "stop_min": 1 },
+      { "seq": 6, "station": "上海", "arrive": "14:57", "depart": "14:57", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "餐车" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 645,
+      "first_class": 1032,
+      "business": 2280,
+      "segments": [
+        { "from": "北京南", "to": "徐州东", "distance_km": 620, "second_class": 305, "first_class": 488, "business": 1079 },
+        { "from": "徐州东", "to": "南京南", "distance_km": 350, "second_class": 172, "first_class": 276, "business": 609 },
+        { "from": "南京南", "to": "苏州北", "distance_km": 260, "second_class": 128, "first_class": 205, "business": 453 },
+        { "from": "苏州北", "to": "昆山南", "distance_km": 30, "second_class": 15, "first_class": 24, "business": 52 },
+        { "from": "昆山南", "to": "上海", "distance_km": 50, "second_class": 25, "first_class": 39, "business": 87 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "由北京南到上海站的对开车。"
+    }
+  },
+  {
+    "train_no": "D8",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京",
+      "destination": "上海",
+      "distance_km": 703,
+      "planned_duration_min": 730,
+      "departure_time": "20:10",
+      "arrival_time": "08:20"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京", "arrive": null, "depart": "20:10", "stop_min": 0 },
+      { "seq": 2, "station": "天津西", "arrive": "21:21", "depart": "21:24", "stop_min": 3 },
+      { "seq": 3, "station": "南京", "arrive": "06:00", "depart": "06:06", "stop_min": 6 },
+      { "seq": 4, "station": "无锡", "arrive": "07:29", "depart": "07:31", "stop_min": 2 },
+      { "seq": 5, "station": "上海", "arrive": "08:20", "depart": "08:20", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 517,
+      "hard_sleeper": 1170,
+      "soft_sleeper": 1420,
+      "segments": [
+        { "from": "北京", "to": "天津西", "distance_km": 148, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "天津西", "to": "南京", "distance_km": 1014, "second_class": 400, "hard_sleeper": 600, "soft_sleeper": 700 },
+        { "from": "南京", "to": "无锡", "distance_km": 175, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "无锡", "to": "上海", "distance_km": 126, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "与 D6 区间/票价一致的反向夕发朝至列车。"
+    }
+  },
+  {
+    "train_no": "D10",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海南",
+      "destination": "北京南",
+      "distance_km": 703,
+      "planned_duration_min": 744,
+      "departure_time": "19:52",
+      "arrival_time": "08:16"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海南", "arrive": null, "depart": "19:52", "stop_min": 0 },
+      { "seq": 2, "station": "苏州", "arrive": "21:00", "depart": "21:02", "stop_min": 2 },
+      { "seq": 3, "station": "南京", "arrive": "22:40", "depart": "22:48", "stop_min": 8 },
+      { "seq": 4, "station": "天津西", "arrive": "06:00", "depart": "06:02", "stop_min": 2 },
+      { "seq": 5, "station": "北京南", "arrive": "08:16", "depart": "08:16", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 517,
+      "hard_sleeper": 1170,
+      "soft_sleeper": 1420,
+      "segments": [
+        { "from": "上海南", "to": "苏州", "distance_km": 48, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "苏州", "to": "南京", "distance_km": 196, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "南京", "to": "天津西", "distance_km": 1014, "second_class": 400, "hard_sleeper": 600, "soft_sleeper": 700 },
+        { "from": "天津西", "to": "北京南", "distance_km": 144, "second_class": 39, "hard_sleeper": 190, "soft_sleeper": 240 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "与 D9 相同区间的反向列车。"
+    }
+  },
+  {
+    "train_no": "D3121",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "上海虹桥",
+      "destination": "广州南",
+      "distance_km": 1700,
+      "planned_duration_min": 690,
+      "departure_time": "18:20",
+      "arrival_time": "05:50"
+    },
+    "stops": [
+      { "seq": 1, "station": "上海虹桥", "arrive": null, "depart": "18:20", "stop_min": 0 },
+      { "seq": 2, "station": "杭州东", "arrive": "19:14", "depart": "19:18", "stop_min": 4 },
+      { "seq": 3, "station": "南昌西", "arrive": "22:10", "depart": "22:16", "stop_min": 6 },
+      { "seq": 4, "station": "长沙南", "arrive": "01:30", "depart": "01:36", "stop_min": 6 },
+      { "seq": 5, "station": "广州南", "arrive": "05:50", "depart": "05:50", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 620,
+      "hard_sleeper": 1300,
+      "soft_sleeper": 1600,
+      "segments": [
+        { "from": "上海虹桥", "to": "杭州东", "distance_km": 160, "second_class": 110, "hard_sleeper": 230, "soft_sleeper": 280 },
+        { "from": "杭州东", "to": "南昌西", "distance_km": 600, "second_class": 210, "hard_sleeper": 440, "soft_sleeper": 520 },
+        { "from": "南昌西", "to": "长沙南", "distance_km": 400, "second_class": 150, "hard_sleeper": 310, "soft_sleeper": 390 },
+        { "from": "长沙南", "to": "广州南", "distance_km": 540, "second_class": 150, "hard_sleeper": 320, "soft_sleeper": 410 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "沪广方向夕发朝至动车，设有软卧和硬卧席别。"
+    }
+  },
+  {
+    "train_no": "D3122",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "广州南",
+      "destination": "上海虹桥",
+      "distance_km": 1700,
+      "planned_duration_min": 690,
+      "departure_time": "19:10",
+      "arrival_time": "06:40"
+    },
+    "stops": [
+      { "seq": 1, "station": "广州南", "arrive": null, "depart": "19:10", "stop_min": 0 },
+      { "seq": 2, "station": "长沙南", "arrive": "23:20", "depart": "23:26", "stop_min": 6 },
+      { "seq": 3, "station": "南昌西", "arrive": "02:35", "depart": "02:41", "stop_min": 6 },
+      { "seq": 4, "station": "杭州东", "arrive": "05:30", "depart": "05:34", "stop_min": 4 },
+      { "seq": 5, "station": "上海虹桥", "arrive": "06:40", "depart": "06:40", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 620,
+      "hard_sleeper": 1300,
+      "soft_sleeper": 1600,
+      "segments": [
+        { "from": "广州南", "to": "长沙南", "distance_km": 540, "second_class": 150, "hard_sleeper": 320, "soft_sleeper": 410 },
+        { "from": "长沙南", "to": "南昌西", "distance_km": 400, "second_class": 150, "hard_sleeper": 310, "soft_sleeper": 390 },
+        { "from": "南昌西", "to": "杭州东", "distance_km": 600, "second_class": 210, "hard_sleeper": 440, "soft_sleeper": 520 },
+        { "from": "杭州东", "to": "上海虹桥", "distance_km": 160, "second_class": 110, "hard_sleeper": 230, "soft_sleeper": 280 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "广沪方向对开的夕发朝至动车。"
+    }
+  },
+  {
+    "train_no": "D2285",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "北京西",
+      "destination": "杭州东",
+      "distance_km": 1800,
+      "planned_duration_min": 660,
+      "departure_time": "18:05",
+      "arrival_time": "05:05"
+    },
+    "stops": [
+      { "seq": 1, "station": "北京西", "arrive": null, "depart": "18:05", "stop_min": 0 },
+      { "seq": 2, "station": "石家庄", "arrive": "19:10", "depart": "19:13", "stop_min": 3 },
+      { "seq": 3, "station": "郑州东", "arrive": "21:05", "depart": "21:09", "stop_min": 4 },
+      { "seq": 4, "station": "南京南", "arrive": "02:30", "depart": "02:36", "stop_min": 6 },
+      { "seq": 5, "station": "杭州东", "arrive": "05:05", "depart": "05:05", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 560,
+      "hard_sleeper": 1200,
+      "soft_sleeper": 1500,
+      "segments": [
+        { "from": "北京西", "to": "石家庄", "distance_km": 280, "second_class": 140, "hard_sleeper": 300, "soft_sleeper": 380 },
+        { "from": "石家庄", "to": "郑州东", "distance_km": 360, "second_class": 160, "hard_sleeper": 350, "soft_sleeper": 430 },
+        { "from": "郑州东", "to": "南京南", "distance_km": 660, "second_class": 170, "hard_sleeper": 360, "soft_sleeper": 450 },
+        { "from": "南京南", "to": "杭州东", "distance_km": 500, "second_class": 90, "hard_sleeper": 190, "soft_sleeper": 240 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "京杭方向跨夜动车，途经石家庄、郑州东、南京南。"
+    }
+  },
+  {
+    "train_no": "D2286",
+    "train_type": "动车组",
+    "model": "CRH",
+    "direct": true,
+    "air_conditioning": true,
+    "route": {
+      "origin": "杭州东",
+      "destination": "北京西",
+      "distance_km": 1800,
+      "planned_duration_min": 660,
+      "departure_time": "19:15",
+      "arrival_time": "06:15"
+    },
+    "stops": [
+      { "seq": 1, "station": "杭州东", "arrive": null, "depart": "19:15", "stop_min": 0 },
+      { "seq": 2, "station": "南京南", "arrive": "21:40", "depart": "21:46", "stop_min": 6 },
+      { "seq": 3, "station": "郑州东", "arrive": "02:50", "depart": "02:54", "stop_min": 4 },
+      { "seq": 4, "station": "石家庄", "arrive": "04:45", "depart": "04:48", "stop_min": 3 },
+      { "seq": 5, "station": "北京西", "arrive": "06:15", "depart": "06:15", "stop_min": 0 }
+    ],
+    "cars": [
+      { "car_no": 1, "type": "软卧" },
+      { "car_no": 2, "type": "硬卧" },
+      { "car_no": 3, "type": "硬卧" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" },
+      { "car_no": 9, "type": "二等座" },
+      { "car_no": 10, "type": "二等座" },
+      { "car_no": 11, "type": "二等座" },
+      { "car_no": 12, "type": "二等座" },
+      { "car_no": 13, "type": "二等座" },
+      { "car_no": 14, "type": "二等座" },
+      { "car_no": 15, "type": "二等座" },
+      { "car_no": 16, "type": "二等座" }
+    ],
+    "fares": {
+      "currency": "CNY",
+      "second_class": 560,
+      "hard_sleeper": 1200,
+      "soft_sleeper": 1500,
+      "segments": [
+        { "from": "杭州东", "to": "南京南", "distance_km": 500, "second_class": 90, "hard_sleeper": 190, "soft_sleeper": 240 },
+        { "from": "南京南", "to": "郑州东", "distance_km": 660, "second_class": 170, "hard_sleeper": 360, "soft_sleeper": 450 },
+        { "from": "郑州东", "to": "石家庄", "distance_km": 360, "second_class": 160, "hard_sleeper": 350, "soft_sleeper": 430 },
+        { "from": "石家庄", "to": "北京西", "distance_km": 280, "second_class": 140, "hard_sleeper": 300, "soft_sleeper": 380 }
+      ]
+    },
+    "metadata": {
+      "last_verified": "2025-10-31",
+      "notes": "杭京方向对开跨夜动车。"
+    }
+  }  
 ]
