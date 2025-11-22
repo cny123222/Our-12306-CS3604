@@ -224,7 +224,7 @@
 /* 余票少（小于20张）- 黑色显示具体数字 */
 .seat-info.limited {
   color: #000000;
-  font-weight: 600;
+  font-weight: 800;
 }
 
 /* 无票 - 灰色 */
