@@ -14,7 +14,7 @@ interface PhoneVerificationModalProps {
 const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
   isVisible,
   phone,
-  sessionId,
+  sessionId: _sessionId,
   onSuccess,
   onCancel
 }) => {

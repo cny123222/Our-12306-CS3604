@@ -95,10 +95,6 @@ const PersonalInfoPage = () => {
     }
   };
 
-  const handleNavigateToHome = () => {
-    navigate('/');
-  };
-
   const handleNavigateToLogin = () => {
     navigate('/login');
   };

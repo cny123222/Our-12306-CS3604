@@ -151,10 +151,6 @@ const RegisterPage: React.FC = () => {
     navigate('/login')
   }
 
-  const handleNavigateToHome = () => {
-    navigate('/')
-  }
-
   const handleNavigateToRegister = () => {
     navigate('/register')
   }

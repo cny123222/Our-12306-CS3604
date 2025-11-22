@@ -37,7 +37,7 @@ interface SuccessOrderInfoProps {
 const SuccessOrderInfo: React.FC<SuccessOrderInfoProps> = ({
   trainInfo,
   passengers,
-  totalPrice,
+  totalPrice: _totalPrice,
   onFoodClick,
   onContinuePurchase,
   onViewDetails

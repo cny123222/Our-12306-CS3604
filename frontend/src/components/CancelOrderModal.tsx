@@ -6,6 +6,7 @@ interface CancelOrderModalProps {
   isVisible: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  isLoading?: boolean;
 }
 
 /**
