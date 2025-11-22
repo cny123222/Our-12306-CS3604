@@ -137,6 +137,35 @@ async function updateUserPhone(userId, phone) {
 }
 
 /**
+ * DB-UpdateUserDiscountType: 更新用户的优惠类型
+ * @param {string} userId - 用户ID
+ * @param {string} discountType - 新优惠类型
+ * @returns {Promise<boolean>} 更新成功返回true
+ */
+async function updateUserDiscountType(userId, discountType) {
+  try {
+    // 验证优惠类型是否在允许的范围内
+    const validTypes = ['成人', '儿童', '学生', '残疾军人'];
+    if (!validTypes.includes(discountType)) {
+      throw new Error('无效的优惠类型');
+    }
+    
+    const sql = `
+      UPDATE users 
+      SET discount_type = ?, 
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `;
+    
+    const result = await db.run(sql, [discountType, userId]);
+    return result.changes > 0;
+  } catch (error) {
+    console.error('更新用户优惠类型失败:', error);
+    throw error;
+  }
+}
+
+/**
  * DB-GetUserOrders: 获取用户的订单列表
  * @param {string} userId - 用户ID
  * @param {Object} options - 查询选项 { startDate, endDate }
@@ -363,6 +392,7 @@ module.exports = {
   getUserInfo,
   updateUserEmail,
   updateUserPhone,
+  updateUserDiscountType,
   getUserOrders,
   searchOrders
 };
