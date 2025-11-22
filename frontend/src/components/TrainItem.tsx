@@ -37,6 +37,15 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
     return 'limited';
   };
 
+  // 判断是否所有座位都售罄
+  const isAllSoldOut = () => {
+    const validSeats = Object.values(availableSeats).filter(count => count !== null && count !== undefined);
+    // 如果没有任何有效座位，不算售罄（可能是数据问题）
+    if (validSeats.length === 0) return false;
+    // 所有有效座位都为0才算售罄
+    return validSeats.every(count => count === 0);
+  };
+
   // 格式化历时（分钟 -> "HH:MM"）
   const formatDuration = (minutes: number | undefined) => {
     if (!minutes) return '--';
@@ -176,7 +185,7 @@ const TrainItem: React.FC<TrainItemProps> = ({ train, onReserve, isLoggedIn, que
           arrivalStation={train.arrivalStation}
           departureDate={train.departureDate}
           departureTime={train.departureTime}
-          hasSoldOut={false}
+          hasSoldOut={isAllSoldOut()}
           isLoggedIn={isLoggedIn}
           onReserve={onReserve}
           queryTimestamp={queryTimestamp}
