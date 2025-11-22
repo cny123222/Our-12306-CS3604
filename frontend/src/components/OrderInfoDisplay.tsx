@@ -58,13 +58,14 @@ const OrderInfoDisplay: React.FC<OrderInfoDisplayProps> = ({
 
   // 格式化座位号显示
   const formatSeatDisplay = (carNumber?: string, seatNumber?: string): string => {
-    if (carNumber && seatNumber) {
-      // 假设座位号格式可能是 "4-01" 或 "04车07D号"
+    if (seatNumber) {
+      // 如果座位号格式是 "4-01"，只取座位部分
       if (seatNumber.includes('-')) {
-        const [car, seat] = seatNumber.split('-');
-        return `${String(car).padStart(2, '0')}车${String(seat).padStart(2, '0')}号`;
+        const parts = seatNumber.split('-');
+        const seat = parts[1] || parts[0];
+        return seat;
       }
-      return `${String(carNumber).padStart(2, '0')}车${seatNumber}号`;
+      return seatNumber;
     }
     return '待分配';
   };

@@ -4,11 +4,11 @@ import './ConfirmModal.css';
 interface ConfirmModalProps {
   isVisible: boolean;
   title: string;
-  message: string;
+  message: string | React.ReactNode;
   confirmText: string;
-  cancelText: string;
+  cancelText?: string;
   onConfirm: () => void;
-  onCancel: () => void;
+  onCancel?: () => void;
 }
 
 /**
@@ -33,15 +33,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <h3 className="modal-title">{title}</h3>
         </div>
         <div className="modal-body">
-          <p className="modal-message">{message}</p>
+          <div className="modal-message">{message}</div>
         </div>
         <div className="modal-footer">
           <button className="modal-button confirm-button" onClick={onConfirm}>
             {confirmText}
           </button>
-          <button className="modal-button cancel-button" onClick={onCancel}>
-            {cancelText}
-          </button>
+          {cancelText && onCancel && (
+            <button className="modal-button cancel-button" onClick={onCancel}>
+              {cancelText}
+            </button>
+          )}
         </div>
       </div>
     </div>

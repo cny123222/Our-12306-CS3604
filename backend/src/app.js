@@ -14,6 +14,7 @@ const userInfoRoutes = require('./routes/userInfo');
 const paymentRoutes = require('./routes/payment');
 const { startCleanupScheduler } = require('./services/pendingOrderCleanupService');
 const trainCleanupService = require('./services/trainCleanupService');
+const cancellationCleanupService = require('./services/cancellationCleanupService');
 const { generateDay15Trains } = require('../database/generate-daily-trains');
 
 const app = express();

@@ -1,29 +1,70 @@
 // 订单结果展示组件
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
+import CancelOrderModal from '../CancelOrderModal';
 import './OrderResultDisplay.css';
 
 interface OrderResultDisplayProps {
   orders: any[];
   onNavigateToTrainList: () => void;
   showEmptyState?: boolean;  // 是否显示空状态（只有未完成订单显示）
+  onOrderCancelled?: () => void;  // 订单取消后的回调
 }
 
 const OrderResultDisplay: React.FC<OrderResultDisplayProps> = ({
   orders,
   onNavigateToTrainList,
-  showEmptyState = true
+  showEmptyState = true,
+  onOrderCancelled
 }) => {
   const navigate = useNavigate();
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const handlePayOrder = (orderId: string) => {
     navigate(`/payment/${orderId}`);
   };
 
   const handleCancelOrder = (orderId: string) => {
-    // TODO: Implement cancel order logic
-    console.log('Cancel order:', orderId);
+    setOrderToCancel(orderId);
+    setShowCancelModal(true);
+  };
+
+  const confirmCancelOrder = async () => {
+    if (!orderToCancel) return;
+    
+    setIsCancelling(true);
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`/api/payment/${orderToCancel}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '取消订单失败');
+      }
+
+      // 取消成功，关闭弹窗并刷新订单列表
+      setShowCancelModal(false);
+      setOrderToCancel(null);
+      
+      // 调用父组件的回调来刷新订单列表
+      if (onOrderCancelled) {
+        onOrderCancelled();
+      }
+    } catch (error: any) {
+      console.error('取消订单失败:', error);
+      alert(error.message || '取消订单失败，请重试');
+    } finally {
+      setIsCancelling(false);
+    }
   };
   // 如果没有订单且需要显示空状态（仅未完成订单）
   if (orders.length === 0 && showEmptyState) {
@@ -74,6 +115,19 @@ const OrderResultDisplay: React.FC<OrderResultDisplayProps> = ({
           ))}
         </div>
       </div>
+
+      {/* 取消订单确认弹窗 */}
+      {showCancelModal && (
+        <CancelOrderModal
+          isVisible={showCancelModal}
+          onConfirm={confirmCancelOrder}
+          onCancel={() => {
+            setShowCancelModal(false);
+            setOrderToCancel(null);
+          }}
+          isLoading={isCancelling}
+        />
+      )}
     </div>
   );
 };

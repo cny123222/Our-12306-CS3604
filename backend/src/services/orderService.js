@@ -293,31 +293,33 @@ async function createOrder(orderData) {
               soft_sleeper_price: fareData.soft_sleeper_price
             };
             
-            // 计算余票（简化处理，假设有足够余票）
-            const seatType = passengers[0].seatType;
-              
-            // 根据席别获取对应价格
-            let price = 0;
-            if (seatType === '二等座') {
-              price = fareRow.second_class_price;
-            } else if (seatType === '一等座') {
-              price = fareRow.first_class_price;
-            } else if (seatType === '商务座') {
-              price = fareRow.business_price;
-            } else if (seatType === '硬卧') {
-              price = fareRow.hard_sleeper_price;
-            } else if (seatType === '软卧') {
-              price = fareRow.soft_sleeper_price;
-            } else {
-              price = fareRow.second_class_price; // 默认二等座价格
-            }
+            // 为每个乘客计算对应席别的价格
+            const getPriceForSeatType = (seatType) => {
+              if (seatType === '二等座') {
+                return fareRow.second_class_price;
+              } else if (seatType === '一等座') {
+                return fareRow.first_class_price;
+              } else if (seatType === '商务座') {
+                return fareRow.business_price;
+              } else if (seatType === '硬卧') {
+                return fareRow.hard_sleeper_price;
+              } else if (seatType === '软卧') {
+                return fareRow.soft_sleeper_price;
+              } else {
+                return fareRow.second_class_price; // 默认二等座价格
+              }
+            };
             
-            if (!price) {
-              db.close();
-              return reject({ status: 400, message: '该席别暂不支持' });
+            // 计算总价：累加每个乘客的票价
+            let totalPrice = 0;
+            for (const p of passengers) {
+              const price = getPriceForSeatType(p.seatType);
+              if (!price) {
+                db.close();
+                return reject({ status: 400, message: `席别"${p.seatType}"暂不支持` });
+              }
+              totalPrice += price;
             }
-            
-            const totalPrice = price * passengers.length;
             
             // 获取乘客信息
             const passengerIds = passengers.map(p => p.passengerId).join("','");
@@ -364,13 +366,16 @@ async function createOrder(orderData) {
                     
                     passengers.forEach((p, index) => {
                       const passenger = passengerRecords.find(pr => pr.id === p.passengerId);
+                      // 为每个乘客计算对应席别的价格
+                      const passengerPrice = getPriceForSeatType(p.seatType);
+                      
                       db.run(
                         `INSERT INTO order_details (order_id, passenger_id, passenger_name, 
                          id_card_type, id_card_number, seat_type, ticket_type, price, sequence_number)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                         [orderId, p.passengerId, passenger.name, passenger.id_card_type, 
                          passenger.id_card_number, p.seatType, p.ticketType || '成人票', 
-                         price, index + 1],
+                         passengerPrice, index + 1],
                         (err) => {
                           if (err && !insertError) {
                             insertError = err;
@@ -490,6 +495,9 @@ async function getOrderDetails(orderId, userId) {
                     name: d.passenger_name,
                     idCardType: d.id_card_type,
                     idCardNumber: d.id_card_number,
+                    carNumber: d.car_number,
+                    seatNumber: d.seat_number,
+                    price: d.price,
                     points: points ? points.points : 0
                   };
                 });
@@ -568,11 +576,32 @@ async function confirmOrder(orderId, userId) {
           return reject({ status: 400, message: '订单状态错误' });
         }
         
-        // 查询订单明细
-        db.all(
-          'SELECT * FROM order_details WHERE order_id = ?',
-          [orderId],
-          async (err, details) => {
+        // 检查当日取消订单次数
+        const today = new Date().toISOString().split('T')[0];
+        db.get(
+          `SELECT COUNT(*) as count FROM order_cancellations 
+           WHERE user_id = ? AND cancellation_date = ?`,
+          [String(userId), today],
+          (err, result) => {
+            if (err) {
+              db.close();
+              return reject({ status: 500, message: '查询取消记录失败' });
+            }
+            
+            if (result && result.count >= 3) {
+              db.close();
+              return reject({ 
+                status: 403, 
+                message: '今日取消订单次数已达上限',
+                code: 'CANCELLATION_LIMIT_EXCEEDED'
+              });
+            }
+            
+            // 查询订单明细
+            db.all(
+              'SELECT * FROM order_details WHERE order_id = ?',
+              [orderId],
+              async (err, details) => {
             if (err) {
               db.close();
               return reject({ status: 500, message: '查询订单明细失败' });
@@ -767,6 +796,8 @@ async function confirmOrder(orderId, userId) {
               db.close();
               return reject({ status: 500, message: error.message || '座位分配失败' });
             }
+          }
+        );
           }
         );
       }
@@ -1072,82 +1103,94 @@ async function confirmPayment(orderId, userId) {
  * 取消订单并记录取消次数
  */
 async function cancelOrderWithTracking(orderId, userId) {
-  return new Promise((resolve, reject) => {
+  // Step 1: Validate order (use separate connection, then close)
+  const order = await new Promise((resolve, reject) => {
     const db = getDatabase();
-    
-    // 查询订单基本信息
     db.get(
       'SELECT * FROM orders WHERE id = ? AND user_id = ?',
       [orderId, String(userId)],
-      async (err, order) => {
+      (err, order) => {
+        db.close();
+        
         if (err) {
-          db.close();
           return reject({ status: 500, message: '数据库查询失败' });
         }
         
         if (!order) {
-          db.close();
           return reject({ status: 404, message: '订单不存在' });
         }
         
         if (order.status !== 'confirmed_unpaid') {
-          db.close();
           return reject({ status: 400, message: '只能取消待支付订单' });
         }
         
-        try {
-          // 释放座位锁定
-          await releaseSeatLocks(orderId);
-          
-          // 记录取消次数
-          const today = new Date().toISOString().split('T')[0];
-          db.run(
-            `INSERT INTO order_cancellations (user_id, cancellation_date, count)
-             VALUES (?, ?, 1)
-             ON CONFLICT(user_id, cancellation_date) 
-             DO UPDATE SET count = count + 1`,
-            [String(userId), today],
-            (err) => {
-              if (err) {
-                console.error('记录取消次数失败:', err);
-                // 不阻止取消流程，继续执行
-              }
-            }
-          );
-          
-          // 删除订单明细
-          db.run(
-            'DELETE FROM order_details WHERE order_id = ?',
-            [orderId],
-            (err) => {
-              if (err) {
-                db.close();
-                return reject({ status: 500, message: '删除订单明细失败' });
-              }
-              
-              // 删除订单
-              db.run(
-                'DELETE FROM orders WHERE id = ?',
-                [orderId],
-                (err) => {
-                  db.close();
-                  
-                  if (err) {
-                    return reject({ status: 500, message: '删除订单失败' });
-                  }
-                  
-                  resolve({ success: true, message: '订单已取消' });
-                }
-              );
-            }
-          );
-        } catch (error) {
-          db.close();
-          return reject({ status: 500, message: error.message || '取消订单失败' });
-        }
+        resolve(order);
       }
     );
   });
+  
+  // Step 2: Release seat locks (has its own connection)
+  try {
+    await releaseSeatLocks(orderId);
+  } catch (error) {
+    console.error('释放座位锁定失败:', error);
+    throw { status: 500, message: error.message || '释放座位失败' };
+  }
+  
+  // Step 3: Record cancellation (use separate connection)
+  await new Promise((resolve, reject) => {
+    const db = getDatabase();
+    const today = new Date().toISOString().split('T')[0];
+    
+    db.run(
+      `INSERT INTO order_cancellations (user_id, order_id, cancellation_date, cancelled_at)
+       VALUES (?, ?, ?, datetime('now'))`,
+      [String(userId), orderId, today],
+      (err) => {
+        db.close();
+        
+        if (err) {
+          console.error('记录取消次数失败:', err);
+          // 不阻止取消流程，继续执行
+        }
+        resolve(true);
+      }
+    );
+  });
+  
+  // Step 4: Delete order details and order (use separate connection)
+  await new Promise((resolve, reject) => {
+    const db = getDatabase();
+    
+    // 删除订单明细
+    db.run(
+      'DELETE FROM order_details WHERE order_id = ?',
+      [orderId],
+      (err) => {
+        if (err) {
+          db.close();
+          return reject({ status: 500, message: '删除订单明细失败' });
+        }
+        
+        // 删除订单
+        db.run(
+          'DELETE FROM orders WHERE id = ?',
+          [orderId],
+          (err) => {
+            db.close();
+            
+            if (err) {
+              return reject({ status: 500, message: '删除订单失败' });
+            }
+            
+            resolve(true);
+          }
+        );
+      }
+    );
+  });
+  
+  return { success: true, message: '订单已取消' };
 }
 
 /**

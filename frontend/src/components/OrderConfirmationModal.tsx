@@ -6,6 +6,7 @@ import TrainInfoDisplay from './TrainInfoDisplay';
 import SeatAvailabilityDisplay from './SeatAvailabilityDisplay';
 import ProcessingModal from './ProcessingModal';
 import OrderSuccessModal from './OrderSuccessModal';
+import BookingFailedModal from './BookingFailedModal';
 
 interface OrderConfirmationModalProps {
   isVisible: boolean;
@@ -30,6 +31,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   const navigate = useNavigate();
   const [orderInfo, setOrderInfo] = useState<any>(externalOrderInfo || null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showBookingFailedModal, setShowBookingFailedModal] = useState(false);
   const [error, setError] = useState('');
   const [showProcessingModal, setShowProcessingModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -127,7 +129,13 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
     } catch (error: any) {
       console.error('❌ handleConfirm 错误:', error);
       setShowProcessingModal(false);
-      setError(error.message || '订单确认失败，请稍后重试');
+      
+      // Check if it's a 403 error with cancellation limit code
+      if (error.message && error.message.includes('今日取消订单次数已达上限')) {
+        setShowBookingFailedModal(true);
+      } else {
+        setError(error.message || '订单确认失败，请稍后重试');
+      }
     }
   };
   
@@ -280,6 +288,18 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             } else {
               onBack();
             }
+          }}
+        />,
+        document.body
+      )}
+      
+      {/* 订票失败弹窗 */}
+      {showBookingFailedModal && createPortal(
+        <BookingFailedModal
+          isVisible={showBookingFailedModal}
+          onClose={() => {
+            setShowBookingFailedModal(false);
+            onBack();
           }}
         />,
         document.body
