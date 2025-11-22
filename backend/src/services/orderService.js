@@ -617,7 +617,7 @@ async function confirmOrder(orderId, userId) {
                 // 获取该席别的所有座位，然后找到在所有区间都是available的座位
                 const allSeats = await new Promise((resolve, reject) => {
                   db.all(
-                    `SELECT DISTINCT seat_no 
+                    `SELECT DISTINCT car_no, seat_no 
                      FROM seat_status 
                      WHERE train_no = ? 
                      AND departure_date = ?
@@ -637,6 +637,7 @@ async function confirmOrder(orderId, userId) {
                 
                 // 找到第一个在所有区间都是available的座位
                 let selectedSeatNo = null;
+                let selectedCarNo = null;
                 
                 for (const seat of allSeats) {
                   // 检查该座位在所有区间是否都是available
@@ -668,6 +669,7 @@ async function confirmOrder(orderId, userId) {
                     const allAvailable = seatStatuses.every(s => s.status === 'available');
                     if (allAvailable) {
                       selectedSeatNo = seat.seat_no;
+                      selectedCarNo = seat.car_no;
                       break;
                     }
                   }
@@ -699,11 +701,11 @@ async function confirmOrder(orderId, userId) {
                   });
                 }
                 
-                // 更新订单明细中的座位号
+                // 更新订单明细中的车厢号和座位号
                 await new Promise((resolve, reject) => {
                   db.run(
-                    'UPDATE order_details SET seat_number = ? WHERE id = ?',
-                    [selectedSeatNo, detail.id],
+                    'UPDATE order_details SET car_number = ?, seat_number = ? WHERE id = ?',
+                    [selectedCarNo, selectedSeatNo, detail.id],
                     (err) => {
                       if (err) return reject(err);
                       resolve(true);
@@ -714,42 +716,51 @@ async function confirmOrder(orderId, userId) {
                 ticketInfo.push({
                   passengerName: detail.passenger_name,
                   seatType: detail.seat_type,
+                  carNo: selectedCarNo,
                   seatNo: selectedSeatNo,
                   ticketType: detail.ticket_type
                 });
               }
               
               // 计算支付过期时间（20分钟后）
-              const expiresAt = new Date();
-              expiresAt.setMinutes(expiresAt.getMinutes() + 20);
-              const expiresAtStr = expiresAt.toISOString().replace('T', ' ').substring(0, 19);
-              
-              // 更新订单状态为已确认未支付，并设置支付过期时间
+              // 使用 SQLite 的 datetime 函数来确保时间格式一致性
               db.run(
-                "UPDATE orders SET status = 'confirmed_unpaid', payment_expires_at = ?, updated_at = datetime('now') WHERE id = ?",
-                [expiresAtStr, orderId],
+                "UPDATE orders SET status = 'confirmed_unpaid', payment_expires_at = datetime('now', '+20 minutes'), updated_at = datetime('now') WHERE id = ?",
+                [orderId],
                 (err) => {
-                  db.close();
-                  
                   if (err) {
+                    db.close();
                     return reject({ status: 500, message: '更新订单状态失败' });
                   }
                   
-                  resolve({
-                    message: '订单已确认，请完成支付',
-                    orderId,
-                    status: 'confirmed_unpaid',
-                    paymentExpiresAt: expiresAtStr,
-                    trainInfo: {
-                      trainNo: order.train_number,
-                      departureStation: order.departure_station,
-                      arrivalStation: order.arrival_station,
-                      departureDate: order.departure_date,
-                      departureTime: order.departure_time,
-                      arrivalTime: order.arrival_time
-                    },
-                    tickets: ticketInfo
-                  });
+                  // 查询更新后的订单信息以获取 payment_expires_at
+                  db.get(
+                    'SELECT payment_expires_at FROM orders WHERE id = ?',
+                    [orderId],
+                    (err, orderInfo) => {
+                      db.close();
+                      
+                      if (err) {
+                        return reject({ status: 500, message: '查询订单信息失败' });
+                      }
+                      
+                      resolve({
+                        message: '订单已确认，请完成支付',
+                        orderId,
+                        status: 'confirmed_unpaid',
+                        paymentExpiresAt: orderInfo?.payment_expires_at,
+                        trainInfo: {
+                          trainNo: order.train_number,
+                          departureStation: order.departure_station,
+                          arrivalStation: order.arrival_station,
+                          departureDate: order.departure_date,
+                          departureTime: order.departure_time,
+                          arrivalTime: order.arrival_time
+                        },
+                        tickets: ticketInfo
+                      });
+                    }
+                  );
                 }
               );
             } catch (error) {
@@ -871,56 +882,75 @@ async function getPaymentPageData(orderId, userId) {
         }
         
         // 检查订单是否已过期
-        if (order.payment_expires_at) {
-          const expiresAt = new Date(order.payment_expires_at);
-          const now = new Date();
-          if (now > expiresAt) {
-            db.close();
-            return reject({ status: 400, message: '订单已过期' });
-          }
-        }
-        
-        // 查询订单明细
-        db.all(
-          'SELECT * FROM order_details WHERE order_id = ? ORDER BY sequence_number',
-          [orderId],
-          (err, details) => {
-            db.close();
-            
-            if (err) {
-              return reject({ status: 500, message: '查询订单明细失败' });
+        // 使用 SQLite 的 datetime 函数进行比较，避免时区问题
+        const checkExpiredAndProcess = () => {
+          // 查询订单明细
+          db.all(
+            'SELECT * FROM order_details WHERE order_id = ? ORDER BY sequence_number',
+            [orderId],
+            (err, details) => {
+              db.close();
+              
+              if (err) {
+                return reject({ status: 500, message: '查询订单明细失败' });
+              }
+              
+              // 格式化订单明细
+              const passengers = details.map(d => ({
+                sequence: d.sequence_number,
+                name: d.passenger_name,
+                idCardType: d.id_card_type,
+                idCardNumber: d.id_card_number,
+                ticketType: d.ticket_type,
+                seatType: d.seat_type,
+                carNumber: d.car_number,
+                seatNumber: d.seat_number,
+                price: d.price
+              }));
+              
+              resolve({
+                orderId: order.id,
+                trainInfo: {
+                  trainNo: order.train_number,
+                  departureStation: order.departure_station,
+                  arrivalStation: order.arrival_station,
+                  departureDate: order.departure_date,
+                  departureTime: order.departure_time,
+                  arrivalTime: order.arrival_time
+                },
+                passengers,
+                totalPrice: order.total_price,
+                paymentExpiresAt: order.payment_expires_at,
+                createdAt: order.created_at
+              });
             }
-            
-            // 格式化订单明细
-            const passengers = details.map(d => ({
-              sequence: d.sequence_number,
-              name: d.passenger_name,
-              idCardType: d.id_card_type,
-              idCardNumber: d.id_card_number,
-              ticketType: d.ticket_type,
-              seatType: d.seat_type,
-              carNumber: d.car_number,
-              seatNumber: d.seat_number,
-              price: d.price
-            }));
-            
-            resolve({
-              orderId: order.id,
-              trainInfo: {
-                trainNo: order.train_number,
-                departureStation: order.departure_station,
-                arrivalStation: order.arrival_station,
-                departureDate: order.departure_date,
-                departureTime: order.departure_time,
-                arrivalTime: order.arrival_time
-              },
-              passengers,
-              totalPrice: order.total_price,
-              paymentExpiresAt: order.payment_expires_at,
-              createdAt: order.created_at
-            });
-          }
-        );
+          );
+        };
+        
+        if (order.payment_expires_at) {
+          // 使用 SQLite 比较当前时间和过期时间
+          db.get(
+            "SELECT datetime('now') > ? as is_expired",
+            [order.payment_expires_at],
+            (err, result) => {
+              if (err) {
+                db.close();
+                return reject({ status: 500, message: '检查订单过期时间失败' });
+              }
+              
+              if (result && result.is_expired === 1) {
+                db.close();
+                return reject({ status: 400, message: '订单已过期' });
+              }
+              
+              // 未过期，继续处理
+              checkExpiredAndProcess();
+            }
+          );
+        } else {
+          // 如果没有过期时间，直接继续处理
+          checkExpiredAndProcess();
+        }
       }
     );
   });
@@ -953,28 +983,46 @@ async function confirmPayment(orderId, userId) {
           return reject({ status: 400, message: '订单状态错误，无法支付' });
         }
         
-        // 检查订单是否已过期
+        // 检查订单是否已过期（使用 SQLite 函数避免时区问题）
         if (order.payment_expires_at) {
-          const expiresAt = new Date(order.payment_expires_at);
-          const now = new Date();
-          if (now > expiresAt) {
-            db.close();
-            return reject({ status: 400, message: '订单已过期，请重新购票' });
-          }
+          db.get(
+            "SELECT datetime('now') > ? as is_expired",
+            [order.payment_expires_at],
+            (err, result) => {
+              if (err) {
+                db.close();
+                return reject({ status: 500, message: '检查订单过期时间失败' });
+              }
+              
+              if (result && result.is_expired === 1) {
+                db.close();
+                return reject({ status: 400, message: '订单已过期，请重新购票' });
+              }
+              
+              // 未过期，继续处理支付
+              processPayment();
+            }
+          );
+          return; // 等待异步检查完成
+        } else {
+          // 如果没有过期时间，直接处理支付
+          processPayment();
         }
         
-        // 更新订单状态为已支付
-        db.run(
-          "UPDATE orders SET status = 'paid', updated_at = datetime('now') WHERE id = ?",
-          [orderId],
-          (err) => {
-            if (err) {
-              db.close();
-              return reject({ status: 500, message: '更新订单状态失败' });
-            }
-            
-            // 查询订单明细获取座位信息
-            db.all(
+        function processPayment() {
+        
+          // 更新订单状态为已支付
+          db.run(
+            "UPDATE orders SET status = 'paid', updated_at = datetime('now') WHERE id = ?",
+            [orderId],
+            (err) => {
+              if (err) {
+                db.close();
+                return reject({ status: 500, message: '更新订单状态失败' });
+              }
+              
+              // 查询订单明细获取座位信息
+              db.all(
               'SELECT * FROM order_details WHERE order_id = ? ORDER BY sequence_number',
               [orderId],
               (err, details) => {
@@ -1014,6 +1062,7 @@ async function confirmPayment(orderId, userId) {
             );
           }
         );
+        }
       }
     );
   });
@@ -1108,14 +1157,13 @@ async function hasUnpaidOrder(userId) {
   return new Promise((resolve, reject) => {
     const db = getDatabase();
     
-    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
-    
+    // 使用 SQLite 的 datetime 函数进行比较，避免时区问题
     db.get(
       `SELECT id FROM orders 
        WHERE user_id = ? 
        AND status = 'confirmed_unpaid' 
-       AND (payment_expires_at IS NULL OR payment_expires_at > ?)`,
-      [String(userId), now],
+       AND (payment_expires_at IS NULL OR datetime('now') <= payment_expires_at)`,
+      [String(userId)],
       (err, order) => {
         db.close();
         
@@ -1136,24 +1184,29 @@ async function getOrderTimeRemaining(orderId) {
   return new Promise((resolve, reject) => {
     const db = getDatabase();
     
+    // 使用 SQLite 的 julianday 函数计算剩余秒数，避免时区问题
     db.get(
-      'SELECT payment_expires_at FROM orders WHERE id = ?',
+      `SELECT 
+        payment_expires_at,
+        CASE 
+          WHEN payment_expires_at IS NULL THEN 0
+          WHEN datetime('now') > payment_expires_at THEN 0
+          ELSE CAST((julianday(payment_expires_at) - julianday('now')) * 86400 AS INTEGER)
+        END as remaining_seconds
+       FROM orders WHERE id = ?`,
       [orderId],
-      (err, order) => {
+      (err, result) => {
         db.close();
         
         if (err) {
           return reject({ status: 500, message: '查询失败' });
         }
         
-        if (!order || !order.payment_expires_at) {
+        if (!result || !result.payment_expires_at) {
           return resolve(0);
         }
         
-        const expiresAt = new Date(order.payment_expires_at);
-        const now = new Date();
-        const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
-        
+        const remaining = Math.max(0, result.remaining_seconds || 0);
         resolve(remaining);
       }
     );

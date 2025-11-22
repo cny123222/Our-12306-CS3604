@@ -1,7 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
+// 迁移脚本应该使用相对于脚本位置的数据库路径
 const dbPath = process.env.DB_PATH || path.join(__dirname, '../railway.db');
+console.log('数据库路径:', dbPath);
 const db = new sqlite3.Database(dbPath);
 
 console.log('开始迁移：添加支付相关字段...');
