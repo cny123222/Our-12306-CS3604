@@ -62,6 +62,22 @@ const WarmTipsSection: React.FC<WarmTipsSectionProps> = ({
 
   // 根据variant决定渲染方式
   if (variant === 'order-page') {
+    // 如果提供了自定义tips，使用简单格式但保持order-page样式
+    if (tips && tips.length > 0) {
+      return (
+        <div className="warm-tips-section order-page-tips">
+          <h3 className="tips-title">温馨提示：</h3>
+          <ol className="tips-list">
+            {tips.map((tip, index) => (
+              <li key={index} className="tip-item">
+                {tip}
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    }
+    
     // 订单填写页：使用原始的复杂格式
     return (
       <div className="warm-tips-section order-page-tips">
