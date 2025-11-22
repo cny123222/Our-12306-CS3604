@@ -59,6 +59,13 @@ const PhoneVerificationPanel: React.FC<PhoneVerificationPanelProps> = ({
     onSubmit(newPhone, password);
   };
 
+  // 格式化原手机号显示
+  const formatOldPhone = (phone: string) => {
+    if (!phone) return '';
+    // 将 (+86)158****9968 格式转换为 +86-158****9968
+    return phone.replace('(+86)', '+86-');
+  };
+
   return (
     <div className="phone-verification-panel">
       <div className="verification-section">
@@ -68,45 +75,46 @@ const PhoneVerificationPanel: React.FC<PhoneVerificationPanelProps> = ({
             <label className="form-label">
               <span className="required">*</span> 原手机号：
             </label>
-            <div className="form-value">{oldPhone} <span className="verified-link">已通过核验</span></div>
+            <div className="form-value">
+              {formatOldPhone(oldPhone)} <span className="verified-link">已通过核验</span>
+            </div>
           </div>
-          <div className="form-row">
+          <div className="form-row form-row-with-divider">
             <label className="form-label">
               <span className="required">*</span> 新手机号：
             </label>
-            <div className="form-input-group">
-              <select className="country-code">
-                <option>+86</option>
-              </select>
-              <input
-                type="text"
-                className="form-input"
-                value={newPhone}
-                onChange={handleNewPhoneChange}
-                placeholder="请填写手机号码"
-                maxLength={11}
-              />
+            <div className="form-input-wrapper">
+              <div className="form-input-group">
+                <select className="country-code">
+                  <option>+86</option>
+                </select>
+                <input
+                  type="text"
+                  className="form-input phone-input"
+                  value={newPhone}
+                  onChange={handleNewPhoneChange}
+                  placeholder=""
+                  maxLength={11}
+                />
+              </div>
+              {errors.newPhone && <div className="phone-panel-error-message">{errors.newPhone}</div>}
             </div>
-            {errors.newPhone && <div className="phone-panel-error-message">{errors.newPhone}</div>}
           </div>
-        </div>
-      </div>
-
-      <div className="password-section">
-        <h3 className="section-title">登录密码</h3>
-        <div className="form-content">
           <div className="form-row">
             <label className="form-label">
               <span className="required">*</span> 登录密码：
             </label>
-            <input
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={handlePasswordChange}
-              placeholder="正确输入密码才能修改密码"
-            />
-            {errors.password && <div className="phone-panel-error-message">{errors.password}</div>}
+            <div className="form-input-wrapper">
+              <input
+                type="password"
+                className="form-input password-input"
+                value={password}
+                onChange={handlePasswordChange}
+                placeholder=""
+              />
+              <span className="password-hint">正确输入密码才能修改密保</span>
+              {errors.password && <div className="phone-panel-error-message">{errors.password}</div>}
+            </div>
           </div>
         </div>
       </div>
