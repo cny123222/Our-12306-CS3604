@@ -61,23 +61,30 @@
 }
 
 .modal-30-percent .modal-content button {
-  padding: 10px 32px;
-  background-color: #1890ff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 500;
+  padding: 10px 32px !important;
+  background-color: #1890ff !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.3s !important;
+  font-weight: 500 !important;
 }
 
 .modal-30-percent .modal-content button:hover {
-  background-color: #40a9ff;
+  background-color: #40a9ff !important;
+  border-color: transparent !important;
 }
 
 .modal-30-percent .modal-content button:active {
-  background-color: #096dd9;
+  background-color: #096dd9 !important;
+}
+
+.modal-30-percent .modal-content button:focus,
+.modal-30-percent .modal-content button:focus-visible {
+  outline: none !important;
+  border-color: transparent !important;
 }
 
 /* 移动端适配 */
