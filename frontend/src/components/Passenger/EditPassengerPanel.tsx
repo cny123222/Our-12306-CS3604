@@ -24,7 +24,7 @@ const EditPassengerPanel: React.FC<EditPassengerPanelProps> = ({
   const validatePhone = (value: string) => {
     if (!value) return '手机号码不能为空';
     if (value.length !== 11 || !/^\d{11}$/.test(value)) {
-      return '手机号码应为11位数字';
+      return '您输入的手机号码不是有效的格式！';
     }
     return '';
   };

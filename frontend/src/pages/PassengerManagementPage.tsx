@@ -188,11 +188,17 @@ const PassengerManagementPage = () => {
         const errorData = await response.json().catch(() => ({ error: '删除失败' }));
         const errorMessage = errorData.error || '删除失败';
         console.error('删除失败:', errorMessage, errorData);
-        alert(errorMessage);
+        setTimeout(() => {
+          setSuccessMessage(errorMessage);
+          setShowSuccessModal(true);
+        }, 100);
       }
     } catch (err) {
       console.error('删除乘客异常:', err);
-      alert('删除失败，请稍后重试');
+      setTimeout(() => {
+        setSuccessMessage('删除失败，请稍后重试');
+        setShowSuccessModal(true);
+      }, 100);
     } finally {
       setPendingDeleteId(null);
     }
@@ -223,12 +229,25 @@ const PassengerManagementPage = () => {
       if (response.ok) {
         await fetchPassengers();
         setCurrentView('list');
+        // 延迟显示成功提示，确保视图切换完成
+        setTimeout(() => {
+          setSuccessMessage('添加成功！');
+          setShowSuccessModal(true);
+        }, 100);
       } else {
         const data = await response.json();
-        alert(data.error || '添加失败');
+        // 检查是否是重复乘客错误
+        const errorMessage = data.error || '添加失败';
+        setTimeout(() => {
+          setSuccessMessage(errorMessage);
+          setShowSuccessModal(true);
+        }, 100);
       }
     } catch (err) {
-      alert('添加失败');
+      setTimeout(() => {
+        setSuccessMessage('添加失败');
+        setShowSuccessModal(true);
+      }, 100);
     }
   };
 
@@ -258,14 +277,25 @@ const PassengerManagementPage = () => {
         await fetchPassengers();
         setCurrentView('list');
         setEditingPassenger(null);
+        // 延迟显示成功提示，确保视图切换完成
+        setTimeout(() => {
+          setSuccessMessage('修改成功');
+          setShowSuccessModal(true);
+        }, 100);
       } else {
         const errorData = await response.json().catch(() => ({ error: '更新失败' }));
         console.error('❌ 更新失败:', errorData);
-        alert(errorData.error || '更新失败');
+        setTimeout(() => {
+          setSuccessMessage(errorData.error || '更新失败');
+          setShowSuccessModal(true);
+        }, 100);
       }
     } catch (err) {
       console.error('❌ 请求异常:', err);
-      alert('更新失败: ' + (err instanceof Error ? err.message : '网络错误'));
+      setTimeout(() => {
+        setSuccessMessage('更新失败: ' + (err instanceof Error ? err.message : '网络错误'));
+        setShowSuccessModal(true);
+      }, 100);
     }
   };
 

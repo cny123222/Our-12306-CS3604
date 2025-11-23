@@ -13,13 +13,13 @@ const db = new sqlite3.Database(dbPath);
 // 订单信息
 const orderInfo = {
   trainNo: 'G16',
-  departureDate: '2025-11-26',
+  departureDate: '2025-11-27',
   departureStation: '上海虹桥',
-  arrivalStation: '济南西',
+  arrivalStation: '南京南',
   seatType: '商务座',
-  quantity: 9,
+  quantity: 10,
   departureTime: '06:20',
-  arrivalTime: '10:17'
+  arrivalTime: '07:35'
 };
 
 async function getOrCreateTestUser() {

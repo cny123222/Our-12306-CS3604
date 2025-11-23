@@ -29,24 +29,84 @@ const AddPassengerPanel: React.FC<AddPassengerPanelProps> = ({
 
   const discountTypes = ['成人', '儿童', '学生', '残军'];
 
+  // 计算字符串长度（汉字算2个字符，英文算1个字符）
+  const getStringLength = (str: string): number => {
+    let length = 0;
+    for (let i = 0; i < str.length; i++) {
+      // 判断是否为汉字（Unicode范围）
+      if (str.charCodeAt(i) > 255) {
+        length += 2;
+      } else {
+        length += 1;
+      }
+    }
+    return length;
+  };
+
   const validateName = (value: string) => {
-    if (!value) return '姓名不能为空';
-    if (value.length < 2 || value.length > 30) return '姓名长度应在2-30个字符之间';
+    if (!value) return '请输入姓名！';
+    
+    // 检查特殊字符（仅允许中英文、"."、单空格）
+    if (!/^[\u4e00-\u9fa5a-zA-Z.\s]+$/.test(value)) {
+      return '请输入姓名！';
+    }
+    
+    const length = getStringLength(value);
+    if (length < 3 || length > 30) {
+      return '允许输入的字符串在3-30个字符之间！';
+    }
+    
     return '';
+  };
+
+  // 身份证校验算法（GB 11643-1999）
+  const validateIdCardChecksum = (idCard: string): boolean => {
+    if (idCard.length !== 18) return false;
+    
+    const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+    const checkCodes = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'];
+    
+    let sum = 0;
+    for (let i = 0; i < 17; i++) {
+      const char = idCard[i];
+      if (!/^\d$/.test(char)) return false; // 前17位必须是数字
+      sum += parseInt(char) * weights[i];
+    }
+    
+    const checkCode = checkCodes[sum % 11];
+    return idCard[17].toUpperCase() === checkCode;
   };
 
   const validateIdCard = (value: string) => {
     if (!value) return '证件号码不能为空';
-    if (idCardType === '居民身份证' && value.length !== 18) {
-      return '居民身份证号码应为18位';
+    
+    if (idCardType === '居民身份证') {
+      if (value.length < 18) {
+        return '请正确输入18位证件号码！';
+      }
+      
+      if (value.length > 18) {
+        return '请正确输入18位证件号码！';
+      }
+      
+      // 检查是否包含特殊字符（仅允许数字和字母）
+      if (!/^[0-9A-Za-z]{18}$/.test(value)) {
+        return '输入的证件编号中包含中文信息或特殊字符！';
+      }
+      
+      // 校验算法
+      if (!validateIdCardChecksum(value)) {
+        return '请正确输入18位证件号码！';
+      }
     }
+    
     return '';
   };
 
   const validatePhone = (value: string) => {
     if (!value) return '手机号码不能为空';
     if (value.length !== 11 || !/^\d{11}$/.test(value)) {
-      return '手机号码应为11位数字';
+      return '您输入的手机号码不是有效的格式！';
     }
     return '';
   };
