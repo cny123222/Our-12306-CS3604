@@ -234,7 +234,7 @@ async function createPassenger(userId, passengerData) {
   }
   
   try {
-    // 验证证件号码唯一性
+    // 验证证件号码唯一性（同一用户下证件号不能重复）
     const existingRows = await db.query(
       'SELECT id FROM passengers WHERE user_id = ? AND id_card_number = ?',
       [userId, idCardNumber]
