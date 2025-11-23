@@ -11,7 +11,7 @@ echo ""
 
 echo "===== 启动新的后端服务器 ====="
 cd "$(dirname "$0")/backend"
-node src/server.js > /tmp/backend.log 2>&1 &
+npm start > /tmp/backend.log 2>&1 &
 NEW_PID=$!
 
 echo "✅ 后端服务器已启动"
