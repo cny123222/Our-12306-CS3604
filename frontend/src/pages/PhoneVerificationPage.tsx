@@ -17,6 +17,7 @@ const PhoneVerificationPage = () => {
   const [sessionId, setSessionId] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [verificationError, setVerificationError] = useState('');
 
   // 检查登录状态
   useEffect(() => {
@@ -62,6 +63,9 @@ const PhoneVerificationPage = () => {
   const handleSubmit = async (phone: string, password: string) => {
     console.log('🔍 开始发送验证码请求...', { phone, hasPassword: !!password });
     
+    // 清除之前的错误
+    setVerificationError('');
+    
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch('/api/user/phone/update-request', {
@@ -99,12 +103,12 @@ const PhoneVerificationPage = () => {
       } else {
         const error = await response.json();
         console.error('❌ 请求失败:', { status: response.status, error });
-        // 显示具体的错误信息（包括密码错误）
-        alert(error.error || '发送验证码失败');
+        // 使用error message显示具体的错误信息（包括密码错误）
+        setVerificationError(error.error || '发送验证码失败');
       }
     } catch (err) {
       console.error('❌ 请求异常:', err);
-      alert('发送验证码失败');
+      setVerificationError('发送验证码失败');
     }
   };
 
@@ -184,6 +188,7 @@ const PhoneVerificationPage = () => {
             oldPhone={oldPhone}
             onSubmit={handleSubmit}
             onCancel={() => navigate('/personal-info')}
+            externalError={verificationError}
           />
         </div>
       </div>
