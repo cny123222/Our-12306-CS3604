@@ -10,14 +10,16 @@ class DatabaseService {
   // 初始化数据库连接
   init() {
     const dbPath = process.env.NODE_ENV === 'test' 
-      ? process.env.TEST_DB_PATH || './database/test.db'
-      : process.env.DB_PATH || './database/railway.db';
+      ? process.env.TEST_DB_PATH || path.join(__dirname, '../../database/test.db')
+      : process.env.DB_PATH || path.join(__dirname, '../../database/railway.db');
+    
+    console.log('[dbService] 数据库路径:', dbPath);
     
     this.db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
         console.error('Database connection error:', err);
       } else {
-        console.log('Connected to SQLite database');
+        console.log('Connected to SQLite database:', dbPath);
         this.createTables();
       }
     });
