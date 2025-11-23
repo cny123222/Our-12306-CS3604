@@ -25,7 +25,7 @@
 
 /* 标题栏 */
 .reg-verification-modal .reg-verification-modal-header {
-  background: linear-gradient(to right, #2681d5, #5ca3e6);
+  background: #3a93e6;
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -92,13 +92,13 @@
 .reg-verification-modal .form-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start !important;
+  justify-content: flex-left !important;
   margin-bottom: 20px;
   padding-left: 20px;
 }
 
 .reg-verification-modal .form-label {
-  width: 50px;
+  width: 120px;
   text-align: right;
   margin-right: 10px;
   font-size: 14px;
@@ -135,15 +135,15 @@
 
 /* 按钮组 */
 .reg-verification-modal .button-group {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 20px;
-  padding-top: 20px;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 30px !important;
+  margin-top: 20px !important;
+  padding-top: 20px !important;
 }
 
-.reg-verification-modal .complete-button,
-.reg-verification-modal .back-button {
+.reg-verification-modal .button-group .complete-button,
+.reg-verification-modal .button-group .back-button {
   padding: 8px 20px !important;
   font-size: 14px !important;
   border-radius: 0px !important;
@@ -153,49 +153,50 @@
   width: 140px !important;
   min-width: 140px !important;
   max-width: 140px !important;
+  box-sizing: border-box !important;
 }
 
-.reg-verification-modal .complete-button {
+.reg-verification-modal .button-group .complete-button {
   background: #ff8533 !important;
   color: white !important;
   border: none !important;
 }
 
-.reg-verification-modal .complete-button:hover {
+.reg-verification-modal .button-group .complete-button:hover {
   background: #ff9547 !important;
   box-shadow: 0 2px 4px rgba(255, 133, 51, 0.3) !important;
   border-color: transparent !important;
 }
 
-.reg-verification-modal .complete-button:focus,
-.reg-verification-modal .complete-button:focus-visible {
+.reg-verification-modal .button-group .complete-button:focus,
+.reg-verification-modal .button-group .complete-button:focus-visible {
   outline: none !important;
   border-color: transparent !important;
 }
 
-.reg-verification-modal .complete-button:active {
+.reg-verification-modal .button-group .complete-button:active {
   background: #e67529 !important;
 }
 
-.reg-verification-modal .back-button {
+.reg-verification-modal .button-group .back-button {
   background: white !important;
   color: #2681d5 !important;
   border: none !important;
 }
 
-.reg-verification-modal .back-button:hover {
+.reg-verification-modal .button-group .back-button:hover {
   background: #f5f9ff !important;
   border-color: transparent !important;
   color: #5ca3e6 !important;
 }
 
-.reg-verification-modal .back-button:focus,
-.reg-verification-modal .back-button:focus-visible {
+.reg-verification-modal .button-group .back-button:focus,
+.reg-verification-modal .button-group .back-button:focus-visible {
   outline: none !important;
   border-color: transparent !important;
 }
 
-.reg-verification-modal .back-button:active {
+.reg-verification-modal .button-group .back-button:active {
   background: #e8f3ff !important;
 }
 
@@ -215,9 +216,9 @@
     gap: 10px;
   }
 
-  .reg-verification-modal .complete-button,
-  .reg-verification-modal .back-button {
-    width: 100%;
+  .reg-verification-modal .button-group .complete-button,
+  .reg-verification-modal .button-group .back-button {
+    width: 100% !important;
   }
 }
 
