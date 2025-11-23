@@ -6,12 +6,14 @@ interface PhoneVerificationPanelProps {
   oldPhone: string;
   onSubmit: (newPhone: string, password: string) => void;
   onCancel: () => void;
+  externalError?: string; // 外部传入的错误信息（如密码错误）
 }
 
 const PhoneVerificationPanel: React.FC<PhoneVerificationPanelProps> = ({
   oldPhone,
   onSubmit,
-  onCancel
+  onCancel,
+  externalError
 }) => {
   const [newPhone, setNewPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -113,7 +115,9 @@ const PhoneVerificationPanel: React.FC<PhoneVerificationPanelProps> = ({
                 placeholder=""
               />
               <span className="password-hint">正确输入密码才能修改密保</span>
-              {errors.password && <div className="phone-panel-error-message">{errors.password}</div>}
+              {(errors.password || externalError) && (
+                <div className="phone-panel-error-message">{externalError || errors.password}</div>
+              )}
             </div>
           </div>
         </div>
