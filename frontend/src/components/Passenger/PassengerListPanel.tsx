@@ -1,6 +1,7 @@
 // 乘车人列表展示面板组件
 import React, { useState } from 'react';
 import PassengerTable from './PassengerTable';
+import ConfirmModal from '../ConfirmModal';
 import './PassengerListPanel.css';
 
 interface PassengerListPanelProps {
@@ -20,22 +21,31 @@ const PassengerListPanel: React.FC<PassengerListPanelProps> = ({
 }) => {
   const [selectedPassengers, setSelectedPassengers] = useState<string[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [showBatchDeleteModal, setShowBatchDeleteModal] = useState(false);
 
   const handleSearch = () => {
     onSearch(searchKeyword);
   };
 
-  const handleBatchDelete = async () => {
+  const handleBatchDelete = () => {
     if (selectedPassengers.length === 0) {
       alert('请选择要删除的乘客');
       return;
     }
-    if (!confirm(`确定要删除选中的${selectedPassengers.length}个乘客吗？`)) return;
+    setShowBatchDeleteModal(true);
+  };
 
+  const handleConfirmBatchDelete = async () => {
+    setShowBatchDeleteModal(false);
+    
     for (const id of selectedPassengers) {
       await onDelete(id);
     }
     setSelectedPassengers([]);
+  };
+
+  const handleCancelBatchDelete = () => {
+    setShowBatchDeleteModal(false);
   };
 
   const handleClear = () => {
@@ -100,6 +110,16 @@ const PassengerListPanel: React.FC<PassengerListPanelProps> = ({
           onDelete={onDelete}
         />
       </div>
+
+      <ConfirmModal
+        isVisible={showBatchDeleteModal}
+        title="提示"
+        message={`确定要删除选中的${selectedPassengers.length}个乘客吗？`}
+        confirmText="确定"
+        cancelText="取消"
+        onConfirm={handleConfirmBatchDelete}
+        onCancel={handleCancelBatchDelete}
+      />
     </div>
   );
 };
