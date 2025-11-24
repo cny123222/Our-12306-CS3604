@@ -46,8 +46,7 @@ const LoginPage: React.FC = () => {
   }
 
   const handleNavigateToForgotPassword = () => {
-    // TODO: 实现跳转到忘记密码页面
-    console.log('Navigate to forgot password')
+    navigate('/forgot-password')
   }
 
   const handleNavigateToHome = () => {

@@ -10,6 +10,7 @@ import PassengerManagementPage from './pages/PassengerManagementPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
 import PaymentPage from './pages/PaymentPage'
 import SuccessfulPurchasePage from './pages/SuccessfulPurchasePage'
+import ForgotPasswordModule from './components/ForgotPasswordModule'
 import './App.css'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/orders" element={<OrderHistoryPage />} />
         <Route path="/payment/:orderId" element={<PaymentPage />} />
         <Route path="/purchase-success/:orderId" element={<SuccessfulPurchasePage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordModule />} />
       </Routes>
     </div>
   )
