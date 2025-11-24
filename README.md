@@ -107,19 +107,7 @@ cd ../frontend
 npm install
 ```
 
-### 2. 初始化数据库（首次运行）
-
-```bash
-cd backend/database
-
-# 初始化列车数据
-node init-trains-data.js
-
-# 初始化乘客和订单数据
-node init-passengers-orders.js
-```
-
-### 3. 启动开发服务器
+### 2. 启动开发服务器
 
 在**两个独立的终端窗口**中分别运行：
 
@@ -136,7 +124,7 @@ cd frontend
 npm run dev
 ```
 
-### 4. 访问应用
+### 3. 访问应用
 
 在浏览器中打开：http://localhost:5173
 
