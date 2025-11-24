@@ -181,7 +181,9 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, minDate, maxDa
 
   // 回到今天所在的月份
   const handleToday = () => {
-    setCurrentMonth(new Date());
+    const today = new Date();
+    setCurrentMonth(today);
+    onChange(formatDateString(today));
   };
 
   const calendarDays = generateCalendar();
