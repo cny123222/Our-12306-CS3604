@@ -1,0 +1,11 @@
+
+# Test output files
+*.txt
+test-*.txt
+*.backup
+
+# Database backups
+railway_backup_*.db
+
+# System files
+.DS_Store
