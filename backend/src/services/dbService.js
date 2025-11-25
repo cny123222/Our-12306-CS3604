@@ -86,40 +86,67 @@ class DatabaseService {
       )
     `;
 
+    // 先创建表，然后等待创建完成后再执行迁移
     this.db.run(createUsersTable);
-    this.db.run(createVerificationCodesTable);
     this.db.run(createEmailVerificationCodesTable);
     this.db.run(createSessionsTable);
     
-    // 数据库迁移：为现有 verification_codes 表添加 purpose 字段
-    this.migrateVerificationCodesTable();
+    // 创建 verification_codes 表，并在创建完成后执行迁移
+    this.db.run(createVerificationCodesTable, (err) => {
+      if (err) {
+        console.error('Error creating verification_codes table:', err);
+      } else {
+        // 表创建完成后，执行迁移（为旧数据库添加 purpose 字段）
+        // 注意：新创建的表已经包含 purpose 字段，迁移只会对旧数据库生效
+        this.migrateVerificationCodesTable();
+      }
+    });
   }
   
   // 数据库迁移：添加 purpose 字段
   migrateVerificationCodesTable() {
-    // 检查 purpose 列是否存在
-    this.db.all("PRAGMA table_info(verification_codes)", (err, columns) => {
-      if (err) {
-        console.error('Error checking table info:', err);
-        return;
-      }
-      
-      const hasPurposeColumn = columns.some(col => col.name === 'purpose');
-      
-      if (!hasPurposeColumn) {
-        // 添加 purpose 列
-        this.db.run(
-          "ALTER TABLE verification_codes ADD COLUMN purpose TEXT DEFAULT 'login'",
-          (err) => {
-            if (err) {
-              console.error('Error adding purpose column:', err);
-            } else {
-              console.log('Successfully added purpose column to verification_codes table');
-            }
+    // 先检查表是否存在
+    this.db.all(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='verification_codes'",
+      (err, tables) => {
+        if (err) {
+          console.error('Error checking if verification_codes table exists:', err);
+          return;
+        }
+        
+        // 如果表不存在，说明是新数据库，新表已经包含 purpose 字段，不需要迁移
+        if (!tables || tables.length === 0) {
+          console.log('verification_codes table does not exist yet, migration skipped (table will be created with purpose column)');
+          return;
+        }
+        
+        // 表存在，检查 purpose 列是否存在
+        this.db.all("PRAGMA table_info(verification_codes)", (err, columns) => {
+          if (err) {
+            console.error('Error checking table info:', err);
+            return;
           }
-        );
+          
+          const hasPurposeColumn = columns.some(col => col.name === 'purpose');
+          
+          if (!hasPurposeColumn) {
+            // 添加 purpose 列（仅对旧数据库）
+            this.db.run(
+              "ALTER TABLE verification_codes ADD COLUMN purpose TEXT DEFAULT 'login'",
+              (err) => {
+                if (err) {
+                  console.error('Error adding purpose column:', err);
+                } else {
+                  console.log('Successfully added purpose column to verification_codes table');
+                }
+              }
+            );
+          } else {
+            console.log('verification_codes table already has purpose column, migration skipped');
+          }
+        });
       }
-    });
+    );
   }
 
   // 通用查询方法 - 返回单行

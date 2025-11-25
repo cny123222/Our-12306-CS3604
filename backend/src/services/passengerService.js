@@ -252,7 +252,7 @@ async function createPassenger(userId, passengerData) {
     await db.run(
       `INSERT INTO passengers (id, user_id, name, id_card_type, id_card_number, discount_type, phone, points, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
-      [passengerId, userId, name, idCardType, idCardNumber, discountType || '成人票', phone || '']
+      [passengerId, userId, name, idCardType, idCardNumber, discountType || '成人', phone || '']
     );
     
     return { 

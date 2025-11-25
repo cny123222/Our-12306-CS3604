@@ -19,8 +19,8 @@ type SortOrder = 'asc' | 'desc';
  * 车次列表组件
  */
 const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, queryTimestamp, departureCity, arrivalCity, departureDate }) => {
-  const [sortField, setSortField] = useState<SortField>(null);
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [sortField, setSortField] = useState<SortField>('departureTime');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   // 格式化日期为"X月X日 周X"
   const formatDate = (dateStr: string | undefined) => {
@@ -38,19 +38,19 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
   // 处理排序
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      // 如果点击相同字段，切换排序顺序
+      // Toggle sort order when clicking the same field
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      // 如果点击新字段，设置为升序
+      // Switch to new field with its appropriate initial order
       setSortField(field);
+      // Both departureTime and arrivalTime start with 'asc' when newly activated
       setSortOrder('asc');
     }
   };
 
   // 排序后的车次列表
   const sortedTrains = [...trains].sort((a, b) => {
-    if (!sortField) return 0;
-
+    // Always apply sorting since we have a default sort field
     let comparison = 0;
     if (sortField === 'departureTime') {
       comparison = (a.departureTime || '').localeCompare(b.departureTime || '');
@@ -63,10 +63,36 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
     return sortOrder === 'asc' ? comparison : -comparison;
   });
 
-  // 渲染排序图标 - 到达时间默认向下
-  const renderSortIcon = (field: SortField, isArrival: boolean = false) => {
-    if (sortField !== field) {
-      return <span className="sort-icon neutral">{isArrival ? '▼' : '▲'}</span>;
+  // 渲染排序图标
+  const renderSortIcon = (field: SortField) => {
+    const isActive = sortField === field;
+    
+    // Determine direction based on field and state
+    if (field === 'departureTime') {
+      if (!isActive) {
+        // Default: white triangle pointing up
+        return <span className="sort-icon neutral">▲</span>;
+      } else {
+        // Active: yellow triangle, direction based on sortOrder
+        return sortOrder === 'asc' ? 
+          <span className="sort-icon asc">▲</span> : 
+          <span className="sort-icon desc">▼</span>;
+      }
+    } else if (field === 'arrivalTime') {
+      if (!isActive) {
+        // Default: white triangle pointing down
+        return <span className="sort-icon neutral">▼</span>;
+      } else {
+        // Active: yellow triangle, direction based on sortOrder
+        return sortOrder === 'asc' ? 
+          <span className="sort-icon asc">▲</span> : 
+          <span className="sort-icon desc">▼</span>;
+      }
+    }
+    
+    // For other fields (duration, etc.)
+    if (!isActive) {
+      return <span className="sort-icon neutral">▲</span>;
     }
     return sortOrder === 'asc' ? 
       <span className="sort-icon asc">▲</span> : 
@@ -120,7 +146,7 @@ const TrainList: React.FC<TrainListProps> = ({ trains, onReserve, isLoggedIn, qu
               className="header-line sortable-line"
               onClick={() => handleSort('arrivalTime')}
             >
-              到达时间 {renderSortIcon('arrivalTime', true)}
+              到达时间 {renderSortIcon('arrivalTime')}
             </span>
           </div>
           <div 

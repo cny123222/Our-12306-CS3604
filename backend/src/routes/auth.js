@@ -11,16 +11,12 @@ router.post('/login', [
 ], authController.login);
 
 // API-POST-SendVerificationCode: 发送短信验证码接口
-router.post('/send-verification-code', [
-  body('sessionId').notEmpty().withMessage('会话ID不能为空'),
-  body('idCardLast4').isLength({ min: 4, max: 4 }).withMessage('请输入证件号后4位')
-], authController.sendVerificationCode);
+// 注意：控制器支持两种场景（sessionId+idCardLast4 和 phoneNumber），验证逻辑在控制器中处理
+router.post('/send-verification-code', authController.sendVerificationCode);
 
 // API-POST-VerifyLogin: 短信验证登录接口
-router.post('/verify-login', [
-  body('sessionId').notEmpty().withMessage('会话ID不能为空'),
-  body('verificationCode').isLength({ min: 6, max: 6 }).withMessage('请输入6位验证码')
-], authController.verifyLogin);
+// 注意：控制器支持两种场景（sessionId 和 phoneNumber），验证逻辑在控制器中处理
+router.post('/verify-login', authController.verifyLogin);
 
 // API-GET-HomePage: 获取首页内容接口
 router.get('/homepage', authController.getHomePage);
