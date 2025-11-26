@@ -214,6 +214,7 @@ frontend/.vite/
 frontend/dist/
 
 # Database files
-backend/database/railway.db
+# Note: railway.db is managed by Git LFS (see .gitattributes)
 *.db
+!backend/database/railway.db
 !backend/database/*.js
