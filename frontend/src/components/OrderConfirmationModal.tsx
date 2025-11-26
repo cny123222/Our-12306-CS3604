@@ -38,6 +38,16 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   
   // 获取订单核对信息
   useEffect(() => {
+    // 如果已经有外部传入的订单信息，跳过API调用
+    if (externalOrderInfo) {
+      // 使用传入的数据，不调用API
+      setOrderInfo(externalOrderInfo);
+      setIsLoading(false);
+      setError('');
+      return;
+    }
+    
+    // 只有在没有传入数据时，才调用API获取
     const fetchOrderConfirmation = async () => {
       if (!isVisible || !orderId) return;
       
@@ -73,7 +83,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
     };
     
     fetchOrderConfirmation();
-  }, [isVisible, orderId]);
+  }, [isVisible, orderId, externalOrderInfo]);
   
   const [confirmResult, setConfirmResult] = React.useState<any>(null);
   
