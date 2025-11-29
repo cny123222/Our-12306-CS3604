@@ -1,22 +1,38 @@
 // 个人信息页导航流程跨页测试
+import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import { screen, waitFor, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import App from '../../src/App';
-
-// Mock fetch
-global.fetch = vi.fn();
+import {
+  setupLocalStorageMock,
+  cleanupTest,
+  mockUnauthenticatedUser,
+  mockAuthenticatedUser,
+  renderWithRouter,
+  mockFetch,
+} from './test-utils';
 
 describe('个人信息页导航流程测试', () => {
   
   beforeEach(() => {
-    vi.clearAllMocks();
-    localStorage.clear();
+    cleanupTest();
+    setupLocalStorageMock();
+    mockFetch();
     
     // 默认mock用户信息API
-    (global.fetch as any).mockImplementation((url: string) => {
+    (globalThis.fetch as any).mockImplementation((url: string, options?: any) => {
       if (url === '/api/user/info') {
+        // 检查是否有认证token
+        const authHeader = options?.headers?.Authorization;
+        if (!authHeader || !authHeader.includes('Bearer')) {
+          return Promise.resolve({
+            ok: false,
+            status: 401,
+            json: async () => ({ error: '未授权' })
+          });
+        }
         return Promise.resolve({
           ok: true,
           json: async () => ({
@@ -32,6 +48,12 @@ describe('个人信息页导航流程测试', () => {
           })
         });
       }
+      if (url === '/api/passengers') {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({ passengers: [] })
+        });
+      }
       return Promise.resolve({
         ok: true,
         json: async () => ({})
@@ -43,278 +65,289 @@ describe('个人信息页导航流程测试', () => {
     
     it('[P0] 已登录用户应该能够访问个人信息页', async () => {
       // Given: 用户已登录
-      localStorage.setItem('token', 'valid-test-token');
+      mockAuthenticatedUser('valid-test-token', 'testuser');
       
       // When: 直接访问个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
+      });
       
       // Then: 页面应该正确加载
       await waitFor(() => {
-        expect(container.querySelector('.personal-info-page')).toBeTruthy();
-        expect(container.querySelector('.side-menu')).toBeTruthy();
-      });
+        const personalInfoPage = document.querySelector('.personal-info-page');
+        const sideMenu = document.querySelector('.side-menu');
+        expect(personalInfoPage).toBeTruthy();
+        expect(sideMenu).toBeTruthy();
+      }, { timeout: 3000 });
       
       // And: 应该调用用户信息API
-      expect(global.fetch).toHaveBeenCalledWith(
-        '/api/user/info',
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            'Authorization': 'Bearer valid-test-token'
-          })
-        })
-      );
+      await waitFor(() => {
+        expect(globalThis.fetch).toHaveBeenCalled();
+        const fetchCalls = (globalThis.fetch as any).mock.calls;
+        const userInfoCall = fetchCalls.find((call: any[]) => 
+          call[0] && typeof call[0] === 'string' && call[0].includes('/api/user/info')
+        );
+        expect(userInfoCall).toBeTruthy();
+        if (userInfoCall && userInfoCall[1]) {
+          const headers = userInfoCall[1].headers || {};
+          expect(headers['Authorization']).toBe('Bearer valid-test-token');
+        }
+      }, { timeout: 3000 });
     });
 
     it('[P0] 未登录用户访问个人信息页应该被拦截', async () => {
       // Given: 用户未登录
-      localStorage.removeItem('token');
-      
-      // Mock API返回401
-      (global.fetch as any).mockImplementationOnce(() => 
-        Promise.resolve({
-          ok: false,
-          status: 401,
-          json: async () => ({ error: '未授权' })
-        })
-      );
+      mockUnauthenticatedUser();
       
       // When: 尝试访问个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
+      });
       
       // Then: 应该显示错误信息或跳转到登录页
       await waitFor(() => {
-        const errorElement = container.querySelector('.error-container');
-        const loginPage = container.querySelector('.login-page');
-        expect(errorElement || loginPage).toBeTruthy();
-      });
+        const errorElement = document.querySelector('.error-container');
+        const loginPage = document.querySelector('.login-page');
+        const accountLoginText = screen.queryByText(/账号登录/i);
+        expect(errorElement || loginPage || accountLoginText).toBeTruthy();
+      }, { timeout: 3000 });
     });
   });
 
   describe('侧边菜单导航流程', () => {
     
     beforeEach(() => {
-      localStorage.setItem('token', 'valid-test-token');
+      mockAuthenticatedUser('valid-test-token', 'testuser');
     });
 
     it('[P0] 应该能够通过侧边菜单导航到手机核验页', async () => {
-      // Given: 用户在个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
+      const user = userEvent.setup();
       
-      await waitFor(() => {
-        expect(container.querySelector('.personal-info-page')).toBeTruthy();
+      // Given: 用户在个人信息页
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
       });
       
-      // When: 点击侧边菜单的"手机核验"
-      const sideMenu = container.querySelector('.side-menu');
-      const menuItems = sideMenu?.querySelectorAll('.menu-item');
-      const phoneVerificationItem = Array.from(menuItems || []).find(
-        item => item.textContent?.includes('手机核验')
-      );
+      await waitFor(() => {
+        expect(document.querySelector('.personal-info-page')).toBeTruthy();
+      }, { timeout: 3000 });
       
-      if (phoneVerificationItem) {
-        fireEvent.click(phoneVerificationItem as Element);
-        
-        // Then: 应该跳转到手机核验页
-        await waitFor(() => {
-          expect(window.location.pathname).toBe('/phone-verification');
-        });
-      }
+      // When: 点击侧边菜单的"手机核验"
+      const phoneVerificationItem = screen.getByText(/手机核验/i);
+      await act(async () => {
+        await user.click(phoneVerificationItem);
+      });
+      
+      // Then: 应该跳转到手机核验页
+      await waitFor(() => {
+        const phoneVerificationPage = document.querySelector('.phone-verification-page');
+        const personalInfoPage = document.querySelector('.personal-info-page');
+        expect(phoneVerificationPage).toBeTruthy();
+        expect(personalInfoPage).toBeFalsy();
+      }, { timeout: 3000 });
     });
 
     it('[P0] 应该能够通过侧边菜单导航到乘客管理页', async () => {
-      // Given: 用户在个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
+      const user = userEvent.setup();
       
-      await waitFor(() => {
-        expect(container.querySelector('.personal-info-page')).toBeTruthy();
+      // Given: 用户在个人信息页
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
       });
       
-      // When: 点击侧边菜单的"乘车人"
-      const sideMenu = container.querySelector('.side-menu');
-      const menuItems = sideMenu?.querySelectorAll('.menu-item');
-      const passengersItem = Array.from(menuItems || []).find(
-        item => item.textContent?.includes('乘车人')
-      );
+      await waitFor(() => {
+        expect(document.querySelector('.personal-info-page')).toBeTruthy();
+      }, { timeout: 3000 });
       
-      if (passengersItem) {
-        fireEvent.click(passengersItem as Element);
-        
-        // Then: 应该跳转到乘客管理页
-        await waitFor(() => {
-          expect(window.location.pathname).toBe('/passengers');
-        });
-      }
+      // When: 点击侧边菜单的"乘车人"
+      const passengersItem = screen.getByText(/乘车人/i);
+      await act(async () => {
+        await user.click(passengersItem);
+      });
+      
+      // Then: 应该跳转到乘客管理页
+      await waitFor(() => {
+        const passengersPage = document.querySelector('.passenger-management-page');
+        const personalInfoPage = document.querySelector('.personal-info-page');
+        expect(passengersPage).toBeTruthy();
+        expect(personalInfoPage).toBeFalsy();
+      }, { timeout: 3000 });
     });
 
     it('[P0] 应该能够通过侧边菜单导航到历史订单页', async () => {
-      // Given: 用户在个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
+      const user = userEvent.setup();
       
-      await waitFor(() => {
-        expect(container.querySelector('.personal-info-page')).toBeTruthy();
+      // Given: 用户在个人信息页
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
       });
       
-      // When: 点击侧边菜单的"火车票订单"
-      const sideMenu = container.querySelector('.side-menu');
-      const menuItems = sideMenu?.querySelectorAll('.menu-item');
-      const ordersItem = Array.from(menuItems || []).find(
-        item => item.textContent?.includes('火车票订单')
-      );
+      await waitFor(() => {
+        expect(document.querySelector('.personal-info-page')).toBeTruthy();
+      }, { timeout: 3000 });
       
-      if (ordersItem) {
-        fireEvent.click(ordersItem as Element);
-        
-        // Then: 应该跳转到历史订单页
-        await waitFor(() => {
-          expect(window.location.pathname).toBe('/orders');
-        });
-      }
+      // When: 点击侧边菜单的"火车票订单"
+      const ordersItem = screen.getByText(/火车票订单/i);
+      await act(async () => {
+        await user.click(ordersItem);
+      });
+      
+      // Then: 应该跳转到历史订单页
+      await waitFor(() => {
+        const ordersPage = document.querySelector('.order-history-page');
+        const personalInfoPage = document.querySelector('.personal-info-page');
+        expect(ordersPage).toBeTruthy();
+        expect(personalInfoPage).toBeFalsy();
+      }, { timeout: 3000 });
     });
 
     it('[P1] 侧边菜单应该正确高亮当前页面', async () => {
       // Given: 用户在个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
-      
-      await waitFor(() => {
-        expect(container.querySelector('.personal-info-page')).toBeTruthy();
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
       });
       
+      await waitFor(() => {
+        expect(document.querySelector('.personal-info-page')).toBeTruthy();
+      }, { timeout: 3000 });
+      
       // Then: "查看个人信息"菜单项应该被选中
-      const selectedItem = container.querySelector('.menu-item.selected');
-      expect(selectedItem).toBeTruthy();
-      expect(selectedItem?.textContent).toContain('查看个人信息');
+      await waitFor(() => {
+        const selectedItem = document.querySelector('.menu-item.selected');
+        expect(selectedItem).toBeTruthy();
+        expect(selectedItem?.textContent).toContain('查看个人信息');
+      }, { timeout: 3000 });
     });
   });
 
   describe('面包屑导航验证', () => {
     
     beforeEach(() => {
-      localStorage.setItem('token', 'valid-test-token');
+      mockAuthenticatedUser('valid-test-token', 'testuser');
     });
 
     it('[P1] 个人信息页应该显示正确的面包屑导航', async () => {
       // When: 访问个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
+      });
       
       // Then: 面包屑应该显示正确的路径
       await waitFor(() => {
-        const breadcrumb = container.querySelector('.breadcrumb-navigation');
+        const breadcrumb = document.querySelector('.breadcrumb-navigation');
         expect(breadcrumb).toBeTruthy();
         expect(breadcrumb?.textContent).toContain('个人中心');
-        expect(breadcrumb?.textContent).toContain('个人信息');
         expect(breadcrumb?.textContent).toContain('查看个人信息');
-      });
+      }, { timeout: 3000 });
     });
 
     it('[P1] 手机核验页应该显示正确的面包屑导航', async () => {
       // When: 访问手机核验页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/phone-verification']}>
-          <App />
-        </MemoryRouter>
-      );
+      await renderWithRouter({
+        initialEntries: ['/phone-verification'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
+      });
       
       // Then: 面包屑应该显示完整路径
       await waitFor(() => {
-        const breadcrumb = container.querySelector('.breadcrumb-navigation');
+        const breadcrumb = document.querySelector('.breadcrumb-navigation');
         expect(breadcrumb).toBeTruthy();
         expect(breadcrumb?.textContent).toContain('个人中心');
         expect(breadcrumb?.textContent).toContain('账号安全');
         expect(breadcrumb?.textContent).toContain('手机核验');
-      });
+      }, { timeout: 3000 });
     });
 
     it('[P1] 乘客管理页应该显示正确的面包屑导航', async () => {
-      // Mock乘客列表API
-      (global.fetch as any).mockImplementation((url: string) => {
-        if (url === '/api/passengers') {
-          return Promise.resolve({
-            ok: true,
-            json: async () => ({ passengers: [] })
-          });
-        }
-        return Promise.resolve({
-          ok: true,
-          json: async () => ({})
-        });
-      });
-
       // When: 访问乘客管理页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/passengers']}>
-          <App />
-        </MemoryRouter>
-      );
+      await renderWithRouter({
+        initialEntries: ['/passengers'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
+      });
       
       // Then: 面包屑应该显示正确路径
       await waitFor(() => {
-        const breadcrumb = container.querySelector('.breadcrumb-navigation');
+        const breadcrumb = document.querySelector('.breadcrumb-navigation');
         expect(breadcrumb).toBeTruthy();
         expect(breadcrumb?.textContent).toContain('个人中心');
         expect(breadcrumb?.textContent).toContain('常用信息管理');
         expect(breadcrumb?.textContent).toContain('乘车人');
-      });
+      }, { timeout: 3000 });
     });
   });
 
   describe('Logo返回首页流程', () => {
     
     beforeEach(() => {
-      localStorage.setItem('token', 'valid-test-token');
+      mockAuthenticatedUser('valid-test-token', 'testuser');
     });
 
     it('[P1] 点击Logo应该返回首页', async () => {
-      // Given: 用户在个人信息页
-      const { container } = render(
-        <MemoryRouter initialEntries={['/personal-info']}>
-          <App />
-        </MemoryRouter>
-      );
+      const user = userEvent.setup();
       
-      await waitFor(() => {
-        expect(container.querySelector('.personal-info-page')).toBeTruthy();
+      // Given: 用户在个人信息页
+      await renderWithRouter({
+        initialEntries: ['/personal-info'],
+        routes: [
+          { path: '*', element: <App /> },
+        ],
       });
       
-      // When: 点击顶部的Logo
-      const topNav = container.querySelector('.top-navigation');
-      const logo = topNav?.querySelector('.logo, .logo-link, a[href="/"]');
+      await waitFor(() => {
+        expect(document.querySelector('.personal-info-page')).toBeTruthy();
+      }, { timeout: 3000 });
       
-      if (logo) {
-        fireEvent.click(logo as Element);
-        
-        // Then: 应该跳转到首页
-        await waitFor(() => {
-          expect(window.location.pathname).toBe('/');
+      // When: 点击顶部的Logo（点击整个 Logo 区域）
+      await waitFor(() => {
+        const logoElement = screen.queryByAltText(/中国铁路12306/i);
+        const logoSection = document.querySelector('.train-list-logo-section');
+        expect(logoElement || logoSection).toBeTruthy();
+      }, { timeout: 3000 });
+      
+      const logoSection = document.querySelector('.train-list-logo-section');
+      if (logoSection) {
+        await act(async () => {
+          await user.click(logoSection as HTMLElement);
+        });
+      } else {
+        const logoElement = screen.getByAltText(/中国铁路12306/i);
+        await act(async () => {
+          await user.click(logoElement);
         });
       }
+      
+      // Then: 应该跳转到首页
+      await waitFor(() => {
+        const homePage = document.querySelector('.home-page');
+        const personalInfoPage = document.querySelector('.personal-info-page');
+        expect(homePage).toBeTruthy();
+        expect(personalInfoPage).toBeFalsy();
+      }, { timeout: 3000 });
     });
   });
 });

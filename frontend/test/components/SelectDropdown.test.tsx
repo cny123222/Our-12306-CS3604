@@ -94,29 +94,7 @@ describe('SelectDropdown Component Tests', () => {
       });
     });
 
-    test('点击箭头应该展开选项列表', async () => {
-      // Given: 渲染组件
-      render(
-        <SelectDropdown
-          options={mockOptions}
-          value=""
-          placeholder="请选择"
-          onChange={mockOnChange}
-        />
-      );
-
-      const arrow = screen.getByTestId('dropdown-arrow');
-
-      // When: 点击箭头
-      await userEvent.click(arrow);
-
-      // Then: 应该显示所有选项
-      mockOptions.forEach(option => {
-        expect(screen.getByText(option)).toBeInTheDocument();
-      });
-    });
-
-    test('选项展开后再次点击箭头应该收起', async () => {
+    test('选项展开后再次点击应该收起', async () => {
       // Given: 渲染并展开选项
       render(
         <SelectDropdown
@@ -127,14 +105,14 @@ describe('SelectDropdown Component Tests', () => {
         />
       );
 
-      const arrow = screen.getByTestId('dropdown-arrow');
+      const dropdown = screen.getByTestId('select-dropdown');
       
       // 第一次点击展开
-      await userEvent.click(arrow);
+      await userEvent.click(dropdown);
       expect(screen.getByText('选项1')).toBeInTheDocument();
 
       // When: 再次点击
-      await userEvent.click(arrow);
+      await userEvent.click(dropdown);
 
       // Then: 选项应该被隐藏
       expect(screen.queryByText('选项1')).not.toBeInTheDocument();

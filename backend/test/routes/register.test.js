@@ -487,23 +487,23 @@ describe('Registration API Routes Tests', () => {
       expect(response.body.error).toBe('该用户名已经占用，请重新选择用户名！');
     });
 
-    test('证件号已被注册时应返回409冲突错误', async () => {
-      // Given: 数据库中已存在用户
+    test('相同证件类型+相同证件号码已被注册时应返回409冲突错误', async () => {
+      // Given: 数据库中已存在用户（居民身份证 + 110101199001011237）
       await dbService.run(
         'INSERT INTO users (username, password, phone, id_card_type, id_card_number) VALUES (?, ?, ?, ?, ?)',
         ['user001', 'hashedPassword', '13800138003', '居民身份证', '110101199001011237']
       );
 
-      // When: 尝试使用已注册的证件号注册
+      // When: 尝试使用相同证件类型+相同证件号码注册
       const response = await request(app)
         .post('/api/register')
         .send({
           username: 'newUser',
           password: 'test123',
           confirmPassword: 'test123',
-          idCardType: '居民身份证',
+          idCardType: '居民身份证',  // 相同的证件类型
           name: '王五',
-          idCardNumber: '110101199001011237',
+          idCardNumber: '110101199001011237',  // 相同的证件号码
           discountType: '成人',
           phone: '13800138004',
           agreedToTerms: true
@@ -512,6 +512,117 @@ describe('Registration API Routes Tests', () => {
 
       // Then: 应该返回冲突错误
       expect(response.body.error).toContain('该证件号码已经被注册过');
+    });
+
+    test('不同证件类型+相同证件号码应该允许注册', async () => {
+      // Given: 数据库中已存在用户（居民身份证 + 110101199001011237）
+      await dbService.run(
+        'INSERT INTO users (username, password, phone, id_card_type, id_card_number) VALUES (?, ?, ?, ?, ?)',
+        ['user002', 'hashedPassword', '13800138010', '居民身份证', '110101199001011239']
+      );
+
+      // When: 尝试使用相同证件号码但不同证件类型注册（港澳居民居住证）
+      const response = await request(app)
+        .post('/api/register')
+        .send({
+          username: 'newUser2',
+          password: 'test123',
+          confirmPassword: 'test123',
+          idCardType: '港澳居民居住证',  // 不同的证件类型
+          name: '李六',
+          idCardNumber: '110101199001011239',  // 相同的证件号码
+          discountType: '成人',
+          phone: '13800138011',
+          agreedToTerms: true
+        })
+        .expect(201);  // 应该允许注册
+
+      // Then: 应该成功创建会话
+      expect(response.body.message).toBe('注册信息已提交，请进行验证');
+      expect(response.body.sessionId).toBeDefined();
+    });
+
+    test('相同证件类型+不同证件号码应该允许注册', async () => {
+      // Given: 数据库中已存在用户（居民身份证 + 110101199001011240）
+      await dbService.run(
+        'INSERT INTO users (username, password, phone, id_card_type, id_card_number) VALUES (?, ?, ?, ?, ?)',
+        ['user003', 'hashedPassword', '13800138012', '居民身份证', '110101199001011240']
+      );
+
+      // When: 尝试使用相同证件类型但不同证件号码注册
+      const response = await request(app)
+        .post('/api/register')
+        .send({
+          username: 'newUser3',
+          password: 'test123',
+          confirmPassword: 'test123',
+          idCardType: '居民身份证',  // 相同的证件类型
+          name: '张七',
+          idCardNumber: '110101199001011241',  // 不同的证件号码
+          discountType: '成人',
+          phone: '13800138013',
+          agreedToTerms: true
+        })
+        .expect(201);  // 应该允许注册
+
+      // Then: 应该成功创建会话
+      expect(response.body.message).toBe('注册信息已提交，请进行验证');
+      expect(response.body.sessionId).toBeDefined();
+    });
+
+    test('手机号码已被其他用户使用时应返回409冲突错误', async () => {
+      // Given: 数据库中已存在用户
+      await dbService.run(
+        'INSERT INTO users (username, password, phone, id_card_type, id_card_number) VALUES (?, ?, ?, ?, ?)',
+        ['existingPhoneUser', 'hashedPassword', '13800138020', '居民身份证', '110101199001011250']
+      );
+
+      // When: 尝试使用已被其他用户使用的手机号注册
+      const response = await request(app)
+        .post('/api/register')
+        .send({
+          username: 'newPhoneUser',
+          password: 'test123',
+          confirmPassword: 'test123',
+          idCardType: '居民身份证',
+          name: '手机冲突用户',
+          idCardNumber: '110101199001011251',
+          discountType: '成人',
+          phone: '13800138020',  // 已被使用的手机号
+          agreedToTerms: true
+        })
+        .expect(409);
+
+      // Then: 应该返回冲突错误
+      expect(response.body.error).toContain('您输入的手机号码已被其他注册用户使用');
+    });
+
+    test('邮箱已被其他用户使用时应返回409冲突错误', async () => {
+      // Given: 数据库中已存在用户
+      await dbService.run(
+        'INSERT INTO users (username, password, phone, email, id_card_type, id_card_number) VALUES (?, ?, ?, ?, ?, ?)',
+        ['existingEmailUser', 'hashedPassword', '13800138021', 'existing@example.com', '居民身份证', '110101199001011252']
+      );
+
+      // When: 尝试使用已被其他用户使用的邮箱注册
+      const response = await request(app)
+        .post('/api/register')
+        .send({
+          username: 'newEmailUser',
+          password: 'test123',
+          confirmPassword: 'test123',
+          idCardType: '居民身份证',
+          name: '邮箱冲突用户',
+          idCardNumber: '110101199001011253',
+          discountType: '成人',
+          email: 'existing@example.com',  // 已被使用的邮箱
+          phone: '13800138022',
+          agreedToTerms: true
+        })
+        .expect(409);
+
+      // Then: 应该返回冲突错误
+      expect(response.body.error).toContain('您输入的邮箱已被其他注册用户使用');
     });
 
     test('所有信息合法时应返回201并创建会话', async () => {

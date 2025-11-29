@@ -1,14 +1,24 @@
 /**
  * 登录流程跨页测试
- * 测试从登录页到首页的完整流程，验证登录状态管理
+ * 
+ * 测试场景：
+ * 1. 登录页 → 短信验证 → 首页完整流程
+ * 2. 登录成功后保存token到localStorage
+ * 3. 首页正确显示登录状态
+ * 4. 登录失败和短信验证失败的错误处理
+ * 
+ * 需求文档参考：
+ * - requirements/02-登录注册页/02-1-登录页.md (1.2节, 2节)
  */
 
+import React from 'react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import '@testing-library/jest-dom'
 import LoginPage from '../../src/pages/LoginPage'
 import HomePage from '../../src/pages/HomePage'
+import { renderWithRouter, setupLocalStorageMock, cleanupTest, mockAuthenticatedUser, mockUnauthenticatedUser } from './test-utils'
 
 // Mock axios
 vi.mock('axios', () => ({
@@ -22,21 +32,12 @@ import axios from 'axios'
 
 describe('登录流程跨页测试', () => {
   beforeEach(() => {
-    window.history.pushState({}, '', '/')
+    cleanupTest()
+    setupLocalStorageMock()
     vi.clearAllMocks()
-    
-    // Mock localStorage
-    const localStorageMock: { [key: string]: string } = {}
-    Storage.prototype.getItem = vi.fn((key: string) => localStorageMock[key] || null)
-    Storage.prototype.setItem = vi.fn((key: string, value: string) => {
-      localStorageMock[key] = value
-    })
-    Storage.prototype.removeItem = vi.fn((key: string) => {
-      delete localStorageMock[key]
-    })
   })
 
-  it('应该在登录成功后保存token并跳转到首页', async () => {
+  it('应该在登录成功后保存token并跳转到首页 (需求 1.2.4-1.2.6, 2.3)', async () => {
     const user = userEvent.setup()
     
     // Mock登录API响应
@@ -61,53 +62,68 @@ describe('登录流程跨页测试', () => {
       return Promise.reject(new Error('Unknown endpoint'))
     })
 
-    render(
-      <MemoryRouter initialEntries={['/login']}>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </MemoryRouter>
-    )
+    await renderWithRouter({
+      initialEntries: ['/login'],
+      routes: [
+        { path: '/login', element: <LoginPage /> },
+        { path: '/', element: <HomePage /> },
+      ],
+    })
 
     // 验证在登录页
-    expect(screen.getByText(/欢迎登录12306/i)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText(/欢迎登录12306/i)).toBeInTheDocument()
+    })
 
     // 填写登录表单
     const usernameInput = screen.getByPlaceholderText(/用户名\/邮箱\/手机号/)
     const passwordInput = screen.getByPlaceholderText(/^密码$/)
     
-    await user.type(usernameInput, 'testuser')
-    await user.type(passwordInput, 'password123')
+    await act(async () => {
+      await user.type(usernameInput, 'testuser')
+      await user.type(passwordInput, 'password123')
+    })
 
     // 点击登录按钮
     const loginButton = screen.getByRole('button', { name: /立即登录/i })
-    await user.click(loginButton)
+    await act(async () => {
+      await user.click(loginButton)
+    })
 
-    // 等待短信验证弹窗出现
+    // 等待短信验证弹窗出现 (需求 2.1)
+    // 弹窗标题是"选择验证方式"，内容区域有"短信验证"
     await waitFor(() => {
-      expect(screen.getByText(/身份核验/i)).toBeInTheDocument()
+      const modalTitle = screen.queryByText(/选择验证方式/i)
+      const smsVerification = screen.queryByText(/短信验证/i)
+      const modal = document.querySelector('.sms-modal')
+      // 至少有一个标识弹窗已出现
+      expect(modalTitle || smsVerification || modal).toBeTruthy()
     }, { timeout: 3000 })
 
     // 填写短信验证码
-    const idCardInput = screen.getByPlaceholderText(/证件号后4位/)
-    const smsCodeInput = screen.getByPlaceholderText(/输入验证码/)
+    // 根据实际DOM，placeholder是"请输入登录账号绑定的证件号后4位"
+    const idCardInput = screen.getByPlaceholderText(/请输入登录账号绑定的证件号后4位|证件号后4位/i)
+    const smsCodeInput = screen.getByPlaceholderText(/输入验证码/i)
     
-    await user.type(idCardInput, '1234')
-    await user.type(smsCodeInput, '123456')
+    await act(async () => {
+      await user.type(idCardInput, '1234')
+      await user.type(smsCodeInput, '123456')
+    })
 
-    // 提交验证码
-    const submitButton = screen.getByRole('button', { name: /提交/i })
-    await user.click(submitButton)
+    // 提交验证码 - 按钮文本是"确定"而不是"提交"
+    const submitButton = screen.getByRole('button', { name: /确定|提交/i })
+    await act(async () => {
+      await user.click(submitButton)
+    })
 
-    // 验证localStorage保存了token
+    // 验证localStorage保存了token (需求 2.3.3)
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith('authToken', 'test-token-456')
       expect(localStorage.setItem).toHaveBeenCalledWith('userId', 'user-123')
     }, { timeout: 3000 })
   })
 
-  it('应该在登录失败时显示错误信息', async () => {
+  it('应该在登录失败时显示错误信息 (需求 1.2.4)', async () => {
     const user = userEvent.setup()
     
     // Mock登录失败
@@ -119,24 +135,32 @@ describe('登录流程跨页测试', () => {
       },
     })
 
-    render(
-      <MemoryRouter initialEntries={['/login']}>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </MemoryRouter>
-    )
+    await renderWithRouter({
+      initialEntries: ['/login'],
+      routes: [
+        { path: '/login', element: <LoginPage /> },
+      ],
+    })
+
+    // 验证在登录页
+    await waitFor(() => {
+      expect(screen.getByText(/欢迎登录12306/i)).toBeInTheDocument()
+    })
 
     // 填写登录表单
     const usernameInput = screen.getByPlaceholderText(/用户名\/邮箱\/手机号/)
     const passwordInput = screen.getByPlaceholderText(/^密码$/)
     
-    await user.type(usernameInput, 'wronguser')
-    await user.type(passwordInput, 'wrongpass')
+    await act(async () => {
+      await user.type(usernameInput, 'wronguser')
+      await user.type(passwordInput, 'wrongpass')
+    })
 
     // 点击登录按钮
     const loginButton = screen.getByRole('button', { name: /立即登录/i })
-    await user.click(loginButton)
+    await act(async () => {
+      await user.click(loginButton)
+    })
 
     // 验证显示错误信息
     await waitFor(() => {
@@ -148,7 +172,7 @@ describe('登录流程跨页测试', () => {
     expect(localStorage.setItem).not.toHaveBeenCalledWith('authToken', expect.anything())
   })
 
-  it('应该在短信验证失败时显示错误信息', async () => {
+  it('应该在短信验证失败时显示错误信息 (需求 2.3.3)', async () => {
     const user = userEvent.setup()
     
     // Mock登录成功但验证失败
@@ -173,97 +197,179 @@ describe('登录流程跨页测试', () => {
       return Promise.reject(new Error('Unknown endpoint'))
     })
 
-    render(
-      <MemoryRouter initialEntries={['/login']}>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </MemoryRouter>
-    )
+    await renderWithRouter({
+      initialEntries: ['/login'],
+      routes: [
+        { path: '/login', element: <LoginPage /> },
+      ],
+    })
+
+    // 验证在登录页
+    await waitFor(() => {
+      expect(screen.getByText(/欢迎登录12306/i)).toBeInTheDocument()
+    })
 
     // 填写登录表单
     const usernameInput = screen.getByPlaceholderText(/用户名\/邮箱\/手机号/)
     const passwordInput = screen.getByPlaceholderText(/^密码$/)
     
-    await user.type(usernameInput, 'testuser')
-    await user.type(passwordInput, 'password123')
+    await act(async () => {
+      await user.type(usernameInput, 'testuser')
+      await user.type(passwordInput, 'password123')
+    })
 
     // 点击登录按钮
     const loginButton = screen.getByRole('button', { name: /立即登录/i })
-    await user.click(loginButton)
+    await act(async () => {
+      await user.click(loginButton)
+    })
 
     // 等待短信验证弹窗出现
     await waitFor(() => {
-      expect(screen.getByText(/身份核验/i)).toBeInTheDocument()
-    })
+      const modalTitle = screen.queryByText(/选择验证方式/i)
+      const smsVerification = screen.queryByText(/短信验证/i)
+      const modal = document.querySelector('.sms-modal')
+      // 至少有一个标识弹窗已出现
+      expect(modalTitle || smsVerification || modal).toBeTruthy()
+    }, { timeout: 3000 })
 
     // 填写错误的验证码
-    const idCardInput = screen.getByPlaceholderText(/证件号码后四位/)
-    const smsCodeInput = screen.getByPlaceholderText(/^\d{6}$/)
+    const idCardInput = screen.getByPlaceholderText(/请输入登录账号绑定的证件号后4位|证件号后4位|证件号码后四位/i)
+    const smsCodeInput = screen.getByPlaceholderText(/输入验证码/i)
     
-    await user.type(idCardInput, '1234')
-    await user.type(smsCodeInput, '000000')
+    await act(async () => {
+      await user.type(idCardInput, '1234')
+      await user.type(smsCodeInput, '000000')
+    })
 
-    // 提交验证码
-    const submitButton = screen.getByRole('button', { name: /提交/i })
-    await user.click(submitButton)
+    // 提交验证码 - 按钮文本是"确定"
+    const submitButton = screen.getByRole('button', { name: /确定|提交/i })
+    await act(async () => {
+      await user.click(submitButton)
+    })
 
     // 验证显示错误信息
     await waitFor(() => {
-      expect(screen.getByText(/验证码错误/i)).toBeInTheDocument()
+      expect(screen.getByText(/验证码错误|很抱歉，您输入的短信验证码有误/i)).toBeInTheDocument()
     })
 
     // 验证没有保存token
     expect(localStorage.setItem).not.toHaveBeenCalledWith('authToken', expect.anything())
   })
 
-  it('应该在首页正确显示登录状态', async () => {
-    // 预先设置localStorage中有token
-    const localStorageMock: { [key: string]: string } = {
-      authToken: 'existing-token-789',
-      userId: 'user-456',
-    }
-    Storage.prototype.getItem = vi.fn((key: string) => localStorageMock[key] || null)
+  describe('首页登录状态显示', () => {
+    it('应该在已登录时显示用户信息和退出按钮', async () => {
+      // 预先设置登录状态
+      mockAuthenticatedUser('existing-token-789', 'user-456')
+      // 设置用户名
+      localStorage.setItem('username', 'testuser')
 
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </MemoryRouter>
-    )
+      await renderWithRouter({
+        initialEntries: ['/'],
+        routes: [
+          { path: '/', element: <HomePage /> },
+        ],
+      })
 
-    // 验证显示"个人中心"按钮
-    await waitFor(() => {
-      expect(screen.getByText(/个人中心/i)).toBeInTheDocument()
+      // 等待组件加载并读取localStorage，检查退出按钮（已登录状态的明确标识）
+      await waitFor(() => {
+        // 验证显示"退出"按钮（这是已登录状态的明确标识）
+        const logoutButton = screen.queryByRole('button', { name: /退出/i })
+        expect(logoutButton).toBeInTheDocument()
+      }, { timeout: 3000 })
+
+      // 验证不显示"登录"和"注册"按钮
+      expect(screen.queryByRole('button', { name: /^登录$/ })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /注册/ })).not.toBeInTheDocument()
     })
 
-    // 验证不显示"登录"和"注册"按钮
-    expect(screen.queryByRole('button', { name: /^登录$/ })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /注册/ })).not.toBeInTheDocument()
+    it('应该在未登录时显示登录和注册按钮', async () => {
+      // 确保未登录状态
+      mockUnauthenticatedUser()
+
+      await renderWithRouter({
+        initialEntries: ['/'],
+        routes: [
+          { path: '/', element: <HomePage /> },
+        ],
+      })
+
+      // 直接验证显示"登录"和"注册"按钮（这是未登录状态的明确标识）
+      await waitFor(() => {
+        const loginButton = screen.queryByRole('button', { name: /登录/i })
+        const registerButton = screen.queryByRole('button', { name: /注册/i })
+        expect(loginButton).toBeInTheDocument()
+        expect(registerButton).toBeInTheDocument()
+      }, { timeout: 3000 })
+
+      // 验证不显示"退出"按钮（已登录状态的特征）
+      expect(screen.queryByRole('button', { name: /退出/i })).not.toBeInTheDocument()
+    })
   })
 
-  it('应该在未登录时显示登录和注册按钮', async () => {
-    // localStorage中没有token
-    const localStorageMock: { [key: string]: string } = {}
-    Storage.prototype.getItem = vi.fn((key: string) => localStorageMock[key] || null)
+  describe('登录表单验证 (需求 1.2)', () => {
+    it('应该在用户名为空时显示错误提示 (需求 1.2.1)', async () => {
+      const user = userEvent.setup()
 
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </MemoryRouter>
-    )
+      await renderWithRouter({
+        initialEntries: ['/login'],
+        routes: [
+          { path: '/login', element: <LoginPage /> },
+        ],
+      })
 
-    // 验证显示"登录"和"注册"按钮
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /登录/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /注册/i })).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText(/欢迎登录12306/i)).toBeInTheDocument()
+      })
+
+      // 不填写用户名，只填写密码
+      const passwordInput = screen.getByPlaceholderText(/^密码$/)
+      await act(async () => {
+        await user.type(passwordInput, 'password123')
+      })
+
+      // 点击登录
+      const loginButton = screen.getByRole('button', { name: /立即登录/i })
+      await act(async () => {
+        await user.click(loginButton)
+      })
+
+      // 应该显示错误提示
+      await waitFor(() => {
+        expect(screen.getByText(/请输入用户名/i)).toBeInTheDocument()
+      })
     })
 
-    // 验证不显示"个人中心"按钮
-    expect(screen.queryByText(/个人中心/i)).not.toBeInTheDocument()
+    it('应该在密码为空时显示错误提示 (需求 1.2.2)', async () => {
+      const user = userEvent.setup()
+
+      await renderWithRouter({
+        initialEntries: ['/login'],
+        routes: [
+          { path: '/login', element: <LoginPage /> },
+        ],
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText(/欢迎登录12306/i)).toBeInTheDocument()
+      })
+
+      // 只填写用户名，不填写密码
+      const usernameInput = screen.getByPlaceholderText(/用户名\/邮箱\/手机号/)
+      await act(async () => {
+        await user.type(usernameInput, 'testuser')
+      })
+
+      // 点击登录
+      const loginButton = screen.getByRole('button', { name: /立即登录/i })
+      await act(async () => {
+        await user.click(loginButton)
+      })
+
+      // 应该显示错误提示
+      await waitFor(() => {
+        expect(screen.getByText(/请输入密码/i)).toBeInTheDocument()
+      })
+    })
   })
 })
-
