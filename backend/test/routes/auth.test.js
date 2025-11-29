@@ -104,115 +104,317 @@ describe('Authentication Routes', () => {
   })
 
   describe('POST /api/auth/send-verification-code', () => {
-    it('应该成功发送短信验证码', async () => {
-      const phoneData = {
-        phoneNumber: '13800138000'
-      }
+    // ==================== 主要登录流程场景（sessionId + idCardLast4） ====================
+    describe('主要登录流程场景（sessionId + idCardLast4）', () => {
+      it('应该成功发送验证码（使用sessionId + idCardLast4）', async () => {
+        // 1. 先登录获取sessionId
+        const loginResponse = await request(app)
+          .post('/api/auth/login')
+          .send({ identifier: 'testuser', password: 'password123' })
+          .expect(200)
+        
+        expect(loginResponse.body).toHaveProperty('success', true)
+        expect(loginResponse.body).toHaveProperty('sessionId')
+        
+        const sessionId = loginResponse.body.sessionId
+        const idCardLast4 = '1234' // 测试用户的证件号后4位（110101199001011234）
+        
+        // 2. 使用sessionId和证件号后4位发送验证码
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId, idCardLast4 })
+          .expect(200)
+        
+        expect(response.body).toHaveProperty('success', true)
+        expect(response.body).toHaveProperty('message', '验证码已发送')
+        expect(response.body).toHaveProperty('verificationCode')
+        expect(response.body).toHaveProperty('phone', '13800138000')
+        expect(response.body.verificationCode).toMatch(/^\d{6}$/)
+      })
 
-      const response = await request(app)
-        .post('/api/auth/send-verification-code')
-        .send(phoneData)
-        .expect(200)
+      it('应该验证证件号后4位格式不正确', async () => {
+        // 先登录获取sessionId
+        const loginResponse = await request(app)
+          .post('/api/auth/login')
+          .send({ identifier: 'testuser', password: 'password123' })
+          .expect(200)
+        
+        const sessionId = loginResponse.body.sessionId
+        
+        // 测试证件号后4位长度不为4
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId, idCardLast4: '123' }) // 只有3位
+          .expect(400)
+        
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body).toHaveProperty('error')
+        expect(response.body.error).toContain('证件号后4位格式不正确')
+      })
 
-      expect(response.body).toHaveProperty('success', true)
-      expect(response.body).toHaveProperty('message', '验证码已发送')
+      it('应该验证证件号后4位与数据库不匹配', async () => {
+        // 先登录获取sessionId
+        const loginResponse = await request(app)
+          .post('/api/auth/login')
+          .send({ identifier: 'testuser', password: 'password123' })
+          .expect(200)
+        
+        const sessionId = loginResponse.body.sessionId
+        
+        // 使用错误的证件号后4位
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId, idCardLast4: '9999' }) // 错误的证件号后4位
+          .expect(400)
+        
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body).toHaveProperty('error', '请输入正确的用户信息！')
+      })
+
+      it('应该限制发送频率（1分钟内重复发送）', async () => {
+        // 先登录获取sessionId
+        const loginResponse = await request(app)
+          .post('/api/auth/login')
+          .send({ identifier: 'testuser', password: 'password123' })
+          .expect(200)
+        
+        const sessionId = loginResponse.body.sessionId
+        const idCardLast4 = '1234'
+        
+        // 第一次发送
+        await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId, idCardLast4 })
+          .expect(200)
+        
+        // 立即再次发送应该被限制
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId, idCardLast4 })
+          .expect(429)
+        
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body).toHaveProperty('error', '请求验证码过于频繁，请稍后再试！')
+      })
+
+      it('应该验证会话无效或已过期', async () => {
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId: 'invalid-session-id', idCardLast4: '1234' })
+          .expect(400)
+        
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body).toHaveProperty('error', '会话无效或已过期')
+      })
     })
 
-    it('应该验证手机号格式', async () => {
-      const phoneData = {
-        phoneNumber: 'invalid-phone'
-      }
+    // ==================== 直接短信登录场景（phoneNumber） ====================
+    describe('直接短信登录场景（phoneNumber）', () => {
+      it('应该成功发送短信验证码', async () => {
+        const phoneData = {
+          phoneNumber: '13800138000'
+        }
 
-      const response = await request(app)
-        .post('/api/auth/send-verification-code')
-        .send(phoneData)
-        .expect(400)
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send(phoneData)
+          .expect(200)
 
-      expect(response.body).toHaveProperty('success', false)
-      expect(response.body).toHaveProperty('errors')
-      expect(response.body.errors).toContain('请输入有效的手机号')
-    })
+        expect(response.body).toHaveProperty('success', true)
+        expect(response.body).toHaveProperty('message', '验证码已发送')
+      })
 
-    it('应该限制发送频率', async () => {
-      const phoneData = {
-        phoneNumber: '13800138000'
-      }
+      it('应该验证手机号格式', async () => {
+        const phoneData = {
+          phoneNumber: 'invalid-phone'
+        }
 
-      // 第一次发送
-      await request(app)
-        .post('/api/auth/send-verification-code')
-        .send(phoneData)
-        .expect(200)
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send(phoneData)
+          .expect(400)
 
-      // 立即再次发送应该被限制
-      const response = await request(app)
-        .post('/api/auth/send-verification-code')
-        .send(phoneData)
-        .expect(429)
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors).toContain('请输入有效的手机号')
+      })
 
-      expect(response.body).toHaveProperty('success', false)
-      expect(response.body).toHaveProperty('error', '请求验证码过于频繁，请稍后再试！')
+      it('应该限制发送频率', async () => {
+        const phoneData = {
+          phoneNumber: '13800138000'
+        }
+
+        // 第一次发送
+        await request(app)
+          .post('/api/auth/send-verification-code')
+          .send(phoneData)
+          .expect(200)
+
+        // 立即再次发送应该被限制
+        const response = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send(phoneData)
+          .expect(429)
+
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body).toHaveProperty('error', '请求验证码过于频繁，请稍后再试！')
+      })
     })
   })
 
   describe('POST /api/auth/verify-login', () => {
-    it('应该成功验证短信登录', async () => {
-      // 先发送验证码
-      await request(app)
-        .post('/api/auth/send-verification-code')
-        .send({ phoneNumber: '13800138000' })
-        .expect(200)
-      
-      // 获取刚发送的验证码（从数据库）
-      const codeRecord = await dbService.get(
-        'SELECT code FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 1',
-        ['13800138000']
-      )
-      
-      const verifyData = {
-        phoneNumber: '13800138000',
-        verificationCode: codeRecord.code
-      }
+    // ==================== 主要登录流程场景（sessionId） ====================
+    describe('主要登录流程场景（sessionId）', () => {
+      it('应该成功验证短信登录（完整流程）', async () => {
+        // 1. 登录获取sessionId
+        const loginResponse = await request(app)
+          .post('/api/auth/login')
+          .send({ identifier: 'testuser', password: 'password123' })
+          .expect(200)
+        
+        const sessionId = loginResponse.body.sessionId
+        const idCardLast4 = '1234'
+        
+        // 2. 发送验证码
+        const sendCodeResponse = await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId, idCardLast4 })
+          .expect(200)
+        
+        expect(sendCodeResponse.body).toHaveProperty('success', true)
+        const verificationCode = sendCodeResponse.body.verificationCode
+        
+        // 3. 验证验证码并完成登录
+        const verifyResponse = await request(app)
+          .post('/api/auth/verify-login')
+          .send({ sessionId, verificationCode })
+          .expect(200)
+        
+        expect(verifyResponse.body).toHaveProperty('success', true)
+        expect(verifyResponse.body).toHaveProperty('sessionId')
+        expect(verifyResponse.body).toHaveProperty('token')
+        expect(verifyResponse.body).toHaveProperty('user')
+        expect(verifyResponse.body.user).toHaveProperty('id')
+        expect(verifyResponse.body.user).toHaveProperty('username', 'testuser')
+      })
 
-      const response = await request(app)
-        .post('/api/auth/verify-login')
-        .send(verifyData)
-        .expect(200)
+      it('应该拒绝无效的验证码', async () => {
+        // 先登录获取sessionId
+        const loginResponse = await request(app)
+          .post('/api/auth/login')
+          .send({ identifier: 'testuser', password: 'password123' })
+          .expect(200)
+        
+        const sessionId = loginResponse.body.sessionId
+        const idCardLast4 = '1234'
+        
+        // 发送验证码
+        await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ sessionId, idCardLast4 })
+          .expect(200)
+        
+        // 使用错误的验证码
+        const verifyResponse = await request(app)
+          .post('/api/auth/verify-login')
+          .send({ sessionId, verificationCode: '000000' })
+          .expect(401)
+        
+        expect(verifyResponse.body).toHaveProperty('success', false)
+        expect(verifyResponse.body.error).toMatch(/验证码.*错误|验证码.*过期|验证码校验失败|很抱歉，您输入的短信验证码有误/i)
+      })
 
-      expect(response.body).toHaveProperty('success', true)
-      expect(response.body).toHaveProperty('sessionId')
-      expect(response.body).toHaveProperty('token')
+      it('应该验证验证码格式', async () => {
+        // 先登录获取sessionId
+        const loginResponse = await request(app)
+          .post('/api/auth/login')
+          .send({ identifier: 'testuser', password: 'password123' })
+          .expect(200)
+        
+        const sessionId = loginResponse.body.sessionId
+        
+        // 使用格式错误的验证码（不足6位）
+        const verifyResponse = await request(app)
+          .post('/api/auth/verify-login')
+          .send({ sessionId, verificationCode: '12345' })
+          .expect(400)
+        
+        expect(verifyResponse.body).toHaveProperty('success', false)
+        expect(verifyResponse.body).toHaveProperty('errors')
+        expect(verifyResponse.body.errors).toContain('验证码必须为6位数字')
+      })
+
+      it('应该验证会话无效或已过期', async () => {
+        const verifyResponse = await request(app)
+          .post('/api/auth/verify-login')
+          .send({ sessionId: 'invalid-session-id', verificationCode: '123456' })
+          .expect(400)
+        
+        expect(verifyResponse.body).toHaveProperty('success', false)
+        expect(verifyResponse.body.error).toContain('会话')
+      })
     })
 
-    it('应该拒绝无效的验证码', async () => {
-      const verifyData = {
-        phoneNumber: '13800138000',
-        verificationCode: '000000'
-      }
+    // ==================== 直接短信登录场景（phoneNumber） ====================
+    describe('直接短信登录场景（phoneNumber）', () => {
+      it('应该成功验证短信登录', async () => {
+        // 先发送验证码
+        await request(app)
+          .post('/api/auth/send-verification-code')
+          .send({ phoneNumber: '13800138000' })
+          .expect(200)
+        
+        // 获取刚发送的验证码（从数据库）
+        const codeRecord = await dbService.get(
+          'SELECT code FROM verification_codes WHERE phone = ? ORDER BY created_at DESC LIMIT 1',
+          ['13800138000']
+        )
+        
+        const verifyData = {
+          phoneNumber: '13800138000',
+          verificationCode: codeRecord.code
+        }
 
-      const response = await request(app)
-        .post('/api/auth/verify-login')
-        .send(verifyData)
-        .expect(401)
+        const response = await request(app)
+          .post('/api/auth/verify-login')
+          .send(verifyData)
+          .expect(200)
 
-      expect(response.body).toHaveProperty('success', false)
-      expect(response.body.error).toMatch(/验证码.*错误|验证码.*过期|验证码校验失败|很抱歉，您输入的短信验证码有误/i)
-    })
+        expect(response.body).toHaveProperty('success', true)
+        expect(response.body).toHaveProperty('sessionId')
+        expect(response.body).toHaveProperty('token')
+      })
 
-    it('应该验证验证码格式', async () => {
-      const verifyData = {
-        phoneNumber: '13800138000',
-        verificationCode: '12345'  // 不足6位
-      }
+      it('应该拒绝无效的验证码', async () => {
+        const verifyData = {
+          phoneNumber: '13800138000',
+          verificationCode: '000000'
+        }
 
-      const response = await request(app)
-        .post('/api/auth/verify-login')
-        .send(verifyData)
-        .expect(400)
+        const response = await request(app)
+          .post('/api/auth/verify-login')
+          .send(verifyData)
+          .expect(401)
 
-      expect(response.body).toHaveProperty('success', false)
-      expect(response.body).toHaveProperty('errors')
-      expect(response.body.errors).toContain('验证码必须为6位数字')
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body.error).toMatch(/验证码.*错误|验证码.*过期|验证码校验失败|很抱歉，您输入的短信验证码有误/i)
+      })
+
+      it('应该验证验证码格式', async () => {
+        const verifyData = {
+          phoneNumber: '13800138000',
+          verificationCode: '12345'  // 不足6位
+        }
+
+        const response = await request(app)
+          .post('/api/auth/verify-login')
+          .send(verifyData)
+          .expect(400)
+
+        expect(response.body).toHaveProperty('success', false)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors).toContain('验证码必须为6位数字')
+      })
     })
   })
 

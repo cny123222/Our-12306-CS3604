@@ -25,11 +25,12 @@ async function initTestDatabase(dbPath) {
         )
       `);
       
-      // 创建trains表
+      // 创建trains表（支持多日期）
       db.run(`
         CREATE TABLE IF NOT EXISTS trains (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          train_no TEXT NOT NULL UNIQUE,
+          train_no TEXT NOT NULL,
+          departure_date DATE NOT NULL,
           train_type TEXT NOT NULL,
           model TEXT,
           is_direct BOOLEAN DEFAULT 1,
@@ -40,8 +41,19 @@ async function initTestDatabase(dbPath) {
           planned_duration_min INTEGER,
           departure_time TEXT,
           arrival_time TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(train_no, departure_date)
         )
+      `);
+      
+      // 为trains表创建日期索引
+      db.run(`
+        CREATE INDEX IF NOT EXISTS idx_trains_date ON trains(departure_date)
+      `);
+      
+      // 为trains表创建车次号索引
+      db.run(`
+        CREATE INDEX IF NOT EXISTS idx_trains_no ON trains(train_no)
       `);
       
       // 创建train_stops表
@@ -86,11 +98,12 @@ async function initTestDatabase(dbPath) {
         )
       `);
       
-      // 创建seat_status表
+      // 创建seat_status表（支持多日期）
       db.run(`
         CREATE TABLE IF NOT EXISTS seat_status (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           train_no TEXT NOT NULL,
+          departure_date DATE NOT NULL,
           car_no INTEGER NOT NULL,
           seat_no TEXT NOT NULL,
           seat_type TEXT NOT NULL,
@@ -99,8 +112,13 @@ async function initTestDatabase(dbPath) {
           status TEXT DEFAULT 'available',
           booked_by TEXT,
           booked_at DATETIME,
-          FOREIGN KEY (train_no) REFERENCES trains(train_no)
+          FOREIGN KEY (train_no, departure_date) REFERENCES trains(train_no, departure_date)
         )
+      `);
+      
+      // 为seat_status表创建索引
+      db.run(`
+        CREATE INDEX IF NOT EXISTS idx_seat_status_train_date ON seat_status(train_no, departure_date)
       `);
       
       // 插入测试站点数据
@@ -122,16 +140,23 @@ async function initTestDatabase(dbPath) {
       });
       stmtStation.finalize();
       
-      // 插入测试车次数据
+      // 插入测试车次数据（使用当前日期和未来日期）
+      const trainDate = new Date();
+      const todayStr = trainDate.toISOString().split('T')[0];
+      const tomorrow = new Date(trainDate);
+      tomorrow.setDate(trainDate.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      
       db.run(`
         INSERT OR REPLACE INTO trains (
-          train_no, train_type, model, is_direct, has_air_conditioning,
+          train_no, departure_date, train_type, model, is_direct, has_air_conditioning,
           origin_station, destination_station, distance_km, planned_duration_min,
           departure_time, arrival_time
         ) VALUES 
-          ('G103', '高速动车组', 'CR400AF-B', 1, 1, '北京南', '上海虹桥', 1318, 338, '06:20', '11:58'),
-          ('G16', '高速动车组', 'CR400AF-B', 1, 1, '上海虹桥', '北京南', 1318, 338, '06:20', '11:58')
-      `);
+          ('G103', ?, '高速动车组', 'CR400AF-B', 1, 1, '北京南', '上海虹桥', 1318, 338, '06:20', '11:58'),
+          ('G103', ?, '高速动车组', 'CR400AF-B', 1, 1, '北京南', '上海虹桥', 1318, 338, '06:20', '11:58'),
+          ('G16', ?, '高速动车组', 'CR400AF-B', 1, 1, '上海虹桥', '北京南', 1318, 338, '06:20', '11:58')
+      `, [todayStr, tomorrowStr, todayStr]);
       
       // 插入测试停靠站数据
       const stops = [
@@ -194,7 +219,7 @@ async function initTestDatabase(dbPath) {
       });
       stmtFare.finalize();
       
-      // 初始化座位状态（简化版）
+      // 初始化座位状态（简化版，为今天和明天的G103车次创建座位）
       const seatTypes = [
         { type: '商务座', carNo: 1, count: 10 },
         { type: '一等座', carNo: 2, count: 40 },
@@ -202,25 +227,29 @@ async function initTestDatabase(dbPath) {
       ];
       
       const stmtSeat = db.prepare(`
-        INSERT INTO seat_status (train_no, car_no, seat_no, seat_type, from_station, to_station, status)
-        VALUES (?, ?, ?, ?, ?, ?, 'available')
+        INSERT INTO seat_status (train_no, departure_date, car_no, seat_no, seat_type, from_station, to_station, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'available')
       `);
       
-      seatTypes.forEach(({ type, carNo, count }) => {
-        for (let i = 1; i <= count; i++) {
-          const seatNo = `${carNo}-${String(i).padStart(2, '0')}`;
-          // 为每个区间段初始化座位状态
-          for (let j = 0; j < stops.length - 1; j++) {
-            stmtSeat.run([
-              'G103',
-              carNo,
-              seatNo,
-              type,
-              stops[j][2],  // from_station
-              stops[j + 1][2]  // to_station
-            ]);
+      // 为今天和明天的G103车次创建座位状态
+      [todayStr, tomorrowStr].forEach(departureDate => {
+        seatTypes.forEach(({ type, carNo, count }) => {
+          for (let i = 1; i <= count; i++) {
+            const seatNo = `${carNo}-${String(i).padStart(2, '0')}`;
+            // 为每个区间段初始化座位状态
+            for (let j = 0; j < stops.length - 1; j++) {
+              stmtSeat.run([
+                'G103',
+                departureDate,
+                carNo,
+                seatNo,
+                type,
+                stops[j][2],  // from_station
+                stops[j + 1][2]  // to_station
+              ]);
+            }
           }
-        }
+        });
       });
       
       stmtSeat.finalize();
@@ -279,18 +308,40 @@ async function initTestDatabase(dbPath) {
       // 创建orders表
       db.run(`
         CREATE TABLE IF NOT EXISTS orders (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          order_number TEXT UNIQUE NOT NULL,
-          user_id INTEGER NOT NULL,
-          train_no TEXT NOT NULL,
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          train_number TEXT NOT NULL,
           departure_station TEXT NOT NULL,
           arrival_station TEXT NOT NULL,
           departure_date TEXT NOT NULL,
-          status TEXT DEFAULT 'pending',
-          passengers TEXT,
-          total_price REAL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          departure_time TEXT,
+          arrival_time TEXT,
+          total_price REAL NOT NULL,
+          status TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT,
+          payment_expires_at DATETIME,
           FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+      `);
+      
+      // 创建订单明细表
+      db.run(`
+        CREATE TABLE IF NOT EXISTS order_details (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          order_id TEXT NOT NULL,
+          passenger_id TEXT NOT NULL,
+          passenger_name TEXT NOT NULL,
+          id_card_type TEXT NOT NULL,
+          id_card_number TEXT NOT NULL,
+          seat_type TEXT NOT NULL,
+          ticket_type TEXT NOT NULL,
+          price REAL NOT NULL,
+          sequence_number INTEGER,
+          car_number TEXT,
+          seat_number TEXT,
+          FOREIGN KEY (order_id) REFERENCES orders(id),
+          FOREIGN KEY (passenger_id) REFERENCES passengers(id)
         )
       `);
       
@@ -304,15 +355,28 @@ async function initTestDatabase(dbPath) {
       futureDate.setDate(today.getDate() + 10); // 10天后
       const futureDateStr = futureDate.toISOString().split('T')[0];
       
+      // 插入订单数据
       db.run(`
         INSERT OR REPLACE INTO orders (
-          id, order_number, user_id, train_no, departure_station, arrival_station, 
-          departure_date, status, passengers, total_price, created_at
+          id, user_id, train_number, departure_station, arrival_station, 
+          departure_date, departure_time, arrival_time, status, total_price, created_at
         ) VALUES 
-          (1, 'ORDER-12345', 1, 'G1234', '北京南', '上海虹桥', '${futureDateStr}', 'confirmed', 
-           '[{"name":"张三"}]', 553.5, '${recentDateStr}'),
-          (2, 'ORDER-67890', 1, 'G5678', '上海虹桥', '北京南', '${futureDateStr}', 'confirmed', 
-           '[{"name":"张三"}]', 553.5, '${recentDateStr}')
+          ('order-1', '1', 'G1234', '北京南', '上海虹桥', '${futureDateStr}', '09:00', '13:30', 'paid', 
+           553.5, '${recentDateStr}'),
+          ('order-2', '1', 'G5678', '上海虹桥', '北京南', '${futureDateStr}', '14:00', '18:30', 'paid', 
+           553.5, '${recentDateStr}')
+      `);
+      
+      // 插入订单明细数据
+      db.run(`
+        INSERT OR REPLACE INTO order_details (
+          order_id, passenger_id, passenger_name, id_card_type, id_card_number,
+          seat_type, ticket_type, price, sequence_number, car_number, seat_number
+        ) VALUES 
+          ('order-1', '1', '张三', '居民身份证', '310101199001011234',
+           '二等座', '成人票', 553.5, 1, '06', '07D'),
+          ('order-2', '1', '张三', '居民身份证', '310101199001011234',
+           '二等座', '成人票', 553.5, 1, '08', '12A')
       `, () => {
         db.close();
         console.log('测试数据库初始化完成');

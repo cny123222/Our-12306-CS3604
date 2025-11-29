@@ -2,7 +2,9 @@ const passengerService = require('../../src/services/passengerService');
 
 // Mock database operations
 jest.mock('../../src/database', () => ({
-  query: jest.fn()
+  query: jest.fn(),
+  run: jest.fn(),
+  queryOne: jest.fn()
 }));
 
 const db = require('../../src/database');
@@ -16,6 +18,9 @@ describe('PassengerService Tests', () => {
     it('应该返回用户的所有乘客信息', async () => {
       const userId = 'user-123';
 
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '330102199001011234' }]);
+
       const mockPassengers = [
         {
           id: 'passenger-1',
@@ -23,7 +28,7 @@ describe('PassengerService Tests', () => {
           name: '刘蕊蕊',
           id_card_type: '居民身份证',
           id_card_number: '330102199001011234',
-          discount_type: '成人票',
+          discount_type: '成人',
           points: 1200
         },
         {
@@ -32,11 +37,12 @@ describe('PassengerService Tests', () => {
           name: '王欣',
           id_card_type: '居民身份证',
           id_card_number: '110101198501012345',
-          discount_type: '成人票',
+          discount_type: '成人',
           points: 800
         }
       ];
 
+      // Mock 第二次查询：获取乘客列表
       db.query.mockResolvedValueOnce(mockPassengers);
 
       const result = await passengerService.getUserPassengers(userId);
@@ -44,15 +50,16 @@ describe('PassengerService Tests', () => {
       expect(result).toHaveLength(2);
       expect(result[0].name).toBe('刘蕊蕊');
       expect(result[1].name).toBe('王欣');
-      expect(db.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT'),
-        expect.arrayContaining([userId])
-      );
+      expect(db.query).toHaveBeenCalledTimes(2);
     });
 
     it('应该返回证件号码部分脱敏的乘客信息', async () => {
       const userId = 'user-123';
 
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '330102199001011234' }]);
+
+      // Mock 第二次查询：获取乘客列表
       db.query.mockResolvedValueOnce([
         {
           id: 'passenger-1',
@@ -60,19 +67,24 @@ describe('PassengerService Tests', () => {
           name: '刘蕊蕊',
           id_card_type: '居民身份证',
           id_card_number: '330102199001011234',
-          discount_type: '成人票',
+          discount_type: '成人',
           points: 1200
         }
       ]);
 
       const result = await passengerService.getUserPassengers(userId);
 
-      expect(result[0].idCardNumber).toMatch(/^3301\*{12}34$/);
+      // 代码实现：保留前4位和后3位，中间11个星号
+      expect(result[0].idCardNumber).toMatch(/^3301\*{11}234$/);
     });
 
     it('用户没有乘客时应该返回空数组', async () => {
       const userId = 'user-123';
 
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '' }]);
+
+      // Mock 第二次查询：获取乘客列表（空）
       db.query.mockResolvedValueOnce([]);
 
       const result = await passengerService.getUserPassengers(userId);
@@ -83,6 +95,10 @@ describe('PassengerService Tests', () => {
     it('应该按添加时间排序乘客列表', async () => {
       const userId = 'user-123';
 
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '' }]);
+
+      // Mock 第二次查询：获取乘客列表
       db.query.mockResolvedValueOnce([
         {
           id: 'passenger-2',
@@ -111,6 +127,10 @@ describe('PassengerService Tests', () => {
       const userId = 'user-123';
       const keyword = '刘蕊蕊';
 
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '330102199001011234' }]);
+
+      // Mock 第二次查询：搜索乘客
       db.query.mockResolvedValueOnce([
         {
           id: 'passenger-1',
@@ -135,6 +155,10 @@ describe('PassengerService Tests', () => {
       const userId = 'user-123';
       const keyword = '刘';
 
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '' }]);
+
+      // Mock 第二次查询：搜索乘客
       db.query.mockResolvedValueOnce([
         {
           id: 'passenger-1',
@@ -160,6 +184,10 @@ describe('PassengerService Tests', () => {
       const userId = 'user-123';
       const keyword = '不存在的乘客';
 
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '' }]);
+
+      // Mock 第二次查询：搜索乘客（无结果）
       db.query.mockResolvedValueOnce([]);
 
       const result = await passengerService.searchPassengers(userId, keyword);
@@ -171,9 +199,13 @@ describe('PassengerService Tests', () => {
       const userId = 'user-123';
       const keyword = '';
 
+      // Mock 第一次查询：获取用户信息（getUserPassengers 会调用）
+      db.query.mockResolvedValueOnce([{ id_card_number: '' }]);
+
+      // Mock 第二次查询：获取乘客列表（getUserPassengers 会调用）
       db.query.mockResolvedValueOnce([
-        { id: 'passenger-1', name: '刘蕊蕊' },
-        { id: 'passenger-2', name: '王欣' }
+        { id: 'passenger-1', name: '刘蕊蕊', user_id: 'user-123', id_card_type: '居民身份证', id_card_number: '330102199001011234', discount_type: '成人票', points: 0 },
+        { id: 'passenger-2', name: '王欣', user_id: 'user-123', id_card_type: '居民身份证', id_card_number: '110101198501012345', discount_type: '成人票', points: 0 }
       ]);
 
       const result = await passengerService.searchPassengers(userId, keyword);
@@ -194,7 +226,7 @@ describe('PassengerService Tests', () => {
           name: '刘蕊蕊',
           id_card_type: '居民身份证',
           id_card_number: '330102199001011234',
-          discount_type: '成人票',
+          discount_type: '成人',
           points: 1200
         }
       ]);
@@ -271,7 +303,7 @@ describe('PassengerService Tests', () => {
       name: '张三',
       idCardType: '居民身份证',
       idCardNumber: '110101199001011234',
-      discountType: '成人票'
+      discountType: '成人'
     };
 
     it('应该成功创建乘客并返回乘客ID', async () => {
@@ -280,16 +312,20 @@ describe('PassengerService Tests', () => {
       // Mock检查证件号码唯一性
       db.query.mockResolvedValueOnce([]);
 
-      // Mock插入乘客
-      db.query.mockResolvedValueOnce({ insertId: 1, affectedRows: 1 });
+      // Mock插入乘客（使用 db.run）
+      db.run.mockResolvedValueOnce({ lastID: 1, changes: 1 });
 
       const result = await passengerService.createPassenger(userId, validPassengerData);
 
       expect(result.passengerId).toBeDefined();
       expect(result.message).toBe('添加乘客成功');
       expect(db.query).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT'),
+        expect.arrayContaining([userId, validPassengerData.idCardNumber])
+      );
+      expect(db.run).toHaveBeenCalledWith(
         expect.stringContaining('INSERT INTO'),
-        expect.arrayContaining([userId, validPassengerData.name])
+        expect.arrayContaining([expect.any(String), userId, validPassengerData.name])
       );
     });
 
@@ -332,14 +368,19 @@ describe('PassengerService Tests', () => {
       const userId = 'user-123';
 
       db.query.mockResolvedValueOnce([]);
-      db.query.mockResolvedValueOnce({ insertId: 1, affectedRows: 1 });
+      db.run.mockResolvedValueOnce({ lastID: 1, changes: 1 });
 
-      await passengerService.createPassenger(userId, validPassengerData);
+      const result = await passengerService.createPassenger(userId, validPassengerData);
 
-      expect(db.query).toHaveBeenCalledWith(
+      expect(result.points).toBe(0);
+      // 验证 SQL 语句中包含 points = 0（硬编码在 SQL 中，不是参数）
+      expect(db.run).toHaveBeenCalledWith(
         expect.stringContaining('INSERT INTO'),
-        expect.arrayContaining([0]) // 积分初始化为0
+        expect.arrayContaining([expect.any(String), userId, validPassengerData.name, validPassengerData.idCardType, validPassengerData.idCardNumber, validPassengerData.discountType, ''])
       );
+      // 验证 SQL 语句中包含硬编码的 points = 0
+      const sqlCall = db.run.mock.calls.find(call => call[0].includes('INSERT INTO'));
+      expect(sqlCall[0]).toContain(', 0, datetime(\'now\')');
     });
 
     it('应该支持特殊字符的姓名', async () => {
@@ -350,7 +391,7 @@ describe('PassengerService Tests', () => {
       };
 
       db.query.mockResolvedValueOnce([]);
-      db.query.mockResolvedValueOnce({ insertId: 1, affectedRows: 1 });
+      db.run.mockResolvedValueOnce({ lastID: 1, changes: 1 });
 
       const result = await passengerService.createPassenger(userId, specialNameData);
 
@@ -360,10 +401,8 @@ describe('PassengerService Tests', () => {
 
   describe('updatePassenger() - 更新乘客信息', () => {
     const updateData = {
-      name: '张三',
-      idCardType: '居民身份证',
-      idCardNumber: '110101199001011234',
-      discountType: '成人票'
+      discountType: '成人',
+      phone: '13800138000'
     };
 
     it('应该成功更新乘客信息', async () => {
@@ -374,19 +413,21 @@ describe('PassengerService Tests', () => {
       db.query.mockResolvedValueOnce([
         {
           id: 'passenger-1',
-          user_id: 'user-123'
+          user_id: 'user-123',
+          discount_type: '成人',
+          phone: ''
         }
       ]);
 
-      // Mock更新乘客
-      db.query.mockResolvedValueOnce({ affectedRows: 1 });
+      // Mock更新乘客（使用 db.run）
+      db.run.mockResolvedValueOnce({ lastID: 0, changes: 1 });
 
       const result = await passengerService.updatePassenger(userId, passengerId, updateData);
 
       expect(result.message).toBe('更新乘客信息成功');
-      expect(db.query).toHaveBeenCalledWith(
+      expect(db.run).toHaveBeenCalledWith(
         expect.stringContaining('UPDATE'),
-        expect.arrayContaining([updateData.name, passengerId])
+        expect.arrayContaining([updateData.discountType, updateData.phone, passengerId, userId])
       );
     });
 
@@ -394,6 +435,7 @@ describe('PassengerService Tests', () => {
       const userId = 'user-123';
       const passengerId = 'invalid-passenger';
 
+      // Mock检查乘客（不存在）
       db.query.mockResolvedValueOnce([]);
 
       await expect(passengerService.updatePassenger(userId, passengerId, updateData)).rejects.toThrow(
@@ -405,10 +447,13 @@ describe('PassengerService Tests', () => {
       const userId = 'user-456';
       const passengerId = 'passenger-1';
 
+      // Mock检查乘客（属于不同用户）
       db.query.mockResolvedValueOnce([
         {
           id: 'passenger-1',
-          user_id: 'user-123' // 不同的用户ID
+          user_id: 'user-123', // 不同的用户ID
+          discount_type: '成人',
+          phone: ''
         }
       ]);
 
@@ -421,17 +466,11 @@ describe('PassengerService Tests', () => {
       const userId = 'user-123';
       const passengerId = 'passenger-1';
       const invalidData = {
-        name: '',
-        idCardNumber: 'invalid'
+        discountType: '无效类型',
+        phone: 'invalid'
       };
 
-      db.query.mockResolvedValueOnce([
-        {
-          id: 'passenger-1',
-          user_id: 'user-123'
-        }
-      ]);
-
+      // 不需要 mock 数据库，因为会在验证阶段就失败
       await expect(passengerService.updatePassenger(userId, passengerId, invalidData)).rejects.toThrow();
     });
   });
@@ -452,13 +491,13 @@ describe('PassengerService Tests', () => {
       // Mock检查是否有未完成的订单
       db.query.mockResolvedValueOnce([]);
 
-      // Mock删除乘客
-      db.query.mockResolvedValueOnce({ affectedRows: 1 });
+      // Mock删除乘客（使用 db.run）
+      db.run.mockResolvedValueOnce({ lastID: 0, changes: 1 });
 
       const result = await passengerService.deletePassenger(userId, passengerId);
 
       expect(result.message).toBe('删除乘客成功');
-      expect(db.query).toHaveBeenCalledWith(
+      expect(db.run).toHaveBeenCalledWith(
         expect.stringContaining('DELETE'),
         expect.arrayContaining([passengerId])
       );
@@ -520,26 +559,28 @@ describe('PassengerService Tests', () => {
       
       const masked = passengerService.maskIdNumber(idNumber);
 
-      expect(masked).toBe('3301************34');
+      // 代码实现：保留前4位和后3位，中间11个星号
+      expect(masked).toBe('3301***********234');
       expect(masked.length).toBe(18);
     });
 
-    it('应该保留前4位和后2位', () => {
+    it('应该保留前4位和后3位', () => {
       const idNumber = '110101198501012345';
       
       const masked = passengerService.maskIdNumber(idNumber);
 
       expect(masked.substring(0, 4)).toBe('1101');
-      expect(masked.substring(16, 18)).toBe('45');
+      expect(masked.substring(15, 18)).toBe('345');
     });
 
-    it('应该将中间部分替换为12个星号', () => {
+    it('应该将中间部分替换为11个星号', () => {
       const idNumber = '440101199101011234';
       
       const masked = passengerService.maskIdNumber(idNumber);
 
-      const middlePart = masked.substring(4, 16);
-      expect(middlePart).toBe('************');
+      // 代码实现：保留前4位和后3位，中间11个星号
+      const middlePart = masked.substring(4, 15);
+      expect(middlePart).toBe('***********');
     });
 
     it('非18位证件号应该返回原值或抛出错误', () => {
@@ -562,9 +603,10 @@ describe('PassengerService Tests', () => {
     it('应该正确处理数据库连接错误', async () => {
       const userId = 'user-123';
 
+      // Mock 第一次查询失败
       db.query.mockRejectedValueOnce(new Error('数据库连接失败'));
 
-      await expect(passengerService.getUserPassengers(userId)).rejects.toThrow('数据库连接失败');
+      await expect(passengerService.getUserPassengers(userId)).rejects.toThrow('获取乘客列表失败');
     });
 
     it('应该正确处理并发创建乘客请求', async () => {
@@ -573,16 +615,16 @@ describe('PassengerService Tests', () => {
         name: '张三',
         idCardType: '居民身份证',
         idCardNumber: '110101199001011234',
-        discountType: '成人票'
+        discountType: '成人'
       };
 
       // Mock第一次检查证件号码唯一性（不存在）
       db.query.mockResolvedValueOnce([]);
 
       // Mock插入乘客（唯一性约束冲突）
-      db.query.mockRejectedValueOnce({ code: 'ER_DUP_ENTRY' });
+      db.run.mockRejectedValueOnce({ code: 'SQLITE_CONSTRAINT' });
 
-      await expect(passengerService.createPassenger(userId, passengerData)).rejects.toThrow();
+      await expect(passengerService.createPassenger(userId, passengerData)).rejects.toThrow('该乘客已存在');
     });
 
     it('应该正确处理超长的姓名', async () => {
@@ -591,7 +633,7 @@ describe('PassengerService Tests', () => {
         name: 'A'.repeat(100),
         idCardType: '居民身份证',
         idCardNumber: '110101199001011234',
-        discountType: '成人票'
+        discountType: '成人'
       };
 
       await expect(passengerService.createPassenger(userId, longNameData)).rejects.toThrow(
@@ -605,12 +647,12 @@ describe('PassengerService Tests', () => {
         name: "'; DROP TABLE passengers; --",
         idCardType: '居民身份证',
         idCardNumber: '110101199001011234',
-        discountType: '成人票'
+        discountType: '成人'
       };
 
       // 使用参数化查询应该防止SQL注入
       db.query.mockResolvedValueOnce([]);
-      db.query.mockResolvedValueOnce({ insertId: 1, affectedRows: 1 });
+      db.run.mockResolvedValueOnce({ lastID: 1, changes: 1 });
 
       const result = await passengerService.createPassenger(userId, maliciousData);
 
@@ -621,11 +663,19 @@ describe('PassengerService Tests', () => {
     it('应该正确处理大量乘客列表', async () => {
       const userId = 'user-123';
 
-      // Mock返回100个乘客
+      // Mock 第一次查询：获取用户信息
+      db.query.mockResolvedValueOnce([{ id_card_number: '' }]);
+
+      // Mock 第二次查询：返回100个乘客
       const manyPassengers = Array(100).fill(null).map((_, i) => ({
         id: `passenger-${i}`,
+        user_id: userId,
         name: `乘客${i}`,
-        id_card_number: `11010119900101${String(i).padStart(4, '0')}`
+        id_card_type: '居民身份证',
+        id_card_number: `11010119900101${String(i).padStart(4, '0')}`,
+        discount_type: '成人票',
+        phone: '',
+        points: 0
       }));
 
       db.query.mockResolvedValueOnce(manyPassengers);

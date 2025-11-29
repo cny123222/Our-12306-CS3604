@@ -94,22 +94,18 @@ class AuthController {
         // 生成并发送验证码
         const result = await authService.generateAndSendSmsCode(sessionId, idCardLast4);
         
-        if (!result.success) {
-          console.log('❌ 生成验证码失败:', result.error);
-          return res.status(400).json({
-            success: false,
-            error: result.error
-          });
-        }
-        
+        // 先检查是否是频率限制错误（429），必须在检查 !result.success 之前
         if (result.code === 429) {
+          console.log('❌ 请求过于频繁:', result.error);
           return res.status(429).json({
             success: false,
             error: result.error
           });
         }
-
+        
+        // 再检查其他类型的失败（400）
         if (!result.success) {
+          console.log('❌ 生成验证码失败:', result.error);
           return res.status(400).json({
             success: false,
             error: result.error

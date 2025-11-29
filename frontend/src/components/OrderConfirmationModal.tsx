@@ -41,6 +41,12 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
     const fetchOrderConfirmation = async () => {
       if (!isVisible || !orderId) return;
       
+      // 如果已经有外部传入的orderInfo，不需要再调用API
+      if (externalOrderInfo) {
+        setOrderInfo(externalOrderInfo);
+        return;
+      }
+      
       setIsLoading(true);
       setError('');
       
@@ -73,7 +79,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
     };
     
     fetchOrderConfirmation();
-  }, [isVisible, orderId]);
+  }, [isVisible, orderId, externalOrderInfo]);
   
   const [confirmResult, setConfirmResult] = React.useState<any>(null);
   
