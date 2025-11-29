@@ -37,7 +37,8 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
   const [searchKeyword, setSearchKeyword] = useState('');
   
   // TODO: 实现乘客筛选逻辑
-  const filteredPassengers = passengers.filter(p => 
+  // 防御性编程：确保 passengers 是数组
+  const filteredPassengers = (passengers || []).filter(p => 
     !searchKeyword || p.name.includes(searchKeyword)
   );
   
