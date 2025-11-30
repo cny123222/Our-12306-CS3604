@@ -214,3 +214,4 @@ frontend/.vite/
 frontend/dist/
 
 # Database files (railway.db is managed by Git LFS, see .gitattributes)
+.DS_Store
