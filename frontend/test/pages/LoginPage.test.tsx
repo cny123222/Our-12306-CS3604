@@ -448,18 +448,14 @@ describe('LoginPage', () => {
     });
 
     it('应该处理忘记密码点击', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-      
       renderWithRouter(<LoginPage />);
       
       const forgotPasswordButton = screen.getByText('忘记密码？');
       fireEvent.click(forgotPasswordButton);
       
       await waitFor(() => {
-        expect(consoleSpy).toHaveBeenCalledWith('Navigate to forgot password');
+        expect(mockNavigate).toHaveBeenCalledWith('/forgot-password');
       });
-      
-      consoleSpy.mockRestore();
     });
   });
 

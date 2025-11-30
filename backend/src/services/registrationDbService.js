@@ -207,13 +207,25 @@ class RegistrationDbService {
   /**
    * 创建短信验证码
    * @param {string} phone - 手机号
-   * @param {string} purpose - 验证码用途 ('login' 或 'registration')，默认 'login'
+   * @param {string} purpose - 验证码用途 ('login'、'registration' 或 'password-reset')，默认 'login'
+   * @param {number} expirationMinutes - 验证码有效期（分钟），如果不提供则根据purpose决定
    */
-  async createSmsVerificationCode(phone, purpose = 'login') {
+  async createSmsVerificationCode(phone, purpose = 'login', expirationMinutes = null) {
     try {
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const now = new Date();
-      const expiresAt = new Date(now.getTime() + 5 * 60 * 1000); // 5分钟后过期
+      
+      // 根据purpose设置默认过期时间
+      let expirationTime;
+      if (expirationMinutes !== null) {
+        expirationTime = expirationMinutes * 60 * 1000;
+      } else if (purpose === 'password-reset') {
+        expirationTime = 2 * 60 * 1000; // 密码重置：2分钟（120秒）
+      } else {
+        expirationTime = 5 * 60 * 1000; // 其他情况：5分钟
+      }
+      
+      const expiresAt = new Date(now.getTime() + expirationTime);
 
       await dbService.run(
         `INSERT INTO verification_codes (phone, code, created_at, expires_at, sent_status, sent_at, purpose) 

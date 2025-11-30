@@ -21,6 +21,7 @@ interface SelectDropdownProps {
   onChange: (value: string) => void;
   disabled?: boolean;
   testId?: string;
+  getDisplayValue?: (value: string, label: string) => string; // 自定义显示值的函数
 }
 
 const SelectDropdown: React.FC<SelectDropdownProps> = ({
@@ -29,7 +30,8 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
   placeholder,
   onChange,
   disabled = false,
-  testId = 'select-dropdown'
+  testId = 'select-dropdown',
+  getDisplayValue: customGetDisplayValue
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,7 +44,13 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
   // 获取当前选中项的显示文本
   const getDisplayValue = () => {
     const selected = normalizedOptions.find(opt => opt.value === value);
-    return selected ? selected.label : placeholder;
+    if (!selected) return placeholder;
+    
+    // 如果提供了自定义显示值函数，使用它；否则使用 label
+    if (customGetDisplayValue) {
+      return customGetDisplayValue(selected.value, selected.label);
+    }
+    return selected.label;
   };
 
   useEffect(() => {

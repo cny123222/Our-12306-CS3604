@@ -5,7 +5,7 @@ import PurchaseInfoTable from './PurchaseInfoTable';
 import PassengerSearchBox from './PassengerSearchBox';
 
 interface PassengerInfoSectionProps {
-  passengers: any[];
+  passengers?: any[];
   onPassengerSelect: (passengerId: string, selected: boolean) => void;
   onSearchPassenger: (keyword: string) => void;
   availableSeatTypes: any[];
@@ -22,7 +22,7 @@ interface PassengerInfoSectionProps {
  * 乘客信息区域组件
  */
 const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
-  passengers,
+  passengers = [],
   onPassengerSelect,
   onSearchPassenger,
   availableSeatTypes,
@@ -36,9 +36,9 @@ const PassengerInfoSection: React.FC<PassengerInfoSectionProps> = ({
 }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   
-  // TODO: 实现乘客筛选逻辑
-  const filteredPassengers = passengers.filter(p => 
-    !searchKeyword || p.name.includes(searchKeyword)
+  // 确保 passengers 始终是数组，并进行筛选
+  const filteredPassengers = (passengers || []).filter(p => 
+    p && (!searchKeyword || (p.name && p.name.includes(searchKeyword)))
   );
   
   const handleSearch = (keyword: string) => {
