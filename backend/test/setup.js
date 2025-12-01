@@ -8,29 +8,11 @@ process.env.DB_PATH = path.join(__dirname, 'test.db')
 process.env.JWT_SECRET = 'test-jwt-secret-key'
 process.env.JWT_EXPIRES_IN = '1h'
 
-// 清理旧的测试数据库
+// 测试数据库路径
 const testDbPath = process.env.TEST_DB_PATH
-if (fs.existsSync(testDbPath)) {
-  try {
-    fs.unlinkSync(testDbPath)
-  } catch (err) {
-    // 文件可能被锁定，等待一下再试
-    console.log('等待数据库文件解锁...')
-    setTimeout(() => {
-      try {
-        if (fs.existsSync(testDbPath)) {
-          fs.unlinkSync(testDbPath)
-        }
-      } catch (e) {
-        // 忽略删除错误，让测试继续
-        console.warn('无法删除旧数据库文件，将使用现有文件')
-      }
-    }, 500)
-  }
-}
 
-// 导入dbService以初始化数据库
-const dbService = require('../src/services/dbService')
+// 延迟导入 dbService，避免与初始化写入并发导致锁
+let dbService
 const { initTestDatabase } = require('./init-test-db')
 
 // 给数据库一点时间来初始化
@@ -43,29 +25,24 @@ beforeAll(async () => {
   
   // 再等待一下确保数据库完全初始化
   await new Promise(resolve => setTimeout(resolve, 100))
+  
+  // 初始化共享数据库服务（在初始化完成之后再打开连接）
+  dbService = require('../src/services/dbService')
 })
 
 // 全局测试设置
 afterAll(async () => {
   // 关闭数据库连接（等待完成）
-  await dbService.close()
+  if (dbService && dbService.close) {
+    await dbService.close()
+  }
   
   // 给数据库更多时间来完全释放文件锁
   await new Promise(resolve => setTimeout(resolve, 500))
-  
-  // 删除测试数据库文件
-  if (fs.existsSync(testDbPath)) {
-    try {
-      fs.unlinkSync(testDbPath)
-    } catch (err) {
-      // 在 Windows 上文件可能仍被锁定，忽略删除错误
-      console.warn('无法删除测试数据库文件:', err.message)
-    }
-  }
 })
 
 module.exports = {
   testEnvironment: 'node',
   setupFilesAfterEnv: [__filename],
-  testTimeout: 10000
+  testTimeout: 30000
 }

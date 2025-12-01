@@ -285,10 +285,11 @@ class PasswordResetService {
 // 创建单例
 const passwordResetService = new PasswordResetService();
 
-// 定期清理过期数据（每5分钟）
-setInterval(() => {
-  passwordResetService.cleanupExpiredData();
-}, 5 * 60 * 1000);
+if (process.env.NODE_ENV !== 'test') {
+  setInterval(() => {
+    passwordResetService.cleanupExpiredData();
+  }, 5 * 60 * 1000);
+}
 
 module.exports = passwordResetService;
 

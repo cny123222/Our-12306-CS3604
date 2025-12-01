@@ -18,6 +18,9 @@ function getDatabase() {
         console.error('数据库连接失败:', err.message);
       }
     });
+    dbInstance.exec("PRAGMA journal_mode=WAL;");
+    dbInstance.exec("PRAGMA busy_timeout=5000;");
+    dbInstance.exec("PRAGMA synchronous=NORMAL;");
   }
   return dbInstance;
 }

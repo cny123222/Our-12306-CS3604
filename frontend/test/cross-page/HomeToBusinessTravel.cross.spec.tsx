@@ -22,7 +22,7 @@ describe('首页到商旅服务选择页导航', () => {
       ],
     });
 
-    const link = screen.getByText('商旅服务');
+    const link = screen.getByRole('link', { name: /商旅服务/i });
     await userEvent.click(link);
 
     await waitFor(() => {

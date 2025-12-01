@@ -12,7 +12,19 @@ async function initTestDatabase(dbPath) {
   return new Promise((resolve, reject) => {
     const db = new sqlite3.Database(dbPath);
     
-    db.serialize(() => {
+  db.serialize(() => {
+      // 清空旧数据，避免重复初始化导致数据重复
+      db.run('DELETE FROM seat_status');
+      db.run('DELETE FROM order_details');
+      db.run('DELETE FROM orders');
+      db.run('DELETE FROM passengers');
+      db.run('DELETE FROM users');
+      db.run('DELETE FROM train_fares');
+      db.run('DELETE FROM train_cars');
+      db.run('DELETE FROM train_stops');
+      db.run('DELETE FROM trains');
+      db.run('DELETE FROM stations');
+
       // 创建stations表
       db.run(`
         CREATE TABLE IF NOT EXISTS stations (
