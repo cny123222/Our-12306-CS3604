@@ -90,6 +90,11 @@ npm test -- [测试文件路径]
 - ✅ **所有现有测试必须全部通过**（后端和前端）
   - 在 `backend/` 目录运行 `npm test` 必须全部通过（17个测试套件，371个测试用例）
   - 在 `frontend/` 目录运行 `npm test` 必须全部通过（48个测试文件，674个测试用例）
+- ✅ **必须通过 GitHub Actions 自动化测试**
+  - **后端测试工作流**（`.github/workflows/backend-tests.yml`）必须全部通过
+  - **前端测试工作流**（`.github/workflows/frontend-tests.yml`）必须全部通过
+  - Pull Request 页面会显示测试状态，所有测试必须显示 ✅ 绿色通过状态
+  - 如果任何测试失败，Pull Request 将无法合并
 - ✅ **新功能必须包含完整的测试用例**
   - 后端新功能需添加对应的测试文件到 `backend/test/` 目录
   - 前端新功能需添加对应的测试文件到 `frontend/test/` 目录
@@ -98,7 +103,7 @@ npm test -- [测试文件路径]
 - ✅ **提供了完整的测试脚本和说明文档**
 - ✅ **UI界面实现效果符合设计要求**
 
-**⚠️ 重要：如果您的代码导致任何现有测试失败，或者没有为新功能添加测试用例，Pull Request 将被要求修改或拒绝合并。**
+**⚠️ 重要：如果您的代码导致任何现有测试失败，或者没有为新功能添加测试用例，或者 GitHub Actions 测试未通过，Pull Request 将被要求修改或拒绝合并。**
 
 **测试验证步骤：**
 ```bash
@@ -111,6 +116,11 @@ cd ../frontend && npm test
 
 # 3. 提交前再次验证
 # 确保没有引入任何测试失败
+
+# 4. 提交 Pull Request 后检查 GitHub Actions
+# - 在 Pull Request 页面查看测试状态
+# - 确保 "Backend Tests" 和 "Frontend Tests" 都显示 ✅ 通过
+# - 如果测试失败，请查看详细错误信息并修复后重新提交
 ```
 
 ---
@@ -128,6 +138,13 @@ cd ../frontend && npm test
 - SQLite (数据库)
 - Jest + Supertest (测试框架)
 - JWT (身份认证)
+
+### CI/CD
+- GitHub Actions (自动化测试和持续集成)
+  - 后端测试工作流：自动运行 Jest 测试并生成覆盖率报告
+  - 前端测试工作流：自动运行 Vitest 测试并生成覆盖率报告
+  - 触发条件：push 到 main 分支和 Pull Request
+  - 测试结果和覆盖率报告自动上传为 artifacts
 
 ## 项目结构
 
@@ -177,6 +194,10 @@ cd ../frontend && npm test
 │   ├── 04-订单填写页/
 │   ├── 05-个人信息页/
 │   └── 06-支付页和购票成功页/
+├── .github/                   # GitHub 配置
+│   └── workflows/             # GitHub Actions 工作流
+│       ├── backend-tests.yml  # 后端测试工作流
+│       └── frontend-tests.yml  # 前端测试工作流
 ├── system_prompt/             # AI开发提示词
 ├── user_pronpt.md             # agent使用流程及用户提示词
 ├── README.md                  # 项目说明
@@ -376,7 +397,15 @@ Duration:    ~7s
    # 预期结果：所有测试通过，无失败用例
    ```
 
-2. **必须为新功能添加测试用例**
+2. **必须通过 GitHub Actions 自动化测试**
+   - 提交 Pull Request 后，GitHub Actions 会自动运行后端和前端测试
+   - **后端测试工作流**（`Backend Tests`）必须显示 ✅ 绿色通过状态
+   - **前端测试工作流**（`Frontend Tests`）必须显示 ✅ 绿色通过状态
+   - 如果任何工作流失败，Pull Request 将无法合并
+   - 可以在 Pull Request 页面的"Checks"标签页查看详细的测试结果和覆盖率报告
+   - 测试覆盖率报告会自动上传为 artifacts，可从 GitHub Actions 页面下载
+
+3. **必须为新功能添加测试用例**
    - 新增的后端功能必须包含对应的测试文件（放在 `backend/test/` 目录下）
    - 新增的前端功能必须包含对应的测试文件（放在 `frontend/test/` 目录下）
    - 测试用例应覆盖正常流程、异常流程和边界条件
