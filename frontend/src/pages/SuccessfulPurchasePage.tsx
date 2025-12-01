@@ -75,6 +75,14 @@ const SuccessfulPurchasePage: React.FC = () => {
           })),
           totalPrice: detailData.totalPrice
         });
+        try {
+          const info = detailData.trainInfo || {};
+          localStorage.setItem('lastOrderTrainInfo', JSON.stringify({
+            trainNo: info.trainNo || '',
+            carNumber: (detailData.passengers && detailData.passengers[0]?.carNumber) || '',
+            seatNumber: (detailData.passengers && detailData.passengers[0]?.seatNumber) || ''
+          }));
+        } catch {}
       } catch (err: any) {
         setError(err.message || '加载失败');
         console.error('加载订单数据失败:', err);
@@ -122,7 +130,7 @@ const SuccessfulPurchasePage: React.FC = () => {
   const username = isLoggedIn ? (localStorage.getItem('username') || localStorage.getItem('userId') || '用户') : '';
 
   const handleFoodClick = () => {
-    // 餐饮特产功能
+    navigate('/food');
   };
 
   if (isLoading) {

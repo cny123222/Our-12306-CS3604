@@ -1,0 +1,10 @@
+.business-travel-page { display: flex; flex-direction: column; min-height: 100vh; }
+.business-travel-main { flex: 1; padding: 16px; }
+.breadcrumb { margin-bottom: 12px; font-size: 14px; color: #666; }
+.bts-form { border: 1px solid #eee; padding: 12px; border-radius: 6px; background: #fff; }
+.form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.form-row input { padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; }
+.bts-actions { display: flex; gap: 12px; margin-top: 12px; }
+.bts-actions button { padding: 8px 12px; border: none; background: #0a75ff; color: #fff; border-radius: 4px; }
+.message { margin-top: 10px; color: #333; }
+
