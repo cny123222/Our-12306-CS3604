@@ -12,6 +12,7 @@ const ordersRoutes = require('./routes/orders');
 const passengersRoutes = require('./routes/passengers');
 const userInfoRoutes = require('./routes/userInfo');
 const paymentRoutes = require('./routes/payment');
+const foodRoutes = require('./routes/food');
 const passwordResetRoutes = require('./routes/passwordReset');
 const { startCleanupScheduler } = require('./services/pendingOrderCleanupService');
 const trainCleanupService = require('./services/trainCleanupService');
@@ -38,6 +39,7 @@ app.use('/api/orders', ordersRoutes);
 app.use('/api/passengers', passengersRoutes);
 app.use('/api/user', userInfoRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/food', foodRoutes);
 app.use('/api/password-reset', passwordResetRoutes);
 
 // Health check

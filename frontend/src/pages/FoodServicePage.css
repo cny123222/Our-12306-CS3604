@@ -1,0 +1,27 @@
+.food-service-page { display: flex; flex-direction: column; min-height: 100vh; }
+.food-service-main { flex: 1; padding: 16px; }
+.breadcrumb { margin-bottom: 12px; font-size: 14px; color: #666; }
+.train-info-form { display: flex; gap: 8px; margin-bottom: 12px; }
+.train-info-form input { padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; }
+.food-tabs { display: flex; gap: 8px; margin: 12px 0; }
+.food-tabs button { padding: 8px 12px; border: 1px solid #ddd; background: #fff; border-radius: 4px; }
+.food-tabs button.active { background: #0a75ff; color: #fff; border-color: #0a75ff; }
+.categories { display: flex; gap: 8px; margin-bottom: 12px; }
+.categories button { padding: 6px 10px; border: 1px solid #ddd; background: #fff; border-radius: 4px; }
+.categories button.selected { background: #f0f6ff; border-color: #0a75ff; }
+.food-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.food-card { border: 1px solid #eee; border-radius: 6px; padding: 10px; background: #fff; }
+.food-name { font-size: 14px; margin-bottom: 6px; }
+.food-price { font-size: 16px; color: #d33; margin-bottom: 8px; }
+.food-actions { display: flex; gap: 8px; }
+.merchant-section .merchant-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.merchant-card { border: 1px solid #eee; border-radius: 6px; padding: 10px; background: #fff; }
+.merchant-products { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.service-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.service-card { border: 1px solid #eee; border-radius: 6px; padding: 10px; background: #fff; }
+.service-name { font-weight: 600; margin-bottom: 4px; }
+.service-desc { color: #666; font-size: 13px; }
+.cart-summary { margin-top: 16px; display: flex; align-items: center; gap: 12px; }
+.submit-button { padding: 8px 12px; border: none; background: #0a75ff; color: #fff; border-radius: 4px; }
+.message { margin-left: auto; color: #333; }
+

@@ -37,7 +37,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
         <a href="#" className="nav-item">团购服务 <span className="nav-arrow">▼</span></a>
         <a href="#" className="nav-item">会员服务 <span className="nav-arrow">▼</span></a>
         <a href="#" className="nav-item">站车服务 <span className="nav-arrow">▼</span></a>
-        <a href="#" className="nav-item">商旅服务 <span className="nav-arrow">▼</span></a>
+        <Link to="/business-travel" className="nav-item">商旅服务 <span className="nav-arrow">▼</span></Link>
         <a href="#" className="nav-item">出行指南 <span className="nav-arrow">▼</span></a>
         <a href="#" className="nav-item">信息查询 <span className="nav-arrow">▼</span></a>
       </div>

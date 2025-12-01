@@ -11,6 +11,8 @@ import PassengerManagementPage from './pages/PassengerManagementPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
 import PaymentPage from './pages/PaymentPage'
 import SuccessfulPurchasePage from './pages/SuccessfulPurchasePage'
+import FoodServicePage from './pages/FoodServicePage'
+import BusinessTravelServicePage from './pages/BusinessTravelServicePage'
 import './App.css'
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
         <Route path="/orders" element={<OrderHistoryPage />} />
         <Route path="/payment/:orderId" element={<PaymentPage />} />
         <Route path="/purchase-success/:orderId" element={<SuccessfulPurchasePage />} />
+        <Route path="/food" element={<FoodServicePage />} />
+        <Route path="/business-travel" element={<BusinessTravelServicePage />} />
       </Routes>
     </div>
   )

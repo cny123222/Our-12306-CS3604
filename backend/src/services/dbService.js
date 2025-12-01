@@ -20,6 +20,9 @@ class DatabaseService {
         console.error('Database connection error:', err);
       } else {
         console.log('Connected to SQLite database:', dbPath);
+        this.db.exec("PRAGMA journal_mode=WAL;");
+        this.db.exec("PRAGMA busy_timeout=5000;");
+        this.db.exec("PRAGMA synchronous=NORMAL;");
         this.createTables();
       }
     });
