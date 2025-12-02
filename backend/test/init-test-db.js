@@ -13,6 +13,19 @@ async function initTestDatabase(dbPath) {
     const db = new sqlite3.Database(dbPath);
     
     db.serialize(() => {
+      db.run(`DROP TABLE IF EXISTS order_details`);
+      db.run(`DROP TABLE IF EXISTS orders`);
+      db.run(`DROP TABLE IF EXISTS passengers`);
+      db.run(`DROP TABLE IF EXISTS users`);
+      db.run(`DROP TABLE IF EXISTS seat_status`);
+      db.run(`DROP TABLE IF EXISTS train_fares`);
+      db.run(`DROP TABLE IF EXISTS train_cars`);
+      db.run(`DROP TABLE IF EXISTS train_stops`);
+      db.run(`DROP TABLE IF EXISTS trains`);
+      db.run(`DROP TABLE IF EXISTS stations`);
+      db.run(`DROP TABLE IF EXISTS verification_codes`);
+      db.run(`DROP TABLE IF EXISTS email_verification_codes`);
+      db.run(`DROP TABLE IF EXISTS sessions`);
       // 创建stations表
       db.run(`
         CREATE TABLE IF NOT EXISTS stations (
@@ -417,7 +430,6 @@ async function initTestDatabase(dbPath) {
            '二等座', '成人票', 553.5, 1, '08', '12A')
       `, () => {
         db.close();
-        console.log('测试数据库初始化完成');
         resolve();
       });
     });
