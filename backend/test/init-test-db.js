@@ -13,6 +13,19 @@ async function initTestDatabase(dbPath) {
     const db = new sqlite3.Database(dbPath);
     
     db.serialize(() => {
+      db.run(`DROP TABLE IF EXISTS order_details`);
+      db.run(`DROP TABLE IF EXISTS orders`);
+      db.run(`DROP TABLE IF EXISTS passengers`);
+      db.run(`DROP TABLE IF EXISTS users`);
+      db.run(`DROP TABLE IF EXISTS seat_status`);
+      db.run(`DROP TABLE IF EXISTS train_fares`);
+      db.run(`DROP TABLE IF EXISTS train_cars`);
+      db.run(`DROP TABLE IF EXISTS train_stops`);
+      db.run(`DROP TABLE IF EXISTS trains`);
+      db.run(`DROP TABLE IF EXISTS stations`);
+      db.run(`DROP TABLE IF EXISTS verification_codes`);
+      db.run(`DROP TABLE IF EXISTS email_verification_codes`);
+      db.run(`DROP TABLE IF EXISTS sessions`);
       // 创建stations表
       db.run(`
         CREATE TABLE IF NOT EXISTS stations (
@@ -54,6 +67,43 @@ async function initTestDatabase(dbPath) {
       // 为trains表创建车次号索引
       db.run(`
         CREATE INDEX IF NOT EXISTS idx_trains_no ON trains(train_no)
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS verification_codes (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          phone TEXT NOT NULL,
+          code TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL,
+          used BOOLEAN DEFAULT 0,
+          sent_status TEXT DEFAULT 'sent',
+          sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          purpose TEXT DEFAULT 'login'
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS email_verification_codes (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT NOT NULL,
+          code TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL,
+          used BOOLEAN DEFAULT 0,
+          sent_status TEXT DEFAULT 'sent',
+          sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          session_id TEXT UNIQUE NOT NULL,
+          user_data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL
+        )
       `);
       
       // 创建train_stops表
@@ -268,7 +318,8 @@ async function initTestDatabase(dbPath) {
           discount_type TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          last_login DATETIME
+          last_login DATETIME,
+          UNIQUE(id_card_type, id_card_number)
         )
       `);
       
@@ -379,7 +430,6 @@ async function initTestDatabase(dbPath) {
            '二等座', '成人票', 553.5, 1, '08', '12A')
       `, () => {
         db.close();
-        console.log('测试数据库初始化完成');
         resolve();
       });
     });
@@ -387,4 +437,3 @@ async function initTestDatabase(dbPath) {
 }
 
 module.exports = { initTestDatabase };
-

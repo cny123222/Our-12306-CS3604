@@ -227,9 +227,10 @@ router.post('/search', async (req, res) => {
 router.get('/:trainNo', async (req, res) => {
   try {
     const { trainNo } = req.params;
+    const { departureDate } = req.query;
     
     // 查询车次详细信息
-    const trainDetails = await trainService.getTrainDetails(trainNo);
+    const trainDetails = await trainService.getTrainDetails(trainNo, departureDate);
     
     if (!trainDetails) {
       return res.status(404).json({ error: '车次不存在' });

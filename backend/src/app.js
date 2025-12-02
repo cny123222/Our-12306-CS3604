@@ -19,7 +19,7 @@ const cancellationCleanupService = require('./services/cancellationCleanupServic
 const { generateDay15Trains } = require('../database/generate-daily-trains');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3100;
 
 // Middleware
 app.use(helmet());

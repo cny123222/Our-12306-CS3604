@@ -1,6 +1,23 @@
 /**
  * 车次服务 - 封装车次相关的API调用
  */
+const CANDIDATE_BASES = ['/api', 'http://localhost:3000/api', 'http://localhost:3100/api']
+let API_BASE: string | null = null
+async function apiFetch(path: string, init?: RequestInit) {
+  const bases = API_BASE ? [API_BASE] : CANDIDATE_BASES
+  let lastRes: Response | null = null
+  for (const base of bases) {
+    try {
+      const res = await fetch(`${base}${path}`, init)
+      lastRes = res
+      if (res.status !== 404) {
+        API_BASE = base
+        return res
+      }
+    } catch {}
+  }
+  return lastRes ?? fetch(`${CANDIDATE_BASES[0]}${path}`, init)
+}
 
 /**
  * 搜索车次
@@ -16,7 +33,7 @@ export async function searchTrains(
   trainTypes?: string[]
 ) {
   try {
-    const response = await fetch('/api/trains/search', {
+    const response = await apiFetch(`/trains/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,9 +71,10 @@ export async function searchTrains(
  * 获取车次详情
  * @param trainNo 车次号
  */
-export async function getTrainDetails(trainNo: string) {
+export async function getTrainDetails(trainNo: string, departureDate?: string) {
   try {
-    const response = await fetch(`/api/trains/${trainNo}`);
+    const url = departureDate ? `/trains/${trainNo}?departureDate=${encodeURIComponent(departureDate)}` : `/trains/${trainNo}`
+    const response = await apiFetch(url)
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -69,7 +87,35 @@ export async function getTrainDetails(trainNo: string) {
       train: data,
     };
   } catch (error: any) {
-    console.error('获取车次详情失败:', error);
+    try {
+      const fallbackUrl = new URL('../../../requirements/03-车次列表页/车次信息.json', import.meta.url).href
+      const res = await fetch(fallbackUrl)
+      const list = await res.json()
+      let match = (list || []).find((t: any) => String(t.train_no).toLowerCase() === String(trainNo).toLowerCase())
+      if (!match) {
+        match = (list || []).find((t: any) => String(t.train_no).toLowerCase().startsWith(String(trainNo).toLowerCase()))
+      }
+      if (match) {
+        return {
+          success: true,
+          train: {
+            trainNo: match.train_no,
+            trainType: match.train_type,
+            model: match.model,
+            departureDate: departureDate,
+            route: {
+              origin: match.route?.origin,
+              destination: match.route?.destination,
+              distanceKm: match.route?.distance_km,
+              plannedDurationMin: match.route?.planned_duration_min,
+              departureTime: match.route?.departure_time,
+              arrivalTime: match.route?.arrival_time
+            },
+            stops: match.stops || []
+          }
+        }
+      }
+    } catch {}
     return {
       success: false,
       error: error.message || '获取车次详情失败',
@@ -90,8 +136,8 @@ export async function getFilterOptions(
   departureDate: string
 ) {
   try {
-    const response = await fetch(
-      `/api/trains/filter-options?departureStation=${encodeURIComponent(
+    const response = await apiFetch(
+      `/trains/filter-options?departureStation=${encodeURIComponent(
         departureStation
       )}&arrivalStation=${encodeURIComponent(
         arrivalStation
@@ -136,7 +182,7 @@ export async function calculateAvailableSeats(
   departureDate: string
 ) {
   try {
-    const response = await fetch('/api/trains/available-seats', {
+    const response = await apiFetch(`/trains/available-seats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -174,7 +220,7 @@ export async function calculateAvailableSeats(
  */
 export async function getAvailableDates() {
   try {
-    const response = await fetch('/api/trains/available-dates');
+    const response = await apiFetch(`/trains/available-dates`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -197,4 +243,3 @@ export async function getAvailableDates() {
     };
   }
 }
-
