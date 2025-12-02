@@ -31,34 +31,25 @@ if (fs.existsSync(testDbPath)) {
 
 // 导入dbService以初始化数据库
 const dbService = require('../src/services/dbService')
+const rawDb = require('../src/database')
 const { initTestDatabase } = require('./init-test-db')
 
 // 给数据库一点时间来初始化
 beforeAll(async () => {
-  // 等待数据库初始化完成
-  await new Promise(resolve => setTimeout(resolve, 100))
-  
-  // 初始化测试数据库（创建表和插入测试数据）
+  await new Promise(resolve => setTimeout(resolve, 1000))
   await initTestDatabase(testDbPath)
-  
-  // 再等待一下确保数据库完全初始化
-  await new Promise(resolve => setTimeout(resolve, 100))
+  await new Promise(resolve => setTimeout(resolve, 1000))
 })
 
 // 全局测试设置
 afterAll(async () => {
-  // 关闭数据库连接（等待完成）
   await dbService.close()
-  
-  // 给数据库更多时间来完全释放文件锁
-  await new Promise(resolve => setTimeout(resolve, 500))
-  
-  // 删除测试数据库文件
+  await rawDb.close()
+  await new Promise(resolve => setTimeout(resolve, 1000))
   if (fs.existsSync(testDbPath)) {
     try {
       fs.unlinkSync(testDbPath)
     } catch (err) {
-      // 在 Windows 上文件可能仍被锁定，忽略删除错误
       console.warn('无法删除测试数据库文件:', err.message)
     }
   }

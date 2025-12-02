@@ -6,6 +6,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  position: sticky;
 }
 
 .nav-container {
@@ -15,6 +16,7 @@
   align-items: stretch;
   height: 45px;
   padding: 0 40px;
+  position: relative;
 }
 
 /* 导航项目 */
@@ -48,6 +50,37 @@
   background: #2676E3;
   font-weight: normal;
   color: #ffffff;
+}
+
+.has-dropdown {
+  user-select: none;
+}
+
+.nav-dropdown-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 45px;
+  height: 60px;
+  background: #ffffff;
+  border-top: 1px solid #e5e5e5;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 0 80px;
+  z-index: 99;
+}
+
+.nav-dropdown-item {
+  color: #333333;
+  font-size: 15px;
+  text-decoration: none;
+  padding: 8px 0;
+}
+
+.nav-dropdown-item:hover {
+  color: #2676E3;
 }
 
 /* 导航箭头 */

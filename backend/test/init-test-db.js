@@ -55,6 +55,43 @@ async function initTestDatabase(dbPath) {
       db.run(`
         CREATE INDEX IF NOT EXISTS idx_trains_no ON trains(train_no)
       `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS verification_codes (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          phone TEXT NOT NULL,
+          code TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL,
+          used BOOLEAN DEFAULT 0,
+          sent_status TEXT DEFAULT 'sent',
+          sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          purpose TEXT DEFAULT 'login'
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS email_verification_codes (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT NOT NULL,
+          code TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL,
+          used BOOLEAN DEFAULT 0,
+          sent_status TEXT DEFAULT 'sent',
+          sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          session_id TEXT UNIQUE NOT NULL,
+          user_data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL
+        )
+      `);
       
       // 创建train_stops表
       db.run(`
@@ -268,7 +305,8 @@ async function initTestDatabase(dbPath) {
           discount_type TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          last_login DATETIME
+          last_login DATETIME,
+          UNIQUE(id_card_type, id_card_number)
         )
       `);
       
@@ -387,4 +425,3 @@ async function initTestDatabase(dbPath) {
 }
 
 module.exports = { initTestDatabase };
-

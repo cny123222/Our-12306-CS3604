@@ -1,0 +1,120 @@
+.catering-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.catering-hero {
+  position: relative;
+  height: 420px;
+  background-image: url('/images/首页-餐饮特产-右上.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.catering-hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.catering-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  color: #ffffff;
+}
+
+.catering-hero-title {
+  font-size: 35px;
+  line-height: 1.6;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.catering-search-bar {
+  margin: 28px auto 0;
+  background: #ffffff;
+  border-radius: 0;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: stretch;
+  height: 56px;
+  width: 977px;
+}
+
+.catering-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.catering-col + .catering-col {
+  border-left: 1px solid #e5e5e5;
+}
+
+.w210 { width: 210px; }
+.w137 { width: 137px; }
+
+.catering-input {
+  height: 100%;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  padding: 0 12px;
+  font-size: 16px;
+  color: #666666;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.catering-input.date { width: 100%; font-size: 16px;}
+
+.catering-input.train { width: 100%; font-size: 16px;}
+
+.catering-search-button {
+  height: 100%;
+  width: 100%;
+  background: #ff7f23;
+  color: #ffffff;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.catering-search-button:hover {
+  background: #f07016;
+}
+
+@media (max-width: 768px) {
+  .catering-hero {
+    height: 360px;
+  }
+  .catering-hero-title {
+    font-size: 22px;
+  }
+  .catering-search-bar { flex-wrap: wrap; height: auto; }
+}
+
+.catering-search-bar .station-input { width: 100%; height: 100%;}
+.catering-search-bar .station-input-field {
+  height: 100% !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 12px !important;
+  box-shadow: none !important;
+  font-size: 16px !important;
+  color: #666666 !important;
+}
+.catering-search-bar .station-input-field::placeholder {
+  font-size: 16px !important;
+}
