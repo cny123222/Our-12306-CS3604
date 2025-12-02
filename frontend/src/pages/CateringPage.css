@@ -5,7 +5,7 @@
   flex-direction: column;
 }
 
-.catering-hero {
+.catering-page .catering-hero {
   position: relative;
   height: 420px;
   background-image: url('/images/首页-餐饮特产-右上.jpg');
@@ -13,7 +13,7 @@
   background-position: center;
 }
 
-.catering-hero::after {
+.catering-page .catering-hero::after {
   content: '';
   position: absolute;
   left: 0;
@@ -23,7 +23,7 @@
   background: rgba(0,0,0,0.35);
 }
 
-.catering-hero-content {
+.catering-page .catering-hero-content {
   position: relative;
   z-index: 1;
   max-width: 1200px;
@@ -32,14 +32,14 @@
   color: #ffffff;
 }
 
-.catering-hero-title {
+.catering-page .catering-hero-title {
   font-size: 35px;
   line-height: 1.6;
   text-shadow: 0 2px 6px rgba(0,0,0,0.3);
   text-align: center;
 }
 
-.catering-search-bar {
+.catering-page .catering-search-bar {
   margin: 28px auto 0;
   background: #ffffff;
   border-radius: 0;
@@ -50,21 +50,21 @@
   width: 977px;
 }
 
-.catering-col {
+.catering-page .catering-col {
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
 }
 
-.catering-col + .catering-col {
+.catering-page .catering-col + .catering-col {
   border-left: 1px solid #e5e5e5;
 }
 
-.w210 { width: 210px; }
-.w137 { width: 137px; }
+.catering-page .w210 { width: 210px; }
+.catering-page .w137 { width: 137px; }
 
-.catering-input {
+.catering-page .catering-input {
   height: 100%;
   width: 100%;
   border: none;
@@ -76,11 +76,11 @@
   box-sizing: border-box;
 }
 
-.catering-input.date { width: 100%; font-size: 16px;}
+.catering-page .catering-input.date { width: 100%; font-size: 16px;}
 
-.catering-input.train { width: 100%; font-size: 16px;}
+.catering-page .catering-input.train { width: 100%; font-size: 16px;}
 
-.catering-search-button {
+.catering-page .catering-search-button {
   height: 100%;
   width: 100%;
   background: #ff7f23;
@@ -91,22 +91,22 @@
   font-size: 16px;
 }
 
-.catering-search-button:hover {
+.catering-page .catering-search-button:hover {
   background: #f07016;
 }
 
 @media (max-width: 768px) {
-  .catering-hero {
+  .catering-page .catering-hero {
     height: 360px;
   }
-  .catering-hero-title {
+  .catering-page .catering-hero-title {
     font-size: 22px;
   }
-  .catering-search-bar { flex-wrap: wrap; height: auto; }
+  .catering-page .catering-search-bar { flex-wrap: wrap; height: auto; }
 }
 
-.catering-search-bar .station-input { width: 100%; height: 100%;}
-.catering-search-bar .station-input-field {
+.catering-page .catering-search-bar .station-input { width: 100%; height: 100%;}
+.catering-page .catering-search-bar .station-input-field {
   height: 100% !important;
   border: none !important;
   border-radius: 0 !important;
@@ -115,6 +115,6 @@
   font-size: 16px !important;
   color: #666666 !important;
 }
-.catering-search-bar .station-input-field::placeholder {
+.catering-page .catering-search-bar .station-input-field::placeholder {
   font-size: 16px !important;
 }

@@ -1,7 +1,7 @@
 .catering-reserve-page { min-height: 100vh; background: #ffffff; display: flex; flex-direction: column; }
-.reserve-search-wrapper { max-width: 1200px; margin: 20px auto 0; padding: 0 0; }
+.catering-reserve-page .reserve-search-wrapper { max-width: 1200px; margin: 20px auto 0; padding: 0 0; }
 
-.search-panel {
+.catering-reserve-page .search-panel {
   width: 1200px;
   height: 111.55px;
   background: #eaf3ff;
@@ -12,7 +12,7 @@
   flex-direction: column;
 }
 
-.search-top-row {
+.catering-reserve-page .search-top-row {
   height: 70px;
   display: grid;
   grid-template-columns: 248px 224px 236px 236px 104px;
@@ -21,48 +21,48 @@
   padding: 0 16px;
 }
 
-.field-group { display: flex; align-items: center; gap: 8px; }
-.field-group.query { justify-content: center; }
-.field-label { font-size: 14px; color: #666; min-width: 60px; text-align: right; }
-.field-input { height: 30px; background: #ffffff; border: 1px solid #d0d0d0; border-radius: 0; padding: 0 0px; display: flex; align-items: center; width: calc(100% - 60px); box-sizing: border-box; }
-.field-group.query .field-label { display: none; }
-.field-group.query .field-input { width: 100%; }
-.query-btn { height: 30px; width: 100%; background: #ff7f23; color: #fff; border: none; border-radius: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 30px; }
+.catering-reserve-page .field-group { display: flex; align-items: center; gap: 8px; }
+.catering-reserve-page .field-group.query { justify-content: center; }
+.catering-reserve-page .field-label { font-size: 14px; color: #666; min-width: 60px; text-align: right; }
+.catering-reserve-page .field-input { height: 30px; background: #ffffff; border: 1px solid #d0d0d0; border-radius: 0; padding: 0 0px; display: flex; align-items: center; width: calc(100% - 60px); box-sizing: border-box; }
+.catering-reserve-page .field-group.query .field-label { display: none; }
+.catering-reserve-page .field-group.query .field-input { width: 100%; }
+.catering-reserve-page .query-btn { height: 30px; width: 100%; background: #ff7f23; color: #fff; border: none; border-radius: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 30px; }
 
-.search-divider { height: 0; border-top: 1px dashed #3B99FC; margin: 0 16px; }
+.catering-reserve-page .search-divider { height: 0; border-top: 1px dashed #3B99FC; margin: 0 16px; }
 
-.search-bottom-row { height: 40.5px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-.distribution-left { display: flex; align-items: center; gap: 10px; }
-.distribution-label { font-size: 14px; color: #666; }
-.btn-all { height: 24px; padding: 0 12px; background: #3B99FC; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 13px; }
-.distribution-option { font-size: 14px; color: #333; display: flex; align-items: center; gap: 10px; font-weight: 700;}
-.reserve-checkbox { font-size: 14px; color: #333; }
-.reserve-checkbox.right { margin-left: auto; }
+.catering-reserve-page .search-bottom-row { height: 40.5px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+.catering-reserve-page .distribution-left { display: flex; align-items: center; gap: 10px; }
+.catering-reserve-page .distribution-label { font-size: 14px; color: #666; }
+.catering-reserve-page .btn-all { height: 24px; padding: 0 12px; background: #3B99FC; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 13px; }
+.catering-reserve-page .distribution-option { font-size: 14px; color: #333; display: flex; align-items: center; gap: 10px; font-weight: 700;}
+.catering-reserve-page .reserve-checkbox { font-size: 14px; color: #333; }
+.catering-reserve-page .reserve-checkbox.right { margin-left: auto; }
 
-.section-title-row { max-width: 1200px; margin: 20px auto 0; padding: 0 20px; font-size: 16px; color: #ff7f23; text-align: left; }
-.section-divider { height: 2px; background: #ff7f23; width: calc(100% - 40px); max-width: calc(1200px - 40px); margin: 6px auto 10px; }
-.product-grid { max-width: 1200px; margin: 10px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(3, 384px); gap: 24px; justify-content: space-between; }
-.product-card { width: 384px; height: 140px; background: #fff; border: 1px solid #e5e5e5; border-radius: 4px; display: flex; overflow: hidden; }
-.product-image-wrapper { position: relative; width: 210px; height: 140px; flex-shrink: 0; }
-.product-image { width: 210px; height: 140px; object-fit: cover; display: block; }
-.product-image-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; padding: 4px; }
-.overlay-title { font-size: 16px; font-weight: 600; }
-.overlay-sub { font-size: 12px; margin-top: 4px; opacity: 0.9; }
-.product-right { width: 174px; height: 140px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 0 12px; }
-.product-right-name { font-size: 14px; color: #000; font-weight: 600; text-align: right; padding-right: 15px; width: 100%; }
-.product-right-price { font-size: 14px; color: #000; font-weight: 600; margin-top: 6px; text-align: right; padding-right: 15px; width: 100%; }
-.overlay-title, .overlay-sub { display: none; }
+.catering-reserve-page .section-title-row { max-width: 1200px; margin: 20px auto 0; padding: 0 20px; font-size: 16px; color: #ff7f23; text-align: left; }
+.catering-reserve-page .section-divider { height: 2px; background: #ff7f23; width: calc(100% - 40px); max-width: calc(1200px - 40px); margin: 6px auto 10px; }
+.catering-reserve-page .product-grid { max-width: 1200px; margin: 10px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(3, 384px); gap: 24px; justify-content: space-between; }
+.catering-reserve-page .product-card { width: 384px; height: 140px; background: #fff; border: 1px solid #e5e5e5; border-radius: 4px; display: flex; overflow: hidden; }
+.catering-reserve-page .product-image-wrapper { position: relative; width: 210px; height: 140px; flex-shrink: 0; }
+.catering-reserve-page .product-image { width: 210px; height: 140px; object-fit: cover; display: block; }
+.catering-reserve-page .product-image-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; padding: 4px; }
+.catering-reserve-page .overlay-title { font-size: 16px; font-weight: 600; }
+.catering-reserve-page .overlay-sub { font-size: 12px; margin-top: 4px; opacity: 0.9; }
+.catering-reserve-page .product-right { width: 174px; height: 140px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 0 12px; }
+.catering-reserve-page .product-right-name { font-size: 14px; color: #000; font-weight: 600; text-align: right; padding-right: 15px; width: 100%; }
+.catering-reserve-page .product-right-price { font-size: 14px; color: #000; font-weight: 600; margin-top: 6px; text-align: right; padding-right: 15px; width: 100%; }
+.catering-reserve-page .overlay-title, .catering-reserve-page .overlay-sub { display: none; }
 
-.vendor-section { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
-.vendor-title { font-size: 16px; color: #2676E3; font-weight: 700; }
-.vendor-divider { height: 2px; background: #3B99FC; width: calc(100% - 40px); max-width: calc(1200px - 40px); margin: 6px auto 10px; }
-.vendor-grid { display: grid; grid-template-columns: repeat(3, 385px); gap: 24px; justify-content: space-between; }
-.vendor-card { position: relative; width: 385px; height: 130px; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #e5e5e5; border-radius: 4px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.vendor-card img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
-.vendor-info { display: flex; flex-direction: column; }
-.vendor-name { font-size: 14px; color: #333; }
-.vendor-meta { font-size: 12px; color: #777; }
-.vendor-card.closed { filter: grayscale(1); }
-.vendor-status { position: absolute; right: 10px; top: 10px; background: #ffffff; border: 1px solid #ccc; border-radius: 20px; padding: 2px 8px; font-size: 12px; color: #999; }
+.catering-reserve-page .vendor-section { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+.catering-reserve-page .vendor-title { font-size: 16px; color: #2676E3; font-weight: 700; }
+.catering-reserve-page .vendor-divider { height: 2px; background: #3B99FC; width: calc(100% - 40px); max-width: calc(1200px - 40px); margin: 6px auto 10px; }
+.catering-reserve-page .vendor-grid { display: grid; grid-template-columns: repeat(3, 385px); gap: 24px; justify-content: space-between; }
+.catering-reserve-page .vendor-card { position: relative; width: 385px; height: 130px; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #e5e5e5; border-radius: 4px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.catering-reserve-page .vendor-card img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+.catering-reserve-page .vendor-info { display: flex; flex-direction: column; }
+.catering-reserve-page .vendor-name { font-size: 14px; color: #333; }
+.catering-reserve-page .vendor-meta { font-size: 12px; color: #777; }
+.catering-reserve-page .vendor-card.closed { filter: grayscale(1); }
+.catering-reserve-page .vendor-status { position: absolute; right: 10px; top: 10px; background: #ffffff; border: 1px solid #ccc; border-radius: 20px; padding: 2px 8px; font-size: 12px; color: #999; }
 
-@media (max-width: 768px) { .product-grid, .vendor-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) { .catering-reserve-page .product-grid, .catering-reserve-page .vendor-grid { grid-template-columns: repeat(2, 1fr); } }
