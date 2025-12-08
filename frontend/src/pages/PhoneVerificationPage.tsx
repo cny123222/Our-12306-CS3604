@@ -132,6 +132,9 @@ const PhoneVerificationPage = () => {
       case 'passengers':
         navigate('/passengers');
         break;
+      case 'address':
+        navigate('/address');
+        break;
     }
   };
 
