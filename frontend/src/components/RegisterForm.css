@@ -76,27 +76,35 @@
 
 /* 注册页面下拉框显示框样式 - 方角设计 */
 .register-form .form-input-container .select-dropdown .selected-value-display {
-  height: 36px;
-  line-height: 36px;
-  border: 1px solid #b8b8b8;
-  border-radius: 0px;
-  font-size: 14px;
-  padding: 0 28px 0 12px;
-  background-color: #e9e9ed;
+  height: 36px !important;
+  line-height: 36px !important;
+  border: 1px solid #b8b8b8 !important;
+  border-radius: 0px !important;
+  font-size: 14px !important;
+  padding: 0 28px 0 12px !important;
+  background-color: #e9e9ed !important;
+  text-align: left !important; /* 确保文字左对齐，覆盖全局居中样式 */
 }
 
 .register-form .form-input-container .select-dropdown:not(.disabled) .selected-value-display:hover {
-  border-color: #40a9ff;
+  border-color: #40a9ff !important;
+  text-align: left !important; /* 保持左对齐 */
 }
 
 .register-form .form-input-container .select-dropdown.expanded .selected-value-display {
-  border-color: #40a9ff;
-  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1);
+  border-color: #40a9ff !important;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1) !important;
+  text-align: left !important; /* 保持左对齐 */
 }
 
 /* 下拉菜单选项列表 - 方角设计 */
 .register-form .form-input-container .select-dropdown .options-list {
-  border-radius: 0px;
+  border-radius: 0px !important;
+}
+
+/* 注册页面下拉框选项文字左对齐 */
+.register-form .form-input-container .select-dropdown .option {
+  text-align: left !important;
 }
 
 .register-form .form-input::placeholder {
@@ -200,22 +208,29 @@
 
 /* 手机号码区域下拉框样式 - 方角设计 */
 .register-form .phone-country-select .select-dropdown .selected-value-display {
-  height: 36px;
-  line-height: 36px;
-  border: 1px solid #b8b8b8;
-  border-radius: 0px;
-  font-size: 14px;
-  padding: 0 28px 0 12px;
-  background-color: #e9e9ed;
+  height: 36px !important;
+  line-height: 36px !important;
+  border: 1px solid #b8b8b8 !important;
+  border-radius: 0px !important;
+  font-size: 14px !important;
+  padding: 0 28px 0 12px !important;
+  background-color: #e9e9ed !important;
+  text-align: left !important; /* 确保文字左对齐，覆盖全局居中样式 */
 }
 
 .register-form .phone-country-select .select-dropdown:not(.disabled) .selected-value-display:hover {
-  border-color: #40a9ff;
+  border-color: #40a9ff !important;
+  text-align: left !important; /* 保持左对齐 */
 }
 
 /* 手机号下拉菜单选项列表 - 方角设计 */
 .register-form .phone-country-select .select-dropdown .options-list {
-  border-radius: 0px;
+  border-radius: 0px !important;
+}
+
+/* 手机号下拉框选项文字左对齐 */
+.register-form .phone-country-select .select-dropdown .option {
+  text-align: left !important;
 }
 
 .register-form .phone-input {

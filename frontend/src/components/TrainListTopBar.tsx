@@ -53,6 +53,10 @@ const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username,
     }
   };
 
+  const handleUsernameClick = () => {
+    navigate('/personal-info');
+  };
+
   return (
     <div className="train-list-top-bar">
       <div className="train-list-top-container">
@@ -100,7 +104,7 @@ const TrainListTopBar: React.FC<TrainListTopBarProps> = ({ isLoggedIn, username,
           ) : (
             <>
               <span className="train-list-welcome-text">您好，</span>
-              <span className="train-list-username">{username}</span>
+              <span className="train-list-username" onClick={handleUsernameClick}>{username}</span>
               <span className="train-list-divider">|</span>
               <button className="train-list-logout-button" onClick={handleLogout}>退出</button>
             </>

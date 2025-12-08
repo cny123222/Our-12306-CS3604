@@ -168,6 +168,13 @@
   color: #2196f3;
   font-weight: 500;
   margin: 0 4px 0 0;
+  cursor: pointer;
+  transition: color 0.3s, text-decoration 0.3s;
+}
+
+.train-list-username:hover {
+  color: #1976d2;
+  text-decoration: underline;
 }
 
 .train-list-divider {

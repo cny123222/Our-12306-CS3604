@@ -61,6 +61,10 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false, username, o
     }
   };
 
+  const handleUsernameClick = () => {
+    navigate('/personal-info');
+  };
+
   return (
     <div className="home-top-bar">
       <div className="home-top-bar-container">
@@ -106,7 +110,7 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ isLoggedIn = false, username, o
           ) : (
             <>
               <span className="home-welcome-text">您好，</span>
-              <span className="home-username">{username}</span>
+              <span className="home-username" onClick={handleUsernameClick}>{username}</span>
               <span className="home-divider">|</span>
               <button className="home-logout-button" onClick={handleLogout}>退出</button>
             </>
