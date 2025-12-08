@@ -66,16 +66,16 @@
   flex-shrink: 0 !important;
 }
 
-/* 选择框统一宽度 */
-.register-form .form-input-container > .select-dropdown {
-  width: 350px;
-  min-width: 350px;
-  max-width: 350px;
-  flex-shrink: 0;
+/* 选择框统一宽度 - 增强特异性防止覆盖其他页面 */
+.register-page .register-content .register-form .form-input-container > .select-dropdown {
+  width: 350px !important;
+  min-width: 350px !important;
+  max-width: 350px !important;
+  flex-shrink: 0 !important;
 }
 
-/* 注册页面下拉框显示框样式 - 方角设计 */
-.register-form .form-input-container .select-dropdown .selected-value-display {
+/* 注册页面下拉框显示框样式 - 方角设计，增强特异性 */
+.register-page .register-content .register-form .form-input-container .select-dropdown .selected-value-display {
   height: 36px !important;
   line-height: 36px !important;
   border: 1px solid #b8b8b8 !important;
@@ -86,24 +86,24 @@
   text-align: left !important; /* 确保文字左对齐，覆盖全局居中样式 */
 }
 
-.register-form .form-input-container .select-dropdown:not(.disabled) .selected-value-display:hover {
+.register-page .register-content .register-form .form-input-container .select-dropdown:not(.disabled) .selected-value-display:hover {
   border-color: #40a9ff !important;
   text-align: left !important; /* 保持左对齐 */
 }
 
-.register-form .form-input-container .select-dropdown.expanded .selected-value-display {
+.register-page .register-content .register-form .form-input-container .select-dropdown.expanded .selected-value-display {
   border-color: #40a9ff !important;
   box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1) !important;
   text-align: left !important; /* 保持左对齐 */
 }
 
-/* 下拉菜单选项列表 - 方角设计 */
-.register-form .form-input-container .select-dropdown .options-list {
+/* 下拉菜单选项列表 - 方角设计，增强特异性 */
+.register-page .register-content .register-form .form-input-container .select-dropdown .options-list {
   border-radius: 0px !important;
 }
 
-/* 注册页面下拉框选项文字左对齐 */
-.register-form .form-input-container .select-dropdown .option {
+/* 注册页面下拉框选项文字左对齐，增强特异性 */
+.register-page .register-content .register-form .form-input-container .select-dropdown .option {
   text-align: left !important;
 }
 
@@ -194,20 +194,20 @@
 }
 
 /* 手机号码区域 */
-.register-form .phone-input-wrapper {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  width: 350px;
+.register-page .register-content .register-form .phone-input-wrapper {
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+  width: 350px !important;
 }
 
-.register-form .phone-country-select {
-  width: 110px;
-  flex-shrink: 0;
+.register-page .register-content .register-form .phone-country-select {
+  width: 110px !important;
+  flex-shrink: 0 !important;
 }
 
-/* 手机号码区域下拉框样式 - 方角设计 */
-.register-form .phone-country-select .select-dropdown .selected-value-display {
+/* 手机号码区域下拉框样式 - 方角设计，增强特异性 */
+.register-page .register-content .register-form .phone-country-select .select-dropdown .selected-value-display {
   height: 36px !important;
   line-height: 36px !important;
   border: 1px solid #b8b8b8 !important;
@@ -218,18 +218,18 @@
   text-align: left !important; /* 确保文字左对齐，覆盖全局居中样式 */
 }
 
-.register-form .phone-country-select .select-dropdown:not(.disabled) .selected-value-display:hover {
+.register-page .register-content .register-form .phone-country-select .select-dropdown:not(.disabled) .selected-value-display:hover {
   border-color: #40a9ff !important;
   text-align: left !important; /* 保持左对齐 */
 }
 
-/* 手机号下拉菜单选项列表 - 方角设计 */
-.register-form .phone-country-select .select-dropdown .options-list {
+/* 手机号下拉菜单选项列表 - 方角设计，增强特异性 */
+.register-page .register-content .register-form .phone-country-select .select-dropdown .options-list {
   border-radius: 0px !important;
 }
 
-/* 手机号下拉框选项文字左对齐 */
-.register-form .phone-country-select .select-dropdown .option {
+/* 手机号下拉框选项文字左对齐，增强特异性 */
+.register-page .register-content .register-form .phone-country-select .select-dropdown .option {
   text-align: left !important;
 }
 
@@ -329,9 +329,9 @@
   line-height: 1.5;
 }
 
-/* 选择框样式覆盖（针对SelectDropdown） */
-.register-form .form-row .select-dropdown {
-  width: 100%;
+/* 选择框样式覆盖（针对SelectDropdown），增强特异性 */
+.register-page .register-content .register-form .form-row .select-dropdown {
+  width: 100% !important;
 }
 
 /* 响应式适配 */
