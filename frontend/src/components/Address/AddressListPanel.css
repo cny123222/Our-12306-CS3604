@@ -6,7 +6,7 @@
 }
 
 /* Table Header */
-.address-table-header {
+.address-list-panel .address-table-header {
   display: flex;
   height: 40px; /* User requirement */
   background-color: #f8f8f8;
@@ -16,20 +16,20 @@
   color: #666;
 }
 
-.header-item {
+.address-list-panel .header-item {
   text-align: center;
   padding: 0 10px;
 }
 
-.header-item.index { width: 80px; }
-.header-item.recipient { width: 150px; }
-.header-item.address { flex: 1; }
-.header-item.phone { width: 150px; }
-.header-item.is-default { width: 100px; }
-.header-item.action { width: 100px; }
+.address-list-panel .header-item.index { width: 80px; }
+.address-list-panel .header-item.recipient { width: 150px; }
+.address-list-panel .header-item.address { flex: 1; }
+.address-list-panel .header-item.phone { width: 150px; }
+.address-list-panel .header-item.is-default { width: 100px; }
+.address-list-panel .header-item.action { width: 100px; }
 
 /* Add Button Row */
-.add-address-row {
+.address-list-panel .add-address-row {
   height: 40px;
   border: 1px solid #cce5ff; /* Light blue border */
   background-color: #f0f8ff; /* Light blue background */
@@ -40,12 +40,12 @@
   border-top: none; /* Merge with header border if needed, but header has border. */
 }
 
-.address-list {
+.address-list-panel .address-list {
   border-left: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
 }
 
-.address-row {
+.address-list-panel .address-row {
   display: flex;
   height: 60px; /* Slightly taller for multi-line address if needed, or 40px */
   align-items: center;
@@ -55,11 +55,11 @@
   background-color: #fff;
 }
 
-.address-row:hover {
+.address-list-panel .address-row:hover {
   background-color: #f5f5f5;
 }
 
-.row-item {
+.address-list-panel .row-item {
   text-align: center;
   padding: 0 10px;
   overflow: hidden;
@@ -67,9 +67,9 @@
   white-space: nowrap;
 }
 
-.row-item.index { width: 80px; }
-.row-item.recipient { width: 150px; }
-.row-item.address-detail { 
+.address-list-panel .row-item.index { width: 80px; }
+.address-list-panel .row-item.recipient { width: 150px; }
+.address-list-panel .row-item.address-detail { 
   flex: 1; 
   text-align: left; 
   white-space: normal;
@@ -79,11 +79,11 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
 }
-.row-item.phone { width: 150px; }
-.row-item.is-default { width: 100px; }
-.row-item.action { width: 100px; display: flex; justify-content: center; gap: 15px; }
+.address-list-panel .row-item.phone { width: 150px; }
+.address-list-panel .row-item.is-default { width: 100px; }
+.address-list-panel .row-item.action { width: 100px; display: flex; justify-content: center; gap: 15px; }
 
-.default-tag {
+.address-list-panel .default-tag {
   color: #0078d7;
   cursor: pointer;
   border: 1px solid #0078d7;
@@ -92,16 +92,16 @@
   font-size: 12px;
 }
 
-.set-default-btn {
+.address-list-panel .set-default-btn {
   color: #333;
   cursor: pointer;
 }
 
-.set-default-btn:hover {
+.address-list-panel .set-default-btn:hover {
   color: #0078d7;
 }
 
-.icon-btn {
+.address-list-panel .icon-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -112,15 +112,15 @@
   justify-content: center;
 }
 
-.delete-btn {
+.address-list-panel .delete-btn {
   color: #ff5757;
 }
 
-.edit-btn {
+.address-list-panel .edit-btn {
   color: #0078d7;
 }
 
-.add-address-btn {
+.address-list-panel .add-address-btn {
   background: none;
   border: none;
   color: #333;
@@ -131,32 +131,32 @@
   gap: 5px;
 }
 
-.add-address-btn:hover {
+.address-list-panel .add-address-btn:hover {
   color: #0078d7;
 }
 
-.plus-icon {
+.address-list-panel .plus-icon {
   color: #28a745; /* Green color for plus icon */
   font-size: 18px;
   font-weight: bold;
 }
 
 /* Warm Tips */
-.warm-tips-section {
+.address-list-panel .warm-tips-section {
   margin-top: 20px;
   border: 1px solid #ffccaa; /* Orange border */
   background-color: #fffdf5; /* Light orange background */
   padding: 15px 20px;
 }
 
-.tips-title {
+.address-list-panel .tips-title {
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
   font-size: 14px;
 }
 
-.tips-content p {
+.address-list-panel .tips-content p {
   margin: 5px 0;
   font-size: 12px;
   color: #333;
