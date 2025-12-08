@@ -19,9 +19,6 @@ const ForgotPasswordPage: React.FC = () => {
     setIsLoggedIn(!!token);
   }, []);
 
-  const handleNavigateToHome = () => {
-    navigate('/');
-  };
 
   const handleNavigateToLogin = () => {
     navigate('/login');
@@ -109,4 +106,3 @@ const ForgotPasswordPage: React.FC = () => {
 };
 
 export default ForgotPasswordPage;
-

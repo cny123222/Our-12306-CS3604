@@ -1,0 +1,22 @@
+.address-management-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+
+.address-management-page .main-content {
+  display: flex;
+  width: 1200px;
+  margin: 20px auto;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.address-management-page .content-area {
+  flex: 1;
+  background: white;
+  border: 1px solid #ddd;
+  min-height: 600px;
+  padding: 20px;
+}

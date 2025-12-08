@@ -1,7 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const dbPath = path.resolve(__dirname, '../../database/railway.db');
+const dbPath = process.env.NODE_ENV === 'test'
+  ? (process.env.TEST_DB_PATH || path.resolve(__dirname, '../../test/test.db'))
+  : (process.env.DB_PATH || path.resolve(__dirname, '../../database/railway.db'));
 
 function cleanupOldCancellations() {
   const db = new sqlite3.Database(dbPath);
@@ -21,21 +23,18 @@ function cleanupOldCancellations() {
   );
 }
 
-// Run cleanup once when service starts
-cleanupOldCancellations();
-
-// Run cleanup daily at 1 AM
-const now = new Date();
-const tomorrow1AM = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 1, 0, 0);
-const msUntilTomorrow1AM = tomorrow1AM - now;
-
-setTimeout(() => {
+if (process.env.NODE_ENV !== 'test') {
   cleanupOldCancellations();
-  // Then run every 24 hours
-  setInterval(cleanupOldCancellations, 24 * 60 * 60 * 1000);
-}, msUntilTomorrow1AM);
-
-console.log('✓ 取消记录清理服务已启动');
+  const now = new Date();
+  const tomorrow1AM = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 1, 0, 0);
+  const msUntilTomorrow1AM = tomorrow1AM - now;
+  const timeoutHandle = setTimeout(() => {
+    cleanupOldCancellations();
+    const intervalHandle = setInterval(cleanupOldCancellations, 24 * 60 * 60 * 1000);
+    if (intervalHandle.unref) intervalHandle.unref();
+  }, msUntilTomorrow1AM);
+  if (timeoutHandle.unref) timeoutHandle.unref();
+  console.log('✓ 取消记录清理服务已启动');
+}
 
 module.exports = { cleanupOldCancellations };
-

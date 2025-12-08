@@ -3,7 +3,23 @@
  * 支持城市级查询
  */
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const CANDIDATE_BASES = ['/api', 'http://localhost:3000/api', 'http://localhost:3100/api']
+let API_BASE: string | null = null
+async function apiFetch(path: string, init?: RequestInit) {
+  const bases = API_BASE ? [API_BASE] : CANDIDATE_BASES
+  let lastRes: Response | null = null
+  for (const base of bases) {
+    try {
+      const res = await fetch(`${base}${path}`, init)
+      lastRes = res
+      if (res.status !== 404) {
+        API_BASE = base
+        return res
+      }
+    } catch {}
+  }
+  return lastRes ?? fetch(`${CANDIDATE_BASES[0]}${path}`, init)
+}
 
 export interface Station {
   stationName: string;
@@ -31,7 +47,7 @@ export interface CityValidationResult {
  */
 export const getAllStations = async (): Promise<Station[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/stations`, {
+    const response = await apiFetch(`/stations`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +71,7 @@ export const getAllStations = async (): Promise<Station[]> => {
  */
 export const searchStations = async (keyword: string): Promise<Station[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/stations?keyword=${encodeURIComponent(keyword)}`, {
+    const response = await apiFetch(`/stations?keyword=${encodeURIComponent(keyword)}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +95,7 @@ export const searchStations = async (keyword: string): Promise<Station[]> => {
  */
 export const validateStation = async (stationName: string): Promise<ValidationResult> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/stations/validate`, {
+    const response = await apiFetch(`/stations/validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -116,7 +132,7 @@ export const validateStation = async (stationName: string): Promise<ValidationRe
  */
 export const getAllCities = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/trains/cities`, {
+    const response = await apiFetch(`/trains/cities`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -140,7 +156,7 @@ export const getAllCities = async (): Promise<string[]> => {
  */
 export const getStationsByCity = async (cityName: string): Promise<string[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/trains/cities/${encodeURIComponent(cityName)}/stations`, {
+    const response = await apiFetch(`/trains/cities/${encodeURIComponent(cityName)}/stations`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -195,7 +211,7 @@ export const validateCity = async (cityName: string): Promise<CityValidationResu
  */
 export const getCityByStation = async (stationName: string): Promise<string | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/trains/stations/${encodeURIComponent(stationName)}/city`, {
+    const response = await apiFetch(`/trains/stations/${encodeURIComponent(stationName)}/city`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -213,4 +229,3 @@ export const getCityByStation = async (stationName: string): Promise<string | nu
     return null;
   }
 };
-

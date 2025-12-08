@@ -133,7 +133,12 @@ const SideMenu = ({ currentSection, onMenuClick }: SideMenuProps) => {
             >
               乘车人
             </div>
-            <div className="menu-item disabled">地址管理</div>
+            <div
+              className={`menu-item ${selectedItem === 'address' ? 'selected' : ''}`}
+              onClick={() => handleClick('address')}
+            >
+              地址管理
+            </div>
           </div>
         )}
       </div>
