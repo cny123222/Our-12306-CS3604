@@ -13,13 +13,14 @@ const passengersRoutes = require('./routes/passengers');
 const userInfoRoutes = require('./routes/userInfo');
 const paymentRoutes = require('./routes/payment');
 const passwordResetRoutes = require('./routes/passwordReset');
+const addressesRoutes = require('./routes/addresses');
 const { startCleanupScheduler } = require('./services/pendingOrderCleanupService');
 const trainCleanupService = require('./services/trainCleanupService');
 const cancellationCleanupService = require('./services/cancellationCleanupService');
 const { generateDay15Trains } = require('../database/generate-daily-trains');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3100;
 
 // Middleware
 app.use(helmet());
@@ -39,6 +40,7 @@ app.use('/api/passengers', passengersRoutes);
 app.use('/api/user', userInfoRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/password-reset', passwordResetRoutes);
+app.use('/api/addresses', addressesRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -128,6 +128,9 @@ const PassengerManagementPage = () => {
       case 'passengers':
         // 已在当前页面
         break;
+      case 'address':
+        navigate('/address');
+        break;
     }
   };
 

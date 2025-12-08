@@ -107,6 +107,9 @@ const OrderHistoryPage = () => {
       case 'passengers':
         navigate('/passengers');
         break;
+      case 'address':
+        navigate('/address');
+        break;
     }
   };
 

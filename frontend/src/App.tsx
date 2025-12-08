@@ -8,9 +8,13 @@ import OrderPage from './pages/OrderPage'
 import PersonalInfoPage from './pages/PersonalInfoPage'
 import PhoneVerificationPage from './pages/PhoneVerificationPage'
 import PassengerManagementPage from './pages/PassengerManagementPage'
+import AddressManagementPage from './pages/AddressManagementPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
 import PaymentPage from './pages/PaymentPage'
 import SuccessfulPurchasePage from './pages/SuccessfulPurchasePage'
+import CateringPage from './pages/CateringPage'
+import CateringReservationPage from './pages/CateringReservationPage'
+import CateringVendorPage from './pages/CateringVendorPage'
 import './App.css'
 
 function App() {
@@ -26,9 +30,13 @@ function App() {
         <Route path="/personal-info" element={<PersonalInfoPage />} />
         <Route path="/phone-verification" element={<PhoneVerificationPage />} />
         <Route path="/passengers" element={<PassengerManagementPage />} />
+        <Route path="/address" element={<AddressManagementPage />} />
         <Route path="/orders" element={<OrderHistoryPage />} />
         <Route path="/payment/:orderId" element={<PaymentPage />} />
         <Route path="/purchase-success/:orderId" element={<SuccessfulPurchasePage />} />
+        <Route path="/catering" element={<CateringPage />} />
+        <Route path="/catering/reserve" element={<CateringReservationPage />} />
+        <Route path="/catering/vendor" element={<CateringVendorPage />} />
       </Routes>
     </div>
   )

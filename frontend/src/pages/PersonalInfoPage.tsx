@@ -133,6 +133,9 @@ const PersonalInfoPage = () => {
       case 'passengers':
         navigate('/passengers');
         break;
+      case 'address':
+        navigate('/address');
+        break;
       default:
         break;
     }
