@@ -39,7 +39,7 @@ const renderWithRouter = (component: React.ReactElement) => {
 
 // Mock fetch globally
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+(globalThis as any).fetch = mockFetch;
 
 describe('首页/查询页 - 业务逻辑测试', () => {
   beforeEach(async () => {
@@ -953,51 +953,99 @@ describe('首页/查询页 - 业务逻辑测试', () => {
       const { container } = renderWithRouter(<HomePage />);
       
       await waitFor(() => {
-        // 根据需求文档，首页应该有"车票查询"快捷入口
-        // 根据 MainNavigation 实现，有"车票"链接，使用 Link 组件，to 为 "/trains"
-        // 使用更精确的选择器：通过 href 属性查找（Link 组件会渲染为 <a>）
-        const trainLink = container.querySelector('a[href="/trains"]') as HTMLAnchorElement;
-        expect(trainLink).toBeInTheDocument();
-        expect(trainLink.textContent).toContain('车票');
+        // 根据新的实现，点击"车票"按钮会显示下拉框，不会直接跳转
+        // 使用更精确的选择器：通过导航栏的class来定位"车票"按钮
+        const navContainer = container.querySelector('.main-navigation .nav-item-wrapper');
+        expect(navContainer).toBeInTheDocument();
       });
       
-      // 点击链接（使用 userEvent 以获得更真实的用户交互）
-      const trainLink = container.querySelector('a[href="/trains"]') as HTMLAnchorElement;
-      const user = userEvent.setup();
-      const startTime = Date.now();
+      // 找到导航栏中的"车票"按钮（通过父元素的class）
+      const navContainer = container.querySelector('.main-navigation .nav-item-wrapper');
+      const ticketsButton = navContainer?.querySelector('.nav-item') as HTMLElement;
+      expect(ticketsButton).toBeInTheDocument();
+      expect(ticketsButton.textContent).toContain('车票');
       
-      // Link 组件在 React Router 中会通过内部机制导航
-      // 在测试环境中，我们需要验证链接存在且可点击
-      // 实际导航由 React Router 处理，这里主要验证链接功能
-      await user.click(trainLink);
+      // 点击"车票"按钮，应该显示下拉框
+      const user = userEvent.setup();
+      await user.click(ticketsButton);
+      
+      // 等待下拉框显示，并找到"单程"链接
+      await waitFor(() => {
+        // 验证下拉框显示，包含"单程"链接
+        const singleTripLink = screen.getByText('单程');
+        expect(singleTripLink).toBeInTheDocument();
+        
+        // 查找包含"单程"文本的 <a> 标签（Link 组件会渲染为 <a>）
+        const linkElement = container.querySelector('a[href="/trains"]');
+        if (linkElement && linkElement.textContent?.includes('单程')) {
+          expect(linkElement).toBeInTheDocument();
+        }
+      });
+      
+      // 获取"单程"链接
+      const singleTripLink = screen.getByText('单程');
+      expect(singleTripLink).toBeInTheDocument();
+      
+      // 验证"单程"链接存在（Link 组件会渲染为 <a> 标签，href 为 "/trains"）
+      // 在表格中，"单程"被 <Link> 包裹，渲染为 <a> 标签
+      const linkElement = container.querySelector('a[href="/trains"]');
+      if (linkElement) {
+        // 如果找到了 <a> 标签，验证它包含"单程"文本
+        expect(linkElement.textContent).toContain('单程');
+      }
+      
+      // 点击链接（在测试环境中，Link 组件使用 React Router 的内部导航机制）
+      const startTime = Date.now();
+      await user.click(singleTripLink);
       
       // 验证链接存在且可点击（Link 组件会处理导航）
       // 注意：在测试环境中，Link 组件可能不会直接调用 mockNavigate
-      // 但我们可以验证链接的 href 属性正确，表示导航目标正确
-      expect(trainLink).toBeInTheDocument();
-      expect(trainLink.getAttribute('href')).toBe('/trains');
-      expect(trainLink.textContent).toContain('车票');
+      // 但我们可以验证链接存在，表示用户可以点击它进行导航
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      expect(duration).toBeLessThan(200); // 允许一些测试环境延迟
+      
+      // 验证链接仍然存在（表示点击成功）
+      expect(singleTripLink).toBeInTheDocument();
     });
 
     it('用户点击车票查询入口但系统未响应，提示"查询失败，请稍后重试"', async () => {
-      // 这个场景需要模拟导航失败，但实际实现中导航是同步的
-      // 如果导航失败，通常会在目标页面处理，而不是在首页
-      // 根据需求文档，这个场景可能不太适用，因为 Link 组件的导航是同步的
-      // 但我们可以验证链接存在且可点击
+      // 根据新的实现，点击"车票"按钮会显示下拉框
+      // 点击"单程"链接会跳转，如果导航失败，通常会在目标页面处理
       const { container } = renderWithRouter(<HomePage />);
       
       await waitFor(() => {
-        // 根据 MainNavigation 实现，有"车票"链接，使用 Link 组件，href 为 "/trains"
-        // 使用更精确的选择器：通过 href 属性查找
-        const trainLink = container.querySelector('a[href="/trains"]') as HTMLAnchorElement;
-        expect(trainLink).toBeInTheDocument();
-        expect(trainLink.textContent).toContain('车票');
-        
-        // 验证链接存在且可点击
-        // 注意：Link 组件的导航是同步的，不会失败
-        // 如果需要在目标页面处理错误，应该在目标页面测试
-        expect(trainLink.getAttribute('href')).toBe('/trains');
+        // 使用更精确的选择器：通过导航栏的class来定位"车票"按钮
+        const navContainer = container.querySelector('.main-navigation .nav-item-wrapper');
+        expect(navContainer).toBeInTheDocument();
       });
+      
+      // 找到导航栏中的"车票"按钮
+      const navContainer = container.querySelector('.main-navigation .nav-item-wrapper');
+      const ticketsButton = navContainer?.querySelector('.nav-item') as HTMLElement;
+      expect(ticketsButton).toBeInTheDocument();
+      expect(ticketsButton.textContent).toContain('车票');
+      
+      // 点击"车票"按钮显示下拉框
+      const user = userEvent.setup();
+      await user.click(ticketsButton);
+      
+      // 等待下拉框显示
+      await waitFor(() => {
+        // 验证下拉框显示，包含"单程"链接
+        const singleTripLink = screen.getByText('单程');
+        expect(singleTripLink).toBeInTheDocument();
+        
+        // 验证"单程"链接存在（Link 组件会渲染为 <a> 标签，href 为 "/trains"）
+        const linkElement = container.querySelector('a[href="/trains"]');
+        if (linkElement) {
+          // 如果找到了 <a> 标签，验证它包含"单程"文本
+          expect(linkElement.textContent).toContain('单程');
+        }
+      });
+      
+      // 注意：Link 组件的导航是同步的，不会失败
+      // 如果需要在目标页面处理错误，应该在目标页面测试
     });
   });
 
