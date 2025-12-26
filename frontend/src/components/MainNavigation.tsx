@@ -38,6 +38,20 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
     setActiveDropdown(null);
   };
 
+  const handleTicketsClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // 切换下拉框显示状态
+    setActiveDropdown(activeDropdown === 'tickets' ? null : 'tickets');
+  };
+
+  const handleDropdownClick = (e: React.MouseEvent, dropdownName: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // 切换下拉框显示状态
+    setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
+  };
+
   return (
     <nav className="main-navigation">
       <div className="nav-container">
@@ -49,7 +63,11 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           onMouseEnter={() => handleMouseEnter('tickets')}
           onMouseLeave={handleMouseLeave}
         >
-          <Link to="/trains" className={`nav-item ${isTrainsPage ? 'active' : ''}`}>
+          <div 
+            className={`nav-item ${isTrainsPage ? 'active' : ''}`}
+            onClick={handleTicketsClick}
+            style={{ cursor: 'pointer' }}
+          >
             车票
             <svg 
               className={`nav-arrow-icon ${activeDropdown === 'tickets' ? 'rotated' : ''}`}
@@ -66,7 +84,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-          </Link>
+          </div>
         </div>
         
         {/* 下拉菜单放在nav-container级别 */}
@@ -258,12 +276,16 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           onMouseEnter={() => handleMouseEnter('group')}
           onMouseLeave={handleMouseLeave}
         >
-          <a href="#" className="nav-item">
+          <div 
+            className="nav-item"
+            onClick={(e) => handleDropdownClick(e, 'group')}
+            style={{ cursor: 'pointer' }}
+          >
             团购服务
             <svg className={`nav-arrow-icon ${activeDropdown === 'group' ? 'rotated' : ''}`} width="10" height="10" viewBox="0 0 10 10">
               <polyline points="2,3 5,6 8,3" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </div>
         </div>
 
         {/* 会员服务 */}
@@ -272,12 +294,16 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           onMouseEnter={() => handleMouseEnter('member')}
           onMouseLeave={handleMouseLeave}
         >
-          <a href="#" className="nav-item">
+          <div 
+            className="nav-item"
+            onClick={(e) => handleDropdownClick(e, 'member')}
+            style={{ cursor: 'pointer' }}
+          >
             会员服务
             <svg className={`nav-arrow-icon ${activeDropdown === 'member' ? 'rotated' : ''}`} width="10" height="10" viewBox="0 0 10 10">
               <polyline points="2,3 5,6 8,3" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </div>
         </div>
 
         {/* 站车服务 */}
@@ -286,12 +312,16 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           onMouseEnter={() => handleMouseEnter('station')}
           onMouseLeave={handleMouseLeave}
         >
-          <a href="#" className="nav-item">
+          <div 
+            className="nav-item"
+            onClick={(e) => handleDropdownClick(e, 'station')}
+            style={{ cursor: 'pointer' }}
+          >
             站车服务
             <svg className={`nav-arrow-icon ${activeDropdown === 'station' ? 'rotated' : ''}`} width="10" height="10" viewBox="0 0 10 10">
               <polyline points="2,3 5,6 8,3" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </div>
         </div>
 
         {/* 商旅服务 */}
@@ -300,12 +330,16 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           onMouseEnter={() => handleMouseEnter('business')}
           onMouseLeave={handleMouseLeave}
         >
-          <a href="#" className="nav-item">
+          <div 
+            className="nav-item"
+            onClick={(e) => handleDropdownClick(e, 'business')}
+            style={{ cursor: 'pointer' }}
+          >
             商旅服务
             <svg className={`nav-arrow-icon ${activeDropdown === 'business' ? 'rotated' : ''}`} width="10" height="10" viewBox="0 0 10 10">
               <polyline points="2,3 5,6 8,3" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </div>
         </div>
 
         {/* 出行指南 */}
@@ -314,12 +348,16 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           onMouseEnter={() => handleMouseEnter('guide')}
           onMouseLeave={handleMouseLeave}
         >
-          <a href="#" className="nav-item">
+          <div 
+            className="nav-item"
+            onClick={(e) => handleDropdownClick(e, 'guide')}
+            style={{ cursor: 'pointer' }}
+          >
             出行指南
             <svg className={`nav-arrow-icon ${activeDropdown === 'guide' ? 'rotated' : ''}`} width="10" height="10" viewBox="0 0 10 10">
               <polyline points="2,3 5,6 8,3" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </div>
         </div>
 
         {/* 信息查询 */}
@@ -328,12 +366,16 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           onMouseEnter={() => handleMouseEnter('info')}
           onMouseLeave={handleMouseLeave}
         >
-          <a href="#" className="nav-item">
+          <div 
+            className="nav-item"
+            onClick={(e) => handleDropdownClick(e, 'info')}
+            style={{ cursor: 'pointer' }}
+          >
             信息查询
             <svg className={`nav-arrow-icon ${activeDropdown === 'info' ? 'rotated' : ''}`} width="10" height="10" viewBox="0 0 10 10">
               <polyline points="2,3 5,6 8,3" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </div>
         </div>
       </div>
     </nav>
