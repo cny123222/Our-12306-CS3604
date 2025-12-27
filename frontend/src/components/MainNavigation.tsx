@@ -41,15 +41,15 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
   const handleTicketsClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // 切换下拉框显示状态
-    setActiveDropdown(activeDropdown === 'tickets' ? null : 'tickets');
+    // 点击只能打开下拉框，不会关闭（关闭只通过鼠标移出）
+    setActiveDropdown('tickets');
   };
 
   const handleDropdownClick = (e: React.MouseEvent, dropdownName: string) => {
     e.preventDefault();
     e.stopPropagation();
-    // 切换下拉框显示状态
-    setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
+    // 点击只能打开下拉框，不会关闭（关闭只通过鼠标移出）
+    setActiveDropdown(dropdownName);
   };
 
   return (
