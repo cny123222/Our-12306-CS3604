@@ -970,29 +970,22 @@ describe('首页/查询页 - 业务逻辑测试', () => {
       await user.click(ticketsButton);
       
       // 等待下拉框显示，并找到"单程"链接
+      // 使用更精确的选择器定位导航下拉菜单中的"单程"链接，避免与搜索表单中的"单程"冲突
       await waitFor(() => {
-        // 验证下拉框显示，包含"单程"链接
-        const singleTripLink = screen.getByText('单程');
-        expect(singleTripLink).toBeInTheDocument();
+        // 通过下拉菜单容器来定位"单程"链接
+        const dropdownMenu = container.querySelector('.main-nav-dropdown');
+        expect(dropdownMenu).toBeInTheDocument();
         
-        // 查找包含"单程"文本的 <a> 标签（Link 组件会渲染为 <a>）
-        const linkElement = container.querySelector('a[href="/trains"]');
-        if (linkElement && linkElement.textContent?.includes('单程')) {
-          expect(linkElement).toBeInTheDocument();
-        }
+        // 查找下拉菜单中包含"单程"文本的 <a> 标签（Link 组件会渲染为 <a>）
+        const linkElement = container.querySelector('.main-nav-dropdown a[href="/trains"]');
+        expect(linkElement).toBeInTheDocument();
+        expect(linkElement?.textContent).toContain('单程');
       });
       
-      // 获取"单程"链接
-      const singleTripLink = screen.getByText('单程');
+      // 获取下拉菜单中的"单程"链接（通过精确的 CSS 选择器）
+      const singleTripLink = container.querySelector('.main-nav-dropdown a[href="/trains"]') as HTMLElement;
       expect(singleTripLink).toBeInTheDocument();
-      
-      // 验证"单程"链接存在（Link 组件会渲染为 <a> 标签，href 为 "/trains"）
-      // 在表格中，"单程"被 <Link> 包裹，渲染为 <a> 标签
-      const linkElement = container.querySelector('a[href="/trains"]');
-      if (linkElement) {
-        // 如果找到了 <a> 标签，验证它包含"单程"文本
-        expect(linkElement.textContent).toContain('单程');
-      }
+      expect(singleTripLink.textContent).toContain('单程');
       
       // 点击链接（在测试环境中，Link 组件使用 React Router 的内部导航机制）
       const startTime = Date.now();
@@ -1004,9 +997,6 @@ describe('首页/查询页 - 业务逻辑测试', () => {
       const endTime = Date.now();
       const duration = endTime - startTime;
       expect(duration).toBeLessThan(200); // 允许一些测试环境延迟
-      
-      // 验证链接仍然存在（表示点击成功）
-      expect(singleTripLink).toBeInTheDocument();
     });
 
     it('用户点击车票查询入口但系统未响应，提示"查询失败，请稍后重试"', async () => {
@@ -1032,16 +1022,14 @@ describe('首页/查询页 - 业务逻辑测试', () => {
       
       // 等待下拉框显示
       await waitFor(() => {
-        // 验证下拉框显示，包含"单程"链接
-        const singleTripLink = screen.getByText('单程');
-        expect(singleTripLink).toBeInTheDocument();
+        // 通过下拉菜单容器来定位"单程"链接
+        const dropdownMenu = container.querySelector('.main-nav-dropdown');
+        expect(dropdownMenu).toBeInTheDocument();
         
         // 验证"单程"链接存在（Link 组件会渲染为 <a> 标签，href 为 "/trains"）
-        const linkElement = container.querySelector('a[href="/trains"]');
-        if (linkElement) {
-          // 如果找到了 <a> 标签，验证它包含"单程"文本
-          expect(linkElement.textContent).toContain('单程');
-        }
+        const linkElement = container.querySelector('.main-nav-dropdown a[href="/trains"]');
+        expect(linkElement).toBeInTheDocument();
+        expect(linkElement?.textContent).toContain('单程');
       });
       
       // 注意：Link 组件的导航是同步的，不会失败
