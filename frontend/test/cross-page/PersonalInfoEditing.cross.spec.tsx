@@ -150,19 +150,6 @@ describe('个人信息编辑流程跨页测试', () => {
       }, { timeout: 3000 });
     });
 
-    // 注意：根据 ContactInfoSection 的实现，邮箱不支持直接编辑
-    // 编辑按钮只用于编辑手机号，会显示"去手机核验修改"链接
-    // 因此跳过邮箱编辑流程测试
-    it.skip('应该能够完成邮箱编辑流程', async () => {
-      // ContactInfoSection 不支持直接编辑邮箱
-      // 邮箱编辑功能可能需要在其他页面实现
-    });
-
-    // 注意：ContactInfoSection 不支持直接编辑邮箱，因此跳过邮箱格式验证测试
-    it.skip('应该验证邮箱格式', async () => {
-      // ContactInfoSection 不支持直接编辑邮箱
-    });
-
     it('应该能够取消联系方式编辑', async () => {
       const user = userEvent.setup();
       

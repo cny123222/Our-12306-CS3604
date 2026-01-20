@@ -61,44 +61,6 @@ describe('跨页流程：登录页 → 注册页', () => {
     expect(screen.getByPlaceholderText(/6-20位字母、数字或符号/i)).toBeInTheDocument()
   })
 
-  it.skip('应该能从顶部导航栏的"注册"链接导航到注册页（可选功能）', async () => {
-    const user = userEvent.setup()
-
-    await renderWithRouter({
-      initialEntries: ['/login'],
-      routes: [
-        { path: '/login', element: <LoginPage /> },
-        { path: '/register', element: <RegisterPage /> },
-      ],
-    })
-
-    // 验证当前在登录页
-    await waitFor(() => {
-      expect(screen.getByText(/账号登录/i)).toBeInTheDocument()
-    })
-
-    // 找到顶部导航栏的注册链接（直接查找链接）
-    const topNavRegisterLinks = screen.getAllByText(/注册/i)
-    // 过滤出真正的链接元素（不包括按钮中的"注册"）
-    const registerLink = topNavRegisterLinks.find(el => {
-      return el.tagName === 'A' && el.closest('.welcome-section')
-    })
-    
-    if (registerLink) {
-      await act(async () => {
-        await user.click(registerLink)
-      })
-
-      // 等待导航完成
-      await waitFor(() => {
-        expect(screen.getByText(/账户信息/i)).toBeInTheDocument()
-      }, { timeout: 3000 })
-    } else {
-      // 如果找不到，跳过此测试（可能顶部导航栏的实现不同）
-      console.log('顶部导航栏注册链接未找到，跳过测试')
-    }
-  })
-
   it('注册页应该显示所有必填字段标记', async () => {
     await renderWithRouter({
       initialEntries: ['/register'],
