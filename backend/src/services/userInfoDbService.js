@@ -227,7 +227,7 @@ async function getUserOrders(userId, options = {}) {
     const ordersWithPassengers = await Promise.all(orders.map(async (order) => {
       // 查询该订单的乘客信息和座位信息
       const passengersSql = `
-        SELECT passenger_name, seat_type, seat_number, car_number, ticket_type
+        SELECT passenger_name, seat_type, seat_number, car_number, ticket_type, id_card_type, price
         FROM order_details
         WHERE order_id = ?
       `;
@@ -351,7 +351,7 @@ async function searchOrders(userId, searchCriteria) {
     const ordersWithPassengers = await Promise.all(orders.map(async (order) => {
       // 查询该订单的乘客信息和座位信息
       const passengersSql = `
-        SELECT passenger_name, seat_type, seat_number, car_number, ticket_type
+        SELECT passenger_name, seat_type, seat_number, car_number, ticket_type, id_card_type, price
         FROM order_details
         WHERE order_id = ?
       `;

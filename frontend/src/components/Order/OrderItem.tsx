@@ -52,11 +52,19 @@ const OrderItem: React.FC<OrderItemProps> = ({
         seat_type: order.seat_type || '二等座',
         seat_number: order.seat_number || null,
         car_number: order.car_number || null,
-        ticket_type: order.ticket_type || '成人票'
+        ticket_type: order.ticket_type || '成人票',
+        price: order.total_price || 0
       }];
 
-  // 计算单价
-  const singlePrice = order.total_price / passengers.length;
+  // 获取乘客价格（优先使用乘客自己的价格，如果没有则计算平均价格作为回退）
+  const getPassengerPrice = (passenger: any) => {
+    // 如果乘客有单独的价格字段，使用它
+    if (passenger.price !== undefined && passenger.price !== null) {
+      return passenger.price;
+    }
+    // 回退：计算平均价格
+    return order.total_price / passengers.length;
+  };
 
   return (
     <div className="order-item">
@@ -116,7 +124,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
                 <div className="order-item-price-detail">
                   <div className="order-item-ticket-type">{passenger.ticket_type || '成人票'}</div>
                   <div className="order-item-price-amount">
-                    <span className="order-item-price-value">{singlePrice.toFixed(1)}元</span>
+                    <span className="order-item-price-value">{getPassengerPrice(passenger).toFixed(1)}元</span>
                     {order.discount && (
                       <span className="order-item-price-discount">{order.discount}</span>
                     )}

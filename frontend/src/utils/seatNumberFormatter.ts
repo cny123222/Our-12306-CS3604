@@ -83,7 +83,9 @@ export function formatFullSeatNumber(fullSeatNo: string, seatType: string): stri
   }
   
   const formattedSeat = formatSeatNumber(seatNo, seatType);
-  return `${carNo.padStart(2, '0')}车${formattedSeat}号`;
+  // 软卧和硬卧的formatSeatNumber已经包含"号"，不需要再加
+  const needsSuffix = seatType !== '软卧' && seatType !== '硬卧';
+  return `${carNo.padStart(2, '0')}车${formattedSeat}${needsSuffix ? '号' : ''}`;
 }
 
 /**
@@ -182,12 +184,16 @@ export function formatSeatInfoForDisplay(
   // 如果有独立的车厢号
   if (carNumber) {
     const formattedSeat = formatSeatNumber(seatNumber, seatType);
-    return `${String(carNumber).padStart(2, '0')}车${formattedSeat}号`;
+    // 软卧和硬卧的formatSeatNumber已经包含"号"，不需要再加
+    const needsSuffix = seatType !== '软卧' && seatType !== '硬卧';
+    return `${String(carNumber).padStart(2, '0')}车${formattedSeat}${needsSuffix ? '号' : ''}`;
   }
   
   // 只有座位号，没有车厢号
   const formattedSeat = formatSeatNumber(seatNumber, seatType);
-  return `${formattedSeat}号`;
+  // 软卧和硬卧的formatSeatNumber已经包含"号"，不需要再加
+  const needsSuffix = seatType !== '软卧' && seatType !== '硬卧';
+  return needsSuffix ? `${formattedSeat}号` : formattedSeat;
 }
 
 export default {

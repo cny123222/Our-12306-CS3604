@@ -170,31 +170,38 @@
   box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
 }
 
-/* 下拉框统一宽度和样式 */
+/* 下拉框统一宽度和样式 - 使用!important提高优先级 */
 .edit-passenger-input-container > .select-dropdown {
-  width: 300px;
-  flex-shrink: 0;
+  width: 300px !important;
+  flex-shrink: 0 !important;
 }
 
-/* 下拉框显示框样式 */
+/* 下拉框显示框样式 - 使用!important提高优先级 */
 .edit-passenger-input-container .select-dropdown .selected-value-display {
-  height: 36px;
-  line-height: 36px;
-  border: 1px solid #c5c5c5;
-  border-radius: 0px;
-  font-size: 14px;
-  padding: 0 28px 0 12px;
-  background-color: #fff;
-  width: 300px;
+  height: 36px !important;
+  line-height: 36px !important;
+  border: 1px solid #c5c5c5 !important;
+  border-radius: 0px !important;
+  font-size: 14px !important;
+  padding: 0 28px 0 12px !important;
+  background-color: #fff !important;
+  width: 300px !important;
+  text-align: left !important;
 }
 
 .edit-passenger-input-container .select-dropdown:not(.disabled) .selected-value-display:hover {
-  border-color: #40a9ff;
+  border-color: #40a9ff !important;
 }
 
 .edit-passenger-input-container .select-dropdown.expanded .selected-value-display {
-  border-color: #40a9ff;
-  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1);
+  border-color: #40a9ff !important;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1) !important;
+}
+
+/* 下拉框箭头样式 */
+.edit-passenger-input-container .select-dropdown .arrow {
+  right: 12px !important;
+  border-top: 5px solid #666 !important;
 }
 
 /* 提示信息 */
@@ -233,29 +240,34 @@
   width: 350px;
 }
 
-/* 国家代码下拉框 */
+/* 国家代码下拉框 - 使用!important提高优先级 */
 .edit-passenger-phone-group .select-dropdown {
-  width: 100px;
-  min-width: 100px;
-  max-width: 100px;
-  flex-shrink: 0;
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+  flex-shrink: 0 !important;
 }
 
-/* 手机号区域的下拉框显示框样式 */
+/* 手机号区域的下拉框显示框样式 - 使用!important提高优先级 */
 .edit-passenger-phone-group .select-dropdown .selected-value-display {
-  height: 36px;
-  line-height: 36px;
-  border: 1px solid #c5c5c5;
-  border-radius: 0px;
-  font-size: 14px;
-  padding: 0 33px 0 12px;
-  background-color: #fff;
-  width: 100px;
-  text-align: center;
+  height: 36px !important;
+  line-height: 36px !important;
+  border: 1px solid #c5c5c5 !important;
+  border-radius: 0px !important;
+  font-size: 14px !important;
+  padding: 0 28px 0 12px !important;
+  background-color: #fff !important;
+  width: 100px !important;
+  text-align: center !important;
 }
 
 .edit-passenger-phone-group .select-dropdown:not(.disabled) .selected-value-display:hover {
-  border-color: #40a9ff;
+  border-color: #40a9ff !important;
+}
+
+.edit-passenger-phone-group .select-dropdown .arrow {
+  right: 12px !important;
+  border-top: 5px solid #666 !important;
 }
 
 /* 手机号输入框 */
